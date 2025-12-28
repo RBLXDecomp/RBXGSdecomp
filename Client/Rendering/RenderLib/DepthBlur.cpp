@@ -56,5 +56,16 @@ namespace RBX
 				rd->pop2D();
 			}
 		}
+
+		void DepthBlur::allocateTextures(const G3D::Rect2D& screenRect)
+		{
+			if (depth.isNull() || depth->vector2Bounds() != screenRect.wh())
+			{
+				depth = G3D::Texture::createEmpty("Depth Buffer", screenRect.width(), screenRect.height(), G3D::TextureFormat::depth(0), G3D::Texture::DIM_2D_NPOT, G3D::Texture::Parameters::video());
+				color = G3D::Texture::createEmpty("Color Buffer", screenRect.width(), screenRect.height(), G3D::TextureFormat::RGB8, G3D::Texture::DIM_2D_NPOT, G3D::Texture::Parameters::video());
+				shader->args.set("depth", depth);
+				shader->args.set("color", color);
+			}
+		}
 	}
 }
