@@ -108,6 +108,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				OmitFramePointers="true"
+				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories=".\include;..\RbxViewBase;..\Rendering\RenderLib\include;..\Rendering\g3d\include;..\App\include;..\Rendering\AppDraw\include;..\boost_1_34_1\src;..\Rendering\sdl-1.2.6\include;..\RbxGraphics\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_RELEASE"
 				RuntimeLibrary="2"
