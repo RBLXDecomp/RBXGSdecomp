@@ -4,7 +4,6 @@ namespace RBX
 {
 	namespace Render
 	{
-
 		const float Chunk::DECAL_OFFSET = -0.2f;
 		const float Chunk::TEXTURE_OFFSET = -0.1f;
 
