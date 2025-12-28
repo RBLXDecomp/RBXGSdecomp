@@ -36,7 +36,7 @@ namespace RBX
 		}
 	}
 
-	bool Camera::askSetParent(const Instance *instance) const
+	bool Camera::askSetParent(const Instance* instance) const
 	{
 		return fastDynamicCast<const Workspace>(instance) != NULL;
 	}
@@ -56,13 +56,13 @@ namespace RBX
 		return NULL;
 	}
 
-	void Camera::lookAt(const G3D::Vector3 &point)
+	void Camera::lookAt(const G3D::Vector3& point)
 	{
 		cameraFocus.translation = point;
 		cameraGoal.lookAt(point);
 	}
 
-	void Camera::getHeadingElevationDistance(float &heading, float &elevation, float &distance)
+	void Camera::getHeadingElevationDistance(float& heading, float& elevation, float& distance)
 	{
 		Math::getHeadingElevation(cameraGoal, heading, elevation);
 		distance = (cameraGoal.translation - cameraFocus.translation).magnitude();
@@ -163,7 +163,7 @@ namespace RBX
 		{
 			animationType = AUTO;
 
-			ICameraOwner *owner = getCameraOwner();
+			ICameraOwner* owner = getCameraOwner();
 			if (owner)
 				owner->cameraMoved();
 		}
@@ -176,7 +176,7 @@ namespace RBX
 			cameraType = type;
 			raisePropertyChanged(desc_cameraType);
 
-			ICameraOwner *owner = getCameraOwner();
+			ICameraOwner* owner = getCameraOwner();
 			if (owner)
 				owner->cameraMoved();
 		}
@@ -191,21 +191,21 @@ namespace RBX
 				cameraSubject = shared_from((ModelInstance*) newSubject);
 				raisePropertyChanged(cameraSubjectProp);
 
-				ICameraOwner *owner = getCameraOwner();
+				ICameraOwner* owner = getCameraOwner();
 				if (owner)
 					owner->cameraMoved();
 			}
 		}
 	}
 
-	void Camera::setCameraFocus(const G3D::CoordinateFrame &value)
+	void Camera::setCameraFocus(const G3D::CoordinateFrame& value)
 	{
 		if (value != cameraFocus)
 		{
 			cameraFocus = value;
 			raisePropertyChanged(desc_Focus);
 
-			ICameraOwner *owner = getCameraOwner();
+			ICameraOwner* owner = getCameraOwner();
 			if (owner)
 				owner->cameraMoved();
 		}
@@ -226,15 +226,15 @@ namespace RBX
 			}
 			raisePropertyChanged(desc_CoordFrame);
 
-			ICameraOwner *owner = getCameraOwner();
+			ICameraOwner* owner = getCameraOwner();
 			if (owner)
 				owner->cameraMoved();
 		}
 	}
 
-	bool Camera::zoomExtents(const G3D::Rect2D &viewPort)
+	bool Camera::zoomExtents(const G3D::Rect2D& viewPort)
 	{
-		ICameraOwner *owner = getCameraOwner();
+		ICameraOwner* owner = getCameraOwner();
 		if (owner)
 		{
 			zoomExtents(owner->computeCameraOwnerExtents(), viewPort, ZOOM_IN_OR_OUT);
@@ -243,7 +243,7 @@ namespace RBX
 		return false;
 	}
 
-	void Camera::setCameraCoordinateFrameNoLerp(const G3D::CoordinateFrame &value)
+	void Camera::setCameraCoordinateFrameNoLerp(const G3D::CoordinateFrame& value)
 	{
 		cameraGoal = value;
 		goalToCamera();
