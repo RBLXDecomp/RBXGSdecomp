@@ -85,7 +85,7 @@ namespace RBX
 
 		cameraGoal.translation -= lookVector * (newZoomDistance / currentDistance - 1.0f);
 
-		ICameraOwner *owner = getCameraOwner();
+		ICameraOwner* owner = getCameraOwner();
 		if (owner)
 			owner->cameraMoved();
 
@@ -105,7 +105,7 @@ namespace RBX
 			heading = Math::radWrap(heading + angle);
 			setHeadingElevationDistance(heading, elevation, distance);
 
-			ICameraOwner *owner = getCameraOwner();
+			ICameraOwner* owner = getCameraOwner();
 			if (owner)
 				owner->cameraMoved();
 		}
@@ -182,7 +182,7 @@ namespace RBX
 		}
 	}
 
-	void Camera::setCameraSubject(Instance *newSubject)
+	void Camera::setCameraSubject(Instance* newSubject)
 	{
 		if (newSubject != getCameraSubjectInstance())
 		{
