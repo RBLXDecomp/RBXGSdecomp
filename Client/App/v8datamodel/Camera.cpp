@@ -182,6 +182,22 @@ namespace RBX
 		}
 	}
 
+	void Camera::setCameraSubject(Instance *newSubject)
+	{
+		if (newSubject != getCameraSubjectInstance())
+		{
+			if (fastDynamicCast<ICameraSubject>(newSubject))
+			{
+				cameraSubject = shared_from((ModelInstance*) newSubject);
+				raisePropertyChanged(cameraSubjectProp);
+
+				ICameraOwner *owner = getCameraOwner();
+				if (owner)
+					owner->cameraMoved();
+			}
+		}
+	}
+
 	void Camera::setCameraFocus(const G3D::CoordinateFrame &value)
 	{
 		if (value != cameraFocus)
