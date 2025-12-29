@@ -1,7 +1,9 @@
 #pragma once
 #include <set>
 #include <vector>
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
+#include <G3D/Ray.h>
+#include <G3D/Array.h>
 #include "util/HitTestFilter.h"
 #include "util/Extents.h"
 

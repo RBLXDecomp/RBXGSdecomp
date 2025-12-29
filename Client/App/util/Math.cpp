@@ -113,12 +113,12 @@ namespace RBX
 
 	G3D::Vector3 Math::toDiagonal(const G3D::Matrix3& m)
 	{
-		return Vector3(m[0][0],m[1][1],m[2][2]);
+		return G3D::Vector3(m[0][0],m[1][1],m[2][2]);
 	}
 
 	G3D::Matrix3 Math::fromDiagonal(const G3D::Vector3& v)
 	{
-		return Matrix3(v.x, 0, 0, 0, v.y, 0, 0, 0, v.z);
+		return G3D::Matrix3(v.x, 0, 0, 0, v.y, 0, 0, 0, v.z);
 	}
 
 	bool Math::lessThan(const G3D::Vector3& min, const G3D::Vector3& max)
@@ -143,12 +143,12 @@ namespace RBX
 
 	G3D::Matrix3 Math::rotateAboutZ(const G3D::Matrix3& matrix, float radians)
 	{
-		Matrix3 m(Matrix3::identity());
+		G3D::Matrix3 m(G3D::Matrix3::identity());
 		float sinR = sin(radians);
 		float cosR = cos(radians);
 
-		m.setColumn(0, Vector3(cosR, sinR, 0));
-		m.setColumn(1, Vector3(-sinR, cosR, 0));
+		m.setColumn(0, G3D::Vector3(cosR, sinR, 0));
+		m.setColumn(1, G3D::Vector3(-sinR, cosR, 0));
 
 		return matrix * m;
 	}
@@ -175,7 +175,7 @@ namespace RBX
 
 	void Math::getHeadingElevation(const G3D::CoordinateFrame& c, float& heading, float& elevation)
 	{
-		Vector3 lookVector = c.getLookVector();
+		G3D::Vector3 lookVector = c.getLookVector();
 
 		heading = Math::getHeading(lookVector);
 		elevation = Math::getElevation(lookVector);
@@ -187,15 +187,15 @@ namespace RBX
 		float unk = sqrtf(1 - Y * Y);
 		float X = -(sin(heading) * unk);
 		float Z = -(unk * cos(heading));
-		c.lookAt(c.translation + Vector3(X, Y, Z).direction());
+		c.lookAt(c.translation + G3D::Vector3(X, Y, Z).direction());
 	}
 
 	G3D::CoordinateFrame Math::getFocusSpace(const G3D::CoordinateFrame& focus)
 	{
-		Vector3 look = focus.lookVector();
+		G3D::Vector3 look = focus.lookVector();
 		float heading = Math::getHeading(look);
 
-		CoordinateFrame cf(focus.rotation);
+		G3D::CoordinateFrame cf(focus.rotation);
 		cf.translation = focus.translation;
 		Math::setHeadingElevation(cf, heading, 0);
 		return cf;
@@ -203,10 +203,10 @@ namespace RBX
 
 	const G3D::Matrix3& Math::getAxisRotationMatrix(int face)
 	{
-		static Matrix3 y = Matrix3::fromEulerAnglesXYZ(0, 0, halfPi());
-		static Matrix3 z = Matrix3::fromEulerAnglesXYZ(0, halfPi(), 0);
-		static Matrix3 y_neg = Matrix3(y);
-		static Matrix3 z_neg = Matrix3(z);
+		static G3D::Matrix3 y = G3D::Matrix3::fromEulerAnglesXYZ(0, 0, G3D::halfPi());
+		static G3D::Matrix3 z = G3D::Matrix3::fromEulerAnglesXYZ(0, G3D::halfPi(), 0);
+		static G3D::Matrix3 y_neg = G3D::Matrix3(y);
+		static G3D::Matrix3 z_neg = G3D::Matrix3(z);
 
 		switch (face)
 		{
@@ -219,13 +219,13 @@ namespace RBX
 		case 5:
 			return z_neg;
 		default:
-			return Matrix3::identity();
+			return G3D::Matrix3::identity();
 		}
 	}
 
 	G3D::Vector3 Math::vector3Abs(const G3D::Vector3& v)
 	{
-		return Vector3(fabs(v.x), fabs(v.y), fabs(v.z));
+		return G3D::Vector3(fabs(v.x), fabs(v.y), fabs(v.z));
 	}
 
 	bool Math::isOrthonormal(const G3D::Matrix3& m)
@@ -267,7 +267,7 @@ namespace RBX
 
 	float Math::angleToE0(const G3D::Vector2& v)
 	{
-		Vector2 copy(v);
+		G3D::Vector2 copy(v);
 		copy.unitize();
 
 		float f = acos(copy.x);
@@ -278,7 +278,7 @@ namespace RBX
 
 	G3D::Vector3 Math::iRoundVector3(const G3D::Vector3& point)
 	{
-		return Vector3(Math::iRound(point.x), Math::iRound(point.y), Math::iRound(point.z));
+		return G3D::Vector3(Math::iRound(point.x), Math::iRound(point.y), Math::iRound(point.z));
 	}
 
 	const float& segSizeRadians()
@@ -327,7 +327,7 @@ namespace RBX
 
 	G3D::Vector3 Math::toGrid(const G3D::Vector3& v, const G3D::Vector3& grid)
 	{
-		Vector3 units = v / grid;
+		G3D::Vector3 units = v / grid;
 		return grid * Math::iRoundVector3(units);
 	}
 
@@ -341,7 +341,7 @@ namespace RBX
 		float deltaZX = delta.z * delta.x;
 		float deltaZY = delta.z * delta.y;
 
-		return iWorldAtCofm + mass * Matrix3(
+		return iWorldAtCofm + mass * G3D::Matrix3(
 				deltaZSquared + deltaYSquared,
 				-deltaYX,
 				-deltaZX,
@@ -361,16 +361,16 @@ namespace RBX
 		{
 			if (!(dotProd < 0.0f))
 			{
-				hit = Vector3::inf();
+				hit = G3D::Vector3::inf();
 				return false;
 			}
 		}
 		else if (!(dotProd > 0.0f))
 		{
-			hit = Vector3::inf();
+			hit = G3D::Vector3::inf();
 			return false;
 		}
-		G3D::Line myLine = Line::fromPointAndDirection(ray.origin, ray.direction);
+		G3D::Line myLine = G3D::Line::fromPointAndDirection(ray.origin, ray.direction);
 		hit = myLine.intersection(plane);
 		return true;
 	}
@@ -383,13 +383,13 @@ namespace RBX
 
 	float Math::maxAxisLength(const G3D::Vector3& v)
 	{
-		G3D::Vector3 vAbs = Vector3(fabs(v.x), fabs(v.y), fabs(v.z));
+		G3D::Vector3 vAbs = G3D::Vector3(fabs(v.x), fabs(v.y), fabs(v.z));
 		return std::max(vAbs.x, std::max(vAbs.y, vAbs.z));
 	}
 
 	NormalId Math::getClosestObjectNormalId(const G3D::Vector3& worldV, const G3D::Matrix3& objectR)
 	{
-		Vector3 worldObjMul = worldV * objectR;
+		G3D::Vector3 worldObjMul = worldV * objectR;
 		float absX = fabs(worldObjMul.x);
 		float absY = fabs(worldObjMul.y);
 		float absZ = fabs(worldObjMul.z);
@@ -413,7 +413,7 @@ namespace RBX
 
 	bool Math::fuzzyAxisAligned(const G3D::Matrix3& m0, const G3D::Matrix3& m1, float radTolerance)
 	{
-		Vector3 vectors[3] = {Vector3(), Vector3(), Vector3()};
+		G3D::Vector3 vectors[3] = {G3D::Vector3(), G3D::Vector3(), G3D::Vector3()};
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -422,8 +422,8 @@ namespace RBX
 
 		for (int i = 0; i < 3; i++)
 		{
-			Vector3 m0Column = m0.getColumn(i);
-			Vector3* vector = vectors; 
+			G3D::Vector3 m0Column = m0.getColumn(i);
+			G3D::Vector3* vector = vectors; 
 			int count = 0;
 			while (count < 3)
 			{
@@ -442,9 +442,9 @@ namespace RBX
 	{
 		NormalId norm1 = intToNormalId(orientId / 6);
 		NormalId norm2 = intToNormalId(orientId % 6);
-		Vector3 norm1Vec3 = normalIdToVector3(norm1);
-		Vector3 norm2Vec3 = normalIdToVector3(norm2);
-		Vector3 cross = norm1Vec3.cross(norm2Vec3);
+		G3D::Vector3 norm1Vec3 = normalIdToVector3(norm1);
+		G3D::Vector3 norm2Vec3 = normalIdToVector3(norm2);
+		G3D::Vector3 cross = norm1Vec3.cross(norm2Vec3);
 		matrix.setColumn(0, norm1Vec3);
 		matrix.setColumn(1, norm2Vec3);
 		matrix.setColumn(2, cross);
@@ -470,16 +470,16 @@ namespace RBX
 		return true;
 	}
 
-	Matrix3 Math::snapToAxes(const G3D::Matrix3& align)
+	G3D::Matrix3 Math::snapToAxes(const G3D::Matrix3& align)
 	{
-		Matrix3 unkMat;
+		G3D::Matrix3 unkMat;
 		float aBest = 0.0f;
 		int second = -1;
 		int bestV = -1;
 		
 		for (int i = 0; i < 3; i++)
 		{
-			Vector3 loopColumn = align.getColumn(i);
+			G3D::Vector3 loopColumn = align.getColumn(i);
 			for (int j = 0; j < 3; j++)
 			{
 				float dotProd = G3D::Matrix3::identity().getColumn(j).dot(loopColumn);
@@ -493,7 +493,7 @@ namespace RBX
 			}
 		}
 		
-		Vector3 myColumn = G3D::Matrix3::identity().getColumn(second);
+		G3D::Vector3 myColumn = G3D::Matrix3::identity().getColumn(second);
 		if (aBest < 0.0f)
 		{
 			myColumn *= -1.0f;
@@ -522,7 +522,7 @@ namespace RBX
 			}
 		}
 
-		Vector3 myColumn2 = G3D::Matrix3::identity().getColumn(v11);
+		G3D::Vector3 myColumn2 = G3D::Matrix3::identity().getColumn(v11);
 		if (v9 < 0.0f)
 		{
 			myColumn2 *= -1.0f;
@@ -530,13 +530,13 @@ namespace RBX
 
 		int v15 = 3 - v10 - bestV;
 		int calcColmTemp = 3 - v11 - second;
-		Vector3 myColumn3 = G3D::Matrix3::identity().getColumn(calcColmTemp);
+		G3D::Vector3 myColumn3 = G3D::Matrix3::identity().getColumn(calcColmTemp);
 		if (unkMat[v15][v11] < 0.0f)
 		{
 			myColumn3 *= -1.0f;
 		}
 
-		Matrix3 result;
+		G3D::Matrix3 result;
 		result.setColumn(bestV, myColumn);
 		result.setColumn(v10, myColumn2);
 		result.setColumn(v15, myColumn3);
@@ -588,12 +588,12 @@ namespace RBX
 
 	G3D::CoordinateFrame Math::snapToGrid(const G3D::CoordinateFrame& snap, const G3D::Vector3& grid)
 	{
-		return CoordinateFrame(Math::snapToAxes(snap.rotation), Math::toGrid(snap.translation, grid));
+		return G3D::CoordinateFrame(Math::snapToAxes(snap.rotation), Math::toGrid(snap.translation, grid));
 	}
 
 	G3D::CoordinateFrame Math::snapToGrid(const G3D::CoordinateFrame& snap, float grid)
 	{
-		return CoordinateFrame(Math::snapToAxes(snap.rotation), Math::toGrid(snap.translation, grid));
+		return G3D::CoordinateFrame(Math::snapToAxes(snap.rotation), Math::toGrid(snap.translation, grid));
 	}
 
 	G3D::Matrix3 Math::alignAxesClosest(const G3D::Matrix3& align, const G3D::Matrix3& target)

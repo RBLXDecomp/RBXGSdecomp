@@ -126,7 +126,7 @@ namespace RBX
 		float b0Radius = this->ball(0)->getRadius();
 		float b1Radius = this->ball(1)->getRadius();
 
-		Vector3 delta = this->getPrimitive(1)->getBody()->getPV().position.translation - this->getPrimitive(0)->getBody()->getPV().position.translation;
+		G3D::Vector3 delta = this->getPrimitive(1)->getBody()->getPV().position.translation - this->getPrimitive(0)->getBody()->getPV().position.translation;
 		float b0b1RadiusSum = b0Radius + b1Radius;
 
 		if (b0b1RadiusSum > Math::longestVector3Component(delta))
@@ -202,12 +202,12 @@ namespace RBX
 			const PV& prim0Coord = b0->getPV();
 			const PV& prim1Coord = b1->getPV();
 
-			Vector3& blockToBall = prim0Coord.position.translation - prim1Coord.position.translation;
+			G3D::Vector3& blockToBall = prim0Coord.position.translation - prim1Coord.position.translation;
 			projectionInBlock = prim1Coord.position.rotation.transpose() * blockToBall; //could be some sort to objectSpace inline but operator* inlines when it shouldn't
 			
 			this->block()->projectToFace(projectionInBlock, clip, onBoarder);
-			Vector3& unkVec = prim0Coord.position.pointToObjectSpace(projectionInBlock);
-			Vector3& unkVec2 = unkVec - prim0Coord.position.translation;
+			G3D::Vector3& unkVec = prim0Coord.position.pointToObjectSpace(projectionInBlock);
+			G3D::Vector3& unkVec2 = unkVec - prim0Coord.position.translation;
 
 			return unkVec2.magnitude() < (this->ball()->getRadius() - overlapIgnored);
 		}
@@ -216,15 +216,15 @@ namespace RBX
 
 	bool BallBlockContact::computeIsColliding(float overlapIgnored)
 	{
-		Vector3int16 clip;
-		Vector3 projectionInBlock;
+		G3D::Vector3int16 clip;
+		G3D::Vector3 projectionInBlock;
 		return this->computeIsColliding(*(int*)&overlapIgnored, clip, projectionInBlock, overlapIgnored);
 	}
 
 	bool BallBlockContact::stepContact()
 	{
-		Vector3int16 clip;
-		Vector3 projectionInBlock;
+		G3D::Vector3int16 clip;
+		G3D::Vector3 projectionInBlock;
 		int onBoarder;
 
 		if (BallBlockContact::computeIsColliding(onBoarder, clip, projectionInBlock, 0.0f))
@@ -234,7 +234,7 @@ namespace RBX
 				if (!this->ballBlockConnector)
 					this->ballBlockConnector = this->createConnector();
 
-				const Vector3* offset;
+				const G3D::Vector3* offset;
 				NormalId normId;
 				GeoPairType ballInsideType;
 
@@ -401,7 +401,7 @@ namespace RBX
 											edgeNormal1
 											);
 
-		const Vector3& gridSize = this->getPrimitive(edgeBody)->getGeometry()->getGridSize();
+		const G3D::Vector3& gridSize = this->getPrimitive(edgeBody)->getGeometry()->getGridSize();
 
 		matched->setEdgeEdgePlane(
 			this->getPrimitive(edgeBody)->getBody(),
@@ -431,14 +431,14 @@ namespace RBX
 		{
 			int baseId = i % 2;
 			int testId = sepIdCounter % 2;
-			const CoordinateFrame& primPV0 = this->getPrimitive(baseId)->getBody()->getPV().position;
-			const CoordinateFrame& primPV1 = this->getPrimitive(testId)->getBody()->getPV().position;
-			Vector3* eTest = (Vector3*)this->block(0)->getVertices();
-			Vector3* eBase = (Vector3*)this->block(1)->getVertices();
+			const G3D::CoordinateFrame& primPV0 = this->getPrimitive(baseId)->getBody()->getPV().position;
+			const G3D::CoordinateFrame& primPV1 = this->getPrimitive(testId)->getBody()->getPV().position;
+			G3D::Vector3* eTest = (G3D::Vector3*)this->block(0)->getVertices();
+			G3D::Vector3* eBase = (G3D::Vector3*)this->block(1)->getVertices();
 
-			Vector3 delta = primPV1.translation - primPV0.translation;
+			G3D::Vector3 delta = primPV1.translation - primPV0.translation;
 
-			Vector3 rotTransMul = primPV0.rotation * delta;
+			G3D::Vector3 rotTransMul = primPV0.rotation * delta;
 
 			for (int j = this->separatingAxisId; j < this->separatingAxisId + 3; j++)
 			{
@@ -491,25 +491,25 @@ namespace RBX
 				}
 			}
 		}
-		const CoordinateFrame& primPV0 = this->getPrimitive(0)->getBody()->getPV().position;
-		const CoordinateFrame& primPV1 = this->getPrimitive(1)->getBody()->getPV().position;
-		Vector3* eTest = (Vector3*)this->block(0)->getVertices();
-		Vector3* eBase = (Vector3*)this->block(1)->getVertices();
+		const G3D::CoordinateFrame& primPV0 = this->getPrimitive(0)->getBody()->getPV().position;
+		const G3D::CoordinateFrame& primPV1 = this->getPrimitive(1)->getBody()->getPV().position;
+		G3D::Vector3* eTest = (G3D::Vector3*)this->block(0)->getVertices();
+		G3D::Vector3* eBase = (G3D::Vector3*)this->block(1)->getVertices();
 
-		Vector3 p0p1 = primPV1.translation - primPV0.translation;
+		G3D::Vector3 p0p1 = primPV1.translation - primPV0.translation;
 
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 0; j < 3; j++)
 			{
-				Vector3 crossAxis = primPV0.rotation.getColumn(i).cross(primPV1.rotation.getColumn(j));
+				G3D::Vector3 crossAxis = primPV0.rotation.getColumn(i).cross(primPV1.rotation.getColumn(j));
 				if (crossAxis.unitize() <= 0.001f)
 					return planeContact;
 
 				float p0p1inCrossAxis = crossAxis.dot(p0p1);
 
-				Vector3 crossAxisMulPV0rot = primPV0.rotation * crossAxis;
-				Vector3 crossAxisMulPV1rot = primPV1.rotation * crossAxis;
+				G3D::Vector3 crossAxisMulPV0rot = primPV0.rotation * crossAxis;
+				G3D::Vector3 crossAxisMulPV1rot = primPV1.rotation * crossAxis;
 
 				float what = Math::taxiCabMagnitude(crossAxisMulPV0rot * *eTest) + Math::taxiCabMagnitude(crossAxisMulPV1rot * *eBase) - fabs(p0p1inCrossAxis);
 				if (overlapIgnored > what)

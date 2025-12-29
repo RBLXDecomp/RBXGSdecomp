@@ -89,7 +89,10 @@ namespace RBX
 		PartInstance();
 		virtual ~PartInstance();
 	public:
-		const Primitive* getPrimitive() const;
+		const Primitive* getPrimitive() const
+		{
+			return primitive.get();
+		}
 		Primitive* getPrimitive()
 		{
 			return primitive.get();

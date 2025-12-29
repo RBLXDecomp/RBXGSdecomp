@@ -6,6 +6,7 @@
 #include "reflection/reflection.h"
 #include "reflection/object.h"
 #include "reflection/property.h"
+#include "v8xml/XmlElement.h"
 #include "v8xml/SerializerV2.h"
 #include "util/Debug.h"
 #include "util/Events.h"
@@ -289,6 +290,15 @@ namespace RBX
 				}
 			}
 		}
+
+		template<typename Type>
+		const Type* getTypedParent() const;
+
+		template<typename Type>
+		const Type* getTypedRoot() const;
+
+		template<typename Type>
+		Type* findFirstChildOfType() const;
 	  
 	private:
 		static void predelete(Instance* instance);
@@ -300,14 +310,6 @@ namespace RBX
 	private:
 		static void signalDescendentAdded(Instance*, Instance*, Instance*);
 		static void signalDescendentRemoving(const boost::shared_ptr<Instance>&, Instance*, Instance*);
-
-	public:
-		template<typename Type>
-		const Type* getTypedParent() const;
-
-		template<typename Type>
-		const Type* getTypedRoot() const;
-
 	public:
 		// NOTE: This is entirely inlined. See assertions in later client builds.
 		template<typename To>

@@ -1,6 +1,6 @@
 #pragma once
-
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
+#include <G3D/CoordinateFrame.h>
 #include "util/Velocity.h"
 
 namespace RBX {

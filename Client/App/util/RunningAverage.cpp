@@ -11,7 +11,7 @@ namespace RBX
 
 	bool RunningAverageState::withinTolerance(const G3D::CoordinateFrame& cofm, float radius, float tolerance)
 	{
-		Vector3 deltaPos = Math::vector3Abs(this->position - cofm.translation);
+		G3D::Vector3 deltaPos = Math::vector3Abs(this->position - cofm.translation);
 		if (Math::maxAxisLength(deltaPos) > tolerance)
 			return false;
 		Quaternion deltaAngles = Quaternion(cofm.rotation) * radius;

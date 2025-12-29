@@ -136,7 +136,7 @@ namespace RBX
 
 		RBXASSERT(magnitude < 5000.0f);
 
-		magnitude = min(5000.0f, magnitude);
+		magnitude = G3D::min(5000.0f, magnitude);
 
 		G3D::Ray unitRay = worldRay.unit();
 

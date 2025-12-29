@@ -133,8 +133,7 @@ namespace RBX
 	{
 		if (!isTopLevelPVInstance())
 		{
-			RBXASSERT(fastDynamicCast<PVInstance>(getParent()) == getParent());
-			G3D::ReferenceCountedPointer<RBX::Controller> controller = ((PVInstance*)getParent())->TopPVController;
+			G3D::ReferenceCountedPointer<RBX::Controller> controller = rbx_static_cast<PVInstance*>(getParent())->TopPVController;
 
 			if (controller.notNull())
 			{

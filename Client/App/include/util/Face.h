@@ -1,5 +1,6 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
+#include <G3D/CoordinateFrame.h>
 #include "util/Extents.h"
 #include "util/Debug.h"
 

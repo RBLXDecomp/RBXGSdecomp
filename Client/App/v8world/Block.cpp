@@ -2,6 +2,8 @@
 #include "util/NormalId.h"
 #include "util/Debug.h"
 #include <map>
+#include <G3D/AABox.h>
+#include <G3D/CollisionDetection.h>
 
 namespace RBX
 {
@@ -27,11 +29,11 @@ namespace RBX
 		G3D::Vector3 vertices[8];
 		static BlockTemplates blockTemplates;
 	public:
-		BlockTemplate(const BlockTemplate& other);
+		//BlockTemplate(const BlockTemplate& other);
 	private:
 		BlockTemplate(const G3D::Vector3& _corner) 
 		{
-			Vector3 fabsCorner;
+			G3D::Vector3 fabsCorner;
 			fabsCorner.x = -fabs(_corner.x);
 			fabsCorner.y = -fabs(_corner.y);
 			fabsCorner.z = -fabs(_corner.z);
@@ -320,26 +322,26 @@ namespace RBX
 		switch (normalID)
 		{
 		case NORM_X:
-			return Vector2(vertex.y, vertex.z);
+			return G3D::Vector2(vertex.y, vertex.z);
 		case NORM_Y:
-			return Vector2(vertex.z, vertex.x);
+			return G3D::Vector2(vertex.z, vertex.x);
 		case NORM_Z:
-			return Vector2(vertex.x, vertex.y);
+			return G3D::Vector2(vertex.x, vertex.y);
 		case NORM_X_NEG:
-			return Vector2(vertex.z, vertex.y);
+			return G3D::Vector2(vertex.z, vertex.y);
 		case NORM_Y_NEG:
-			return Vector2(vertex.x, vertex.z);
+			return G3D::Vector2(vertex.x, vertex.z);
 		case NORM_Z_NEG:
-			return Vector2(vertex.y, vertex.x);
+			return G3D::Vector2(vertex.y, vertex.x);
 		default:
-			return Vector2();
+			return G3D::Vector2();
 		}
 	}
 
 	int Block::getClosestEdge(const G3D::Matrix3& rotation, NormalId normalID, G3D::Vector3& crossAxis)
 	{
-		Vector3 axisInBody = Math::vectorToObjectSpace(crossAxis, rotation);
-		Vector2 projected = this->getProjectedVertex(axisInBody, normalID);
+		G3D::Vector3 axisInBody = Math::vectorToObjectSpace(crossAxis, rotation);
+		G3D::Vector2 projected = this->getProjectedVertex(axisInBody, normalID);
 
 		if (projected.y > 0.0f)
 		{
@@ -359,7 +361,7 @@ namespace RBX
 
 	void Block::onSetSize()
 	{
-		Vector3 corner = this->gridSize * -0.5f;
+		G3D::Vector3 corner = this->gridSize * -0.5f;
 		const G3D::Vector3* vertices = BlockTemplate::getVertices(corner);
 		this->vertices = vertices;
 		this->cornerRadius = vertices->magnitude();
@@ -367,26 +369,26 @@ namespace RBX
 
 	bool Block::hitTest(const G3D::Ray& rayInMe, G3D::Vector3& localHitPoint, bool& inside)
 	{
-		Vector3 gridSizeMul = gridSize * 0.5f;
+		G3D::Vector3 gridSizeMul = gridSize * 0.5f;
 		inside = false;
 
-		bool result = CollisionDetection::collisionLocationForMovingPointFixedAABox(
+		bool result = G3D::CollisionDetection::collisionLocationForMovingPointFixedAABox(
 			rayInMe.origin,
 			rayInMe.direction,
-			AABox(-gridSizeMul, gridSizeMul),
+			G3D::AABox(-gridSizeMul, gridSizeMul),
 			localHitPoint,
 			inside);
 
 		if (inside)
 		{
 			inside = false;
-			Vector3 originMul = rayInMe.origin - (rayInMe.direction * 1000.0f);
-			Ray rayResult = Ray::fromOriginAndDirection(originMul, rayInMe.direction);
+			G3D::Vector3 originMul = rayInMe.origin - (rayInMe.direction * 1000.0f);
+			G3D::Ray rayResult = G3D::Ray::fromOriginAndDirection(originMul, rayInMe.direction);
 
-			CollisionDetection::collisionLocationForMovingPointFixedAABox(
+			G3D::CollisionDetection::collisionLocationForMovingPointFixedAABox(
 				rayResult.origin,
 				rayResult.direction,
-				AABox(-gridSizeMul, gridSizeMul),
+				G3D::AABox(-gridSizeMul, gridSizeMul),
 				localHitPoint,
 				inside);
 

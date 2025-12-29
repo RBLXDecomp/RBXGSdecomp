@@ -19,8 +19,8 @@ namespace RBX
 						  public virtual ISelectable3d
 	{
 	private:
-		G3D::CoordinateFrame modelInPrimary;
-		PartInstance* primaryPart;
+		mutable G3D::CoordinateFrame modelInPrimary;
+		mutable PartInstance* primaryPart;
 		boost::shared_ptr<PartInstance> candidatePrimaryPart;
 		ComputeProp<float, ModelInstance> FlagHeight;
 		ComputeProp<Extents, ModelInstance> LocalGridExtents;
@@ -28,41 +28,61 @@ namespace RBX
 
 	public:
 		static bool showModelCoord;
-	  
+
 	private:
-		void updatePrimaryPart(PartInstance*) const;
+		void updatePrimaryPart(PartInstance* set) const;
 		float computeFlagHeight() const;
 		Extents computeLocalGridExtents() const;
 		Extents computeWorldGridExtents() const;
 		void dirtyAll() const;
 		virtual bool shouldRender3dAdorn() const;
-		virtual void render3dAdorn(Adorn*);
-		virtual void render3dSelect(Adorn*, SelectState);
+		virtual void render3dAdorn(Adorn* adorn);
+		virtual void render3dSelect(Adorn* adorn, SelectState selectState);
 	protected:
-		virtual void onDescendentAdded(Instance*);
-		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>&);
-		virtual bool askSetParent(const Instance*) const;
+		virtual void onDescendentAdded(Instance* instance);
+		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
+		virtual bool askSetParent(const Instance* instance) const;
 	private:
-		virtual void onLastChildRemoved();
+		virtual void onLastChildRemoved()
+		{
+		}
 	public:
 		//ModelInstance(const ModelInstance&);
 		ModelInstance();
 		virtual ~ModelInstance();
 	public:
 		PartInstance* getPrimaryPartInternal() const;
-		void setPrimaryPart(PartInstance*);
-		const G3D::CoordinateFrame& getModelInPrimary() const;
-		void setModelInPrimary(const G3D::CoordinateFrame&);
+		void setPrimaryPart(PartInstance* set);
+		const G3D::CoordinateFrame& getModelInPrimary() const
+		{
+			return modelInPrimary;
+		}
+		void setModelInPrimary(const G3D::CoordinateFrame& set)
+		{
+			modelInPrimary = set;
+		}
 		virtual void onExtentsChanged() const;
 		virtual const Primitive* getBiggestPrimitive() const;
-		virtual bool hitTest(const G3D::Ray&, G3D::Vector3&);
-		virtual Extents getExtentsWorld() const;
-		virtual Extents getExtentsLocal() const;
+		virtual bool hitTest(const G3D::Ray& worldRay, G3D::Vector3& worldHitPoint);
+		virtual Extents getExtentsWorld() const
+		{
+			return WorldGridExtents;
+		}
+		virtual Extents getExtentsLocal() const
+		{
+			return LocalGridExtents;
+		}
 		virtual const G3D::CoordinateFrame getLocation() const;
-		virtual void onCameraNear(float);
-		virtual void getCameraIgnorePrimitives(std::vector<const Primitive*>&);
-		virtual PartInstance* getPrimaryPart();
-		virtual const PartInstance* getPrimaryPartConst() const;
+		virtual void onCameraNear(float distance);
+		virtual void getCameraIgnorePrimitives(std::vector<const Primitive*>& primitives);
+		virtual PartInstance* getPrimaryPart()
+		{
+			return getPrimaryPartInternal();
+		}
+		virtual const PartInstance* getPrimaryPartConst() const
+		{
+			return getPrimaryPartInternal();
+		}
 		void setFrontAndTop(const G3D::Vector3&);
 		void destroyIfNoParts(const ModelInstance*);
 		void makeJoints();
@@ -70,7 +90,7 @@ namespace RBX
 		float computeTotalMass() const;
 		float computeLargestMoment() const;
 	protected:
-		virtual void legacyTraverseState(const G3D::CoordinateFrame&);
+		virtual void legacyTraverseState(const G3D::CoordinateFrame& parentState);
 	public:
 		//ModelInstance& operator=(const ModelInstance&);
 	};

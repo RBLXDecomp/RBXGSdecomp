@@ -1,5 +1,5 @@
 #pragma once
-#include "winsock2.h"
+#include <winsock2.h>
 #include "v8tree/Instance.h"
 #include "v8tree/Service.h"
 #include "util/Events.h"

@@ -16,7 +16,7 @@ namespace RBX
 	class RootInstance : public Reflection::Described<RootInstance, &sRootInstance, ModelInstance>,
 						 public ICameraOwner
 	{
-	public:
+	private:
 		enum MoveType
 		{
 			MOVE_DROP,
@@ -25,7 +25,7 @@ namespace RBX
 
 	private:
 		ComputeProp<ControllerTypeArray, RootInstance> ControllersUsed;
-		G3D::Vector3 insertPoint;
+		mutable G3D::Vector3 insertPoint;
 	protected:
 		G3D::Rect2D viewPort;
 		std::auto_ptr<World> world;
@@ -33,32 +33,37 @@ namespace RBX
 	private:
 		ControllerTypeArray computeControllersUsed() const;
 		G3D::Vector3 computeIdeInsertPoint() const;
-		G3D::Vector3 computeCharacterInsertPoint(const Extents&) const;
-		void moveSafe(std::vector<boost::weak_ptr<PartInstance>>&, G3D::Vector3, MoveType);
-		void moveSafe(MegaDragger&, G3D::Vector3, MoveType);
-		void moveToCharacterInsertPoint(std::vector<boost::weak_ptr<PartInstance>>&);
-		void moveToIdeInsertPoint(std::vector<boost::weak_ptr<PartInstance>>&);
-		void insertRaw(const std::vector<boost::shared_ptr<Instance>>&, Instance*, std::vector<boost::weak_ptr<PartInstance>>&);
-		void insertToTree(const std::vector<boost::shared_ptr<Instance>>&, Instance*);
-		void insertCharacterView(const std::vector<boost::shared_ptr<Instance>>&, std::vector<boost::weak_ptr<PartInstance>>&);
-		void insertIdeView(const std::vector<boost::shared_ptr<Instance>>&, std::vector<boost::weak_ptr<PartInstance>>&, PromptMode);
-		void insert3dView(const std::vector<boost::shared_ptr<Instance>>&, PromptMode);
-		void insertHopperBin(HopperBin*);
-		void insertSpawnLocation(SpawnLocation*);
+		G3D::Vector3 computeCharacterInsertPoint(const Extents& extents) const;
+		void moveSafe(std::vector<boost::weak_ptr<PartInstance>>& partArray, G3D::Vector3 move, MoveType moveType);
+		void moveSafe(MegaDragger& megaDragger, G3D::Vector3 move, MoveType moveType);
+		void moveToCharacterInsertPoint(std::vector<boost::weak_ptr<PartInstance>>& partArray);
+		void moveToIdeInsertPoint(std::vector<boost::weak_ptr<PartInstance>>& partArray);
+		void insertRaw(const std::vector<boost::shared_ptr<Instance>>& instances, Instance* requestedParent, std::vector<boost::weak_ptr<PartInstance>>& partArray);
+		void insertToTree(const std::vector<boost::shared_ptr<Instance>>& instances, Instance* requestedParent);
+		void insertCharacterView(const std::vector<boost::shared_ptr<Instance>>& instances, std::vector<boost::weak_ptr<PartInstance>>& partArray);
+		void insertIdeView(const std::vector<boost::shared_ptr<Instance>>& instances, std::vector<boost::weak_ptr<PartInstance>>& partArray, PromptMode promptMode);
+		void insert3dView(const std::vector<boost::shared_ptr<Instance>>& instances, PromptMode promptMode);
+		void insertHopperBin(HopperBin* h);
+		void insertSpawnLocation(SpawnLocation* s);
 	protected:
-		virtual void onDescendentAdded(Instance*);
-		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>&);
-		virtual void onLastChildRemoved();
-		virtual void onChildControllerChanged();
+		virtual void onDescendentAdded(Instance* instance);
+		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
+		virtual void onLastChildRemoved()
+		{
+		}
+		virtual void onChildControllerChanged()
+		{
+			ControllersUsed.setDirty();
+		}
 	public:
 		//RootInstance(RootInstance&);
 	protected:
 		RootInstance();
 		virtual ~RootInstance();
 	public:
-		void insertInstances(const std::vector<boost::shared_ptr<Instance>>&, Instance*, InsertMode, PromptMode);
-		void setInsertPoint(const G3D::Vector3&);
-		void moveToPoint(PVInstance*, G3D::Vector3);
+		void insertInstances(const std::vector<boost::shared_ptr<Instance>>& instances, Instance* requestedParent, InsertMode insertMode, PromptMode promptMode);
+		void setInsertPoint(const G3D::Vector3& topCenter);
+		void moveToPoint(PVInstance* pv, G3D::Vector3 point);
 		ControllerTypeArray getControllersUsed() const;
 		World* getWorld();
 		const G3D::Rect2D& getViewPort();

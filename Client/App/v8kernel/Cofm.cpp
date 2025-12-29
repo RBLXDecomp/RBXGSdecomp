@@ -7,7 +7,7 @@ namespace RBX {
 //haven't checked if it matches yet
 Cofm::Cofm(Body* body):body(body)
 					,dirty(1)
-					,cofmInBody(Vector3(0.0f,0.0f,0.0f))
+					,cofmInBody(G3D::Vector3(0.0f,0.0f,0.0f))
 					{}
 
 const float Cofm::getMass() const
@@ -34,7 +34,7 @@ void Cofm::updateIfDirty() const
 	{
 		mass = body->getMass();
 		float bodyMass = body->getMass();
-		Vector3 point = body->getPV().position.translation * bodyMass;
+		G3D::Vector3 point = body->getPV().position.translation * bodyMass;
 		for (int i = 0; i < body->numChildren(); i++)
 		{
 			Body* child = body->getChild(i);
@@ -44,7 +44,7 @@ void Cofm::updateIfDirty() const
 		point = point / mass;
 		const PV& bodyPV = body->getPV();
 		cofmInBody = (point - bodyPV.position.translation) * bodyPV.position.rotation;
-		Matrix3 IWorld = body->getIWorldAtPoint(point);
+		G3D::Matrix3 IWorld = body->getIWorldAtPoint(point);
 		for (int i = 0; i < body->numChildren(); i++)
 		{
 			IWorld = IWorld + body->getChild(i)->getBranchIWorldAtPoint(point);

@@ -1,5 +1,6 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
+#include <G3D/Matrix3.h>
 //#include "v8kernel/Body.h"
 
 namespace RBX {

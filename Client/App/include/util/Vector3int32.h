@@ -1,5 +1,5 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
 
 namespace RBX
 {
@@ -43,9 +43,9 @@ namespace RBX
 				this->z != other.z;
 		}
 
-		Vector3 toVector3() const { return Vector3(x,y,z); }
+		G3D::Vector3 toVector3() const { return G3D::Vector3(x,y,z); }
 
-		static Vector3int32 floor(const Vector3& v)
+		static Vector3int32 floor(const G3D::Vector3& v)
 		{
 			return Vector3int32(
 				G3D::iRound(::floor(v.x)),

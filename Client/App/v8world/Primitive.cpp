@@ -61,7 +61,7 @@ namespace RBX
 
 	G3D::Vector3 Primitive::clipToSafeSize(const G3D::Vector3& newSize)
 	{
-		G3D::Vector3 r = newSize.min(Vector3(512.0f, 512.0f, 512.0f));
+		G3D::Vector3 r = newSize.min(G3D::Vector3(512.0f, 512.0f, 512.0f));
 
 		if(r.x * r.y * r.z > 1e+6f) 
 		{
@@ -119,11 +119,6 @@ namespace RBX
 	float Primitive::getPlanarSize() const
 	{
 		return Math::planarSize(geometry->getGridSize());
-	}
-
-	Extents Primitive::getExtentsWorld() const 
-	{
-		return getExtentsLocal().toWorldSpace(getCoordinateFrame());
 	}
 
 	bool Primitive::hitTest(const G3D::Ray& worldRay, G3D::Vector3& worldHitPoint, bool& inside) 

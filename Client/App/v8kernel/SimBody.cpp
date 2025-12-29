@@ -8,8 +8,8 @@ namespace RBX
 SimBody::SimBody(RBX::Body* _body)
 			:body(_body),
 			dirty(1),
-			force(Vector3::zero()),
-			torque(Vector3::zero()),
+			force(G3D::Vector3::zero()),
+			torque(G3D::Vector3::zero()),
 			constantForceY(0.0f)
 {}
 
@@ -17,7 +17,7 @@ SimBody::~SimBody() {}
 
 G3D::Vector3 vecUnkPercent(G3D::Vector3& input)
 {
-	return Vector3(1.0f / input.x, 1.0f / input.y, 1.0f / input.z);
+	return G3D::Vector3(1.0f / input.x, 1.0f / input.y, 1.0f / input.z);
 }
 
 float precentInline(float fNum)
@@ -87,8 +87,8 @@ void matrixMulInline(const G3D::Matrix3& _mat, const G3D::Vector3& _vec, G3D::Ma
 
 G3D::Vector3 computeRotVel(const G3D::Matrix3& rot, const G3D::Vector3& momentRecip, const G3D::Vector3& angMomentum)
 {
-	Matrix3 temp;
-	Matrix3 iWorldInv;
+	G3D::Matrix3 temp;
+	G3D::Matrix3 iWorldInv;
 	matrixMulInline(rot, momentRecip, temp);
 	mulMatrixMatrixTranspose(temp, rot, iWorldInv);
 	return iWorldInv * angMomentum;
@@ -97,7 +97,7 @@ G3D::Vector3 computeRotVel(const G3D::Matrix3& rot, const G3D::Vector3& momentRe
 //temporary for now?
 G3D::Vector3& denormFixFunc()
 {
-	static G3D::Vector3 denormFix = Vector3(9.9999997e-21f, 9.9999997e-21f, 9.9999997e-21f);
+	static G3D::Vector3 denormFix = G3D::Vector3(9.9999997e-21f, 9.9999997e-21f, 9.9999997e-21f);
 	return denormFix;
 }
 
@@ -124,8 +124,8 @@ void SimBody::step(float dt)
 	pv.velocity.linear += force * massRecip * dt;
 	pv.position.translation += getPV().velocity.linear * dt;
 	//line 129
-	force = Vector3(0, constantForceY, 0);
-	torque = Vector3(0, 0, 0);
+	force = G3D::Vector3(0, constantForceY, 0);
+	torque = G3D::Vector3(0, 0, 0);
 	//line 131
 	angMomentum += denormFix;
 	//line 132
@@ -138,14 +138,14 @@ PV SimBody::getOwnerPV()
 {
 	RBXASSERT(!dirty);
 	G3D::Vector3 cofmOffset = body->getCofmOffset();
-	return pv.pvAtLocalOffset(Vector3(-cofmOffset.x, -cofmOffset.y, -cofmOffset.z));
+	return pv.pvAtLocalOffset(G3D::Vector3(-cofmOffset.x, -cofmOffset.y, -cofmOffset.z));
 }
 
 //compiler optimizes out unused functions in header
 void SimBody::matchDummy()
 {
 	resetAccumulators();
-	accumulateForce(Vector3(0.1f, 0.5f, 0.2f), Vector3(0.6f, 0.10f, 0.8f));
+	accumulateForce(G3D::Vector3(0.1f, 0.5f, 0.2f), G3D::Vector3(0.6f, 0.10f, 0.8f));
 }
 
 }

@@ -291,7 +291,7 @@ namespace RBX
 		getCollisionStage()->onSleepChanged(assembly);
 	}
 
-	void SleepStage::onLosingContact(const Array<Contact*>& separating)
+	void SleepStage::onLosingContact(const G3D::Array<Contact*>& separating)
 	{
 		for (int i = 0; i < separating.size(); ++i)
 		{

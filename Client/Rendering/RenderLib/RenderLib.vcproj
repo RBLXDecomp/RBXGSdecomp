@@ -105,6 +105,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\SDL-1.2.6\include;..\G3D\png;..\g3d\include;.\include;..\g3d\include\zlib;..\..\boost_1_34_1\src;..\..\app\include;..\..\RbxGraphics\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
@@ -154,6 +155,30 @@
 				RelativePath=".\AggregatingSceneManager.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Chunk.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DepthBlur.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Material.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Mesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RenderSurface.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TextureProxy.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -161,7 +186,31 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\include\RenderLib\Chunk.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\RenderLib\DepthBlur.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\RenderLib\Material.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\RenderLib\Mesh.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\RenderLib\RenderStats.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\RenderLib\RenderSurface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\RenderLib\TextureProxy.h"
 				>
 			</File>
 		</Filter>

@@ -90,12 +90,25 @@ namespace RBX
 		bool values[Controller::NUM_CONTROLLER_TYPES];
 	  
 	public:
-		void clear();
+		void clear()
+		{
+			for (int i = 0; i < Controller::NUM_CONTROLLER_TYPES; ++i)
+				values[i] = false;
+		}
 	public:
-		ControllerTypeArray();
+		ControllerTypeArray()
+		{
+			clear();
+		}
 	public:
-		void setController(Controller::ControllerType, bool);
-		bool hasController(Controller::ControllerType) const;
+		void setController(Controller::ControllerType controllerType, bool value)
+		{
+			values[controllerType] = value;
+		}
+		bool hasController(Controller::ControllerType controllerType) const
+		{
+			return values[controllerType];
+		}
 
 		ControllerTypeArray& operator|=(const ControllerTypeArray&);
 	};

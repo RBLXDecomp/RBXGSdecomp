@@ -215,7 +215,10 @@ namespace RBX
 			G3D::Vector3 hVec = geometry->getGridSize() * 0.5f;
 			return Extents(-hVec, hVec);
 		}
-		Extents getExtentsWorld() const;
+		Extents getExtentsWorld() const
+		{
+			return getExtentsLocal().toWorldSpace(getCoordinateFrame());
+		}
 		const Extents& getFastFuzzyExtents() const;
 		bool hitTest(const G3D::Ray& worldRay, G3D::Vector3& worldHitPoint, bool& inside);
 		Face getFaceInObject(NormalId objectFace);
