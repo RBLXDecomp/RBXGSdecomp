@@ -1,5 +1,5 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
 #include "v8kernel/Body.h"
 
 namespace RBX {
@@ -27,7 +27,7 @@ namespace RBX {
 		void setBody(RBX::Body* _body) { this->body = _body; }
 		RBX::Body* getBody() {return this->body;}
 		const G3D::Vector3& getWorldPos() {return worldPos;}
-		Point& operator=(const Point&);
+		//Point& operator=(const Point&);
 
 		static bool Point::sameBodyAndOffset(const RBX::Point& p1, const RBX::Point& p2)
 		{

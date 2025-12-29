@@ -3,6 +3,7 @@
 #include "v8world/RigidJoint.h"
 #include "v8world/Anchor.h"
 #include "v8world/Assembly.h"
+#include <deque>
 
 namespace RBX
 {

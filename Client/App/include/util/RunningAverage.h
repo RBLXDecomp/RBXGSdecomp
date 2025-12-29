@@ -1,4 +1,5 @@
 #pragma once
+#include <G3D/CoordinateFrame.h>
 #include "util/Quaternion.h"
 
 namespace RBX

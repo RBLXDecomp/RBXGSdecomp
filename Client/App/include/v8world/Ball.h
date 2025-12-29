@@ -26,13 +26,13 @@ namespace RBX
 		}
 		virtual G3D::Vector3 getCenterToCorner(const G3D::Matrix3& rotation) const
 		{
-			return Vector3(this->realRadius, this->realRadius, this->realRadius);
+			return G3D::Vector3(this->realRadius, this->realRadius, this->realRadius);
 		}
 		virtual G3D::Matrix3 getMoment(float mass) const
 		{
 			return this->getMomentSolid(mass);
 		}
 		virtual float getGridVolume() const;
-		Ball& operator=(const Ball& other);
+		//Ball& operator=(const Ball& other);
 	};
 }

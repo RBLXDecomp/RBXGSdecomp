@@ -14,7 +14,7 @@ Point::Point(Body* _body)
 void Point::step()
 {
 	this->worldPos = this->body->getPV().position.pointToWorldSpace(this->localPos);
-	this->force = Vector3::zero();
+	this->force = G3D::Vector3::zero();
 }
 
 void Point::forceToBody()

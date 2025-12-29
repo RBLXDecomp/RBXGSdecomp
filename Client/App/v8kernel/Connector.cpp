@@ -13,7 +13,7 @@ namespace RBX
 		if (params.length < 0.f)
 		{
 			float normalVel;
-			Vector3 perpVel;
+			G3D::Vector3 perpVel;
 			this->geoPair.computeNormalPerpVel(normalVel, perpVel, params);
 			this->frictionOffset += perpVel * dt;
 
@@ -59,8 +59,8 @@ namespace RBX
 			this->forceMagLast = v27;
 			this->forceMagLast = this->threshold <= params.length ? 0.f : this->forceMagLast;
 
-			Vector3 v31 = this->frictionOffset * v8;
-			Vector3 force = (params.normal * this->forceMagLast) - v31;
+			G3D::Vector3 v31 = this->frictionOffset * v8;
+			G3D::Vector3 force = (params.normal * this->forceMagLast) - v31;
 			this->geoPair.forceToBodies(force, params.position); 
 		}
 		else
@@ -87,7 +87,7 @@ namespace RBX
 	{
 		if (!this->broken)
 		{
-			Vector3 force = (this->point1->getWorldPos() - this->point0->getWorldPos()) * -this->k;
+			G3D::Vector3 force = (this->point1->getWorldPos() - this->point0->getWorldPos()) * -this->k;
 
 			float taxi = Math::taxiCabMagnitude(force);
 			this->broken = taxi > this->breakForce;
@@ -97,7 +97,7 @@ namespace RBX
 
 	float PointToPointBreakConnector::potentialEnergy()
 	{
-		Vector3 diff = this->point1->getWorldPos() - this->point0->getWorldPos();
+		G3D::Vector3 diff = this->point1->getWorldPos() - this->point0->getWorldPos();
 		float mag = diff.length();
 		return this->k * mag * mag * 0.5f;
 	}
@@ -115,7 +115,7 @@ namespace RBX
 
 	void RotateConnector::computeForce(const float dt, bool throttling)
 	{
-		Vector3 normal;
+		G3D::Vector3 normal;
 		float rotation;
 		float rotVel;
 		this->computeParams(normal, rotation, rotVel);
@@ -128,7 +128,7 @@ namespace RBX
 		this->kernelInput.get(lastGoal, currentGoal, increment);
 
 		//float v1 = (currentGoal - rotation) * this->k;
-		Vector3 v2 = normal * ((currentGoal - rotation) * this->k);
+		G3D::Vector3 v2 = normal * ((currentGoal - rotation) * this->k);
 
 		this->ref0->getBody()->accumulateTorque(-v2);
 		this->ref1->getBody()->accumulateTorque(v2);
@@ -136,21 +136,21 @@ namespace RBX
 
 	void RotateConnector::computeParams(G3D::Vector3& normal, float& rotation, float& rotVel)
 	{
-		Vector3 ray0base0_delta = this->ray0->getWorldPos() - this->base0->getWorldPos();
+		G3D::Vector3 ray0base0_delta = this->ray0->getWorldPos() - this->base0->getWorldPos();
 		normal = ray0base0_delta;
 		normal.unitize();
-		Vector3 ref0base0_delta = this->ref0->getWorldPos() - this->base0->getWorldPos();
-		Vector3 ref1base0_delta = this->ref1->getWorldPos() - this->base0->getWorldPos();
+		G3D::Vector3 ref0base0_delta = this->ref0->getWorldPos() - this->base0->getWorldPos();
+		G3D::Vector3 ref1base0_delta = this->ref1->getWorldPos() - this->base0->getWorldPos();
 
 		float funnyCalculation1 = normal.dot(ref0base0_delta);
 		float funnyCalculation2 = normal.dot(ref1base0_delta);
 
-		Vector3 ref0base0_delta_funny = ref0base0_delta - (normal * funnyCalculation1);
-		Vector3 ref1base0_delta_funny = ref1base0_delta - (normal * funnyCalculation2);
+		G3D::Vector3 ref0base0_delta_funny = ref0base0_delta - (normal * funnyCalculation1);
+		G3D::Vector3 ref1base0_delta_funny = ref1base0_delta - (normal * funnyCalculation2);
 
 		int oldWindings = this->windings;
 
-		Vector3 cross = ref0base0_delta_funny.cross(ref1base0_delta_funny);
+		G3D::Vector3 cross = ref0base0_delta_funny.cross(ref1base0_delta_funny);
 		float garbage2 = ref1base0_delta_funny.dot(ref0base0_delta_funny);
 
 		float result = atan2(cross.z * cross.z + cross.y * cross.y + cross.x * cross.x, garbage2);
@@ -175,8 +175,8 @@ namespace RBX
 	{
 		if ( !this->broken )
 		{
-			const Vector3& worldNormal = Math::getWorldNormal(this->normalIdBody0, this->point0->getBody()->getPV().position);
-			const Vector3& force = -this->k * (this->point1->getWorldPos() - this->point0->getWorldPos());
+			const G3D::Vector3& worldNormal = Math::getWorldNormal(this->normalIdBody0, this->point0->getBody()->getPV().position);
+			const G3D::Vector3& force = -this->k * (this->point1->getWorldPos() - this->point0->getWorldPos());
 			
 			float forceDot = force.dot(worldNormal);
 			this->broken = -forceDot > this->breakForce;

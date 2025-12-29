@@ -18,6 +18,7 @@ namespace RBX
 	class ModelInstance;
 	class JointInstance;
 	class Accoutrement;
+	class Controller;
 
 	extern const char* sHumanoid;
 	class Humanoid : public DescribedCreatable<Humanoid, Instance, &sHumanoid>,
@@ -36,6 +37,7 @@ namespace RBX
 			DIRECTION_MOVE
 		};
 
+	public:
 		class State : public INamed
 		{
 		protected:

@@ -61,7 +61,7 @@ namespace RBX
 
 	G3D::Vector3 Primitive::clipToSafeSize(const G3D::Vector3& newSize)
 	{
-		G3D::Vector3 r = newSize.min(Vector3(512.0f, 512.0f, 512.0f));
+		G3D::Vector3 r = newSize.min(G3D::Vector3(512.0f, 512.0f, 512.0f));
 
 		if(r.x * r.y * r.z > 1e+6f) 
 		{

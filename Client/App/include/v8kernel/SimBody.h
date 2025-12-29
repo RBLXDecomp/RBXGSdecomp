@@ -1,5 +1,5 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
 #include "util/Quaternion.h"
 #include "util/PV.h"
 //#include "v8kernel/Body.h"
@@ -62,8 +62,8 @@ namespace RBX {
 			void SimBody::resetAccumulators()
 			{
 				updateIfDirty();
-				force = Vector3(0.0f, constantForceY, 0.0f);
-				torque = Vector3(0.0f, 0.0f, 0.0f);
+				force = G3D::Vector3(0.0f, constantForceY, 0.0f);
+				torque = G3D::Vector3(0.0f, 0.0f, 0.0f);
 			}
 			const G3D::Vector3& getForce() const {return force;}
 			const G3D::Vector3& getTorque() const {return torque;}

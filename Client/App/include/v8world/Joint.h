@@ -1,5 +1,5 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/CoordinateFrame.h>
 #include "v8world/Edge.h"
 #include "util/NormalId.h"
 
@@ -30,8 +30,8 @@ namespace RBX
 		IJointOwner* jointOwner;
 	protected:
 		bool active;
-		CoordinateFrame jointCoord0;
-		CoordinateFrame jointCoord1;
+		G3D::CoordinateFrame jointCoord0;
+		G3D::CoordinateFrame jointCoord1;
 
 	protected:
 		virtual Edge::EdgeType getEdgeType() const

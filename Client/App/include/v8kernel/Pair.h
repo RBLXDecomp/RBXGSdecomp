@@ -1,7 +1,7 @@
 #pragma once
 #include "v8kernel/Body.h"
 #include "util/Math.h"
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
 
 namespace RBX
 {
@@ -32,7 +32,7 @@ namespace RBX
 		PairParams(const PairParams&);
 		PairParams() : normal(0, 0, 0), position(0, 0, 0) {};
 
-		RBX::PairParams& operator=(const RBX::PairParams&);
+		//RBX::PairParams& operator=(const RBX::PairParams&);
 	};
 
 	class GeoPair

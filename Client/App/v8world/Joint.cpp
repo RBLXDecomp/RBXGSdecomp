@@ -26,8 +26,8 @@ namespace RBX
 		  jointCoord0(),
 		  jointCoord1()
 	{
-		RBXASSERT(jointCoord0 == CoordinateFrame());
-		RBXASSERT(jointCoord1 == CoordinateFrame());
+		RBXASSERT(jointCoord0 == G3D::CoordinateFrame());
+		RBXASSERT(jointCoord1 == G3D::CoordinateFrame());
 	}
 
 	Joint::~Joint()
