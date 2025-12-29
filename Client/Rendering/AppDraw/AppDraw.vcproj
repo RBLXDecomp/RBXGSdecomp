@@ -105,6 +105,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\SDL-1.2.6\include;..\G3D\png;..\g3d\include;.\include;..\g3d\include\zlib;..\RenderLib\include;..\RenderLibNew\include;..\RbxGraphics\include;..\..\RbxGraphics\;..\..\app\include;..\..\boost_1_34_1\src;..\OgreSDK\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_RELEASE"
 				RuntimeLibrary="2"
@@ -160,6 +161,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\include\AppDraw\Draw.h"
+				>
+			</File>
 			<File
 				RelativePath=".\include\AppDraw\Part.h"
 				>

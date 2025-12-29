@@ -438,6 +438,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\Rect.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\RunningAverage.h"
 					>
 				</File>
@@ -778,6 +782,10 @@
 				Name="v8datamodel"
 				>
 				<File
+					RelativePath=".\include\v8datamodel\Backpack.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\BrickColor.h"
 					>
 				</File>
@@ -790,11 +798,31 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Hopper.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\ICameraOwner.h"
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\ICharacterSubject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\IEquipable.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\IPrimaryPart.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Lighting.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\LocalBackpack.h"
 					>
 				</File>
 				<File
@@ -814,11 +842,31 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Sky.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\SpawnLocation.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Surface.h"
 					>
 				</File>
 				<File
 					RelativePath=".\include\v8datamodel\Surfaces.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Team.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Teams.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Tool.h"
 					>
 				</File>
 				<File
@@ -842,7 +890,47 @@
 				Name="gui"
 				>
 				<File
+					RelativePath=".\include\gui\Gui.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gui\GuiDraw.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gui\GuiEvent.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gui\Layout.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gui\Widget.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="tool"
+				>
+				<File
+					RelativePath=".\include\tool\Dragger.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tool\DragUtilities.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tool\MegaDragger.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="humanoid"
+				>
+				<File
+					RelativePath=".\include\humanoid\Humanoid.h"
 					>
 				</File>
 			</Filter>
@@ -1179,11 +1267,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\ModelInstance.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\PartInstance.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\v8datamodel\PVInstance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\RootInstance.cpp"
 				>
 			</File>
 		</Filter>

@@ -1,13 +1,14 @@
 #pragma once
 #include "reflection/property.h"
 #include "v8world/Controller.h"
+#include "v8xml/XmlElement.h"
 #include "util/SurfaceType.h"
 #include "util/NormalId.h"
 
 namespace RBX
 {
 	class PartInstance;
-	class XmlElement;
+
 	class Surface
 	{
 	private:

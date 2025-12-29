@@ -493,6 +493,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\Network\Player.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Network\Players.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Replicator.h"
 				>
 			</File>

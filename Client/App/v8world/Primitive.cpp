@@ -121,11 +121,6 @@ namespace RBX
 		return Math::planarSize(geometry->getGridSize());
 	}
 
-	Extents Primitive::getExtentsWorld() const 
-	{
-		return getExtentsLocal().toWorldSpace(getCoordinateFrame());
-	}
-
 	bool Primitive::hitTest(const G3D::Ray& worldRay, G3D::Vector3& worldHitPoint, bool& inside) 
 	{
 		G3D::Ray localRay = body->getPV().position.toObjectSpace(worldRay);

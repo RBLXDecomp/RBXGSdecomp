@@ -37,6 +37,13 @@ namespace RBX
 	class Creatable : public Object
 	{
 	public:
+		class Deleter
+		{
+		public:
+			void operator()(T*);
+		};
+
+	public:
 		//Creatable(const Creatable&);
 	protected:
 		Creatable();
@@ -45,24 +52,26 @@ namespace RBX
 		//Creatable& operator=(const Creatable&);
 
 	public:
-		// TODO: check matches
 		template<typename Class>
 		static boost::shared_ptr<Class> create()
 		{
-			return boost::shared_ptr(new Class());
+			return boost::shared_ptr<Class>(new Class(), Deleter());
 		}
 		template<typename Class, typename Parameter1>
 		static boost::shared_ptr<Class> create(Parameter1 p1)
 		{
-			return boost::shared_ptr(new Class(p1));
+			return boost::shared_ptr<Class>(new Class(p1), Deleter());
 		}
 		template<typename Class, typename Parameter1, typename Parameter2>
 		static boost::shared_ptr<Class> create(Parameter1 p1, Parameter2 p2)
 		{
-			return boost::shared_ptr(new Class(p1, p2));
+			return boost::shared_ptr<Class>(new Class(p1, p2), Deleter());
 		}
 	private:
-		static void* operator new(size_t);
+		static void* operator new(size_t size)
+		{
+			return malloc(size);
+		}
 		static void operator delete(void* ptr)
 		{
 			free(ptr);
@@ -130,7 +139,10 @@ namespace RBX
 		FactoryProduct();
 		virtual ~FactoryProduct();
 	public:
-		const ICreator& getCreator();
+		const ICreator& getCreator()
+		{
+			return creator;
+		}
 		virtual const Name& getClassName() const;
 		//FactoryProduct& operator=(const FactoryProduct&);
 	  
