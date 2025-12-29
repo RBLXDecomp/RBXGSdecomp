@@ -8,9 +8,9 @@ namespace RBX
 	{
 		DepthBlur::DepthBlur()
 		{
-			if (G3D::GLCaps::supports_GL_ARB_shader_objects() 
-				&& G3D::GLCaps::supports_GL_ARB_shading_language_100() 
-				&& G3D::GLCaps::supports_GL_EXT_texture_rectangle())
+			if (G3D::GLCaps::supports_GL_ARB_shader_objects() &&
+				G3D::GLCaps::supports_GL_ARB_shading_language_100() &&
+				G3D::GLCaps::supports_GL_EXT_texture_rectangle())
 			{
 				shader = G3D::Shader::fromStrings(
 					"", 
