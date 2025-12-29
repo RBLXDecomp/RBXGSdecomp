@@ -1,40 +1,45 @@
 #pragma once
-#include <G3DAll.h>
-#include "reflection/reflection.h"
+#include <G3D/GCamera.h>
+#include <G3D/CoordinateFrame.h>
+#include <G3D/Rect2D.h>
+#include <G3D/Array.h>
 #include "v8tree/Instance.h"
-#include "v8world/ContactManager.h"
 #include "util/Extents.h"
 
 namespace RBX
 {
-	extern const char* sCamera;
-
-	class ICameraOwner;
+	class Primitive;
+	class ContactManager;
 	class ICameraSubject;
+	class ICameraOwner;
+
+	extern const char* sCamera;
 	class Camera : public DescribedCreatable<Camera, Instance, &sCamera>
 	{
+	private:
+		enum AnimationType
+		{
+			ALWAYS,
+			AUTO
+		};
 	public:
 		enum CameraType
 		{
-			FIXED_CAMERA = 0,
-			ATTACH_CAMERA = 1,
-			WATCH_CAMERA = 2,
-			TRACK_CAMERA = 3,
-			FOLLOW_CAMERA = 4,
-			CUSTOM_CAMERA = 5,
-			NUM_CAMERA_TYPE = 6,
+			FIXED_CAMERA,
+			ATTACH_CAMERA,
+			WATCH_CAMERA,
+			TRACK_CAMERA,
+			FOLLOW_CAMERA,
+			CUSTOM_CAMERA,
+			NUM_CAMERA_TYPE
 		};
-		enum AnimationType
+		enum ZoomType
 		{
-			ALWAYS = 0,
-			AUTO = 1,
+			ZOOM_IN_OR_OUT,
+			ZOOM_OUT_ONLY,
+			ZOOM_CHAR_PART_DRAG,
 		};
-		enum ZoomType 
-		{
-			ZOOM_IN_OR_OUT = 0,
-			ZOOM_OUT_ONLY = 1,
-			ZOOM_CHAR_PART_DRAG = 2,
-		};
+
 	private:
 		G3D::GCamera gCamera;
 		G3D::CoordinateFrame cameraGoal;
@@ -43,6 +48,7 @@ namespace RBX
 		AnimationType animationType;
 		boost::shared_ptr<Instance> cameraSubject;
 		bool cameraExternallyAdjusted;
+
 	private:
 		ICameraOwner* getCameraOwner();
 		void updateFocus();
@@ -54,14 +60,13 @@ namespace RBX
 		float goalToFocusDistance() const;
 		void setGCameraCoordinateFrame(const G3D::CoordinateFrame&);
 		G3D::CoordinateFrame computeLineOfSiteGoal();
-		void getHeadingElevationDistance(float &heading, float &elevation, float &distance);
+		void getHeadingElevationDistance(float& heading, float& elevation, float& distance);
 		void setHeadingElevationDistance(float, float, float);
 		void tellCameraMoved();
-		void getIgnorePrims(G3D::Array<Primitive const *>&);
-		virtual bool askSetParent(const Instance *instance) const;
-
+		void getIgnorePrims(G3D::Array<const Primitive*>&);
+		virtual bool askSetParent(const Instance* instance) const;
 	public:
-		//Camera(const RBX::Camera&);
+		//Camera(const Camera&);
 		Camera();
 		virtual ~Camera();
 	public:
@@ -76,17 +81,17 @@ namespace RBX
 		bool isFirstPersonCamera() const;
 		ICameraSubject* getCameraSubject() const;
 		Instance* getCameraSubjectInstance() const;
-		void setCameraSubject(Instance*);
+		void setCameraSubject(Instance* newSubject);
 		const G3D::CoordinateFrame& getCameraFocus() const
 		{
 			return cameraFocus;
 		}
-		void setCameraFocus(const G3D::CoordinateFrame &value);
+		void setCameraFocus(const G3D::CoordinateFrame& value);
 		G3D::CoordinateFrame getCameraCoordinateFrame() const
 		{
 			return gCamera.getCoordinateFrame();
 		}
-		void setCameraCoordinateFrameNoLerp(const G3D::CoordinateFrame&);
+		void setCameraCoordinateFrameNoLerp(const G3D::CoordinateFrame& value);
 		void goalToCamera();
 		CameraType getCameraType() const;
 		void setCameraType(CameraType type);
@@ -96,16 +101,17 @@ namespace RBX
 		bool zoom(float in);
 		bool setDistanceFromTarget(float);
 		void zoomExtents(Extents, const G3D::Rect2D&, ZoomType);
-		bool zoomExtents(const G3D::Rect2D &viewPort);
+		bool zoomExtents(const G3D::Rect2D& viewPort);
 		void panRadians(float angle);
 		void panUnits(int);
 		bool tiltRadians(float);
 		bool tiltUnits(int);
-		void lookAt(const G3D::Vector3 &point);
+		void lookAt(const G3D::Vector3& point);
 		void setImageServerViewNoLerp(const G3D::CoordinateFrame&, const G3D::Rect2D&);
-		//RBX::Camera& operator=(const RBX::Camera&);
-  
-	public: 
+	public:
+		//Camera& operator=(const Camera&);
+
+	public:
 		static float distanceDefault();
 		static float distanceMin();
 		static float distanceMax();
