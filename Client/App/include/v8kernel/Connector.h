@@ -17,7 +17,7 @@ namespace RBX
 		Connector(const Connector&);
 		Connector() {};
 		virtual ~Connector() {}
-		virtual void computeForce(const float dt, bool throttling) {}
+		virtual void computeForce(const float dt, bool throttling) = 0;
 		virtual bool canThrottle() {return false;}
 		virtual bool getBroken() {return false;}
 		virtual float potentialEnergy() {return 0;};

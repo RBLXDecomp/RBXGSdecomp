@@ -48,9 +48,9 @@ namespace RBX
 		public:
 			virtual ~State();
 		public:
-			virtual void onComputeForce(const float);
-			virtual State* onStep(const float, Controller&);
-			virtual bool canSleep() const;
+			virtual void onComputeForce(const float) = 0;
+			virtual State* onStep(const float, Controller&) = 0;
+			virtual bool canSleep() const = 0;
 			virtual float getIntendedRotationAboutYAxis() const;
 		};
 
