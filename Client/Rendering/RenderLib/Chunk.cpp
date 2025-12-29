@@ -11,8 +11,8 @@ namespace RBX
 
 		AggregateChunk::AggregateChunk(const G3D::ReferenceCountedPointer<Chunk>& firstChunk)
 			: Chunk(firstChunk->polygonOffset),
-			_castsShadows(firstChunk->castsShadows()),
-			_cullable(firstChunk->cullable())
+			  _castsShadows(firstChunk->castsShadows()),
+			  _cullable(firstChunk->cullable())
 		{
 			if (!randomColors)
 				material = firstChunk->getMaterial();

@@ -23,16 +23,16 @@ namespace RBX
 			//TextureProxy(const TextureProxy&);
 			TextureProxy(G3D::TextureManager& textureManager, const std::string& filename, bool tiled)
 				: textureManager(&textureManager),
-				loaded(false),
-				tiled(tiled)
+				  loaded(false),
+				  tiled(tiled)
 			{
 				this->filename = filename;
 			}
 		protected:
 			TextureProxy(G3D::ReferenceCountedPointer<TextureProxy> root)
 				: root(root),
-				loaded(false),
-				textureManager(NULL)
+				  loaded(false),
+				  textureManager(NULL)
 			{
 				this->filename = "";
 			}

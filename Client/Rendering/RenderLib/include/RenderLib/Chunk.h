@@ -38,7 +38,7 @@ namespace RBX
 
 			Chunk(float polygonOffset)
 				: polygonOffset(polygonOffset),
-				radius(G3D::inf())
+				  radius(G3D::inf())
 			{
 				RenderStats::chunkCount++;
 			}

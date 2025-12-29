@@ -6,12 +6,12 @@ namespace RBX
 	{
 		Material::Level::Level(G3D::ReferenceCountedPointer<TextureProxy> baseTexture, G3D::Color3 color, float specular, float shiny, float reflect, float transparent)
 			: emptyLevel(false),
-			mBaseTexture(baseTexture),
-			mColor(color),
-			mSpecular(specular),
-			mShiny(shiny),
-			mReflect(reflect),
-			mTransparent(transparent)
+			  mBaseTexture(baseTexture),
+			  mColor(color),
+			  mSpecular(specular),
+			  mShiny(shiny),
+			  mReflect(reflect),
+			  mTransparent(transparent)
 		{
 			if (baseTexture.notNull())
 				mMatte = baseTexture->alphaOnlyVersion();
@@ -22,11 +22,11 @@ namespace RBX
 
 		Material::Level::Level()
 			: emptyLevel(true),
-			mColor(G3D::Color3::white()),
-			mSpecular(0.0f),
-			mShiny(0.0f),
-			mReflect(0.0f),
-			mTransparent(0.0f)
+			  mColor(G3D::Color3::white()),
+			  mSpecular(0.0f),
+			  mShiny(0.0f),
+			  mReflect(0.0f),
+			  mTransparent(0.0f)
 		{
 		}
 
