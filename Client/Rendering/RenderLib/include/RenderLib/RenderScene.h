@@ -61,7 +61,7 @@ namespace RBX
 			RenderScene();
 			~RenderScene();
 
-			void presetLighting(G3D::ReferenceCountedPointer<G3D::Sky>, G3D::LightingParameters, G3D::Color3, G3D::Color3);
+			void presetLighting(G3D::ReferenceCountedPointer<G3D::Sky> sky, G3D::LightingParameters skyParameters, G3D::Color3 ambientTop, G3D::Color3 ambientBottom);
 			void setLighting(const G3D::ReferenceCountedPointer<G3D::Lighting>& L);
 			void setThrottle(float t, float m, bool s, float c);
 			float getShadingQuality() const;

@@ -213,5 +213,25 @@ namespace RBX
 
 			renderStats.diffuseProxyCount = diffuseProxyArray.size();
 		}
+
+		void RenderScene::presetLighting(G3D::ReferenceCountedPointer<G3D::Sky> sky, G3D::LightingParameters skyParameters, G3D::Color3 ambientTop, G3D::Color3 ambientBottom)
+		{
+			this->sky = sky;
+			desiredSkyParameters = skyParameters;
+
+			G3D::ReferenceCountedPointer<G3D::Lighting> lighting = G3D::Lighting::create();
+			lighting->ambientTop = ambientTop;
+			lighting->ambientBottom = ambientBottom;
+
+			G3D::GLight sun = G3D::GLight::directional(skyParameters.lightDirection, skyParameters.lightColor * 0.9f);
+			lighting->shadowedLightArray.append(sun);
+
+			if (sky.notNull())
+			{
+				lighting->environmentMap = sky->getEnvironmentMap();
+			}
+
+			setLighting(lighting);
+		}
 	}
 }
