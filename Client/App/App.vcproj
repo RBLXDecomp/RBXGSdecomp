@@ -1278,6 +1278,14 @@
 				RelativePath=".\v8datamodel\RootInstance.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\v8datamodel\Team.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Teams.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="v8xml"
