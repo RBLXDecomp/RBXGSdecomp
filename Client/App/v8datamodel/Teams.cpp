@@ -17,8 +17,7 @@ namespace RBX
 
 	int Teams::getNumPlayersInTeam(BrickColor brickColor)
 	{
-		const ServiceProvider* provider = ServiceProvider::findServiceProvider(this);
-		Network::Players* players = provider->find<Network::Players>();
+		Network::Players* players = ServiceProvider::findServiceProvider(this)->find<Network::Players>();
 		RBXASSERT(players);
 
 		int numOfPlayers = 0;
@@ -54,8 +53,7 @@ namespace RBX
 
 	G3D::Color3 Teams::getTeamColorForHumanoid(Humanoid* humanoid)
 	{
-		const ServiceProvider* provider = ServiceProvider::findServiceProvider(this);
-		Network::Players* players = provider->find<Network::Players>();
+		Network::Players* players = ServiceProvider::findServiceProvider(this)->find<Network::Players>();
 		RBXASSERT(players);
 
 		for (size_t i = 0; i < players->numChildren(); i++)
@@ -79,7 +77,7 @@ namespace RBX
 
 	void Teams::assignNewPlayerToTeam(Network::Player* player)
 	{
-		BrickColor currentTeam(BrickColor::lego_28);
+		BrickColor currentTeam = BrickColor::lego_28;
 		bool foundTeam = false;
 
 		for (size_t i = 0; i < numChildren(); i++)
