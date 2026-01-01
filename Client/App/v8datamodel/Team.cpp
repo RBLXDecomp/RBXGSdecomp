@@ -10,7 +10,6 @@ namespace RBX
 
 	Team::Team()
 		: score(0),
-		  color(BrickColor::lego_194),
 		  autoAssignable(true),
 		  autoColorCharacters(true)
 	{
