@@ -172,10 +172,7 @@ namespace RBX
 
 	public:
 		BrickColor(int number);
-		BrickColor()
-		{
-			number = lego_194;
-		}
+		BrickColor() : number(lego_194) {}
 		BrickColor(Number number)
 			: number(number)
 		{
