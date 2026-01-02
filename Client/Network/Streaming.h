@@ -4,12 +4,16 @@
 #include "util/Name.h"
 #include "util/Guid.h"
 #include "reflection/property.h"
-#include <BitStream.h>
 #include <g3d/CoordinateFrame.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <map>
 #include <string>
+
+namespace RakNet
+{
+	class BitStream;
+}
 
 namespace RBX
 {

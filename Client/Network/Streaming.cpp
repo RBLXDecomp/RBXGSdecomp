@@ -1,4 +1,5 @@
 #include "Streaming.h"
+#include <BitStream.h>
 #include <StringCompressor.h>
 #include <algorithm>
 
