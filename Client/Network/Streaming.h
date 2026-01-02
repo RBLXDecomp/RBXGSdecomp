@@ -53,7 +53,7 @@ namespace RBX
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, T& value); // TODO: check match
 
 		bool brickEq(float a, float b);
-		bool isBrickLocation(G3D::Vector3 value, short x, unsigned short y, short z); // TODO: weird function which might not be in the header at all. is the signature correct?
+		bool isBrickLocation(G3D::Vector3& value, short& x, unsigned short& y, short& z); // TODO: implement this function and remove from the header
 		void writeBrickVector(RakNet::BitStream&, const G3D::Vector3&);
 		void readBrickVector(RakNet::BitStream& stream, G3D::Vector3& value);
 		void rationalize(G3D::CoordinateFrame& value);
