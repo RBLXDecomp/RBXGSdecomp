@@ -21,8 +21,8 @@ namespace RBX
 		template<typename T>
 		void deserialize(Reflection::Property&, RakNet::BitStream&);
 
-		void deserializeEnum(const Reflection::ConstProperty&, RakNet::BitStream&);
-		void deserializeEnum(Reflection::Property&, RakNet::BitStream&);
+		void serializeEnum(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
+		void deserializeEnum(Reflection::Property& property, RakNet::BitStream& bitStream);
 
 		RakNet::BitStream& operator<<(RakNet::BitStream& stream, bool value);
 		RakNet::BitStream& operator<<(RakNet::BitStream& stream, int value);
@@ -76,7 +76,11 @@ namespace RBX
 			int lastIndex;
 		public:
 			//StringSender(const StringSender&);
-			StringSender();
+			StringSender()
+				: lastIndex(0)
+			{
+			}
+
 			void serializeString(Reflection::ConstProperty&, RakNet::BitStream&);
 
 			void send(RakNet::BitStream&, const char*);
@@ -110,20 +114,21 @@ namespace RBX
 			std::map<Guid::Data, std::vector<WaitItem>> waitItems;
 		public:
 			//IdSerializer(const IdSerializer&);
-			IdSerializer();
-			void serializeId(RakNet::BitStream&, const Instance*);
-			bool trySerializeId(RakNet::BitStream&, const Instance*);
+			IdSerializer() {}
+
+			void serializeId(RakNet::BitStream& stream, const Instance* instance);
+			bool trySerializeId(RakNet::BitStream& stream, const Instance* instance);
 			void deserializeId(RakNet::BitStream&, Guid::Data&);
-			void resolvePendingBindings(Instance*, Guid::Data);
+			void resolvePendingBindings(Instance* instance, Guid::Data id);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&, Guid::Data&);
 			size_t numWaitingRefs() const;
-			void serializeRef(const Reflection::ConstProperty&, RakNet::BitStream&);
+			void serializeRef(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
 			void deserializeRef(Reflection::Property&, RakNet::BitStream&);
 			virtual ~IdSerializer();
 			//IdSerializer& operator=(const IdSerializer&);
 		protected:
-			static void setRefValue(WaitItem&, Instance*);
+			static void setRefValue(WaitItem& wi, Instance* instance);
 		};
 	}
 }
