@@ -85,7 +85,7 @@ namespace RBX
 			{
 			}
 
-			void serializeString(Reflection::ConstProperty&, RakNet::BitStream&);
+			void serializeString(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
 
 			void send(RakNet::BitStream&, const char*);
 			void send(RakNet::BitStream&, const Name&);
@@ -122,7 +122,7 @@ namespace RBX
 
 			void serializeId(RakNet::BitStream& stream, const Instance* instance);
 			bool trySerializeId(RakNet::BitStream& stream, const Instance* instance);
-			void deserializeId(RakNet::BitStream&, Guid::Data&);
+			void deserializeId(RakNet::BitStream& stream, Guid::Data& id);
 			void resolvePendingBindings(Instance* instance, Guid::Data id);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&, Guid::Data&);

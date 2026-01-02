@@ -184,6 +184,26 @@ namespace RBX
 			value = &Name::declare(s.c_str(), -1);
 		}
 
+		void StringReceiver::deserializeString(Reflection::Property& property, RakNet::BitStream& bitStream)
+		{
+			std::string value;
+			receive(bitStream, value);
+			
+			Instance* instance = static_cast<Instance*>(property.getInstance());
+			const Reflection::PropertyDescriptor& desc = property.getDescriptor();
+
+			desc.setStringValue(instance, value);
+		}
+
+		void StringSender::serializeString(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream)
+		{
+			const Instance* instance = static_cast<const Instance*>(property.getInstance());
+			const Reflection::PropertyDescriptor& desc = property.getDescriptor();
+
+			std::string value = desc.getStringValue(instance);
+			send(bitStream, value);
+		}
+
 		void IdSerializer::serializeId(RakNet::BitStream& stream, const Instance* instance)
 		{
 			if (instance)
@@ -242,6 +262,18 @@ namespace RBX
 		void IdSerializer::setRefValue(WaitItem& wi, Instance* instance)
 		{
 			wi.desc->setRefValue(wi.instance.get(), instance);
+		}
+
+		void IdSerializer::deserializeId(RakNet::BitStream& stream, Guid::Data& id)
+		{
+			scopeNames.receive(stream, id.scope);
+			if (*id.scope != Name::getNullName())
+			{
+				id.index = 0;
+				stream.ReadBits((unsigned char*)&id.index, 24);
+			}
+			else
+				id.index = 0;
 		}
 	}
 }
