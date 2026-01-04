@@ -44,7 +44,7 @@ namespace RBX
     private:
         virtual bool askSetParent(const Instance*) const;
         virtual bool shouldRender3dAdorn() const;
-        virtual void render3dSelect(Adorn*, SelectState);
+        virtual void render3dSelect(Adorn* adorn, SelectState selectState);
 
     protected:
         bool getRenderCoord(G3D::CoordinateFrame& c) const;
@@ -101,10 +101,8 @@ namespace RBX
         virtual void render3dAdorn(Adorn* adorn);
 
     public:
-        MotorFeature(const MotorFeature&);
         MotorFeature();
         virtual ~MotorFeature();
-        MotorFeature& operator=(const MotorFeature&);
 
         static bool canJoin(Instance*, Instance*);
         static void join(Instance*, Instance*);
@@ -130,7 +128,7 @@ namespace RBX
         void setPart(int i, Feature* feature);
 
         virtual bool askSetParent(const Instance*) const;
-        virtual void onAncestorChanged(const AncestorChanged&);
+        virtual void onAncestorChanged(const AncestorChanged& event);
 
     public:
         VelocityMotor();

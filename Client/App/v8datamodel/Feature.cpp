@@ -1,6 +1,7 @@
 #include "v8datamodel/Feature.h"
 #include "v8datamodel/Workspace.h"
 #include "v8world/MotorJoint.h"
+#include "AppDraw/Draw.h"
 #include "AppDraw/DrawAdorn.h"
 
 namespace RBX 
@@ -72,6 +73,14 @@ namespace RBX
 		{
 			return false;
 		}
+	}
+
+	void Feature::render3dSelect(Adorn* adorn, SelectState selectState)
+	{
+		G3D::CoordinateFrame worldCoord;
+
+		if (getRenderCoord(worldCoord))
+			DrawAdorn::cylinder(adorn, worldCoord, 2, 0.3, 0.6, Draw::selectColor());
 	}
 
 	// TODO: 98.37% match
