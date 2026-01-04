@@ -131,7 +131,7 @@ namespace RBX
 			return a == b || fabs(a - b) <= 0.0005f;
 		}
 
-		bool isBrickLocation(G3D::Vector3& value, short& x, unsigned short& y, short& z); // TODO: implement
+		static bool isBrickLocation(G3D::Vector3& value, short& x, unsigned short& y, short& z); // TODO: implement
 
 		void deserializeEnum(Reflection::Property& property, RakNet::BitStream& bitStream)
 		{
