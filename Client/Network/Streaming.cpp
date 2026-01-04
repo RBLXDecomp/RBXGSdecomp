@@ -131,6 +131,8 @@ namespace RBX
 			return a == b || fabs(a - b) <= 0.0005f;
 		}
 
+		bool isBrickLocation(G3D::Vector3& value, short& x, unsigned short& y, short& z); // TODO: implement
+
 		void deserializeEnum(Reflection::Property& property, RakNet::BitStream& bitStream)
 		{
 			const Reflection::EnumPropertyDescriptor& prop = static_cast<const Reflection::EnumPropertyDescriptor&>(property.getDescriptor());
@@ -273,7 +275,9 @@ namespace RBX
 				stream.ReadBits((unsigned char*)&id.index, 24);
 			}
 			else
+			{
 				id.index = 0;
+			}
 		}
 	}
 }

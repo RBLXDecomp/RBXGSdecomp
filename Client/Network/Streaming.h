@@ -4,16 +4,12 @@
 #include "util/Name.h"
 #include "util/Guid.h"
 #include "reflection/property.h"
+#include <BitStream.h>
 #include <g3d/CoordinateFrame.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <map>
 #include <string>
-
-namespace RakNet
-{
-	class BitStream;
-}
 
 namespace RBX
 {
@@ -52,8 +48,6 @@ namespace RBX
 		template<typename T>
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, T& value); // TODO: check match
 
-		bool brickEq(float a, float b);
-		bool isBrickLocation(G3D::Vector3& value, short& x, unsigned short& y, short& z); // TODO: implement this function and remove from the header
 		void writeBrickVector(RakNet::BitStream&, const G3D::Vector3&);
 		void readBrickVector(RakNet::BitStream& stream, G3D::Vector3& value);
 		void rationalize(G3D::CoordinateFrame& value);
