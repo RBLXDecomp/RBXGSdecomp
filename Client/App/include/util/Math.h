@@ -1,5 +1,11 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
+#include <G3D/Matrix3.h>
+#include <G3D/CoordinateFrame.h>
+#include <G3D/GCamera.h>
+#include <G3D/Line.h>
+#include <G3D/Plane.h>
+#include <G3D/Ray.h>
 #include "util/NormalId.h"
 #include "util/Velocity.h"
 
@@ -100,7 +106,7 @@ namespace RBX
 			static G3D::Matrix3 fromDiagonal(const G3D::Vector3& v);
 			static G3D::Vector3 getColumn(const G3D::Matrix3& m, int c)
 			{
-				return Vector3(m[0][c], m[1][c], m[2][c]);
+				return G3D::Vector3(m[0][c], m[1][c], m[2][c]);
 			}
 			static unsigned char rotationToByte(float angle);
 			static float rotationFromByte(unsigned char byteAngle);

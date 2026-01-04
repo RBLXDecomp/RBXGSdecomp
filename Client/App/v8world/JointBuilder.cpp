@@ -16,13 +16,13 @@ namespace RBX
 			return NULL;
 		}
 
-		const CoordinateFrame& c0 = p0->getCoordinateFrame();
-		const CoordinateFrame& c1 = p1->getCoordinateFrame();
+		const G3D::CoordinateFrame& c0 = p0->getCoordinateFrame();
+		const G3D::CoordinateFrame& c1 = p1->getCoordinateFrame();
 
 		for (int i = 0; i < 6; i++)
 		{	
 			int tempI = i % 3;
-			Vector3 c0Rotation;
+			G3D::Vector3 c0Rotation;
 			c0Rotation.x = c0.rotation[0][tempI];
 			c0Rotation.y = c0.rotation[1][tempI];
 			c0Rotation.z = c0.rotation[2][tempI];

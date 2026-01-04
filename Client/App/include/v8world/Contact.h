@@ -1,4 +1,5 @@
 #pragma once
+#include <G3D/Vector3int16.h>
 #include "v8kernel/Connector.h"
 #include "v8world/Edge.h"
 #include "v8world/Primitive.h"

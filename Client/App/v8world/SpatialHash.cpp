@@ -4,6 +4,8 @@
 #include "v8world/World.h"
 #include "v8world/Assembly.h"
 #include "util/debug.h"
+#include <G3D/AABox.h>
+#include <G3D/CollisionDetection.h>
 
 namespace RBX
 {
@@ -60,14 +62,14 @@ namespace RBX
 		return result;
 	}
 
-	Vector3int32 SpatialHash::realToHashGrid(const Vector3& realPoint)
+	Vector3int32 SpatialHash::realToHashGrid(const G3D::Vector3& realPoint)
 	{
 		return Vector3int32::floor(realPoint * 0.125f);
 	}
 
 	Extents SpatialHash::hashGridToRealExtents(const G3D::Vector3& hashGrid)
 	{
-		return Extents(hashGrid * 8.0f, (hashGrid + Vector3(1, 1, 1)) * 8.0f);
+		return Extents(hashGrid * 8.0f, (hashGrid + G3D::Vector3(1, 1, 1)) * 8.0f);
 	}
 
 	void SpatialHash::computeMinMax(const Extents& extents, Vector3int32& min, Vector3int32& max)
@@ -210,8 +212,8 @@ namespace RBX
 			{
 				for (int k = min.z; k <= max.z; ++k)
 				{
-					bool inNew = newBox.contains(Vector3(i, j, k));
-					bool inOld = oldBox.contains(Vector3(i, j, k));
+					bool inNew = newBox.contains(G3D::Vector3(i, j, k));
+					bool inOld = oldBox.contains(G3D::Vector3(i, j, k));
 
 					if (inNew)
 					{
@@ -357,8 +359,8 @@ namespace RBX
 			max[i] = unitRay.direction[i] > 0.0f ? 1 : 0;
 		}
 
-		Vector3 gridF = grid.toVector3();
-		float distanceSquared = square(maxDistance + 16.0f);
+		G3D::Vector3 gridF = grid.toVector3();
+		float distanceSquared = G3D::square(maxDistance + 16.0f);
 
 		for (int idfk = 1; idfk <= 3; idfk++)
 		{
@@ -370,9 +372,9 @@ namespace RBX
 					{
 						if (abs(i)+abs(j)+abs(k) == idfk)
 						{
-							Vector3 offset(i, j, k);
-							Vector3 offsetGridF = (offset + gridF);
-							G3D::AABox box(offsetGridF * 8.0f, (offsetGridF + Vector3(1,1,1)) * 8.0f);
+							G3D::Vector3 offset(i, j, k);
+							G3D::Vector3 offsetGridF = (offset + gridF);
+							G3D::AABox box(offsetGridF * 8.0f, (offsetGridF + G3D::Vector3(1,1,1)) * 8.0f);
 							G3D::Vector3 location;
 
 							bool hit = G3D::CollisionDetection::collisionLocationForMovingPointFixedAABox(

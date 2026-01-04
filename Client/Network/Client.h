@@ -1,5 +1,5 @@
 #pragma once
-#include "winsock2.h"
+#include <winsock2.h>
 #include "reflection/signal.h"
 #include "v8xml/XmlElement.h"
 #include "Replicator.h"

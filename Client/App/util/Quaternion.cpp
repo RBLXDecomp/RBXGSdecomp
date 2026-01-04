@@ -63,8 +63,8 @@ namespace RBX
 	//needs to be moved to the header
 	Quaternion Quaternion::operator*(const Quaternion& other) const
 	{
-		Vector3& thisConvert = *(G3D::Vector3*)this;
-		Vector3& otherConvert = *(G3D::Vector3*)&other;
+		G3D::Vector3& thisConvert = *(G3D::Vector3*)this;
+		G3D::Vector3& otherConvert = *(G3D::Vector3*)&other;
 		float thisW = this->w;
 		float otherW = other.w;
 
@@ -78,8 +78,8 @@ namespace RBX
 
 	void Quaternion::normalize()
 	{
-		float sqY = square(this->y);
-		float v1 = sqY + square(this->x) + square(this->z) + square(this->w);
+		float sqY = G3D::square(this->y);
+		float v1 = sqY + G3D::square(this->x) + G3D::square(this->z) + G3D::square(this->w);
 		float v3 = G3D::rsqrt(v1);
 		this->x = this->x * v3;
 		this->y = this->y * v3;

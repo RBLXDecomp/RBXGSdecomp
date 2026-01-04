@@ -5,7 +5,7 @@
 #include "v8kernel/Pair.h"
 #include "v8kernel/Point.h"
 #include "util/Math.h"
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
 
 namespace RBX
 {
@@ -21,7 +21,7 @@ namespace RBX
 		virtual bool canThrottle() {return false;}
 		virtual bool getBroken() {return false;}
 		virtual float potentialEnergy() {return 0;};
-		RBX::Connector& operator=(const RBX::Connector&);
+		//RBX::Connector& operator=(const RBX::Connector&);
 	};
 
 	class ContactConnector : public Connector
@@ -77,7 +77,7 @@ namespace RBX
 		virtual void computeForce(const float, bool);
 		virtual bool canThrottle() const;
 		virtual ~ContactConnector() {};
-		RBX::ContactConnector& operator=(const RBX::ContactConnector&);
+		//RBX::ContactConnector& operator=(const RBX::ContactConnector&);
 	};
 
 	class PointToPointBreakConnector : public Connector
@@ -146,6 +146,6 @@ namespace RBX
 		KernelInput* getKernelInput() {return &kernelInput;}
 		virtual void computeForce(const float dt, bool throttling);
 		virtual ~RotateConnector() {}
-		RBX::RotateConnector& operator=(const RotateConnector& other);
+		//RBX::RotateConnector& operator=(const RotateConnector& other);
 	};
 }

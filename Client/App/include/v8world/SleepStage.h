@@ -1,7 +1,7 @@
 #pragma once
 #include <set>
 #include <boost/scoped_ptr.hpp>
-#include <G3DAll.h>
+#include <G3D/Array.h>
 #include "v8world/IWorldStage.h"
 #include "util/Profiling.h"
 
@@ -63,7 +63,7 @@ namespace RBX
 		{
 			return awake;
 		}
-		void onLosingContact(const Array<Contact*>& separating);
+		void onLosingContact(const G3D::Array<Contact*>& separating);
 		//SleepStage& operator=(const SleepStage&);
   
 	private:

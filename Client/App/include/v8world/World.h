@@ -1,7 +1,7 @@
 #pragma once
 #include <set>
 #include <boost/scoped_ptr.hpp>
-#include <G3DAll.h>
+#include <G3D/Array.h>
 #include "v8world/IWorldStage.h"
 #include "v8world/Primitive.h"
 #include "util/IndexArray.h"

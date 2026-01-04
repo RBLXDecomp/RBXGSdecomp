@@ -1,6 +1,7 @@
 #pragma once
 #include "v8world/Geometry.h"
 #include "v8kernel/Pair.h"
+#include <G3D/Vector3int16.h>
 
 namespace RBX
 {

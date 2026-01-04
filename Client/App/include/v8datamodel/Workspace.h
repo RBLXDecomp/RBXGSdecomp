@@ -93,9 +93,9 @@ namespace RBX
 		virtual const G3D::GCamera& getGCamera() const;
 		virtual Camera* getCamera() const;
 		void setCamera(Camera*);
-		void setImageServerView(const Rect2D&);
+		void setImageServerView(const G3D::Rect2D&);
 		void zoomToExtents();
-		void onWrapMouse(const Vector2&);
+		void onWrapMouse(const G3D::Vector2&);
 		virtual GuiResponse process(const GuiEvent&);
 		void selectAll();
 	private:

@@ -1,5 +1,7 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
+#include <G3D/Matrix3.h>
+#include <G3D/CoordinateFrame.h>
 #include "util/indexarray.h"
 #include "v8kernel/SimBody.h"
 #include "v8kernel/Link.h"
@@ -22,8 +24,8 @@ namespace RBX {
 			SimBody *simBody;
 			bool canThrottle;
 			RBX::Link *link;
-			CoordinateFrame meInParent;
-			Matrix3 moment;
+			G3D::CoordinateFrame meInParent;
+			G3D::Matrix3 moment;
 			float mass;
 			mutable int stateIndex;
 			mutable PV pv;
@@ -76,7 +78,7 @@ namespace RBX {
 				}
 				else
 				{
-					return Vector3::zero();
+					return G3D::Vector3::zero();
 				}
 			}
 
@@ -164,14 +166,14 @@ namespace RBX {
 				if (root->simBody)
 					return root->simBody->force;
 				else
-					return Vector3::zero();
+					return G3D::Vector3::zero();
 			}
 			const G3D::Vector3& getBranchTorque() const
 			{
 				if (root->simBody)
 					return root->simBody->torque;
 				else
-					return Vector3::zero();
+					return G3D::Vector3::zero();
 			}
 			void setParent(Body* newParent);
 			void setMeInParent(RBX::Link*);

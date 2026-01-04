@@ -1,7 +1,7 @@
-#include <G3DAll.h>
 #include "v8kernel/Constants.h"
 #include "util/Debug.h"
 #include "util/Math.h"
+#include <G3D/Vector3int16.h>
 using namespace RBX;
 
 const float Constants::MAX_LEGO_JOINT_FORCES_MEASURED[7] = {0.0f, 1.098f, 2.1340001f, 2.427f, 3.191f, 4.5710001f, 4.6810002f};
@@ -55,9 +55,9 @@ const float RBX::Constants::getKmsMaxJointForce(float grid1, float grid2)
 	return maxJointForce * 7500.0f;
 }
 
-__forceinline Vector3 getClippedSortedSize(const Vector3& v)
+__forceinline G3D::Vector3 getClippedSortedSize(const G3D::Vector3& v)
 {
-	return v.max(Vector3(1.0f, 1.0f, 1.0f));
+	return v.max(G3D::Vector3(1.0f, 1.0f, 1.0f));
 }
 
 const float Constants::getJointKMultiplier(const G3D::Vector3& clippedSortedSize, bool ball)
@@ -66,7 +66,7 @@ const float Constants::getJointKMultiplier(const G3D::Vector3& clippedSortedSize
 	RBXASSERT(clippedSortedSize.z >= clippedSortedSize.y);
 	RBXASSERT(getClippedSortedSize(clippedSortedSize) == clippedSortedSize);
 
-	Vector3int16 size(clippedSortedSize);
+	G3D::Vector3int16 size(clippedSortedSize);
 
 	if (ball)
 	{

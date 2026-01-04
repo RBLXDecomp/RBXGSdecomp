@@ -172,8 +172,8 @@ namespace RBX
 		Primitive* axlePrim = getAxlePrim();
 		Primitive* holePrim = getHolePrim();
 
-		Vector3 ownerSize = axlePrim->getGridSize();
-		Vector3 otherSize = holePrim->getGridSize();
+		G3D::Vector3 ownerSize = axlePrim->getGridSize();
+		G3D::Vector3 otherSize = holePrim->getGridSize();
 
 		NormalId ownerId = getAxleId();
 		NormalId otherId = normalIdOpposite(getHoleId());

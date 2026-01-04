@@ -1,5 +1,5 @@
 #pragma once
-#include <G3DAll.h>
+#include <G3D/Vector3.h>
 
 /*
   private: static const int32_t JOINT_FORCE_DATA;
@@ -53,7 +53,7 @@ namespace RBX {
 		  static const float kernelDt();
 		  static const G3D::Vector3& getKmsGravity()
 		  {
-			  static G3D::Vector3 result = Vector3(0.0f, -9.8100004f, 0.0f);
+			  static G3D::Vector3 result = G3D::Vector3(0.0f, -9.8100004f, 0.0f);
 			  return result;
 		  }
 		  static const float getKmsMaxJointForce(float grid1, float grid2);

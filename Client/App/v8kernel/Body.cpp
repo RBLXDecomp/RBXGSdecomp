@@ -12,7 +12,7 @@ Body::Body()
 	link(NULL),
 	simBody(NULL),
 	stateIndex(getNextStateIndex()),
-	moment(Matrix3::identity()),
+	moment(G3D::Matrix3::identity()),
 	mass(0.0f)
 {
 	root = this;
@@ -240,7 +240,7 @@ G3D::CoordinateFrame Body::getMeInDescendant(const Body* descendant) const
 {
 	if (descendant == this)
 	{
-		return CoordinateFrame::CoordinateFrame();
+		return G3D::CoordinateFrame();
 	}
 	else if (descendant == parent)
 	{
@@ -310,7 +310,7 @@ G3D::Vector3 Body::getBranchCofmPos() const
 
 G3D::CoordinateFrame Body::getBranchCofmCoordinateFrame() const
 {
-	return CoordinateFrame(getPV().position.rotation, getBranchCofmPos());
+	return G3D::CoordinateFrame(getPV().position.rotation, getBranchCofmPos());
 }
 
 G3D::Matrix3 Body::getIWorldAtPoint(const G3D::Vector3& point) const
@@ -333,9 +333,9 @@ G3D::Matrix3 Body::getBranchIWorldAtPoint(const G3D::Vector3& point) const
 
 void Body::matchDummy()
 {
-	accumulateForceAtBranchCofm(Vector3(1.3f,1.2f,1.7f));
-	accumulateTorque(Vector3(6.3f,4.2f,9.7f));
-	setMoment(Matrix3());
+	accumulateForceAtBranchCofm(G3D::Vector3(1.3f,1.2f,1.7f));
+	accumulateTorque(G3D::Vector3(6.3f,4.2f,9.7f));
+	setMoment(G3D::Matrix3());
 	resetAccumulators();
 	mass = getBranchMass();
 	index = getBranchForce().z + getBranchTorque().y + getBranchIBodyV3().x;
