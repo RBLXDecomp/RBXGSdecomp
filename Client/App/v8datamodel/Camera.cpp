@@ -132,7 +132,7 @@ namespace RBX
 		cameraFocus = cameraSubject->getLocation();
 	}
 
-	//63% matching. This needs to be rechecked as functionality might be incorrect.
+	//63% matching. This needs to be rechecked as functionality is most likely incorrect.
 	void Camera::updateGoal()
 	{
 		switch(cameraType)
@@ -231,7 +231,7 @@ namespace RBX
 		ICameraSubject* cameraSubject = getCameraSubject();
 		ICharacterSubject* characterSubject = dynamic_cast<ICharacterSubject*>(cameraSubject);
 
-		if(characterSubject)
+		if (characterSubject)
 			characterSubject->onHeartBeat(cameraGoal, cameraFocus);
 
 		G3D::CoordinateFrame cameraCoord = gCamera.getCoordinateFrame();
@@ -246,27 +246,12 @@ namespace RBX
 			RBXASSERT(0);
 		}
 
-		if(animationType == ALWAYS || !Math::fuzzyEq(LerpFrame, cameraCoord, 0.01f, 0.01f))
+		if (animationType == ALWAYS || !Math::fuzzyEq(LerpFrame, cameraCoord, 0.01f, 0.01f))
 		{
 			ICameraOwner* owner = getCameraOwner();
 			if (owner)
 				owner->cameraMoved();
 		}
-	}
-
-	bool Camera::setDistanceFromTarget(float newDistance)
-	{
-		G3D::Vector3 lookVector = cameraFocus.translation - cameraGoal.translation;
-		float currentDistance = lookVector.magnitude();
-
-		 if (newDistance < 0.5f && currentDistance == 0.5f || newDistance > 1000.0f && currentDistance == 1000.0f)
-			return false;
-		//TODO: WORK ON THIS
-		ICameraOwner* owner = getCameraOwner();
-		if (owner)
-			owner->cameraMoved();
-
-		 return true;
 	}
 
 	Instance* Camera::getCameraSubjectInstance() const
@@ -358,26 +343,6 @@ namespace RBX
 			ICameraOwner* owner = getCameraOwner();
 			if (owner)
 				owner->cameraMoved();
-		}
-	}
-
-	void Camera::tryZoomExtents(float low, float current, float high, const RBX::Extents& extents, const G3D::Rect2D& viewPort)
-	{
-		RBXASSERT(current >= low);
-		RBXASSERT(current <= high);
-
-		if(high - low < 0.1)
-		{
-			setDistanceFromTarget(current);
-			updateGoal();
-			goalToCamera();
-
-			if (extents.containedByFrustum(gCamera.frustum(viewPort)))
-			{
-				//TODO: FIGURE THIS OUT
-			}
-
-			tryZoomExtents(low, (low + high) * 0.5, high, extents, viewPort);
 		}
 	}
 
