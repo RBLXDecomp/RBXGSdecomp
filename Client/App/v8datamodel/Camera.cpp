@@ -1,5 +1,6 @@
 #include "v8datamodel/Camera.h"
 #include "v8datamodel/Workspace.h"
+#include "v8datamodel/ICharacterSubject.h"
 #include "util/Math.h"
 
 namespace RBX
@@ -34,6 +35,10 @@ namespace RBX
 		{
 			RBXASSERT(0);
 		}
+	}
+
+	Camera::~Camera()
+	{
 	}
 
 	bool Camera::askSetParent(const Instance* instance) const
@@ -138,6 +143,36 @@ namespace RBX
 		}
 
 		return false;
+	}
+
+	void Camera::onHeartbeat()
+	{
+		updateGoal();
+		G3D::CoordinateFrame adjustedGoal = cameraGoal;
+		ICameraSubject* cameraSubject = getCameraSubject();
+		ICharacterSubject* characterSubject = dynamic_cast<ICharacterSubject*>(cameraSubject);
+
+		if(characterSubject)
+			characterSubject->onHeartBeat(cameraGoal, cameraFocus);
+
+		G3D::CoordinateFrame cameraCoord = gCamera.getCoordinateFrame();
+		G3D::CoordinateFrame LerpFrame = cameraCoord.lerp(adjustedGoal, 0.9f);
+
+		if (Math::legalCameraCoord(LerpFrame))
+		{
+			gCamera.setCoordinateFrame(LerpFrame);
+		}
+		else
+		{
+			RBXASSERT(0);
+		}
+
+		if(animationType == ALWAYS || !Math::fuzzyEq(LerpFrame, cameraCoord, 0.01f, 0.01f))
+		{
+			ICameraOwner* owner = getCameraOwner();
+			if (owner)
+				owner->cameraMoved();
+		}
 	}
 
 	Instance* Camera::getCameraSubjectInstance() const
