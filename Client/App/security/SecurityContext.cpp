@@ -4,7 +4,6 @@ namespace RBX
 {
 	namespace Security
 	{
-
 		bool Context::isInRole(Identities identity, Permissions permission)
 		{
 			switch(identity)
