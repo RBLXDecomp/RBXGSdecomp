@@ -66,11 +66,20 @@ namespace RBX
 		public:
 			virtual XmlElement* write();
 			virtual void setName(const std::string&);
-			ModelInstance* getCharacter() const;
+			ModelInstance* getCharacter() const
+			{
+				return character.get();
+			}
 			void setCharacter(ModelInstance*);
-			BrickColor getTeamColor() const;
+			BrickColor getTeamColor() const
+			{
+				return teamColor;
+			}
 			void setTeamColor(BrickColor);
-			bool getNeutral() const;
+			bool getNeutral() const
+			{
+				return neutral;
+			}
 			void setNeutral(bool);
 			std::string getCharacterAppearance() const;
 			void setCharacterAppearance(const std::string&);
