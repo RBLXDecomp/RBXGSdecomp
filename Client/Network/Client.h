@@ -3,7 +3,6 @@
 #include "reflection/signal.h"
 #include "v8xml/XmlElement.h"
 #include "Replicator.h"
-#include <RakNetTypes.h>
 #include <boost/shared_ptr.hpp>
 #include <string>
 

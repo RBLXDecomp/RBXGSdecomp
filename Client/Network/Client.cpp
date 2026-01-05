@@ -1,6 +1,7 @@
 #include "util/standardout.h"
 #include "API.h"
 #include "Client.h"
+#include <RakNetTypes.h>
 
 const char* Exposer::IDTOString(int id)
 {
