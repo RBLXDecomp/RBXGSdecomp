@@ -1,18 +1,33 @@
 #pragma once
-#include "Network/Player.h"
-#include "Network/SuperSafeChanged.h"
+#include "Player.h"
+#include "SuperSafeChanged.h"
+#include "v8tree/Service.h"
+#include "v8datamodel/ModelInstance.h"
+#include "Client.h"
 #include <list>
 #include <queue>
 
 class RakPeerInterface;
-class Packet;
+struct Packet;
+
+template<class Class>
+class PluginInterfaceAdapter : public PluginInterface
+{
+private:
+	Class* c;
+protected:
+	PluginInterfaceAdapter(Class*);
+public:
+	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
+};
 
 namespace RBX
 {
-	class ModelInstance;
-
 	namespace Network
 	{
+		class Player;
+		struct CharacterAdded;
+
 		struct ChatMessage
 		{
 		public:
@@ -101,7 +116,10 @@ namespace RBX
 						public Listener<Player, CharacterAdded>
 		{
 		private:
-			class Plugin;
+			class Plugin : public PluginInterfaceAdapter<Players>
+			{
+				Plugin(Players*);
+			};
 
 		private:
 			boost::scoped_ptr<AbuseReporter> abuseReporter;
@@ -125,12 +143,24 @@ namespace RBX
 		public:
 			bool superSafeOn() const;
 			boost::shared_ptr<Instance> createLocalPlayer(int);
-			Player* getLocalPlayer() const;
+			Player* getLocalPlayer() const
+			{
+				return localPlayer.get();
+			}
 			int getNumPlayers() const;
-			int numPlayers() const;
-			int getMaxPlayers() const;
+			int numPlayers() const
+			{
+				return (int)players->size();
+			}
+			int getMaxPlayers() const
+			{
+				return maxPlayers;
+			}
 			void setMaxPlayers(int);
-			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getPlayers();
+			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getPlayers()
+			{
+				return players.read();
+			}
 			void chat(std::string);
 			void reportAbuse(boost::shared_ptr<Instance>, std::string);
 			void reportAbuse(Player*, std::string);
@@ -139,11 +169,11 @@ namespace RBX
 			bool canReportAbuse() const;
 			void setAbuseReportUrl(std::string);
 			bool OnReceive(RakPeerInterface*, Packet*);
-			void setConnection(RakPeerInterface*);
+			void setConnection(RakPeerInterface* peer);
 			boost::shared_ptr<Instance> playerFromCharacter(boost::shared_ptr<Instance>);
 			boost::shared_ptr<Instance> getPlayerByID(int);
 		protected:
-			virtual bool askAddChild(const Instance*) const;
+			virtual bool askAddChild(const Instance* instance) const;
 			virtual void onChildAdded(Instance*);
 			virtual void onChildRemoving(Instance*);
 		private:
@@ -155,7 +185,7 @@ namespace RBX
 			static Player* getPlayerFromCharacter(Instance*);
 			static ModelInstance* findLocalCharacter(const Instance*);
 			static Player* findLocalPlayer(const Instance*);
-			static bool clientIsPresent(const Instance*, bool);
+			static bool clientIsPresent(const Instance* context, bool testInDatamodel);
 			static bool serverIsPresent(const Instance*, bool);
 			static bool frontendProcessing(const Instance*, bool);
 			static bool backendProcessing(const Instance*, bool);

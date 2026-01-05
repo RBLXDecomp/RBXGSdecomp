@@ -934,6 +934,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="security"
+				>
+				<File
+					RelativePath=".\include\security\SecurityContext.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="v8kernel"
@@ -1293,6 +1301,22 @@
 			<File
 				RelativePath=".\v8xml\XmlSerializer.cpp"
 				>
+			</File>
+		</Filter>
+		<Filter
+			Name="security"
+			>
+			<File
+				RelativePath=".\security\SecurityContext.cpp"
+				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						BufferSecurityCheck="false"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

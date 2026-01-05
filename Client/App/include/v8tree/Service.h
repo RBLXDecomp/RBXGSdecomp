@@ -87,6 +87,9 @@ namespace RBX
 	public:
 		template<typename Class>
 		Class* find() const;
+
+		template<typename Class>
+		static Class* find(const Instance* context);
 	
 		template<typename Class>
 		Class* create() const;

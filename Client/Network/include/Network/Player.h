@@ -1,13 +1,15 @@
 #pragma once
+#include "Players.h"
+#include "security/SecurityContext.h"
+#include "humanoid/Humanoid.h"
 #include "v8tree/Instance.h"
+#include "v8tree/Service.h"
 #include "v8datamodel/BrickColor.h"
+#include "v8datamodel/Backpack.h"
+#include "v8datamodel/Workspace.h"
 
 namespace RBX
 {
-	class ServiceProvider;
-	class ModelInstance;
-	class Backpack;
-
 	namespace Network
 	{
 		struct CharacterAdded
@@ -65,19 +67,37 @@ namespace RBX
 			virtual ~Player();
 		public:
 			virtual XmlElement* write();
-			virtual void setName(const std::string&);
-			ModelInstance* getCharacter() const;
+			virtual void setName(const std::string& value);
+			ModelInstance* getCharacter() const
+			{
+				return character.get();
+			}
 			void setCharacter(ModelInstance*);
-			BrickColor getTeamColor() const;
-			void setTeamColor(BrickColor);
-			bool getNeutral() const;
-			void setNeutral(bool);
-			std::string getCharacterAppearance() const;
-			void setCharacterAppearance(const std::string&);
+			BrickColor getTeamColor() const
+			{
+				return teamColor;
+			}
+			void setTeamColor(BrickColor value);
+			bool getNeutral() const
+			{
+				return neutral;
+			}
+			void setNeutral(bool value);
+			std::string getCharacterAppearance() const
+			{
+				return characterAppearance;
+			}
+			void setCharacterAppearance(const std::string& value);
 			bool getUnder13() const;
 			bool getSuperSafeChat() const;
-			void setUnder13(bool);
-			void setSuperSafeChat(bool);
+			void setUnder13(bool value)
+			{
+				prop_Under13.setValue(this, value);
+			}
+			void setSuperSafeChat(bool value)
+			{
+				prop_SuperSafeChat.setValue(this, value);
+			}
 			int getUserID() const;
 			void rebuildBackpack();
 			Backpack* getPlayerBackpack() const;
