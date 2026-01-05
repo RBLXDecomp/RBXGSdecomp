@@ -1259,6 +1259,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Camera.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\GlobalSettings.cpp"
 				>
 			</File>
