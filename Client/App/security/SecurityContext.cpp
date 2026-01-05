@@ -6,7 +6,7 @@ namespace RBX
 	{
 		bool Context::isInRole(Identities identity, Permissions permission)
 		{
-			switch(identity)
+			switch (identity)
 			{
 			case Anonymous:
 			case GameScript:
