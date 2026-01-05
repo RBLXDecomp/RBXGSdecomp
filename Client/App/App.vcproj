@@ -1309,14 +1309,6 @@
 			<File
 				RelativePath=".\security\SecurityContext.cpp"
 				>
-				<FileConfiguration
-					Name="ReleaseAssert|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						BufferSecurityCheck="false"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>
