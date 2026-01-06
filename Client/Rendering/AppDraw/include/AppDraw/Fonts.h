@@ -4,12 +4,12 @@
 
 namespace RBX
 {
-    class Fonts 
+    class Fonts
     {
-    private: 
+    private:
         static G3D::GFontRef fontRef;
-    
-    public: 
+
+    public:
         static G3D::GFontRef getFont(int);
         static G3D::GFontRef getFont();
     };

@@ -34,7 +34,7 @@ namespace RBX
                 return texture->rect2DBounds();
         }
 
-        return G3D::Rect2D(); 
+        return G3D::Rect2D();
     }
 
     void AdornG3D::setTexture(int id, TextureProxyBaseRef _texture)
@@ -44,7 +44,7 @@ namespace RBX
             Render::TextureProxy* textureProxy = static_cast<Render::TextureProxy*>(_texture.getPointer());
             renderDevice->setTexture(id, textureProxy->resolve(renderDevice));
         }
-        else 
+        else
         {
             renderDevice->setTexture(id, NULL);
         }
@@ -70,7 +70,7 @@ namespace RBX
         G3D::GFontRef font = Fonts::getFont();
         return font->get2DStringBounds(s, size, static_cast<G3D::GFont::Spacing>(spacing));
     }
-    
+
     G3D::Vector2 AdornG3D::drawFont2D(const std::string& s, const G3D::Vector2& pos2d, double size, const G3D::Color4& color, const G3D::Color4& outline, Adorn::XAlign xalign, Adorn::YAlign yalign, Adorn::Spacing spacing) const
     {
         G3D::GFontRef font = Fonts::getFont();
@@ -114,7 +114,7 @@ namespace RBX
     {
         G3D::Draw::lineSegment(lineSegment, renderDevice, color, scale);
     }
-    
+
     void AdornG3D::axes(const G3D::Color4& xColor, const G3D::Color4& yColor, const G3D::Color4& zColor, float scale)
     {
         G3D::Draw::axes(renderDevice, xColor, yColor, zColor, scale);

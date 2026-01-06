@@ -1,7 +1,7 @@
 #pragma once
 #include "G3D/Vector3.h"
 #include "G3D/Plane.h"
- 
+
 namespace RBX
 {
     class IndexBox
@@ -14,7 +14,7 @@ namespace RBX
         static const float INDEXBOX_FACE_TO_NORMAL[6][3];
         static const int INDEXBOX_FACE_EDGE_TO_NORMAL[6][4];
         static const int INDEXBOX_EDGE_TO_VERTEX_AND_NORMALS[12][4];
-    
+
     public:
         IndexBox(const G3D::Vector3& min, const G3D::Vector3& max);
         IndexBox();
@@ -27,8 +27,8 @@ namespace RBX
         G3D::Vector3 getFaceNormal(int f) const
         {
             return G3D::Vector3(
-                INDEXBOX_FACE_TO_NORMAL[f][0], 
-                INDEXBOX_FACE_TO_NORMAL[f][1], 
+                INDEXBOX_FACE_TO_NORMAL[f][0],
+                INDEXBOX_FACE_TO_NORMAL[f][1],
                 INDEXBOX_FACE_TO_NORMAL[f][2]
             );
         }
@@ -42,7 +42,7 @@ namespace RBX
         bool contains(const G3D::Vector3&) const;
 
         RBX::IndexBox& operator=(const RBX::IndexBox&);
-    
+
         static void getTextureCornersCentered(int, const G3D::Vector3&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&);
         static void getTextureCornersGrid(int, const G3D::Vector3&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&);
     };

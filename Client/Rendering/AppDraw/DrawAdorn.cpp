@@ -15,7 +15,7 @@ namespace RBX
         adorn->setObjectToWorldMatrix(rotatedWorldC);
         adorn->cylinderAlongX(radius, length, color, G3D::Color4::clear());
     }
-    
+
     // TOOD: 97.56%
     // minor control flow differences
     void DrawAdorn::surfaceBorder(Adorn* adorn, const G3D::Vector3& halfRealSize, float highlight, int surfaceId, const G3D::Color4& color)
@@ -39,7 +39,7 @@ namespace RBX
         {
             int c2 = i ? cY : cZ;
             int c3 = i ? cZ : cY;
-            
+
             for (int polarity = -1; polarity <= 1; polarity += 2)
             {
                 p0[c2] = polarity * halfRealSize[c2] - highlight;
@@ -47,7 +47,7 @@ namespace RBX
 
                 p0[c3] = -halfRealSize[c3] - highlight;
                 p1[c3] = halfRealSize[c3] + highlight;
-                
+
                 adorn->box(G3D::AABox(p0, p1), color, G3D::Color4::clear());
             }
         }

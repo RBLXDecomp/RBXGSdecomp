@@ -26,7 +26,7 @@ namespace RBX
             rayInPartCoords.origin,
             rayInPartCoords.direction,
             G3D::Sphere(G3D::Vector3::ZERO3, radius),
-            hitPointInPartCoords 
+            hitPointInPartCoords
         ) != G3D::inf();
     }
 
@@ -41,7 +41,7 @@ namespace RBX
             rayInPartCoords.origin,
             rayInPartCoords.direction,
             G3D::Capsule(G3D::Vector3::ZERO3, p0, radius),
-            hitPointInPartCoords 
+            hitPointInPartCoords
         ) != G3D::inf();
     }
 

@@ -5,9 +5,9 @@
 
 namespace RBX
 {
-    class Textures 
+    class Textures
     {
-    public: 
+    public:
         static TextureProxyBaseRef getTextureProxy(Adorn* adorn, const ContentId& id);
     };
 }

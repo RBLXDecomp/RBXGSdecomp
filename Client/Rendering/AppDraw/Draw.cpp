@@ -41,7 +41,7 @@ namespace RBX
             spokes(bleh.z * 0.5, bleh.x, adorn);
         }
     }
-	
+
     const G3D::Color3& Draw::selectColor()
     {
         static G3D::Color3 c(0.1f, 0.6f, 1.0f);
@@ -78,7 +78,7 @@ namespace RBX
         // (000988)  S_BPREL32: [FFFFFF7C], Type:     T_REAL32(0040), posNeg
         // (00099C)  S_BPREL32: [FFFFFFCC], Type:             0x18E5, newObject;
 
-        int surfaceType = part.surfaceType[face]; 
+        int surfaceType = part.surfaceType[face];
 
         G3D::Vector3 halfSize = part.gridSize * 0.5;
 
@@ -93,7 +93,7 @@ namespace RBX
         G3D::CoordinateFrame newObject = translation*part.coordinateFrame;
 
         adorn->setObjectToWorldMatrix(newObject);
-        adorn->cylinderAlongX(0.2f, 1.0f, G3D::Color3::yellow(), G3D::Color4::clear());        
+        adorn->cylinderAlongX(0.2f, 1.0f, G3D::Color3::yellow(), G3D::Color4::clear());
 
         if (surfaceType == ROTATE_V || surfaceType == ROTATE_P)
         {

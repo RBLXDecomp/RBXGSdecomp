@@ -66,7 +66,7 @@ namespace RBX
         do
         {
             indexBox.getFaceCorners(f, v0, v1, v2, v3);
-            
+
             rd->setNormal(indexBox.getFaceNormal(f));
             rd->sendVertex(v0);
             rd->sendVertex(v1);
@@ -74,7 +74,7 @@ namespace RBX
             rd->sendVertex(v3);
 
             f++;
-        } 
+        }
         while (f < 6);
 
         rd->endPrimitive();
