@@ -21,7 +21,7 @@ namespace RBX
 		G3D::ReferenceCountedPointer<TextureProxyBase> currentCursor;
 	  
 	protected:
-		virtual G3D::Vector2 getCursorPosition();
+		virtual G3D::Vector2 getCursorPosition() = 0;
 		virtual G3D::ReferenceCountedPointer<TextureProxyBase> getGameCursor(Adorn*);
 	public:
 		//UserInputBase(const UserInputBase&);
@@ -31,14 +31,14 @@ namespace RBX
 	public:
 		~UserInputBase();
 	public:
-		virtual void setWrapMode(WrapMode);
-		virtual WrapMode getWrapMode() const;
-		virtual void centerCursor();
-		virtual bool keyDown(SDLKey) const;
+		virtual void setWrapMode(WrapMode) = 0;
+		virtual WrapMode getWrapMode() const = 0;
+		virtual void centerCursor() = 0;
+		virtual bool keyDown(SDLKey) const = 0;
 		bool altKeyDown() const;
 		bool shiftKeyDown() const;
 		bool ctrlKeyDown() const;
-		virtual void setKeyState(SDLKey, bool);
+		virtual void setKeyState(SDLKey, bool) = 0;
 		virtual void setCursorId(Adorn*, const TextureId&);
 		void renderGameCursor(Adorn*);
 	public:

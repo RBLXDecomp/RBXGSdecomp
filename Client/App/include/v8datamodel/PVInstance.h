@@ -96,10 +96,10 @@ namespace RBX
 		{
 			return getTopPVController()->hasIntelligence() && IsControllable.getValue();
 		}
-		virtual Extents getExtentsWorld() const;
-		virtual Extents getExtentsLocal() const;
-		virtual const Primitive* getBiggestPrimitive() const;
-		virtual bool hitTest(const G3D::Ray&, G3D::Vector3&);
+		virtual Extents getExtentsWorld() const = 0;
+		virtual Extents getExtentsLocal() const = 0;
+		virtual const Primitive* getBiggestPrimitive() const = 0;
+		virtual bool hitTest(const G3D::Ray&, G3D::Vector3&) = 0;
 		void writeCoordinateFrameData(XmlState*);
 		void writeVelocityData(XmlState*);
 		const PVInstance* getTopLevelPVParent() const;
@@ -120,7 +120,7 @@ namespace RBX
 		void setPVGridOffsetLegacy(const G3D::CoordinateFrame& _offset);
 		G3D::CoordinateFrame* getLegacyOffset();
 		void clearLegacyOffset();
-		virtual void legacyTraverseState(const G3D::CoordinateFrame& parentState);
+		virtual void legacyTraverseState(const G3D::CoordinateFrame& parentState) = 0;
 	public:
 		//PVInstance& operator=(const PVInstance&);
 	};

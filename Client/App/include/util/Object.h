@@ -86,7 +86,7 @@ namespace RBX
 	protected:
 		AbstractFactoryProduct();
 	public:
-		virtual const Name& getClassName() const;
+		virtual const Name& getClassName() const = 0;
 	public:
 		virtual ~AbstractFactoryProduct() {} //todo:check
 	public:

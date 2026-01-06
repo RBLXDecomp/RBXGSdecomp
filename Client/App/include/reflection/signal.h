@@ -18,7 +18,7 @@ namespace RBX
 		public:
 			virtual ~GenericSlotWrapper();
 		public:
-			virtual void execute(const std::vector<boost::any>&);
+			virtual void execute(const std::vector<boost::any>&) = 0;
 		public:
 			//GenericSlotWrapper(const GenericSlotWrapper&);
 			GenericSlotWrapper();
@@ -89,8 +89,8 @@ namespace RBX
 		protected:
 			SignalInstance* findSignalInstance(const SignalSource* source) const;
 		private:
-			virtual boost::signals::connection connectGeneric(SignalInstance*, GenericSlotWrapper*, boost::signals::connect_position) const;
-			virtual SignalInstance* newSignalInstance(SignalSource&) const;
+			virtual boost::signals::connection connectGeneric(SignalInstance*, GenericSlotWrapper*, boost::signals::connect_position) const = 0;
+			virtual SignalInstance* newSignalInstance(SignalSource&) const = 0;
 		public:
 			boost::shared_ptr<SignalInstance> getSignalInstance(SignalSource& source) const;
 			const SignatureDescriptor& getSignature() const;

@@ -14,7 +14,7 @@ namespace RBX
 		friend class ::ArchiveBinder;
 
 	private:
-		virtual void assignIDREF(Reflection::DescribedBase*, const InstanceHandle&) const;
+		virtual void assignIDREF(Reflection::DescribedBase*, const InstanceHandle&) const = 0;
 	public:
 		//IIDREF(const IIDREF&);
 		IIDREF()
@@ -344,7 +344,7 @@ namespace RBX
 			virtual bool isReadOnly() const;
 			Enum getValue(const DescribedBase*) const;
 			void setValue(DescribedBase*, Enum) const;
-			virtual bool equalValues(const DescribedBase*, DescribedBase*) const;
+			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const;
 			virtual int getEnumValue(const DescribedBase*) const;
 			virtual bool setEnumValue(DescribedBase*, int) const;
 			virtual unsigned getIndexValue(const DescribedBase*) const;

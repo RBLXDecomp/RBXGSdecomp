@@ -18,10 +18,10 @@ namespace RBX
 		ICameraOwner();
 		virtual ~ICameraOwner();
 	public:
-		virtual Camera* getCamera() const;
-		virtual const G3D::GCamera& getGCamera() const;
-		virtual void cameraMoved();
-		virtual Extents computeCameraOwnerExtents();
+		virtual Camera* getCamera() const = 0;
+		virtual const G3D::GCamera& getGCamera() const = 0;
+		virtual void cameraMoved() = 0;
+		virtual Extents computeCameraOwnerExtents() = 0;
 	public:
 		void setCameraIgnoreParts(const std::vector<PartInstance*>&);
 		void setCameraIgnoreParts(PartInstance*);

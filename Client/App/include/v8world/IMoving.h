@@ -15,7 +15,7 @@ namespace RBX
 	private:
 		void makeMoving();
 	protected:
-		virtual void onCanAggregateChanged(bool canAggregate);
+		virtual void onCanAggregateChanged(bool canAggregate) = 0;
 		void setMovingManager(IMovingManager* _iMovingManager);
 		bool checkSleep();
 	public:
@@ -24,7 +24,7 @@ namespace RBX
 		~IMoving();
 	public:
 		void notifyMoved();
-		virtual bool reportTouches() const;
+		virtual bool reportTouches() const = 0;
 		bool getCanAggregate() const
 		{
 			return stepsToSleep == 0;
