@@ -2,7 +2,7 @@
 #include <ostream>
 
 namespace RBX {
-	class Debugable {
+	class __declspec(novtable) Debugable {
 		public:
 			virtual void dump(std::ostream& stream);
 			static void doCrash();

@@ -66,7 +66,7 @@ namespace RBX
 			void disconnect_all_slots();
 		public:
 			//SignalSource(const SignalSource&);
-			SignalSource();
+			SignalSource() {}
 		public:
 			//SignalSource& operator=(const SignalSource&);
 		};

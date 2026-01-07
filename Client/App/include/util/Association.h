@@ -38,7 +38,7 @@ namespace RBX
 	public:
 		~Association();
 		//Association(const Association&);
-		Association();
+		Association() {}
 	public:
 		//Association& operator=(const Association&);
   

@@ -35,7 +35,7 @@ namespace RBX
 
 		public:
 			//Described(const Described&);
-			__forceinline Described()
+			__declspec(noinline) Described()
 				: DerivedClass()
 			{
 				this->descriptor = &classDescriptor();

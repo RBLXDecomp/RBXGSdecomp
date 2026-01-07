@@ -14,7 +14,7 @@ namespace RBX
 	public:
 		//CopyOnWrite(const CopyOnWrite&);
 		CopyOnWrite(const T&);
-		CopyOnWrite();
+		CopyOnWrite() {}
 	public:
 		// TODO: is this definition right?
 		operator boost::shared_ptr<const T>() const

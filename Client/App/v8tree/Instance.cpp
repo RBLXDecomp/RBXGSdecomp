@@ -42,7 +42,7 @@ namespace RBX
 		: assoc(),
 		  parent(NULL),
 		  children(),
-		  name(sInstance),
+		  name("Instance"),
 		  archivable(true),
 		  guid()
 	{

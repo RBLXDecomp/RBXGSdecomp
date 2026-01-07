@@ -69,7 +69,7 @@ namespace RBX
 		  
 		public:
 			//DescribedBase(const DescribedBase&);
-			DescribedBase();
+			DescribedBase() {}
 		public:
 			const ClassDescriptor& getDescriptor() const
 			{
