@@ -6,39 +6,39 @@
 
 namespace RBX 
 {
-	static Reflection::RefPropDescriptor<VelocityMotor, Hole> prop_Hole         ("Hole",         "Data", &VelocityMotor::getHole,         &VelocityMotor::setHole,         Reflection::PropertyDescriptor::LEGACY);
-	static Reflection::PropDescriptor<VelocityMotor, float>   prop_MaxVelocity  ("MaxVelocity",  "Data", &VelocityMotor::getMaxVelocity,  &VelocityMotor::setMaxVelocity,  Reflection::PropertyDescriptor::LEGACY);
-	static Reflection::PropDescriptor<VelocityMotor, float>   prop_DesiredAngle ("DesiredAngle", "Data", &VelocityMotor::getDesiredAngle, &VelocityMotor::setDesiredAngle, Reflection::PropertyDescriptor::LEGACY);
-	static Reflection::PropDescriptor<VelocityMotor, float>   prop_CurrentAngle ("CurrentAngle", "Data", &VelocityMotor::getCurrentAngle, &VelocityMotor::setCurrentAngle, Reflection::PropertyDescriptor::LEGACY);
+	static Reflection::RefPropDescriptor<VelocityMotor, Hole> prop_Hole ("Hole", "Data", &VelocityMotor::getHole, &VelocityMotor::setHole, Reflection::PropertyDescriptor::LEGACY);
+	static Reflection::PropDescriptor<VelocityMotor, float> prop_MaxVelocity ("MaxVelocity", "Data", &VelocityMotor::getMaxVelocity, &VelocityMotor::setMaxVelocity, Reflection::PropertyDescriptor::LEGACY);
+	static Reflection::PropDescriptor<VelocityMotor, float> prop_DesiredAngle ("DesiredAngle", "Data", &VelocityMotor::getDesiredAngle, &VelocityMotor::setDesiredAngle, Reflection::PropertyDescriptor::LEGACY);
+	static Reflection::PropDescriptor<VelocityMotor, float> prop_CurrentAngle ("CurrentAngle", "Data", &VelocityMotor::getCurrentAngle, &VelocityMotor::setCurrentAngle, Reflection::PropertyDescriptor::LEGACY);
 
 	Reflection::EnumDesc<Feature::TopBottom>::EnumDesc()
 		: EnumDescriptor("TopBottom", typeid(Feature::TopBottom))
 	{
-		addPair(Feature::TOP,       "Top");
+		addPair(Feature::TOP, "Top");
 		addPair(Feature::CENTER_TB, "Center");
-		addPair(Feature::BOTTOM,    "Bottom");
+		addPair(Feature::BOTTOM, "Bottom");
 	}
 
 	Reflection::EnumDesc<Feature::LeftRight>::EnumDesc()
 		: EnumDescriptor("LeftRight", typeid(Feature::LeftRight))
 	{
-		addPair(Feature::LEFT,      "Left");
+		addPair(Feature::LEFT, "Left");
 		addPair(Feature::CENTER_LR, "Center");
-		addPair(Feature::RIGHT,     "Right");
+		addPair(Feature::RIGHT, "Right");
 	}
 
 	Reflection::EnumDesc<Feature::InOut>::EnumDesc()
 		: EnumDescriptor("InOut", typeid(Feature::InOut))
 	{
-		addPair(Feature::EDGE,      "Edge");
-		addPair(Feature::INSET,     "Inset");
+		addPair(Feature::EDGE, "Edge");
+		addPair(Feature::INSET, "Inset");
 		addPair(Feature::CENTER_IO, "Center");
 	}
 
-	static Reflection::EnumPropDescriptor<Feature, NormalId>           prop_FaceId    ("FaceId",    "Data", &Feature::getFaceId,    &Feature::setFaceId,    Reflection::PropertyDescriptor::LEGACY);
+	static Reflection::EnumPropDescriptor<Feature, NormalId> prop_FaceId ("FaceId", "Data", &Feature::getFaceId, &Feature::setFaceId, Reflection::PropertyDescriptor::LEGACY);
 	static Reflection::EnumPropDescriptor<Feature, Feature::TopBottom> prop_TopBottom ("TopBottom", "Data", &Feature::getTopBottom, &Feature::setTopBottom, Reflection::PropertyDescriptor::LEGACY);
 	static Reflection::EnumPropDescriptor<Feature, Feature::LeftRight> prop_LeftRight ("LeftRight", "Data", &Feature::getLeftRight, &Feature::setLeftRight, Reflection::PropertyDescriptor::LEGACY);
-	static Reflection::EnumPropDescriptor<Feature, Feature::InOut>     prop_InOut     ("InOut",     "Data", &Feature::getInOut,     &Feature::setInOut,     Reflection::PropertyDescriptor::LEGACY);
+	static Reflection::EnumPropDescriptor<Feature, Feature::InOut> prop_InOut ("InOut", "Data", &Feature::getInOut, &Feature::setInOut, Reflection::PropertyDescriptor::LEGACY);
 
     const char* sFeature = "Feature";
 
@@ -83,7 +83,7 @@ namespace RBX
 			DrawAdorn::cylinder(adorn, worldCoord, 2, 0.3, 0.6, Draw::selectColor());
 	}
 
-	// TODO: 98.37% match
+	// TODO: 98.55% match
 	G3D::CoordinateFrame Feature::computeLocalCoordinateFrame() const
 	{
 		PartInstance* part = fastDynamicCast<PartInstance>(getParent());
@@ -223,7 +223,7 @@ namespace RBX
 
 	// TODO: figure out where this can go, maybe it's not an inline? it's the
 	// only way i can make this work sensibly though
-	inline Primitive* _featureInline(Instance* instance)
+	static inline Primitive* _getParentPrimitive(Instance* instance)
 	{
 		if (instance)
 		{
@@ -238,7 +238,7 @@ namespace RBX
 
 	void VelocityMotor::setPart(int i, Feature* feature)
 	{
-		Primitive* prim = _featureInline(feature);
+		Primitive* prim = _getParentPrimitive(feature);
 
 		G3D::CoordinateFrame c = feature ? feature->computeLocalCoordinateFrame() : G3D::CoordinateFrame();
 
@@ -290,6 +290,7 @@ namespace RBX
 		{
 			hole = RBX::shared_from(value);
 			raisePropertyChanged(prop_Hole);
+
 			setPart(1, getHole());
 
 			if (getHole())
