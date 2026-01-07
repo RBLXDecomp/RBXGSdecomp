@@ -49,15 +49,15 @@ namespace RBX
         glPopMatrix();
     }
 
-    // TODO: 80.56%
-    // this logically matches but is really difficult to get 100% matching
-    // in rbxgs it allocates for and pushes f onto the stack but i can't get it to do that
+    // TODO: 85.62% match
+    // this is a tough one because there's an extra stack variable that's semi-optimised out
+    // otherwise this is a logical match
     // TODO: check what cmp value gets changed to after linking
     void DrawPrimitives::rawBox(const G3D::AABox& box, G3D::RenderDevice* rd)
     {
-        IndexBox indexBox(box.low(), box.high());
-
         int f = 0;
+
+        IndexBox indexBox(box.low(), box.high());
 
         G3D::Vector3 v0, v1, v2, v3;
 

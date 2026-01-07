@@ -16,8 +16,6 @@ namespace RBX
         adorn->cylinderAlongX(radius, length, color, G3D::Color4::clear());
     }
 
-    // TOOD: 97.56%
-    // minor control flow differences
     void DrawAdorn::surfaceBorder(Adorn* adorn, const G3D::Vector3& halfRealSize, float highlight, int surfaceId, const G3D::Color4& color)
     {
         // this is likely an inline from NormalId.h because of how cY and cZ are calculated

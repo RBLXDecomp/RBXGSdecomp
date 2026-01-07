@@ -50,8 +50,8 @@ namespace RBX
         { 7, 6, 3, 4 }
     };
 
-    // according to the pdb this starts on line 107, so all inlined
-    // functions were likely defined here prior
+    // according to the pdb this starts on line 107, so there's supposed
+    // to be a lot more that comes before this
     IndexBox::IndexBox(const G3D::Vector3& min, const G3D::Vector3& max)
     {
         RBXASSERT(Math::lessThan(min, max));

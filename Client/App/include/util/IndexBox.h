@@ -41,7 +41,7 @@ namespace RBX
         bool culledBy(const G3D::Plane*, int) const;
         bool contains(const G3D::Vector3&) const;
 
-        RBX::IndexBox& operator=(const RBX::IndexBox&);
+        // RBX::IndexBox& operator=(const RBX::IndexBox&);
 
         static void getTextureCornersCentered(int, const G3D::Vector3&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&);
         static void getTextureCornersGrid(int, const G3D::Vector3&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&, G3D::Vector2&);
