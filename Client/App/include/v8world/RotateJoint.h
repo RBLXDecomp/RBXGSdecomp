@@ -63,8 +63,14 @@ namespace RBX
 		virtual void stepUi(int uiStepId);
 	public:
 		//RotateVJoint(const RotateVJoint&);
-		RotateVJoint(Primitive* axlePrim, Primitive* holePrim, const G3D::CoordinateFrame& c0, const G3D::CoordinateFrame& c1);
-		RotateVJoint();
+		RotateVJoint(Primitive* axlePrim, Primitive* holePrim, const G3D::CoordinateFrame& c0, const G3D::CoordinateFrame& c1)
+			: RotateJoint(axlePrim, holePrim, c0, c1)
+		{
+		}
+		RotateVJoint()
+			: RotateJoint()
+		{
+		}
 		virtual ~RotateVJoint() {}
 	public:
 		//RotateVJoint& operator=(const RotateVJoint&);
@@ -84,8 +90,14 @@ namespace RBX
 		virtual void stepUi(int uiStepId);
 	public:
 		//RotatePJoint(const RotatePJoint&);
-		RotatePJoint(Primitive* axlePrim, Primitive* holePrim, const G3D::CoordinateFrame& c0, const G3D::CoordinateFrame& c1);
-		RotatePJoint();
+		RotatePJoint(Primitive* axlePrim, Primitive* holePrim, const G3D::CoordinateFrame& c0, const G3D::CoordinateFrame& c1)
+			: RotateJoint(axlePrim, holePrim, c0, c1)
+		{
+		}
+		RotatePJoint()
+			: RotateJoint()
+		{
+		}
 		virtual ~RotatePJoint() {}
 	public:
 		//RotatePJoint& operator=(const RotatePJoint&);

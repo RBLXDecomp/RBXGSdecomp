@@ -35,6 +35,7 @@ namespace RBX
 
 		public:
 			//Described(const Described&);
+			// TODO: init descriptor in initialiser list
 			__forceinline Described()
 				: DerivedClass()
 			{
@@ -89,6 +90,12 @@ namespace RBX
 	protected:
 		DescribedNonCreatable()
 			: Described()
+		{
+		}
+
+		template<typename Arg0Type>
+		DescribedNonCreatable(Arg0Type arg0)
+			: Described(arg0)
 		{
 		}
 	public:
