@@ -29,7 +29,7 @@ namespace RBX
 				Workspace* workspace = ServiceProvider::find<Workspace>(this);
 				RBXASSERT(workspace != NULL);
 
-				if (!character.get())
+				if (!character)
 				{
 					workspace->getCamera()->setCameraType(Camera::FIXED_CAMERA);
 					workspace->getCamera()->setDistanceFromTarget(0.0f);

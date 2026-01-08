@@ -99,7 +99,10 @@ namespace RBX
 			{
 				prop_SuperSafeChat.setValue(this, value);
 			}
-			int getUserID() const;
+			int getUserID() const
+			{
+				return userId;
+			}
 			void rebuildBackpack();
 			Backpack* getPlayerBackpack() const;
 			void loadCharacter();

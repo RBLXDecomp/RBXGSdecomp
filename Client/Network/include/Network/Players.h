@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+#include "Streaming.h"
 #include "SuperSafeChanged.h"
 #include "v8tree/Service.h"
 #include "v8datamodel/ModelInstance.h"
@@ -161,7 +162,7 @@ namespace RBX
 			{
 				return players.read();
 			}
-			void chat(std::string);
+			void chat(std::string message);
 			void reportAbuse(boost::shared_ptr<Instance> player, std::string comment);
 			void reportAbuse(Player*, std::string);
 			std::list<ChatMessage>::const_iterator chatHistory_begin();
@@ -183,11 +184,11 @@ namespace RBX
 		  
 		public:
 			static Player* getPlayerFromCharacter(Instance* character);
-			static ModelInstance* findLocalCharacter(const Instance*);
+			static ModelInstance* findLocalCharacter(const Instance* context);
 			static Player* findLocalPlayer(const Instance* context);
 			static bool clientIsPresent(const Instance* context, bool testInDatamodel);
 			static bool serverIsPresent(const Instance*, bool);
-			static bool frontendProcessing(const Instance*, bool);
+			static bool frontendProcessing(const Instance* context, bool testInDatamodel);
 			static bool backendProcessing(const Instance*, bool);
 		};
 	}

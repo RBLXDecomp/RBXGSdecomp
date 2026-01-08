@@ -63,5 +63,34 @@ namespace RBX
 				return NULL;
 			}
 		}
+
+		void Players::chat(std::string message)
+		{
+			if (!localPlayer)
+				throw std::runtime_error("No local Player to chat from");
+
+			RakNet::BitStream bitStream;
+			bitStream << 'P';
+
+			Guid::Data data;
+			localPlayer->getGuid().extract(data);
+
+			bitStream << data.scope->name;
+			bitStream << data.index;
+			bitStream << message;
+
+			peer->Send(&bitStream, MEDIUM_PRIORITY, RELIABLE, 2, UNASSIGNED_SYSTEM_ADDRESS, true);
+
+			ChatMessage event = {message, localPlayer, boost::shared_ptr<Player>()};
+			Notifier<Players, ChatMessage>::raise(event);
+		}
+
+		bool Players::backendProcessing(const Instance* context, bool testInDatamodel)
+		{
+			const ServiceProvider* sp = ServiceProvider::findServiceProvider(context);
+			RBXASSERT(!testInDatamodel || sp);
+
+			return sp && !Client::clientIsPresent(context, testInDatamodel);
+		}
 	}
 }
