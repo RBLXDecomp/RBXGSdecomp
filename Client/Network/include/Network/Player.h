@@ -1,4 +1,5 @@
 #pragma once
+#include <winsock2.h>
 #include "Players.h"
 #include "security/SecurityContext.h"
 #include "humanoid/Humanoid.h"
@@ -48,7 +49,7 @@ namespace RBX
 			bool under13;
 			bool superSafeChat;
 			int userId;
-			double lastActivityTime;
+			G3D::RealTime lastActivityTime;
 
 		public:
 			static Reflection::BoundProp<int, 1> prop_userId;
@@ -58,7 +59,7 @@ namespace RBX
 
 		private:
 			virtual bool askAddChild(const Instance*) const;
-			virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 			void onCharacterChangedFrontend();
 			void registerLocalPlayerNotIdle();
 		public:

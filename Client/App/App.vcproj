@@ -866,6 +866,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\TimerService.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Tool.h"
 					>
 				</File>

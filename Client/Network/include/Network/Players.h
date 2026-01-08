@@ -184,7 +184,7 @@ namespace RBX
 		public:
 			static Player* getPlayerFromCharacter(Instance*);
 			static ModelInstance* findLocalCharacter(const Instance*);
-			static Player* findLocalPlayer(const Instance*);
+			static Player* findLocalPlayer(const Instance* context);
 			static bool clientIsPresent(const Instance* context, bool testInDatamodel);
 			static bool serverIsPresent(const Instance*, bool);
 			static bool frontendProcessing(const Instance*, bool);
