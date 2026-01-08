@@ -36,5 +36,32 @@ namespace RBX
 			Player* player = Players::findLocalPlayer(context);
 			return player ? player->getCharacter() : NULL;
 		}
+
+		void Players::setAbuseReportUrl(std::string value)
+		{
+			if (value.empty())
+				abuseReporter.reset(NULL);
+			else
+				abuseReporter.reset(new AbuseReporter(value));
+		}
+
+		void Players::reportAbuse(boost::shared_ptr<Instance> player, std::string comment)
+		{
+			reportAbuse(fastDynamicCast<Player>(player.get()), comment);
+		}
+
+		Player* Players::getPlayerFromCharacter(Instance* character)
+		{
+			Players* players = ServiceProvider::find<Players>(character);
+			if (players)
+			{
+				boost::shared_ptr<Instance> found = players->playerFromCharacter(shared_from(character));
+				return static_cast<Player*>(found.get());
+			}
+			else
+			{
+				return NULL;
+			}
+		}
 	}
 }

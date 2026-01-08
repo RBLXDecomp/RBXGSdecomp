@@ -162,12 +162,12 @@ namespace RBX
 				return players.read();
 			}
 			void chat(std::string);
-			void reportAbuse(boost::shared_ptr<Instance>, std::string);
+			void reportAbuse(boost::shared_ptr<Instance> player, std::string comment);
 			void reportAbuse(Player*, std::string);
 			std::list<ChatMessage>::const_iterator chatHistory_begin();
 			std::list<ChatMessage>::const_iterator chatHistory_end();
 			bool canReportAbuse() const;
-			void setAbuseReportUrl(std::string);
+			void setAbuseReportUrl(std::string value);
 			bool OnReceive(RakPeerInterface*, Packet*);
 			void setConnection(RakPeerInterface* peer);
 			boost::shared_ptr<Instance> playerFromCharacter(boost::shared_ptr<Instance>);
@@ -182,7 +182,7 @@ namespace RBX
 			//Players& operator=(const Players&);
 		  
 		public:
-			static Player* getPlayerFromCharacter(Instance*);
+			static Player* getPlayerFromCharacter(Instance* character);
 			static ModelInstance* findLocalCharacter(const Instance*);
 			static Player* findLocalPlayer(const Instance* context);
 			static bool clientIsPresent(const Instance* context, bool testInDatamodel);
