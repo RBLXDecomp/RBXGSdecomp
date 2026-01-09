@@ -1,18 +1,34 @@
 #pragma once
-#include "Network/Player.h"
-#include "Network/SuperSafeChanged.h"
+#include "Player.h"
+#include "Streaming.h"
+#include "SuperSafeChanged.h"
+#include "v8tree/Service.h"
+#include "v8datamodel/ModelInstance.h"
+#include "Client.h"
 #include <list>
 #include <queue>
 
 class RakPeerInterface;
-class Packet;
+struct Packet;
+
+template<class Class>
+class PluginInterfaceAdapter : public PluginInterface
+{
+private:
+	Class* c;
+protected:
+	PluginInterfaceAdapter(Class*);
+public:
+	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
+};
 
 namespace RBX
 {
-	class ModelInstance;
-
 	namespace Network
 	{
+		class Player;
+		struct CharacterAdded;
+
 		struct ChatMessage
 		{
 		public:
@@ -30,16 +46,8 @@ namespace RBX
 		public:
 			struct Message
 			{
-			public:
 				int userID;
 				std::string text;
-			  
-			public:
-				//Message(const Message&);
-				Message();
-				~Message();
-			public:
-				//Message& operator=(const Message&);
 			};
 
 		public:
@@ -49,7 +57,7 @@ namespace RBX
 			std::list<Message> messages;
 
 		public:
-			void addMessage(const ChatMessage&);
+			void addMessage(const ChatMessage& cm);
 		public:
 			//AbuseReport(const AbuseReport&);
 			AbuseReport();
@@ -81,9 +89,9 @@ namespace RBX
 		  
 		public:
 			//AbuseReporter(const AbuseReporter&);
-			AbuseReporter(std::string);
+			AbuseReporter(std::string abuseUrl);
 		public:
-			void add(AbuseReport&, const std::list<ChatMessage>&);
+			void add(AbuseReport& r, const std::list<ChatMessage>& chatHistory);
 		public:
 			~AbuseReporter();
 		public:
@@ -101,7 +109,10 @@ namespace RBX
 						public Listener<Player, CharacterAdded>
 		{
 		private:
-			class Plugin;
+			class Plugin : public PluginInterfaceAdapter<Players>
+			{
+				Plugin(Players*);
+			};
 
 		private:
 			boost::scoped_ptr<AbuseReporter> abuseReporter;
@@ -125,25 +136,37 @@ namespace RBX
 		public:
 			bool superSafeOn() const;
 			boost::shared_ptr<Instance> createLocalPlayer(int);
-			Player* getLocalPlayer() const;
+			Player* getLocalPlayer() const
+			{
+				return localPlayer.get();
+			}
 			int getNumPlayers() const;
-			int numPlayers() const;
-			int getMaxPlayers() const;
+			int numPlayers() const
+			{
+				return (int)players->size();
+			}
+			int getMaxPlayers() const
+			{
+				return maxPlayers;
+			}
 			void setMaxPlayers(int);
-			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getPlayers();
-			void chat(std::string);
-			void reportAbuse(boost::shared_ptr<Instance>, std::string);
+			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getPlayers()
+			{
+				return players.read();
+			}
+			void chat(std::string message);
+			void reportAbuse(boost::shared_ptr<Instance> player, std::string comment);
 			void reportAbuse(Player*, std::string);
 			std::list<ChatMessage>::const_iterator chatHistory_begin();
 			std::list<ChatMessage>::const_iterator chatHistory_end();
 			bool canReportAbuse() const;
-			void setAbuseReportUrl(std::string);
+			void setAbuseReportUrl(std::string value);
 			bool OnReceive(RakPeerInterface*, Packet*);
-			void setConnection(RakPeerInterface*);
+			void setConnection(RakPeerInterface* peer);
 			boost::shared_ptr<Instance> playerFromCharacter(boost::shared_ptr<Instance>);
 			boost::shared_ptr<Instance> getPlayerByID(int);
 		protected:
-			virtual bool askAddChild(const Instance*) const;
+			virtual bool askAddChild(const Instance* instance) const;
 			virtual void onChildAdded(Instance*);
 			virtual void onChildRemoving(Instance*);
 		private:
@@ -152,12 +175,12 @@ namespace RBX
 			//Players& operator=(const Players&);
 		  
 		public:
-			static Player* getPlayerFromCharacter(Instance*);
-			static ModelInstance* findLocalCharacter(const Instance*);
-			static Player* findLocalPlayer(const Instance*);
-			static bool clientIsPresent(const Instance*, bool);
+			static Player* getPlayerFromCharacter(Instance* character);
+			static ModelInstance* findLocalCharacter(const Instance* context);
+			static Player* findLocalPlayer(const Instance* context);
+			static bool clientIsPresent(const Instance* context, bool testInDatamodel);
 			static bool serverIsPresent(const Instance*, bool);
-			static bool frontendProcessing(const Instance*, bool);
+			static bool frontendProcessing(const Instance* context, bool testInDatamodel);
 			static bool backendProcessing(const Instance*, bool);
 		};
 	}
