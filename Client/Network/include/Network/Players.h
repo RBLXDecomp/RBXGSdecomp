@@ -46,16 +46,8 @@ namespace RBX
 		public:
 			struct Message
 			{
-			public:
 				int userID;
 				std::string text;
-			  
-			public:
-				//Message(const Message&);
-				Message();
-				~Message();
-			public:
-				//Message& operator=(const Message&);
 			};
 
 		public:
@@ -65,7 +57,7 @@ namespace RBX
 			std::list<Message> messages;
 
 		public:
-			void addMessage(const ChatMessage&);
+			void addMessage(const ChatMessage& cm);
 		public:
 			//AbuseReport(const AbuseReport&);
 			AbuseReport();
@@ -97,9 +89,9 @@ namespace RBX
 		  
 		public:
 			//AbuseReporter(const AbuseReporter&);
-			AbuseReporter(std::string);
+			AbuseReporter(std::string abuseUrl);
 		public:
-			void add(AbuseReport&, const std::list<ChatMessage>&);
+			void add(AbuseReport& r, const std::list<ChatMessage>& chatHistory);
 		public:
 			~AbuseReporter();
 		public:
