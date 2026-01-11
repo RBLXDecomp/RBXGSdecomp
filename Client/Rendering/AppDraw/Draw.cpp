@@ -62,14 +62,14 @@ namespace RBX
             // wtf? logically this does the same thing but what
             // even with this rbxgs does 'add eax, -0x6' but i can only get it to do 'sub eax, 0x6'
             // if (part.surfaceType[i] <= NUM_SURF_TYPES-1)
-            if (((unsigned int)part.surfaceType[i] - (const int)6) <= (unsigned int)2)
+            if ((unsigned int)(part.surfaceType[i] - 6) <= 2)
             {
                 Draw::constraint(part, adorn, i, controllerColor);
             }
         }
     }
 
-    // TODO: 84.12% match -- it's pretty difficult
+    // TODO: 85.04% match -- it's pretty difficult
     // the main trouble seems to be with where to place Math::getAxisRotationMatrix
     // it has to come before relativeTranslation yet somehow not get put on the stack
 	void Draw::constraint(const Part& part, Adorn* adorn, int face, const G3D::Color3& controllerColor)
@@ -89,11 +89,11 @@ namespace RBX
         G3D::Vector3 relativeTranslation;
 
         int axis = face % 3;
-        relativeTranslation[axis] = halfSize[axis];
-
         float posNeg = (face > 2) ? -1.0f : 1.0f;
 
-        G3D::CoordinateFrame translation(rot, relativeTranslation*posNeg);
+        relativeTranslation[axis] = halfSize[axis]*posNeg;
+
+        G3D::CoordinateFrame translation(rot, relativeTranslation);
         G3D::CoordinateFrame newObject = part.coordinateFrame*translation;
 
         adorn->setObjectToWorldMatrix(newObject);
