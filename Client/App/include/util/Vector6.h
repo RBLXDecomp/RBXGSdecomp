@@ -14,7 +14,14 @@ public:
 			data[i] = (T)0;
 		}
 	}
-	T& operator[](int index);
 
-	const T& operator[](int) const;
+	T& operator[](int i)
+	{
+		return data[i];
+	}
+
+	const T& operator[](int i) const
+	{
+		return data[i];
+	}
 };

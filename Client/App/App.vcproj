@@ -390,6 +390,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\IndexBox.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\InsertMode.h"
 					>
 				</File>
@@ -1020,6 +1024,10 @@
 			</File>
 			<File
 				RelativePath=".\util\Http.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\IndexBox.cpp"
 				>
 			</File>
 			<File
