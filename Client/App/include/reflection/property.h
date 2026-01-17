@@ -37,18 +37,18 @@ namespace RBX
 			PropertyDescriptor(ClassDescriptor& classDescriptor, const Type& type, const char* name, const char* category, Functionality flags);
 		public:
 			bool isPublic() const;
-			virtual bool isReadOnly() const;
+			virtual bool isReadOnly() const = 0;
 			bool canStreamWrite() const;
 			bool operator==(const PropertyDescriptor&) const;
-			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const;
-			virtual bool hasStringValue() const;
-			virtual std::string getStringValue(const DescribedBase*) const;
-			virtual bool setStringValue(DescribedBase*, const std::string&) const;
+			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const = 0;
+			virtual bool hasStringValue() const = 0;
+			virtual std::string getStringValue(const DescribedBase*) const = 0;
+			virtual bool setStringValue(DescribedBase*, const std::string&) const = 0;
 			XmlElement* write(const DescribedBase*, bool) const;
 			virtual void read(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
 		private:
-			virtual void writeValue(const DescribedBase*, XmlElement*) const;
-			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
+			virtual void writeValue(const DescribedBase*, XmlElement*) const = 0;
+			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const = 0;
 		public:
 			virtual ~PropertyDescriptor();
 		public:
@@ -112,9 +112,9 @@ namespace RBX
 			class GetSet
 			{
 			public:
-				virtual bool isReadOnly() const;
-				virtual PropType getValue(const DescribedBase*) const;
-				virtual void setValue(DescribedBase*, const PropType&) const;
+				virtual bool isReadOnly() const = 0;
+				virtual PropType getValue(const DescribedBase*) const = 0;
+				virtual void setValue(DescribedBase*, const PropType&) const = 0;
 			public:
 				//GetSet(const GetSet&);
 				GetSet()
@@ -156,8 +156,8 @@ namespace RBX
 		class RefPropertyDescriptor : public PropertyDescriptor
 		{
 		public:
-			virtual DescribedBase* getRefValue(const DescribedBase*) const;
-			virtual void setRefValue(DescribedBase*, DescribedBase*) const;
+			virtual DescribedBase* getRefValue(const DescribedBase*) const = 0;
+			virtual void setRefValue(DescribedBase*, DescribedBase*) const = 0;
 		public:
 			//RefPropertyDescriptor(const RefPropertyDescriptor&);
 		protected:
@@ -181,10 +181,10 @@ namespace RBX
 			const EnumDescriptor& enumDescriptor;
 		  
 		public:
-			virtual unsigned getIndexValue(const DescribedBase*) const;
-			virtual bool setIndexValue(DescribedBase*, unsigned) const;
-			virtual int getEnumValue(const DescribedBase*) const;
-			virtual bool setEnumValue(DescribedBase*, int) const;
+			virtual unsigned getIndexValue(const DescribedBase*) const = 0;
+			virtual bool setIndexValue(DescribedBase*, unsigned) const = 0;
+			virtual int getEnumValue(const DescribedBase*) const = 0;
+			virtual bool setEnumValue(DescribedBase*, int) const = 0;
 		public:
 			//EnumPropertyDescriptor(const EnumPropertyDescriptor&);
 		protected:

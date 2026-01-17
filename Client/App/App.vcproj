@@ -794,6 +794,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Feature.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\GlobalSettings.h"
 					>
 				</File>
@@ -815,6 +819,10 @@
 				</File>
 				<File
 					RelativePath=".\include\v8datamodel\IPrimaryPart.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\JointInstance.h"
 					>
 				</File>
 				<File
@@ -1012,6 +1020,10 @@
 			</File>
 			<File
 				RelativePath=".\util\Http.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\IRenderable.cpp"
 				>
 			</File>
 			<File
@@ -1259,11 +1271,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\v8datamodel\Camera.cpp"
+				RelativePath=".\v8datamodel\Feature.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\v8datamodel\GlobalSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\JointInstance.cpp"
 				>
 			</File>
 			<File

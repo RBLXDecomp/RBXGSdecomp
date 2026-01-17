@@ -350,7 +350,7 @@ namespace RBX
 		//XmlState(const XmlState&);
 		XmlState();
 		const XmlElement* getData() const;
-		virtual void addState(XmlElement*, Instance&);
+		virtual void addState(XmlElement*, Instance&) = 0;
 		void addAllProperties(Instance&);
 		void addParentProperty(Instance&);
 		void addDelete(Instance&);

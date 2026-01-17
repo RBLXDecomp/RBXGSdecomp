@@ -24,9 +24,7 @@ namespace RBX
 	Reflection::SignalDesc<Instance, void(boost::shared_ptr<Instance>)> Instance::event_descendentAdded("DescendentAdded", "descendent"); // L29
 	Reflection::SignalDesc<Instance, void(boost::shared_ptr<Instance>)> Instance::event_descendentRemoving("DescendentRemoving", "descendent"); // L30
 	Reflection::SignalDesc<Instance, void(boost::shared_ptr<Instance>)> Instance::event_ancestryChanged("AncestryChanged", "child"); // L31
-	Reflection::SignalDesc<Instance, void(const Reflection::PropertyDescriptor*)> Instance::event_propertyChanged("Changed", "property"); // L32
-
-	static Reflection::SignalDesc<Instance, void(bool)> matchTemp("MatchTEMP", "temp"); 
+	Reflection::SignalDesc<Instance, void(const Reflection::PropertyDescriptor*)> Instance::event_propertyChanged("Changed", "property"); // L32 
 
 	Instance::Instance(const char* name)
 		: assoc(),
@@ -42,10 +40,15 @@ namespace RBX
 		: assoc(),
 		  parent(NULL),
 		  children(),
-		  name(sInstance),
+		  name("Instance"),
 		  archivable(true),
 		  guid()
 	{
+	}
+
+	Instance::~Instance()
+	{
+		RBXASSERT(!parent);
 	}
 
 	bool Instance::isAncestorOf(const Instance* descendent) const
@@ -221,16 +224,16 @@ namespace RBX
 		setParent(NULL);
 
 		if (r)
-			std::for_each(r->begin(), r->end(), boost::bind(&Instance::remove, this));
+			std::for_each(r->begin(), r->end(), boost::bind(&Instance::remove, _1));
 	}
 
 	void Instance::readChild(const XmlElement* childElement, IReferenceBinder& binder)
 	{
+		const Name* className = NULL;
 		const XmlAttribute* classAttrib = childElement->findAttribute(tag_class);
 
 		if (classAttrib)
 		{
-			const Name* className;
 			if (classAttrib->getValue(className))
 			{
 				boost::shared_ptr<Instance> childInstance = createChild(*className);
@@ -304,5 +307,4 @@ namespace RBX
 		event_ancestryChanged.fire(this, shared_from(event.oldParent));
 		Notifier<Instance, AncestorChanged>::raise(event);
 	}
-
 }

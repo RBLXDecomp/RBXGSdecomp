@@ -50,11 +50,20 @@ namespace RBX
 						return mMatte->resolve(rd);
 				}
 
-				const G3D::Color3& color() const;
+				const G3D::Color3& color() const
+				{
+					return mColor;
+				}
 				float specular() const;
 				float shiny() const;
-				float reflect() const;
-				float transparent() const;
+				float reflect() const
+				{
+					return mReflect;
+				}
+				float transparent() const
+				{
+					return mTransparent;
+				}
 				void configureRenderDevice(G3D::RenderDevice* renderDevice) const;
 
 				//Level& operator=(const Level&);

@@ -46,7 +46,7 @@ namespace RBX {
 					delete downstream; 
 			}
 
-			virtual StageType getStageType(){return JOINT_STAGE;} //placeholder
+			virtual StageType getStageType() = 0;
 			IStage* findStage(StageType stageType)
 			{
 				IStage* idownstream = this;

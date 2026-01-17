@@ -23,8 +23,8 @@ namespace RBX
 				Value returnValue;
 		  
 			public:
-				virtual size_t size() const;
-				virtual void get(int, Value&) const;
+				virtual size_t size() const = 0;
+				virtual void get(int, Value&) const = 0;
 			public:
 				//Arguments(const Arguments&);
 				Arguments();
@@ -46,7 +46,7 @@ namespace RBX
 			FunctionDescriptor(ClassDescriptor& classDescriptor, const char* name, Security security);
 		public:
 			const SignatureDescriptor& getSignature() const;
-			virtual void execute(DescribedBase*, Arguments&) const;
+			virtual void execute(DescribedBase*, Arguments&) const = 0;
 		public:
 			virtual ~FunctionDescriptor();
 		public:
