@@ -81,7 +81,10 @@ namespace RBX
 		Workspace(IDataState*);
 		virtual ~Workspace();
 	public:
-		World* getWorld() const;
+		World* getWorld() const
+		{
+			return world.get();
+		}
 		IDataState& getDataState() const;
 		MouseCommand* getCurrentMouseCommand();
 		void cancelMouseCommand();

@@ -21,8 +21,8 @@ namespace RBX
 		template<typename T>
 		void deserialize(Reflection::Property&, RakNet::BitStream&);
 
-		void deserializeEnum(const Reflection::ConstProperty&, RakNet::BitStream&);
-		void deserializeEnum(Reflection::Property&, RakNet::BitStream&);
+		void serializeEnum(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
+		void deserializeEnum(Reflection::Property& property, RakNet::BitStream& bitStream);
 
 		RakNet::BitStream& operator<<(RakNet::BitStream& stream, bool value);
 		RakNet::BitStream& operator<<(RakNet::BitStream& stream, int value);
@@ -48,8 +48,6 @@ namespace RBX
 		template<typename T>
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, T& value); // TODO: check match
 
-		bool brickEq(float a, float b);
-		bool isBrickLocation(G3D::Vector3 value, short x, unsigned short y, short z); // TODO: weird function which might not be in the header at all. is the signature correct?
 		void writeBrickVector(RakNet::BitStream&, const G3D::Vector3&);
 		void readBrickVector(RakNet::BitStream& stream, G3D::Vector3& value);
 		void rationalize(G3D::CoordinateFrame& value);
@@ -76,8 +74,12 @@ namespace RBX
 			int lastIndex;
 		public:
 			//StringSender(const StringSender&);
-			StringSender();
-			void serializeString(Reflection::ConstProperty&, RakNet::BitStream&);
+			StringSender()
+				: lastIndex(0)
+			{
+			}
+
+			void serializeString(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
 
 			void send(RakNet::BitStream&, const char*);
 			void send(RakNet::BitStream&, const Name&);
@@ -110,20 +112,21 @@ namespace RBX
 			std::map<Guid::Data, std::vector<WaitItem>> waitItems;
 		public:
 			//IdSerializer(const IdSerializer&);
-			IdSerializer();
-			void serializeId(RakNet::BitStream&, const Instance*);
-			bool trySerializeId(RakNet::BitStream&, const Instance*);
-			void deserializeId(RakNet::BitStream&, Guid::Data&);
-			void resolvePendingBindings(Instance*, Guid::Data);
+			IdSerializer() {}
+
+			void serializeId(RakNet::BitStream& stream, const Instance* instance);
+			bool trySerializeId(RakNet::BitStream& stream, const Instance* instance);
+			void deserializeId(RakNet::BitStream& stream, Guid::Data& id);
+			void resolvePendingBindings(Instance* instance, Guid::Data id);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&, Guid::Data&);
 			size_t numWaitingRefs() const;
-			void serializeRef(const Reflection::ConstProperty&, RakNet::BitStream&);
+			void serializeRef(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
 			void deserializeRef(Reflection::Property&, RakNet::BitStream&);
 			virtual ~IdSerializer();
 			//IdSerializer& operator=(const IdSerializer&);
 		protected:
-			static void setRefValue(WaitItem&, Instance*);
+			static void setRefValue(WaitItem& wi, Instance* instance);
 		};
 	}
 }

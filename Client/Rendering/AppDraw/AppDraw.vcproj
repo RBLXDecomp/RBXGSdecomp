@@ -166,6 +166,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\AppDraw\DrawAdorn.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\AppDraw\Part.h"
 				>
 			</File>
