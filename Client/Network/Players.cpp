@@ -1,4 +1,16 @@
 #include "Players.h"
+#include "Streaming.h"
+
+template<class Class>
+class PluginInterfaceAdapter : public PluginInterface
+{
+private:
+	Class* c;
+protected:
+	PluginInterfaceAdapter(Class*);
+public:
+	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
+};
 
 namespace RBX
 {

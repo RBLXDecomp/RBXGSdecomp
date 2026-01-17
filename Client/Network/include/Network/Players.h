@@ -1,10 +1,8 @@
 #pragma once
-#include "Player.h"
-#include "Streaming.h"
+#include "Network/Player.h"
 #include "SuperSafeChanged.h"
 #include "v8tree/Service.h"
 #include "v8datamodel/ModelInstance.h"
-#include "Client.h"
 #include <list>
 #include <queue>
 
@@ -12,15 +10,7 @@ class RakPeerInterface;
 struct Packet;
 
 template<class Class>
-class PluginInterfaceAdapter : public PluginInterface
-{
-private:
-	Class* c;
-protected:
-	PluginInterfaceAdapter(Class*);
-public:
-	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
-};
+class PluginInterfaceAdapter;
 
 namespace RBX
 {
@@ -109,10 +99,7 @@ namespace RBX
 						public Listener<Player, CharacterAdded>
 		{
 		private:
-			class Plugin : public PluginInterfaceAdapter<Players>
-			{
-				Plugin(Players*);
-			};
+			class Plugin;
 
 		private:
 			boost::scoped_ptr<AbuseReporter> abuseReporter;

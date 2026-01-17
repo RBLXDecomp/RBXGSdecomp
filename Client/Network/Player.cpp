@@ -1,10 +1,16 @@
 #include "Player.h"
+#include "Client.h"
 #include "v8datamodel/TimerService.h"
 
 namespace RBX
 {
 	namespace Network
 	{
+		class Plugin : public PluginInterfaceAdapter<Players>
+		{
+			Plugin(Players*);
+		};
+
 		Reflection::PropDescriptor<Player, BrickColor> prop_teamColor("TeamColor", "Team", &Player::getTeamColor, &Player::setTeamColor, Reflection::PropertyDescriptor::STANDARD);
 		Reflection::PropDescriptor<Player, bool> prop_neutral("Neutral", "Team", &Player::getNeutral, &Player::setNeutral, Reflection::PropertyDescriptor::STANDARD);
 		Reflection::PropDescriptor<Player, std::string> prop_characterAppearance("CharacterAppearance", "Data", &Player::getCharacterAppearance, &Player::setCharacterAppearance, Reflection::PropertyDescriptor::STANDARD);
@@ -126,10 +132,10 @@ namespace RBX
 					}
 				}
 
-				TimerService* tService = ServiceProvider::create<TimerService>(this);
+				TimerService* timerService = ServiceProvider::create<TimerService>(this);
 
-				if (tService)
-					tService->delay(boost::bind(&Player::doPeriodicIdleCheck, shared_from(this)), 30.0);
+				if (timerService)
+					timerService->delay(boost::bind(&Player::doPeriodicIdleCheck, shared_from(this)), 30.0);
 			}
 		}
 	}
