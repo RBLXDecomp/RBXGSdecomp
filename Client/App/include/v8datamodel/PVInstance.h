@@ -16,7 +16,7 @@ namespace RBX
 	class Primitive;
 
 	extern const char* sPVInstance;
-	class PVInstance : public Reflection::Described<PVInstance, &sPVInstance, Instance>,
+	class __declspec(novtable) PVInstance : public Reflection::Described<PVInstance, &sPVInstance, Instance>,
 					   public IControllable,
 					   public virtual IPrimaryPart,
 					   public virtual ILocation

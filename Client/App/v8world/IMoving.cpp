@@ -9,10 +9,6 @@ namespace RBX
 	{
 	}
 
-	IMoving::~IMoving()
-	{
-	}
-
 	void IMoving::makeMoving()
 	{
 		RBXASSERT(stepsToSleep > 0);

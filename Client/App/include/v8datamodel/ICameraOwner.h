@@ -8,15 +8,18 @@ namespace RBX
 {
 	class Primitive;
 	class PartInstance;
-	class ICameraOwner
+	class __declspec(novtable) ICameraOwner
 	{
 	private:
 		std::vector<boost::weak_ptr<PartInstance>> cameraIgnoreParts;
 	  
 	public:
-		//ICameraOwner(const ICameraOwner&);
-		ICameraOwner();
-		virtual ~ICameraOwner();
+		ICameraOwner()
+		{
+		}
+		virtual ~ICameraOwner()
+		{
+		}
 	public:
 		virtual Camera* getCamera() const = 0;
 		virtual const G3D::GCamera& getGCamera() const = 0;
@@ -27,7 +30,5 @@ namespace RBX
 		void setCameraIgnoreParts(PartInstance*);
 		void clearCameraIgnoreParts();
 		void getCameraIgnorePrimitives(std::vector<const Primitive*>&);
-	public:
-		//ICameraOwner& operator=(const ICameraOwner&);
 	};
 }

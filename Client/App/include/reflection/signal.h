@@ -53,7 +53,7 @@ namespace RBX
 			//SignalInstance& operator=(const SignalInstance&);
 		};
 
-		class SignalSource
+		class __declspec(novtable) SignalSource
 		{
 			friend class SignalDescriptor;
 
@@ -64,11 +64,6 @@ namespace RBX
 			virtual ~SignalSource();
 		public:
 			void disconnect_all_slots();
-		public:
-			//SignalSource(const SignalSource&);
-			SignalSource();
-		public:
-			//SignalSource& operator=(const SignalSource&);
 		};
 
 		class Signal;

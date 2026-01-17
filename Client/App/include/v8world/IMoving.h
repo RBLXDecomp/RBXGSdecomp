@@ -1,10 +1,11 @@
 #pragma once
 #include <set>
+#include "util/Debug.h"
 
 namespace RBX
 {
 	class IMovingManager;
-	class IMoving
+	class __declspec(novtable) IMoving
 	{
 		friend class IMovingManager;
 
@@ -21,7 +22,10 @@ namespace RBX
 	public:
 		//IMoving(const IMoving&);
 		IMoving();
-		~IMoving();
+		~IMoving()
+		{
+			RBXASSERT(!iMovingManager);
+		}
 	public:
 		void notifyMoved();
 		virtual bool reportTouches() const = 0;
