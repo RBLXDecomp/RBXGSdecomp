@@ -34,9 +34,7 @@ namespace RBX
 			typedef Described<Class, ClassName, DerivedClass> Base;
 
 		public:
-			//Described(const Described&);
-			// TODO: init descriptor in initialiser list
-			__forceinline Described()
+			Described()
 				: DerivedClass()
 			{
 				this->descriptor = &classDescriptor();
