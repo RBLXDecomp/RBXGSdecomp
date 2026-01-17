@@ -29,11 +29,11 @@ namespace RBX
 			{
 				return;
 			}
-			virtual bool castsShadows() const;
-			virtual bool cullable() const;
-			virtual G3D::ReferenceCountedPointer<Material> getMaterial();
-			virtual G3D::ReferenceCountedPointer<Mesh> getMesh();
-			virtual const G3D::CoordinateFrame& cframe();
+			virtual bool castsShadows() const = 0;
+			virtual bool cullable() const = 0;
+			virtual G3D::ReferenceCountedPointer<Material> getMaterial() = 0;
+			virtual G3D::ReferenceCountedPointer<Mesh> getMesh() = 0;
+			virtual const G3D::CoordinateFrame& cframe() = 0;
 			//Chunk(const Chunk&);
 
 			Chunk(float polygonOffset)

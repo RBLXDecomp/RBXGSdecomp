@@ -10,7 +10,7 @@ namespace RBX
 	class ILogProvider
 	{
 	public:
-		virtual Log* provideLog();
+		virtual Log* provideLog() = 0;
 	public:
 		//ILogProvider(const ILogProvider&);
 		ILogProvider();

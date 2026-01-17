@@ -10,8 +10,8 @@ namespace RBX
 	class IReferenceBinder
 	{
 	public:
-		virtual void announceID(const XmlNameValuePair* valueID, Instance* target);
-		virtual void announceIDREF(const XmlNameValuePair* valueIDREF, Reflection::DescribedBase* propertyOwner, const IIDREF* idref);
+		virtual void announceID(const XmlNameValuePair* valueID, Instance* target) = 0;
+		virtual void announceIDREF(const XmlNameValuePair* valueIDREF, Reflection::DescribedBase* propertyOwner, const IIDREF* idref) = 0;
 	protected:
 		void assign(const IIDREF*, Reflection::DescribedBase*, const InstanceHandle&);
 	public:

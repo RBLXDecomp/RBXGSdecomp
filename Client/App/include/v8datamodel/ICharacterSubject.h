@@ -33,12 +33,12 @@ namespace RBX
 		//ICharacterSubject(const ICharacterSubject&);
 		ICharacterSubject();
 	public:
-		virtual ContactManager* getContactManager();
+		virtual ContactManager* getContactManager() = 0;
 		virtual void getIgnorePrims(std::vector<const Primitive*>&);
 		virtual void tellCameraNear(float);
-		virtual G3D::Vector3 getIntendedMovementVector();
-		virtual float getIntendedRotationAboutYAxis();
-		virtual void cameraSetWalkOrientation(float, bool);
+		virtual G3D::Vector3 getIntendedMovementVector() = 0;
+		virtual float getIntendedRotationAboutYAxis() = 0;
+		virtual void cameraSetWalkOrientation(float, bool) = 0;
 		float panAdjust();
 		void onHeartBeat(G3D::CoordinateFrame&, G3D::CoordinateFrame&);
 		void setCursorCenterLocked(bool);

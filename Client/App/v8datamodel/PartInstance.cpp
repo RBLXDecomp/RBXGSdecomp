@@ -4,6 +4,8 @@
 
 namespace RBX
 {
+	const char* const category_Part = "Part";
+
 	static const Reflection::PropDescriptor<PartInstance, G3D::Vector3> prop_PositionUi("Position", "Data", &PartInstance::getTranslationUi, NULL, Reflection::PropertyDescriptor::LEGACY);
 	static const Reflection::PropDescriptor<PartInstance, G3D::Vector3> prop_Velocity("Velocity", "Data", &PartInstance::getLinearVelocity, NULL, Reflection::PropertyDescriptor::LEGACY);
 	static const Reflection::PropDescriptor<PartInstance, G3D::Vector3> prop_SizeUi("Size", category_Part, &PartInstance::getPartSizeUi, NULL, Reflection::PropertyDescriptor::LEGACY);
@@ -21,6 +23,43 @@ namespace RBX
 			static Type type("CoordinateFrame", typeid(G3D::CoordinateFrame));
 			return type;
 		}
+	}
+
+#pragma warning (push)
+#pragma warning (disable : 4355) // warning C4355: 'this' : used in base member initializer list
+	PartInstance::PartInstance()
+		: Base("Part"),
+		  partType(Part::BLOCK_PART),
+		  formFactor(BRICK),
+		  color(BrickColor::defaultColor()),
+		  transparency(0.0f),
+		  reflectance(0.0f),
+		  locked(false),
+		  surfaces(this),
+		  renderImportance(0.0f),
+		  primitive(new Primitive(Geometry::GEOMETRY_BLOCK)),
+		  alphaModifier(1.0f),
+		  myWorld(NULL),
+		  PersistentPart(this, &PartInstance::computePersistentPart),
+		  SurfacesNeedAdorn(this, &PartInstance::computeSurfacesNeedAdorn)
+	{
+		primitive->setSurfaceType(NORM_Y, STUDS);
+		primitive->setSurfaceType(NORM_Y_NEG, INLET);
+		primitive->setGridSize(G3D::Vector3(4.0f, 1.2f, 2.0f));
+		primitive->setFriction(0.3f);
+		primitive->setElasticity(0.5f);
+		primitive->setAnchor(false);
+		primitive->setCanCollide(true);
+		primitive->setOwner(this);
+		RBXASSERT(!myWorld);
+		primitive->setGuid(getGuid());
+	}
+#pragma warning (pop)
+
+	PartInstance::~PartInstance()
+	{
+		RBXASSERT(!primitive->getClump());
+		RBXASSERT(!myWorld);
 	}
 
 	Surfaces& PartInstance::getSurfaces()

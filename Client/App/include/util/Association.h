@@ -12,10 +12,6 @@ namespace RBX
 		{
 		public:
 			virtual ~Item();
-			//Item(const Item&);
-			Item();
-		public:
-			//Item& operator=(const Item&);
 		};
 
 		template<typename T>
@@ -25,11 +21,7 @@ namespace RBX
 			T t;
   
 		public:
-			//TItem(const TItem&);
 			TItem();
-			virtual ~TItem();
-		public:
-			//TItem& operator=(const TItem&);
 		};
 
 	private:
@@ -37,10 +29,6 @@ namespace RBX
   
 	public:
 		~Association();
-		//Association(const Association&);
-		Association();
-	public:
-		//Association& operator=(const Association&);
   
 	private:
 		static size_t& count();

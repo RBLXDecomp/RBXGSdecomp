@@ -164,11 +164,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EffectSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Material.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Mesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RenderScene.cpp"
 				>
 			</File>
 			<File
@@ -194,11 +202,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\RenderLib\EffectSettings.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\RenderLib\Material.h"
 				>
 			</File>
 			<File
 				RelativePath=".\include\RenderLib\Mesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\RenderLib\RenderScene.h"
 				>
 			</File>
 			<File
