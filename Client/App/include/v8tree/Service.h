@@ -47,7 +47,7 @@ namespace RBX
 	};
 
 	extern const char* sServiceProvider;
-	class ServiceProvider : public DescribedNonCreatable<ServiceProvider, Instance, &sServiceProvider>,
+	class __declspec(novtable) ServiceProvider : public DescribedNonCreatable<ServiceProvider, Instance, &sServiceProvider>,
 							public Notifier<ServiceProvider, Closing>,
 							public Notifier<ServiceProvider, ServiceAdded>,
 							public Notifier<ServiceProvider, ServiceRemoving>

@@ -5,12 +5,15 @@
 namespace RBX
 {
 	class Primitive;
-	class ICameraSubject : public virtual ILocation
+	class __declspec(novtable) ICameraSubject : public virtual ILocation
 	{
 	public:
-		//ICameraSubject(const ICameraSubject&);
-		ICameraSubject();
-		virtual ~ICameraSubject();
+		ICameraSubject()
+		{
+		}
+		virtual ~ICameraSubject()
+		{
+		}
 	public:
 		virtual void onCameraNear(float distance)
 		{
@@ -31,7 +34,5 @@ namespace RBX
 		{
 			cameraFocus = getLocation();
 		}
-	public:
-		//ICameraSubject& operator=(const ICameraSubject&);
 	};
 }
