@@ -800,7 +800,7 @@
 				<File
 					RelativePath=".\include\v8datamodel\FaceInstance.h"
 					>
-        </File>
+        		</File>
  				<File
 					RelativePath=".\include\v8datamodel\Feature.h"
 					>
