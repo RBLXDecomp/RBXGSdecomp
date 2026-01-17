@@ -3,14 +3,9 @@
 
 namespace RBX
 {
-	class ILocation
+	class __declspec(novtable) ILocation
 	{
 	public:
 		virtual const G3D::CoordinateFrame getLocation() const = 0;
-	public:
-		//ILocation(const ILocation&);
-		ILocation();
-	public:
-		//ILocation& operator=(const ILocation&);
 	};
 }

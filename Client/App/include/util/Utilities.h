@@ -12,9 +12,10 @@ namespace RBX
 		boost::shared_ptr<T> object;
 	  
 	public:
-		//CopyOnWrite(const CopyOnWrite&);
 		CopyOnWrite(const T&);
-		CopyOnWrite();
+		CopyOnWrite()
+		{
+		}
 	public:
 		// TODO: is this definition right?
 		operator boost::shared_ptr<const T>() const
@@ -35,10 +36,6 @@ namespace RBX
 		}
 		boost::shared_ptr<T>& write();
 		void reset();
-	public:
-		~CopyOnWrite();
-	public:
-		//CopyOnWrite& operator=(const CopyOnWrite&);
 	};
 
 	template<typename T>

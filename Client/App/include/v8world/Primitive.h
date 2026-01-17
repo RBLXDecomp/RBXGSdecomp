@@ -154,7 +154,10 @@ namespace RBX
 		{
 			return body;
 		}
-		void setOwner(IMoving*);
+		void setOwner(IMoving* owner)
+		{
+			myOwner = owner;
+		}
 		IMoving* getOwner() const
 		{
 			return myOwner;

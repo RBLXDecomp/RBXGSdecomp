@@ -225,6 +225,9 @@ namespace RBX
 		static BrickColor legoGreen();
 		static BrickColor baseplateGreen();
 		static BrickColor legoBlue();
-		static BrickColor defaultColor();
+		static BrickColor defaultColor()
+		{
+			return lego_194;
+		}
 	};
 }

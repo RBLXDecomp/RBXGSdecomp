@@ -1,17 +1,23 @@
 #pragma once
 #include <ostream>
 
-namespace RBX {
-	class Debugable {
-		public:
-			virtual void dump(std::ostream& stream);
-			static void doCrash();
-			enum AssertAction
-			{
-			  CrashOnAssert = 0x0,
-			  IgnoreAssert = 0x1,
-			};
-			static AssertAction assertAction;
+namespace RBX
+{
+	class __declspec(novtable) Debugable
+	{
+	public:
+		enum AssertAction
+		{
+			CrashOnAssert,
+			IgnoreAssert
+		};
+
+	public:
+		virtual void dump(std::ostream& stream);
+
+	public:
+		static void doCrash();
+		static AssertAction assertAction;
 	};
 }
 

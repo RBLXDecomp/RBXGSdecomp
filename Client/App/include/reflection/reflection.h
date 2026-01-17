@@ -27,7 +27,7 @@ namespace RBX
 	namespace Reflection
 	{
 		template<typename Class, const char** ClassName, typename DerivedClass>
-		class Described : public DerivedClass
+		class __declspec(novtable) Described : public DerivedClass
 		{
 		public:
 			// helps with constructors
@@ -42,14 +42,11 @@ namespace RBX
 				this->descriptor = &classDescriptor();
 			}
 			template<typename Arg0Type>
-			__forceinline Described(Arg0Type arg0)
+			Described(Arg0Type arg0)
 				: DerivedClass(arg0)
 			{
 				this->descriptor = &classDescriptor();
 			}
-			virtual ~Described();
-		public:
-			//Described& operator=(const Described&);
 		  
 		public:
 			static const type_info& classType();
