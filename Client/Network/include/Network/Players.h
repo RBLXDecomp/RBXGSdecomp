@@ -1,6 +1,6 @@
 #pragma once
 #include "Network/Player.h"
-#include "SuperSafeChanged.h"
+#include "Network/SuperSafeChanged.h"
 #include "v8tree/Service.h"
 #include "v8datamodel/ModelInstance.h"
 #include <list>
