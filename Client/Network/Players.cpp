@@ -1,4 +1,5 @@
 #include "Players.h"
+#include "Client.h"
 #include "Streaming.h"
 
 template<class Class>
@@ -16,6 +17,11 @@ namespace RBX
 {
 	namespace Network
 	{
+		class Players::Plugin : public PluginInterfaceAdapter<Players>
+		{
+			Plugin(Players*);
+		};
+
 		bool Players::clientIsPresent(const Instance* context, bool testInDatamodel)
 		{
 			return Client::clientIsPresent(context, testInDatamodel);
