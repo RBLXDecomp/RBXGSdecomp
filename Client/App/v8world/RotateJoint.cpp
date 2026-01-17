@@ -228,15 +228,6 @@ namespace RBX
 		}
 	}
 
-	RotateVJoint::RotateVJoint(
-		Primitive* axlePrim,
-		Primitive* holePrim,
-		const G3D::CoordinateFrame& c0,
-		const G3D::CoordinateFrame& c1)
-		: RotateJoint(axlePrim, holePrim, c0, c1)
-	{
-	}
-
 	void RotateVJoint::stepUi(int uiStepId)
 	{
 		float value = getChannelValue(uiStepId);
@@ -254,15 +245,6 @@ namespace RBX
 			world->ticklePrimitive(getAxlePrim());
 			world->ticklePrimitive(getHolePrim());
 		}
-	}
-
-	RotatePJoint::RotatePJoint(
-		Primitive* axlePrim,
-		Primitive* holePrim,
-		const G3D::CoordinateFrame& c0,
-		const G3D::CoordinateFrame& c1)
-		: RotateJoint(axlePrim, holePrim, c0, c1)
-	{
 	}
 
 	inline float calculateIncrementRotatePJoint(float value, float currentGoal, int steps)
