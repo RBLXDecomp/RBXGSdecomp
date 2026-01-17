@@ -15,11 +15,9 @@ namespace RBX
 	class Object
 	{
 	public:
-		virtual ~Object() {} //TODO:check
-		Object(const Object&);
-		Object();
-	public:
-		//Object& operator=(const Object&);
+		virtual ~Object()
+		{
+		}
 	};
 
 	class ICreator
@@ -43,13 +41,13 @@ namespace RBX
 			void operator()(T*);
 		};
 
-	public:
-		//Creatable(const Creatable&);
 	protected:
-		Creatable();
-		virtual ~Creatable() {} // TODO:check
-	public:
-		//Creatable& operator=(const Creatable&);
+		Creatable()
+		{
+		}
+		virtual ~Creatable()
+		{
+		}
 
 	public:
 		template<typename Class>
@@ -81,16 +79,12 @@ namespace RBX
 	template<typename T>
 	class AbstractFactoryProduct : public Creatable<T>
 	{
-	public:
-		//AbstractFactoryProduct(const AbstractFactoryProduct&);
 	protected:
-		AbstractFactoryProduct();
+		AbstractFactoryProduct()
+		{
+		}
 	public:
 		virtual const Name& getClassName() const = 0;
-	public:
-		virtual ~AbstractFactoryProduct() {} //todo:check
-	public:
-		//AbstractFactoryProduct& operator=(const AbstractFactoryProduct&);
 	  
 	protected:
 		static std::map<const Name*, const ICreator*>& getCreators()

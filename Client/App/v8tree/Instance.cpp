@@ -24,9 +24,7 @@ namespace RBX
 	Reflection::SignalDesc<Instance, void(boost::shared_ptr<Instance>)> Instance::event_descendentAdded("DescendentAdded", "descendent"); // L29
 	Reflection::SignalDesc<Instance, void(boost::shared_ptr<Instance>)> Instance::event_descendentRemoving("DescendentRemoving", "descendent"); // L30
 	Reflection::SignalDesc<Instance, void(boost::shared_ptr<Instance>)> Instance::event_ancestryChanged("AncestryChanged", "child"); // L31
-	Reflection::SignalDesc<Instance, void(const Reflection::PropertyDescriptor*)> Instance::event_propertyChanged("Changed", "property"); // L32
-
-	static Reflection::SignalDesc<Instance, void(bool)> matchTemp("MatchTEMP", "temp"); 
+	Reflection::SignalDesc<Instance, void(const Reflection::PropertyDescriptor*)> Instance::event_propertyChanged("Changed", "property"); // L32 
 
 	Instance::Instance(const char* name)
 		: assoc(),
@@ -42,10 +40,15 @@ namespace RBX
 		: assoc(),
 		  parent(NULL),
 		  children(),
-		  name(sInstance),
+		  name("Instance"),
 		  archivable(true),
 		  guid()
 	{
+	}
+
+	Instance::~Instance()
+	{
+		RBXASSERT(!parent);
 	}
 
 	bool Instance::isAncestorOf(const Instance* descendent) const
