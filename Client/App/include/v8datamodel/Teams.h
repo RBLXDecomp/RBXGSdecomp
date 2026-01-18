@@ -24,16 +24,19 @@ namespace RBX
 		Teams();
 		virtual ~Teams();
 	public:
-		void assignNewPlayerToTeam(Network::Player*);
-		int getNumPlayersInTeam(BrickColor);
-		bool teamExists(BrickColor);
+		void assignNewPlayerToTeam(Network::Player* player);
+		int getNumPlayersInTeam(BrickColor brickColor);
+		bool teamExists(BrickColor brickColor);
 		bool isTeamGame();
 		void rebalanceTeams();
 		BrickColor getUnusedTeamColor();
-		Team* getTeamFromTeamColor(BrickColor);
+		Team* getTeamFromTeamColor(BrickColor brickColor);
 		Team* getTeamFromPlayer(Network::Player*);
-		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getTeams();
-		G3D::Color3 getTeamColorForHumanoid(Humanoid*);
+		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getTeams()
+		{
+			return teams.read();
+		}
+		G3D::Color3 getTeamColorForHumanoid(Humanoid* humanoid);
 	protected:
 		virtual void onChildAdded(Instance*);
 		virtual void onChildRemoving(Instance*);
