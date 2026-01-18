@@ -12,6 +12,10 @@ namespace RBX
 	{
 	}
 
+	ServiceProvider::~ServiceProvider()
+	{
+	}
+
 	size_t ServiceProvider::newIndex()
 	{
 		static size_t index = 0xFFFFFFFF; // max unsigned integer

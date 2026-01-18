@@ -57,7 +57,7 @@ namespace RBX
 			}
 		};
 
-		class DescribedBase : public SignalSource
+		class __declspec(novtable) DescribedBase : public SignalSource
 		{
 		public:
 			typedef MemberDescriptorContainer<PropertyDescriptor> MDCProperty;
@@ -68,8 +68,11 @@ namespace RBX
 			const ClassDescriptor* descriptor;
 		  
 		public:
-			//DescribedBase(const DescribedBase&);
-			DescribedBase();
+			DescribedBase()
+			{
+				ClassDescriptor::lockedDown = true;
+				descriptor = &ClassDescriptor::rootDescriptor();
+			}
 		public:
 			const ClassDescriptor& getDescriptor() const
 			{
@@ -90,10 +93,6 @@ namespace RBX
 			MDCSignal::ConstIterator signals_begin() const;
 			MDCSignal::Iterator signals_end();
 			MDCSignal::ConstIterator signals_end() const;
-		public:
-			virtual ~DescribedBase();
-		public:
-			//DescribedBase& operator=(const DescribedBase&);
 		  
 		public:
 			static ClassDescriptor& classDescriptor()

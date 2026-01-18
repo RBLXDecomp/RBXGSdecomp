@@ -26,7 +26,10 @@ namespace RBX
 		virtual bool isAligned();
 		void setJointAngle(float value);
 	public:
-		float getCurrentAngle() const;
+		float getCurrentAngle() const
+		{
+			return currentAngle;
+		}
 		void setCurrentAngle(float value);
 		G3D::CoordinateFrame getMeInOther(Primitive* me);
 		virtual void stepUi(int uiStepId);

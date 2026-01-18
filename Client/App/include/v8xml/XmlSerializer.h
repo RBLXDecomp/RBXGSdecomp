@@ -19,7 +19,7 @@ protected:
 	XmlParser(std::streambuf* buffer);
 
 public:
-	virtual std::auto_ptr<XmlElement> parse();
+	virtual std::auto_ptr<XmlElement> parse() = 0;
  
 public:
 	~XmlParser();
@@ -85,7 +85,7 @@ protected:
 	XmlWriter(std::ostream&);
 
 public:
-	virtual void serialize(const XmlElement*);
+	virtual void serialize(const XmlElement*) = 0;
 	int getHandleIndex(RBX::InstanceHandle);
 
 public:

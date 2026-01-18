@@ -16,9 +16,11 @@ namespace RBX
 		: Base(name),
 		  IsControllable(this, &PVInstance::computeIsControllable),
 		  IsTopFlag(this, &PVInstance::computeIsTopFlag),
-		  TopPVController(this, &PVInstance::computeTopPVController)
+		  TopPVController(this, &PVInstance::computeTopPVController),
+		  controllerType(Controller::NO_CONTROLLER),
+		  showControllerFlag(true),
+		  legacyOffset(NULL)
 	{
-
 	}
 #pragma warning (pop)
 

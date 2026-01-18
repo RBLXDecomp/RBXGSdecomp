@@ -14,7 +14,7 @@ namespace RBX
 		friend class ::ArchiveBinder;
 
 	private:
-		virtual void assignIDREF(Reflection::DescribedBase*, const InstanceHandle&) const;
+		virtual void assignIDREF(Reflection::DescribedBase*, const InstanceHandle&) const = 0;
 	public:
 		//IIDREF(const IIDREF&);
 		IIDREF()
@@ -27,28 +27,24 @@ namespace RBX
 	namespace Reflection
 	{
 		template<typename Class, const char** ClassName, typename DerivedClass>
-		class Described : public DerivedClass
+		class __declspec(novtable) Described : public DerivedClass
 		{
 		public:
 			// helps with constructors
 			typedef Described<Class, ClassName, DerivedClass> Base;
 
 		public:
-			//Described(const Described&);
-			__forceinline Described()
+			Described()
 				: DerivedClass()
 			{
 				this->descriptor = &classDescriptor();
 			}
 			template<typename Arg0Type>
-			__forceinline Described(Arg0Type arg0)
+			Described(Arg0Type arg0)
 				: DerivedClass(arg0)
 			{
 				this->descriptor = &classDescriptor();
 			}
-			virtual ~Described();
-		public:
-			//Described& operator=(const Described&);
 		  
 		public:
 			static const type_info& classType();
@@ -89,6 +85,12 @@ namespace RBX
 	protected:
 		DescribedNonCreatable()
 			: Described()
+		{
+		}
+
+		template<typename Arg0Type>
+		DescribedNonCreatable(Arg0Type arg0)
+			: Described(arg0)
 		{
 		}
 	public:
@@ -337,7 +339,7 @@ namespace RBX
 			virtual bool isReadOnly() const;
 			Enum getValue(const DescribedBase*) const;
 			void setValue(DescribedBase*, Enum) const;
-			virtual bool equalValues(const DescribedBase*, DescribedBase*) const;
+			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const;
 			virtual int getEnumValue(const DescribedBase*) const;
 			virtual bool setEnumValue(DescribedBase*, int) const;
 			virtual unsigned getIndexValue(const DescribedBase*) const;

@@ -44,10 +44,10 @@ namespace RBX
 		Controller() {}
 		virtual ~Controller() {}
 		virtual float getValue(InputType inputType) const { return 0.0f; }
-		virtual ControllerType getControllerType() const { return NO_CONTROLLER; }
+		virtual ControllerType getControllerType() const = 0;
 		bool isNullController();
-		virtual bool hasIntelligence() const { return false; }
-		virtual bool isUserController() const { return false; }
+		virtual bool hasIntelligence() const = 0;
+		virtual bool isUserController() const = 0;
 		//Controller& operator=(const Controller&);
 
 		static bool isControllableInput(InputType inputType); // this is inlined :(
@@ -73,7 +73,7 @@ namespace RBX
 		//NullController(const NullController&);
 		NullController() : Controller() {}
 
-		//virtual ~NullController();
+		virtual ~NullController() {}
 
 		//NullController& operator=(const NullController&);
 

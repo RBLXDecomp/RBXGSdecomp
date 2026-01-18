@@ -9,12 +9,7 @@ namespace RBX
 	class IScriptOwner
 	{
 	protected:
-		// NOTE: not defined, guess default implementation
-		virtual IScriptOwner* scriptShouldRun(Script* script)
-		{
-			RBXASSERT(0);
-			return NULL;
-		}
+		virtual IScriptOwner* scriptShouldRun(Script* script) = 0;
 		virtual void runScript(Script* script, ScriptContext* context)
 		{
 			RBXASSERT(0);

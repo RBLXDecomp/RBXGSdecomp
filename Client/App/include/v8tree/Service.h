@@ -47,7 +47,7 @@ namespace RBX
 	};
 
 	extern const char* sServiceProvider;
-	class ServiceProvider : public DescribedNonCreatable<ServiceProvider, Instance, &sServiceProvider>,
+	class __declspec(novtable) ServiceProvider : public DescribedNonCreatable<ServiceProvider, Instance, &sServiceProvider>,
 							public Notifier<ServiceProvider, Closing>,
 							public Notifier<ServiceProvider, ServiceAdded>,
 							public Notifier<ServiceProvider, ServiceRemoving>
@@ -90,6 +90,9 @@ namespace RBX
 	
 		template<typename Class>
 		Class* create() const;
+
+		template<typename Class>
+		static Class* find(const Instance* context);
 
 		template<typename Class>
 		static Class* create(const Instance* context);

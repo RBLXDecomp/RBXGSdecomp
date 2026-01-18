@@ -7,8 +7,6 @@
 
 namespace RBX
 {
-	extern const char* const category_Part = "Part";
-
 	class Part
 	{
 	public:
@@ -27,7 +25,6 @@ namespace RBX
 		G3D::CoordinateFrame coordinateFrame;
 
 	public:
-		//Part(const Part&);
 		Part(PartType type, const G3D::Vector3& gridSize, const G3D::Color4 color, const Vector6<SurfaceType>& surfaceType, const G3D::CoordinateFrame& c)
 			: type(type),
 			  gridSize(gridSize),
@@ -44,11 +41,8 @@ namespace RBX
 			  coordinateFrame(c)
 		{
 		}
-		Part();
-		~Part()
+		Part()
 		{
 		}
-	public:
-		//Part& operator=(const Part&);
 	};
 }

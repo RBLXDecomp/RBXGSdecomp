@@ -14,8 +14,8 @@ namespace RBX
 	class IDataState : public StateStack<XmlState> // NOTE: may not be intended for this file
 	{
 	public:
-		virtual void setDirty(bool);
-		virtual bool isDirty() const;
+		virtual void setDirty(bool) = 0;
+		virtual bool isDirty() const = 0;
 		//IDataState(const IDataState&);
 		IDataState();
 		~IDataState();
@@ -37,7 +37,7 @@ namespace RBX
 		virtual bool isEnabled() const;
 		virtual bool isChecked() const;
 		const Name& getName() const;
-		virtual void doIt(IDataState*);
+		virtual void doIt(IDataState*) = 0;
 		VerbContainer* getContainer() const;
 	};
 
