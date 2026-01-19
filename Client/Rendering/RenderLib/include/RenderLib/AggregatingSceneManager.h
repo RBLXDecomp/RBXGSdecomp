@@ -27,7 +27,7 @@ namespace RBX
 				float polygonOffset;
 				G3D::ReferenceCountedPointer<Material> material;
 
-				BucketKey(const G3D::ReferenceCountedPointer<Chunk>&);
+				BucketKey(const G3D::ReferenceCountedPointer<Chunk>& that);
 
 				bool operator<(const BucketKey&) const;
 			};
@@ -43,7 +43,7 @@ namespace RBX
 			AggregatingSceneManager(RenderScene*);
 			virtual ~AggregatingSceneManager();
 
-			virtual void invalidateModel(const G3D::ReferenceCountedPointer<Chunk>&, bool);
+			virtual void invalidateModel(const G3D::ReferenceCountedPointer<Chunk>& chunk, bool isSleeping);
 			virtual void addModel(const G3D::ReferenceCountedPointer<Chunk>& chunk);
 			virtual void removeModel(const G3D::ReferenceCountedPointer<Chunk>& chunk);
 			virtual void clear();
