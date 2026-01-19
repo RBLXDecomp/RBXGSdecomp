@@ -91,7 +91,7 @@ namespace RBX
 			void clearScene();
 			void addToScene(const G3D::ReferenceCountedPointer<Chunk>& chunk)
 			{
-				renderScene->chunkArray.append(chunk);
+				renderScene->chunkArray.push_back(chunk);
 			}
 			void removeFromScene(const G3D::ReferenceCountedPointer<Chunk>& chunk)
 			{
