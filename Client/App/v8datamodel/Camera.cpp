@@ -132,11 +132,16 @@ namespace RBX
 		cameraFocus = cameraSubject->getLocation();
 	}
 
-	//63% matching. This needs to be rechecked as functionality is most likely incorrect.
+	//72.84% matching. This needs to be rechecked as functionality is most likely incorrect.
 	void Camera::updateGoal()
 	{
 		switch(cameraType)
 		{
+			case WATCH_CAMERA:
+			{
+				updateFocus();
+				break;
+			}
 			case ATTACH_CAMERA: 
 			{
 				G3D::Vector3 v1 = cameraGoal.translation - cameraFocus.translation;
@@ -154,11 +159,6 @@ namespace RBX
 				cameraGoal.translation.x = cameraFocus.translation.x - direction.x * distance;
 				cameraGoal.translation.y = cameraFocus.translation.y + v1.y;
 				cameraGoal.translation.z = cameraFocus.translation.z - direction.y * distance;
-				break;
-			}
-			case WATCH_CAMERA:
-			{
-				updateFocus();
 				break;
 			}
 			case TRACK_CAMERA:
