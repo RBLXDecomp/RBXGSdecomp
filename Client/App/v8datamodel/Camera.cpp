@@ -132,7 +132,7 @@ namespace RBX
 		cameraFocus = cameraSubject->getLocation();
 	}
 
-	//72.84% matching. This needs to be rechecked as functionality is most likely incorrect.
+	//72.84% matching.
 	void Camera::updateGoal()
 	{
 		switch(cameraType)
@@ -339,6 +339,53 @@ namespace RBX
 				RBXASSERT(0);
 			}
 			raisePropertyChanged(desc_CoordFrame);
+
+			ICameraOwner* owner = getCameraOwner();
+			if (owner)
+				owner->cameraMoved();
+		}
+	}
+
+	//87.82% matching.
+	void Camera::zoomExtents(Extents extents, const G3D::Rect2D& viewPort, Camera::ZoomType zoomType)
+	{
+		G3D::CoordinateFrame currentCoord = gCamera.getCoordinateFrame();
+		extents.expand(0.1f);
+
+		if (zoomType != ZOOM_CHAR_PART_DRAG || cameraType == CUSTOM_CAMERA)
+		{
+			double low = 0.5;
+
+			if (cameraType == FIXED_CAMERA)
+			{
+				G3D::Vector3 scaler = extents.center() - cameraFocus.translation;
+
+				cameraFocus.translation += scaler;
+				cameraGoal.translation += scaler;
+			}
+
+			if (zoomType == ZOOM_OUT_ONLY || zoomType == ZOOM_CHAR_PART_DRAG)
+				low = (cameraGoal.translation - cameraFocus.translation).magnitude();
+
+			double current = (cameraGoal.translation - cameraFocus.translation).magnitude();
+
+			RBXASSERT(G3D::isFinite(current));
+
+			if (zoomType == ZOOM_CHAR_PART_DRAG)
+				extents.scale(1.1f);
+
+			if (G3D::isFinite(low) && G3D::isFinite(current) && G3D::isFinite(1000.0))
+				tryZoomExtents(low, current, 1000, extents, viewPort);
+
+			cameraGoal = gCamera.getCoordinateFrame();
+			if (Math::legalCameraCoord(currentCoord))
+			{
+				gCamera.setCoordinateFrame(currentCoord);
+			}
+			else
+			{
+				RBXASSERT(0);
+			}
 
 			ICameraOwner* owner = getCameraOwner();
 			if (owner)
