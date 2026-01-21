@@ -1,11 +1,10 @@
 #pragma once
+#include "util/UserInputBase.h"
 #include <SDL.h>
 #include <G3D/Vector2int16.h>
 
 namespace RBX 
 {
-	class UserInputBase;
-
 	class UIEvent
 	{
 	public:
