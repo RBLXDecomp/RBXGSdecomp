@@ -87,7 +87,7 @@ namespace RBX
 		{
 			return guiSize;
 		}
-		virtual GuiResponse process(const GuiEvent&);
+		virtual GuiResponse process(const GuiEvent& event);
 		virtual void render2d(Adorn* adorn)
 		{
 			return;
@@ -190,7 +190,7 @@ namespace RBX
 	private:
 		virtual G3D::Vector2 getSize() const
 		{
-			return GuiRoot::getCanvasSize();
+			return getCanvasSize();
 		}
 	public:
 		GuiRoot();

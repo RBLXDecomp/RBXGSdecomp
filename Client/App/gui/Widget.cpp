@@ -21,7 +21,7 @@ namespace RBX
 				adorn->rect2d(getMyRect2D(), G3D::Color3::yellow());
 			}
 
-			label2d(adorn, getTitle(), isEnabled() ? getFontColor() : GuiItem::disabledFill(), G3D::Color4(0.5f, 0.5f, 0.5f, 0.25f), Adorn::XALIGN_LEFT);
+			label2d(adorn, getTitle(), isEnabled() ? getFontColor() : disabledFill(), G3D::Color4(0.5f, 0.5f, 0.5f, 0.25f), Adorn::XALIGN_LEFT);
 		}
 	}
 }

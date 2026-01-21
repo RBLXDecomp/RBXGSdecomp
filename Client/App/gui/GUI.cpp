@@ -20,7 +20,7 @@ namespace RBX
 
 	GuiItem::GuiItem() 
 	{
-		Instance::setName("Unnamed GuiItem");
+		setName("Unnamed GuiItem");
 	}
 
 	GuiResponse GuiItem::processNonFocus(const GuiEvent& event)
@@ -64,6 +64,31 @@ namespace RBX
 	const GuiItem* GuiItem::getGuiParent() const
 	{
 		return fastDynamicCast<const GuiItem>(getParent());
+	}
+	
+	GuiResponse GuiItem::process(const GuiEvent& event)
+	{
+		if (event.isMouseEvent() && event.eventType == UIEvent::MOUSE_IDLE)
+			return GuiResponse::notUsed();
+
+		if (focus)
+		{
+			if (focus->canLoseFocus())
+			{
+				GuiResponse response = processNonFocus(event);
+				if (!response.wasNotUsed())
+					return response;
+			}
+
+			GuiResponse focusResponse = focus->process(event);
+			if (!focusResponse.wasNotUsed())
+				return focusResponse;
+
+			loseFocus();
+		}
+
+		RBXASSERT(!focus);
+		return processNonFocus(event);
 	}
 
 	void TopMenuBar::init()
@@ -150,19 +175,19 @@ namespace RBX
 
 	GuiRoot::GuiRoot() 
 	{
-		Instance::setName("GuiRoot");
+		setName("GuiRoot");
 	}
 
 	int GuiRoot::normalizedFontSize(int fontSize)
 	{
-		static const G3D::Vector2 percentSize(100.0f, 75.0f);
+		static G3D::Vector2 percentSize(100.0f, 75.0f);
 		return G3D::iRound(floorf(fontSize * toPixelSize(percentSize).x * 0.001f));
 	}
 
 	void GuiRoot::render2d(Adorn* adorn)
 	{
-		short height = adorn->getHeight();
-		short width = adorn->getWidth();
+		short height = static_cast<short>(adorn->getHeight());
+		short width = static_cast<short>(adorn->getWidth());
 
 		canvasSize = G3D::Vector2(width, height);
 
