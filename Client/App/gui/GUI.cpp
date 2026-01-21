@@ -2,6 +2,22 @@
 
 namespace RBX
 {
+	const G3D::Color4& GuiItem::disabledFill()
+	{
+		static G3D::Color4 c(0.7f, 0.7f, 0.7f, 0.5f);
+		return c;
+	}
+
+	const G3D::Color4& GuiItem::translucentBackdrop()
+	{
+		static G3D::Color4 c(0.6f, 0.6f, 0.6f, 0.6f);
+		return c;
+	}
+
+	G3D::Vector2 GuiRoot::canvasSize;
+	G3D::Matrix4 GuiRoot::oldProjectionMatrix;
+	G3D::CoordinateFrame GuiRoot::oldCameraWorld;
+
 	GuiItem::GuiItem() 
 	{
 		Instance::setName("Unnamed GuiItem");
@@ -48,18 +64,6 @@ namespace RBX
 	const GuiItem* GuiItem::getGuiParent() const
 	{
 		return fastDynamicCast<const GuiItem>(getParent());
-	}
-
-	const G3D::Color4& GuiItem::disabledFill()
-	{
-		static const G3D::Color4 c(0.7f, 0.7f, 0.7f, 0.5f);
-		return c;
-	}
-
-	const G3D::Color4& GuiItem::translucentBackdrop()
-	{
-		static const G3D::Color4 c(0.6f, 0.6f, 0.6f, 0.6f);
-		return c;
 	}
 
 	void TopMenuBar::init()

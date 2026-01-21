@@ -4,6 +4,7 @@
 #include "gui/GuiEvent.h"
 #include "gui/Layout.h"
 #include "util/Rect.h"
+#include <G3D/Matrix4.h>
 #include <G3D/Vector2.h>
 
 namespace RBX
