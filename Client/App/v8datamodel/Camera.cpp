@@ -132,7 +132,7 @@ namespace RBX
 		cameraFocus = cameraSubject->getLocation();
 	}
 
-	//72.84% matching.
+	//87.80% matching.
 	void Camera::updateGoal()
 	{
 		switch(cameraType)
@@ -145,20 +145,15 @@ namespace RBX
 			case ATTACH_CAMERA: 
 			{
 				G3D::Vector3 v1 = cameraGoal.translation - cameraFocus.translation;
-				G3D::Vector2 v2 = v1.xz();
-
-				double distance = G3D::distance(v2.x, v2.y);
+				double distance = v1.xz().length();
 
 				updateFocus();
 
-				G3D::Vector3 lookVector = cameraFocus.lookVector();
-				G3D::Vector2 v3 = lookVector.xz();
+				G3D::Vector2 direction = cameraFocus.lookVector().xz().direction();
 
-				G3D::Vector2 direction = v3.direction();
-
-				cameraGoal.translation.x = cameraFocus.translation.x - direction.x * distance;
-				cameraGoal.translation.y = cameraFocus.translation.y + v1.y;
-				cameraGoal.translation.z = cameraFocus.translation.z - direction.y * distance;
+				cameraGoal.translation = G3D::Vector3(cameraFocus.translation.x - direction.x * distance,
+													  cameraFocus.translation.y + v1.y,
+													  cameraFocus.translation.z - direction.y * distance);
 				break;
 			}
 			case TRACK_CAMERA:
@@ -173,20 +168,16 @@ namespace RBX
 			case FOLLOW_CAMERA:
 			{
 				G3D::Vector3 v1 = cameraFocus.translation - cameraGoal.translation;
-				G3D::Vector2 v2 = v1.xz();
-
-				double distance = G3D::distance(v2.x, v2.y);
+				double distance = v1.xz().length();
 
 				updateFocus();
-				
-				G3D::Vector2 v3 = cameraGoal.translation.xz();
-				G3D::Vector2 v4 = cameraFocus.translation.xz();
 			
-				G3D::Vector2 direction = (v4 - v3).direction();
+				G3D::Vector2 direction = (cameraGoal.translation.xz() - cameraFocus.translation.xz()).direction();
+				
+				cameraGoal.translation = G3D::Vector3(cameraFocus.translation.x - direction.x * distance, 
+													  cameraFocus.translation.y - v1.y, 
+													  cameraFocus.translation.z - direction.y * distance);
 
-				cameraGoal.translation.x = cameraFocus.translation.x - direction.x * distance;
-				cameraGoal.translation.y = cameraFocus.translation.y - v1.y;
-				cameraGoal.translation.z = cameraFocus.translation.z - direction.y * distance;
 				break;
 			}
 			case CUSTOM_CAMERA:
