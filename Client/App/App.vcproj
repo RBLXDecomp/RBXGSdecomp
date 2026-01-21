@@ -1315,6 +1315,22 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="gui"
+			>
+			<File
+				RelativePath=".\gui\GUI.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\GuiDraw.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\Widget.cpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
