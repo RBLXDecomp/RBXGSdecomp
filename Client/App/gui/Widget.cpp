@@ -24,4 +24,16 @@ namespace RBX
 			label2d(adorn, getTitle(), isEnabled() ? getFontColor() : disabledFill(), G3D::Color4(0.5f, 0.5f, 0.5f, 0.25f), Adorn::XALIGN_LEFT);
 		}
 	}
+
+	GuiResponse Widget::process(const GuiEvent& event)
+	{
+		if (isEnabled() && event.isMouseEvent())
+		{
+			return processMouse(event);
+		}
+		else
+		{
+			return GuiResponse::notUsed();
+		}
+	}
 }

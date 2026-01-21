@@ -32,7 +32,7 @@ namespace RBX
 			if (current && current != focus.get())
 			{
 				GuiResponse itemResponse = current->process(event);
-				if (!itemResponse.wasNotUsed())
+				if (itemResponse.wasUsed())
 				{
 					this->loseFocus();
 
@@ -76,12 +76,12 @@ namespace RBX
 			if (focus->canLoseFocus())
 			{
 				GuiResponse response = processNonFocus(event);
-				if (!response.wasNotUsed())
+				if (response.wasUsed())
 					return response;
 			}
 
 			GuiResponse focusResponse = focus->process(event);
-			if (!focusResponse.wasNotUsed())
+			if (focusResponse.wasUsed())
 				return focusResponse;
 
 			loseFocus();
@@ -149,7 +149,7 @@ namespace RBX
 		if (isVisible())
 		{
 			GuiResponse response = GuiItem::process(event);
-			if (!response.wasNotUsed())
+			if (response.wasUsed())
 			{
 				return response;
 			}

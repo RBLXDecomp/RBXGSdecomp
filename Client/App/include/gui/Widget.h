@@ -21,7 +21,7 @@ namespace RBX
 		GuiResponse processMouse(const GuiEvent&);
 		GuiResponse processKey(const GuiEvent&);
 	protected:
-		virtual GuiResponse process(const GuiEvent&);
+		virtual GuiResponse process(const GuiEvent& event);
 
 		virtual void onLoseFocus()
 		{

@@ -41,7 +41,10 @@ namespace RBX
 		{
 		}
 	public:
-		bool wasUsed();
+		bool wasUsed()
+		{
+			return response != NOT_USED; // NOTE: might be incorrect although it does make sense 
+		}
 		bool wasNotUsed()
 		{
 			return response == NOT_USED;
