@@ -55,7 +55,7 @@ namespace RBX
 		void updateGoal();
 		bool characterZoom(float);
 		bool nonCharacterZoom(float in);
-		void tryZoomExtents(float, float, float, const Extents&, const G3D::Rect2D&);
+		void tryZoomExtents(float low, float current, float high, const RBX::Extents& extents, const G3D::Rect2D& viewPort);
 		ContactManager& getContactManager();
 		float goalToFocusDistance() const;
 		void setGCameraCoordinateFrame(const G3D::CoordinateFrame&);
@@ -100,7 +100,7 @@ namespace RBX
 		void onWrapMouse(const G3D::Vector2&);
 		bool zoom(float in);
 		bool setDistanceFromTarget(float);
-		void zoomExtents(Extents, const G3D::Rect2D&, ZoomType);
+		void zoomExtents(Extents extents, const G3D::Rect2D& viewPort, ZoomType zoomType);
 		bool zoomExtents(const G3D::Rect2D& viewPort);
 		void panRadians(float angle);
 		void panUnits(int);

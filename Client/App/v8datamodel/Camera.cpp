@@ -337,6 +337,28 @@ namespace RBX
 		}
 	}
 
+	//84.84% matching.
+	void Camera::tryZoomExtents(float low, float current, float high, const RBX::Extents& extents, const G3D::Rect2D& viewPort)
+	{
+		RBXASSERT(current >= low);
+		RBXASSERT(current <= high);
+
+		if (high - low > 0.1)
+		{
+			setDistanceFromTarget(current);
+			updateGoal();
+			goalToCamera();
+
+			bool isContained = extents.containedByFrustum(gCamera.frustum(viewPort));
+
+			float newLow = (isContained) ? low : current;
+			float newHigh = (isContained) ? current : high;
+			float newCurrent = (newHigh + newLow) * 0.5;
+
+			tryZoomExtents(newLow, newCurrent, newHigh, extents, viewPort);
+		}
+	}
+
 	//87.82% matching.
 	void Camera::zoomExtents(Extents extents, const G3D::Rect2D& viewPort, Camera::ZoomType zoomType)
 	{
@@ -366,7 +388,7 @@ namespace RBX
 				extents.scale(1.1f);
 
 			if (G3D::isFinite(low) && G3D::isFinite(current) && G3D::isFinite(1000.0))
-				tryZoomExtents(low, current, 1000, extents, viewPort);
+				tryZoomExtents(low, current, 1000.0, extents, viewPort);
 
 			cameraGoal = gCamera.getCoordinateFrame();
 			if (Math::legalCameraCoord(currentCoord))
