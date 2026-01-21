@@ -99,7 +99,7 @@ namespace RBX
 		bool canTilt(int) const;
 		void onWrapMouse(const G3D::Vector2&);
 		bool zoom(float in);
-		bool setDistanceFromTarget(float);
+		bool setDistanceFromTarget(float newDistance);
 		void zoomExtents(Extents extents, const G3D::Rect2D& viewPort, ZoomType zoomType);
 		bool zoomExtents(const G3D::Rect2D& viewPort);
 		void panRadians(float angle);

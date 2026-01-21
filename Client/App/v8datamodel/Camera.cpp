@@ -73,6 +73,28 @@ namespace RBX
 		distance = (cameraGoal.translation - cameraFocus.translation).magnitude();
 	}
 
+	//70.53% matching. 
+	bool Camera::setDistanceFromTarget(float newDistance)
+	{
+		G3D::Vector3 lookVector = cameraFocus.translation - cameraGoal.translation;
+		float currentDistance = lookVector.magnitude();
+
+		if (newDistance < 0.5 && currentDistance == 0.5 || newDistance > 1000.0 && currentDistance == 1000.0)
+			return false;
+
+		newDistance = (newDistance < 0.5) ? 0.5 : newDistance;
+		newDistance = (newDistance > 1000.0) ? 1000.0 : newDistance;
+		
+		lookVector *= newDistance;
+		cameraGoal.translation = cameraFocus.translation - (lookVector / currentDistance);
+
+		ICameraOwner* owner = getCameraOwner();
+		if (owner)
+			owner->cameraMoved();
+
+		 return true;
+	}
+
 	void Camera::alwaysMode()
 	{
 		animationType = ALWAYS;
