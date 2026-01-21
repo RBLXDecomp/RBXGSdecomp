@@ -128,8 +128,7 @@ namespace RBX
 
 	void Camera::updateFocus()
 	{
-		ICameraSubject* cameraSubject = getCameraSubject();
-		cameraFocus = cameraSubject->getLocation();
+		cameraFocus = getCameraSubject()->getLocation();
 	}
 
 	//87.80% matching.
