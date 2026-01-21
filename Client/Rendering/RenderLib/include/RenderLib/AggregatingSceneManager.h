@@ -1,3 +1,4 @@
+#pragma once
 #include "RenderLib/RenderScene.h"
 #include <boost/noncopyable.hpp>
 #include <map>
