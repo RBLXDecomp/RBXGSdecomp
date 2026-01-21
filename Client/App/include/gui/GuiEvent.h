@@ -36,7 +36,8 @@ namespace RBX
 		{
 		}
 		GuiResponse(ResponseType response)
-			: response(response)
+			: response(response),
+			  target(NULL)
 		{
 		}
 	public:
@@ -54,16 +55,16 @@ namespace RBX
 	public:
 		static GuiResponse notUsed()
 		{
-			return GuiResponse(NOT_USED, NULL);
+			return GuiResponse(NOT_USED);
 		}
 		static GuiResponse used(GuiTarget*);
 		static GuiResponse used()
 		{
-			return GuiResponse(USED, NULL);
+			return GuiResponse(USED);
 		}
 		static GuiResponse finished()
 		{
-			return GuiResponse(USED_AND_FINISHED, NULL);
+			return GuiResponse(USED_AND_FINISHED);
 		}
 	};
 
