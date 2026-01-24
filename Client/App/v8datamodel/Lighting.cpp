@@ -14,13 +14,13 @@ namespace RBX
 	
 	Lighting::Lighting()
 		: Base(),
-		  ambientTop(.8f, .8f, .8f),
-		  ambientBottom(.4f, .5f, .4f),
+		  ambientTop(209/255.0f, 208/255.0f, 217/255.0f),
+		  ambientBottom(122/255.0f, 134/255.0f, 120/255.0f),
 		  hasSky(true),
 		  clearColor(G3D::Color3::white()),
 		  timeOfDay(boost::posix_time::duration_from_string("14:00:00"))
 	{
-		skyParameters.lightColor = G3D::Color3(.5f, .5f, .4f);
+		skyParameters.lightColor = G3D::Color3(152/255.0f, 137/255.0f, 102/255.0f);
 		skyParameters.setTime(timeOfDay.total_seconds());
 		setName("Lighting");
 	}
@@ -31,18 +31,12 @@ namespace RBX
 
 	G3D::Vector3 Lighting::getMoonPosition()
 	{
-		if (skyParameters.physicallyCorrect)
-			return skyParameters.trueMoonPosition;
-		else
-			return skyParameters.moonPosition;
+		return (skyParameters.physicallyCorrect) ? skyParameters.trueMoonPosition : skyParameters.moonPosition;
 	}
 
 	G3D::Vector3 Lighting::getSunPosition()
 	{
-		if (skyParameters.physicallyCorrect)
-			return skyParameters.trueSunPosition;
-		else
-			return skyParameters.sunPosition;
+		return (skyParameters.physicallyCorrect) ? skyParameters.trueSunPosition : skyParameters.sunPosition;
 	}
 
 	void Lighting::replaceSky(Sky* sky)
@@ -131,6 +125,7 @@ namespace RBX
 		}
 	}
 
+	//43.30% matching.
 	void Lighting::setTime(const boost::posix_time::time_duration& time)
 	{
 		if (timeOfDay != time)
@@ -145,6 +140,7 @@ namespace RBX
 		}
 	}
 
+	//50% matching.
 	double Lighting::getMinutesAfterMidnight()
 	{
 		return timeOfDay.hours() * 60;
