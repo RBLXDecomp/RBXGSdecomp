@@ -16,17 +16,17 @@ namespace RBX
 		{
 		}
 	public:
-		virtual void render(void* rd);
-		virtual float getShadingQuality() const;
-		virtual float getMeshDetail() const;
-		virtual void updateSettings(float shadingQuality, float meshDetail, bool shadows, float cameraDistance);
-		virtual void suppressSkybox();
-		virtual Instance* getWorkspace();
-		virtual RenderStats& getRenderStats();
+		virtual void render(void* rd) = 0;
+		virtual float getShadingQuality() const = 0;
+		virtual float getMeshDetail() const = 0;
+		virtual void updateSettings(float shadingQuality, float meshDetail, bool shadows, float cameraDistance) = 0;
+		virtual void suppressSkybox() = 0;
+		virtual Instance* getWorkspace() = 0;
+		virtual RenderStats& getRenderStats() = 0;
 	private:
-		virtual void onWorkspaceDescendentAdded(boost::shared_ptr<Instance> descendent);
-		virtual void updateLighting();
-		virtual void invalidateLighting(bool updateSkybox);
+		virtual void onWorkspaceDescendentAdded(boost::shared_ptr<Instance> descendent) = 0;
+		virtual void updateLighting() = 0;
+		virtual void invalidateLighting(bool updateSkybox) = 0;
 	public:
 		//ViewBase& operator=(const ViewBase&);
 	  

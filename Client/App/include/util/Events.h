@@ -22,7 +22,7 @@ namespace RBX
 		friend class Notifier<Class, Event>;
 
 	protected:
-		virtual void onEvent(const Class*, Event);
+		virtual void onEvent(const Class*, Event) = 0;
 		Listener& operator=(const Listener&);
 		virtual ~Listener();
 
