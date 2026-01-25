@@ -13,11 +13,21 @@ namespace RBX
 		};
 
 	public:
-		virtual void dump(std::ostream& stream);
+		static AssertAction assertAction;
+		static bool validatingDebug;
 
 	public:
+		virtual void dump(std::ostream& stream);
+
+	/* public:
+		Debugable(const Debugable&);
+		Debugable();
+		Debugable& operator=(const Debugable&); */
+
+	public:
+		static void forceBadTypeId();
 		static void doCrash();
-		static AssertAction assertAction;
+		static void dump(void*, std::ostream& stream);
 	};
 }
 
@@ -34,6 +44,8 @@ namespace RBX
 #else
 #define RBXASSERT(expr)
 #endif
+
+#define RBXCRASH() { int* badPtr1 = (int*)0; int* badPtr2 = (int*)4; *badPtr1 = *badPtr2; }
 
 template <typename To, typename From>
 To rbx_static_cast(From u)

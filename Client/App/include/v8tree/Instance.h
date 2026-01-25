@@ -262,7 +262,7 @@ namespace RBX
 	protected:
 		virtual void readProperty(const XmlElement* propertyElement, IReferenceBinder& binder);
 	public:
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		void readProperties(const XmlElement* container, IReferenceBinder& binder);
 		virtual boost::shared_ptr<Instance> createChild(const Name&);
 		virtual XmlElement* write();

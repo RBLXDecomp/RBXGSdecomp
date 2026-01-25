@@ -307,4 +307,8 @@ namespace RBX
 		event_ancestryChanged.fire(this, shared_from(event.oldParent));
 		Notifier<Instance, AncestorChanged>::raise(event);
 	}
+
+	void Instance::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+	{
+	}
 }

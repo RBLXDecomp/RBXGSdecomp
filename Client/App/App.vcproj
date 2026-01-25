@@ -890,7 +890,31 @@
 				Name="script"
 				>
 				<File
+					RelativePath=".\include\script\LuaAtomicClasses.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\script\LuaInstanceBridge.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\script\LuaMemory.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\script\LuaSignalBridge.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\script\Script.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\script\ScriptContext.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\script\ThreadRef.h"
 					>
 				</File>
 			</Filter>
@@ -939,6 +963,14 @@
 				>
 				<File
 					RelativePath=".\include\humanoid\Humanoid.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="lua"
+				>
+				<File
+					RelativePath=".\include\lua\LuaBridge.h"
 					>
 				</File>
 			</Filter>
@@ -1312,6 +1344,38 @@
 			</File>
 			<File
 				RelativePath=".\v8xml\XmlSerializer.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="script"
+			>
+			<File
+				RelativePath=".\script\LuaAtomicClasses.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\LuaInstanceBridge.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\LuaMemory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\LuaSignalBridge.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\Script.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\ScriptContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\ThreadRef.cpp"
 				>
 			</File>
 		</Filter>
