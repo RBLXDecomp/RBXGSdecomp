@@ -150,8 +150,8 @@ namespace RBX
 			void setAbuseReportUrl(std::string value);
 			bool OnReceive(RakPeerInterface*, Packet*);
 			void setConnection(RakPeerInterface* peer);
-			boost::shared_ptr<Instance> playerFromCharacter(boost::shared_ptr<Instance>);
-			boost::shared_ptr<Instance> getPlayerByID(int);
+			boost::shared_ptr<Instance> playerFromCharacter(boost::shared_ptr<Instance> character);
+			boost::shared_ptr<Instance> getPlayerByID(int userID);
 		protected:
 			virtual bool askAddChild(const Instance* instance) const;
 			virtual void onChildAdded(Instance*);
