@@ -125,12 +125,12 @@ namespace RBX
 		}
 	}
 
-	//43.30% matching.
+	//65.93% matching.
 	void Lighting::setTime(const boost::posix_time::time_duration& time)
 	{
 		if (timeOfDay != time)
 		{
-			timeOfDay = time;
+			timeOfDay = boost::posix_time::time_duration(0, 0, time.total_seconds());
 			skyParameters.setTime(timeOfDay.total_seconds());
 			raisePropertyChanged(prop_Time);
 			fireLightingChanged(false);
