@@ -140,10 +140,9 @@ namespace RBX
 		}
 	}
 
-	//50% matching.
 	double Lighting::getMinutesAfterMidnight()
 	{
-		return timeOfDay.hours() * 60;
+		return timeOfDay.total_milliseconds() / 60000.0;
 	}
 
 	void Lighting::setMinutesAfterMidnight(double seconds)
