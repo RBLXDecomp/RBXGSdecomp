@@ -7,6 +7,9 @@
 
 namespace RBX
 {
+	class ContentId;
+	bool operator!=(const ContentId&, const ContentId&);
+
 	class ContentId
 	{
 	private:
@@ -45,12 +48,14 @@ namespace RBX
 		{
 			return *mimeTypePtr;
 		}
-		const char* c_str() const;
+		const char* c_str() const
+		{
+			return id.c_str();
+		}
 		const std::string& toString() const
 		{
 			return id;
 		}
-		// is this right?
 		bool isNull() const
 		{
 			return id.empty();
@@ -72,9 +77,6 @@ namespace RBX
 		~ContentId() 
 		{
 		}
-
-	public:
-		//ContentId& operator=(const ContentId&);
 
 	public:
 		static ContentId fromUrl(const std::string&);
