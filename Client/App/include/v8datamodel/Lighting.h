@@ -57,7 +57,7 @@ namespace RBX
 		void setTime(const boost::posix_time::time_duration& time);
 		double getGameTime() const;
 		double getMinutesAfterMidnight();
-		void setMinutesAfterMidnight(double minutes);
+		void setMinutesAfterMidnight(double seconds);
 		float getMoonPhase()
 		{
 			return skyParameters.moonPhase;

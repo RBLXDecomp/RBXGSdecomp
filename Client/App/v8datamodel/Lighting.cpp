@@ -146,9 +146,9 @@ namespace RBX
 		return timeOfDay.hours() * 60;
 	}
 
-	void Lighting::setMinutesAfterMidnight(double minutes)
+	void Lighting::setMinutesAfterMidnight(double seconds)
 	{
-		setTime(boost::posix_time::time_duration(0, minutes, 0));
+		setTime(boost::posix_time::time_duration(0, 0, seconds * 60));
 	}
 
 	void Lighting::onChildAdded(Instance* instance)
