@@ -118,7 +118,7 @@ namespace RBX
 			std::vector<boost::shared_ptr<Instance>>::const_iterator iter = myPlayers->begin();
 			std::vector<boost::shared_ptr<Instance>>::const_iterator end = myPlayers->end();
 
-			for(; iter != end; iter++)
+			for (; iter != end; iter++)
 			{
 				if (static_cast<Player*>(iter->get())->getCharacter() == static_cast<ModelInstance*>(character.get()))
 					return *iter;
@@ -132,7 +132,7 @@ namespace RBX
 			std::vector<boost::shared_ptr<Instance>>::const_iterator iter = players->begin();
 			std::vector<boost::shared_ptr<Instance>>::const_iterator end = players->end();
 
-			for(; iter != end; iter++)
+			for (; iter != end; iter++)
 			{
 				if (static_cast<Player*>(iter->get())->getUserID() == userID)
 					return *iter;
