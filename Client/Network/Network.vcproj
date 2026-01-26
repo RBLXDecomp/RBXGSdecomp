@@ -223,6 +223,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Player.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Players.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Replicator.cpp"
 				>
 			</File>

@@ -1,13 +1,13 @@
 #pragma once
 #include <vector>
 #include <g3d/gcamera.h>
+#include "v8datamodel/Camera.h"
 #include "util/Extents.h"
 
 namespace RBX
 {
 	class Primitive;
 	class PartInstance;
-	class Camera;
 	class __declspec(novtable) ICameraOwner
 	{
 	private:

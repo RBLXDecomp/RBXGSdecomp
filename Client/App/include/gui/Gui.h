@@ -1,4 +1,5 @@
 #pragma once
+#include "RbxGraphics/Adorn.h"
 #include "v8tree/Instance.h"
 #include "gui/GuiEvent.h"
 #include "gui/Layout.h"
