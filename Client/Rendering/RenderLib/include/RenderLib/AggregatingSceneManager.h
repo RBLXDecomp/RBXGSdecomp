@@ -17,7 +17,10 @@ namespace RBX
 			public:
 				bool dequeueSleepingChunk(const G3D::ReferenceCountedPointer<Chunk>& chunk);
 				void addToQueue(const G3D::ReferenceCountedPointer<Chunk>&);
-				void clear();
+				void clear()
+				{
+					queue.clear();
+				}
 				void optimize(AggregatingSceneManager&, double);
 			};
 
@@ -51,7 +54,7 @@ namespace RBX
 			virtual void setSleeping(const G3D::ReferenceCountedPointer<Chunk>& chunk, bool sleeping);
 			virtual void prerender(double);
 		private:
-			void dequeueSleepingChunk(const G3D::ReferenceCountedPointer<Chunk>&);
+			void dequeueSleepingChunk(const G3D::ReferenceCountedPointer<Chunk>& chunk);
 			void queueSleepingChunk(const G3D::ReferenceCountedPointer<Chunk>&);
 			void deconstructAggregate(G3D::ReferenceCountedPointer<AggregateChunk>);
 		};
