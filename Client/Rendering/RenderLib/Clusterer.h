@@ -1,3 +1,4 @@
+#pragma once
 #include "RenderLib/Chunk.h"
 
 namespace RBX
