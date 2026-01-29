@@ -4,6 +4,3 @@
 [submodule "Client/Rendering/g3d"]
 	path = Client/Rendering/g3d
 	url = https://github.com/RBLXDecomp/g3d.git
-[submodule "Client/App/lua-5.1.1"]
-	path = Client/App/lua-5.1.1
-	url = https://github.com/pizzaboxer/lua.git
