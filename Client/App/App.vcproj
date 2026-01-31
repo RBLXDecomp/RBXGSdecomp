@@ -794,6 +794,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\DebugSettings.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Feature.h"
 					>
 				</File>
@@ -858,6 +862,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Stats.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Surface.h"
 					>
 				</File>
@@ -890,6 +898,10 @@
 				Name="script"
 				>
 				<File
+					RelativePath=".\include\script\LuaArguments.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\script\LuaAtomicClasses.h"
 					>
 				</File>
@@ -911,6 +923,10 @@
 				</File>
 				<File
 					RelativePath=".\include\script\ScriptContext.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\script\ScriptEvent.h"
 					>
 				</File>
 				<File
@@ -969,6 +985,10 @@
 			<Filter
 				Name="lua"
 				>
+				<File
+					RelativePath=".\include\lua\lua.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\include\lua\LuaBridge.h"
 					>
@@ -1330,6 +1350,10 @@
 				RelativePath=".\v8datamodel\RootInstance.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\v8datamodel\Stats.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="v8xml"
@@ -1375,6 +1399,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\script\ScriptEvent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\script\ThreadRef.cpp"
 				>
 			</File>
@@ -1383,16 +1411,16 @@
 			Name="lua-5.1.1"
 			>
 			<File
-				RelativePath=".\lua-5.1.1\etc\all.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\doc\contents.html"
-				>
-			</File>
-			<File
 				RelativePath=".\lua-5.1.1\src\lapi.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lapi.h"
@@ -1401,6 +1429,14 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lauxlib.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lauxlib.h"
@@ -1409,22 +1445,42 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lbaselib.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lcode.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lcode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.1\src\ldblib.c"
-				>
-			</File>
-			<File
 				RelativePath=".\lua-5.1.1\src\ldebug.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\ldebug.h"
@@ -1433,6 +1489,14 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\ldo.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\ldo.h"
@@ -1441,10 +1505,26 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\ldump.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lfunc.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lfunc.h"
@@ -1453,22 +1533,42 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lgc.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lgc.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.1\src\linit.c"
-				>
-			</File>
-			<File
 				RelativePath=".\lua-5.1.1\src\liolib.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\llex.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\llex.h"
@@ -1481,22 +1581,42 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lmathlib.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lmem.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lmem.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.1\src\loadlib.c"
-				>
-			</File>
-			<File
 				RelativePath=".\lua-5.1.1\src\lobject.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lobject.h"
@@ -1505,18 +1625,30 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lopcodes.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lopcodes.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua-5.1.1\src\loslib.c"
-				>
-			</File>
-			<File
 				RelativePath=".\lua-5.1.1\src\lparser.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lparser.h"
@@ -1525,6 +1657,14 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lstate.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lstate.h"
@@ -1533,6 +1673,14 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lstring.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lstring.h"
@@ -1541,10 +1689,26 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lstrlib.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\ltable.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\ltable.h"
@@ -1553,17 +1717,29 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\ltablib.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\ltm.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\ltm.h"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\src\lua.c"
 				>
 			</File>
 			<File
@@ -1572,18 +1748,6 @@
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\etc\lua.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\doc\lua.html"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\src\luac.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\doc\luac.html"
 				>
 			</File>
 			<File
@@ -1597,6 +1761,14 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lundump.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lundump.h"
@@ -1605,6 +1777,14 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lvm.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lvm.h"
@@ -1613,29 +1793,17 @@
 			<File
 				RelativePath=".\lua-5.1.1\src\lzio.c"
 				>
+				<FileConfiguration
+					Name="ReleaseAssert|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lzio.h"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\doc\manual.html"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\etc\min.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\etc\noparser.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\src\print.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lua-5.1.1\doc\readme.html"
 				>
 			</File>
 		</Filter>

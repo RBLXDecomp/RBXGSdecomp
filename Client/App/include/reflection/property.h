@@ -135,6 +135,7 @@ namespace RBX
 				  getset(getset)
 			{
 			}
+
 			TypedPropertyDescriptor(ClassDescriptor&, const Type&, const char*, const char*, std::auto_ptr<GetSet>, Functionality);
 		public:
 			virtual bool isReadOnly() const;

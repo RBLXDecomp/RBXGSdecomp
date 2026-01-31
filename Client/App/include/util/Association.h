@@ -32,5 +32,15 @@ namespace RBX
   
 	private:
 		static size_t& count();
+
+	public:
+		template<typename T>
+		bool contains() const;
+
+		template<typename T>
+		T& get();
+
+		template<typename T>
+		void remove();
 	};
 }

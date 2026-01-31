@@ -10,6 +10,7 @@
 
 #include <limits.h>
 #include <stddef.h>
+#include "boost/shared_ptr.hpp"
 
 
 /*
@@ -711,8 +712,39 @@ union luai_Cast { double l_d; long l_l; };
 ** CHANGE (define) this if you really need that. This value must be
 ** a multiple of the maximum alignment required for your machine.
 */
-#define LUAI_EXTRASPACE		0
+#define LUAI_EXTRASPACE		12
 
+
+
+struct lua_State;
+
+class RobloxExtraSpace
+{
+private:
+	boost::shared_ptr<int> threadCount;
+
+public:
+	bool yieldCaptured;
+
+private:
+	RobloxExtraSpace(RobloxExtraSpace* parent);
+	~RobloxExtraSpace();
+
+public:
+	size_t getThreadCount() const
+	{
+		return *threadCount;
+	}
+
+public:
+	static RobloxExtraSpace* get(lua_State* L)
+	{
+		// insert of fromstate(L) from lstate.c
+        return reinterpret_cast<RobloxExtraSpace*>(reinterpret_cast<char*>(L) - LUAI_EXTRASPACE);
+	}
+	static void construct(lua_State* L, RobloxExtraSpace* parent);
+	static void destroy(lua_State*);
+};
 
 /*
 @@ luai_userstate* allow user-specific actions on threads.

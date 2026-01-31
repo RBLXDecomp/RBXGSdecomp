@@ -32,7 +32,10 @@ namespace RBX
         class SharedPtrBridge : protected Bridge<boost::shared_ptr<T>, false>
         {
         public:
-            static void registerClass(lua_State*);
+            static void registerClass(lua_State* L)
+            {
+                Bridge<boost::shared_ptr<T>, false>::registerClass(L);
+            }
             static void registerClassLibrary(lua_State* L)
             {
                 lua_pushlightuserdata(L, push);

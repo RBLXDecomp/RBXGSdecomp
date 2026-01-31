@@ -10,15 +10,16 @@ namespace RBX
         class ThreadRef 
         {
         public:
+            class Node;
+            typedef boost::shared_ptr<Node> NodePtr;
+
+        public:
             class Node 
             {
             private:
                 ThreadRef* first;
                 const boost::shared_ptr<boost::mutex> sync;
             
-            /* public:
-                Node(const Node&); */
-
             private: 
                 Node();
 
@@ -27,8 +28,8 @@ namespace RBX
                 void eraseAllRefs();
             
             public:
-                static boost::shared_ptr<Node> create(lua_State*);
-                static boost::shared_ptr<Node> get(lua_State*);
+                static NodePtr create(lua_State*);
+                static NodePtr get(lua_State*);
             };
 
         private:
@@ -49,18 +50,53 @@ namespace RBX
             virtual void removeRef();
 
         public:
-            // ThreadRef(const ThreadRef&);
+            ThreadRef(const ThreadRef&);
             ThreadRef(lua_State*);
-            ThreadRef();
-            // ThreadRef& operator=(const ThreadRef&);
+            ThreadRef()
+                : sync(syncSingleton),
+                  node(NULL),
+                  previous(NULL),
+                  next(NULL),
+                  L(NULL),
+                  threadId(NULL)
+            {
+            }
+            ThreadRef& operator=(const ThreadRef&);
             ~ThreadRef();
 
             bool operator==(const ThreadRef&) const;
             bool operator!=(const ThreadRef&) const;
 
             void reset();
-            bool empty() const;
-            lua_State* thread() const;
+            bool empty() const
+            {
+                // TODO: is this correct?
+                return !L;
+            }
+            lua_State* thread() const
+            {
+                return L;
+            }
+        };
+
+        class FunctionRef : public ThreadRef
+        {
+        private:
+            size_t functionId;
+
+        public:
+            FunctionRef(const FunctionRef&);
+            FunctionRef(lua_State*, size_t);
+            FunctionRef();
+            ~FunctionRef();
+
+        public:
+            FunctionRef& operator=(const FunctionRef&);
+            bool operator==(const FunctionRef&) const;
+            bool operator!=(const FunctionRef&) const;
+
+        protected:
+            virtual void removeRef();
         };
     }
 }

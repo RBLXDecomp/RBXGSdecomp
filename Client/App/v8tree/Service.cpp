@@ -8,14 +8,6 @@ namespace RBX
 	Reflection::BoundFuncDesc<ServiceProvider, boost::shared_ptr<Instance>(std::string), 1> ServiceProvider::func_service(&ServiceProvider::findServiceByClassNameString, "service", "name", Reflection::FunctionDescriptor::AnyCaller);
 	Reflection::BoundFuncDesc<ServiceProvider, boost::shared_ptr<Instance>(std::string), 1> ServiceProvider::func_GetService(&ServiceProvider::findServiceByClassNameString, "GetService", "name", Reflection::FunctionDescriptor::AnyCaller);
 
-	ServiceProvider::ServiceProvider()
-	{
-	}
-
-	ServiceProvider::~ServiceProvider()
-	{
-	}
-
 	size_t ServiceProvider::newIndex()
 	{
 		static size_t index = 0xFFFFFFFF; // max unsigned integer

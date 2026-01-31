@@ -1,9 +1,12 @@
 #pragma once
 #include "script/Script.h"
+#include "script/ScriptEvent.h"
 #include "script/LuaMemory.h"
+#include "script/LuaArguments.h"
 #include "script/ThreadRef.h"
 #include "v8tree/Instance.h"
 #include "v8tree/Service.h"
+#include "v8datamodel/Stats.h"
 #include "util/Events.h"
 #include "util/RunStateOwner.h"
 #include "boost/shared_ptr.hpp"
@@ -12,23 +15,26 @@
 
 namespace RBX
 {
-    class Script; // this is intentional, don't remove this
+    class Script;
 
-    // TODO: remove forward declarations when implemented
     namespace Lua
     {
-        class YieldingThreads{};
-        class FunctionRef{};
+        class YieldingThreads;
     }
 
+    // TODO: remove when appropriate
     namespace Security
     {
-        enum Identities{};
-    }
-
-    namespace Stats
-    {
-        class Item{};
+        enum Identities
+        {
+            Anonymous,
+            LocalGUI,
+            GameScript,
+            CmdLine,
+            TrustedCOM,
+            TrustedWebService,
+            Replicator
+        };
     }
 
     extern const char *sScriptContext;
@@ -38,6 +44,10 @@ namespace RBX
                           public Listener<RunService, Heartbeat>
     {
     public:
+        typedef boost::function1<size_t, lua_State*> PushArgumentsClosure;
+        typedef boost::function2<void, lua_State*, size_t> ReadResultsClosure;
+
+    public:
         enum Result
         {
             Success,
@@ -46,6 +56,7 @@ namespace RBX
         };
 
         // TODO: come back to this when luasoft gets his stuff done
+    public:
         class ScriptImpersonator// : public Security::Impersonator
         {
         public:
@@ -56,9 +67,9 @@ namespace RBX
     private:
         lua_State* globalState;
         Lua::ThreadRef commandLineSandbox;
-        std::set<Script*, std::less<Script*>, std::allocator<Script*>> scripts;
+        std::set<Script*> scripts;
         boost::posix_time::ptime nextPendingScripts;
-        std::vector<boost::shared_ptr<Script>, std::allocator<boost::shared_ptr<Script>>> pendingScripts;
+        std::vector<boost::shared_ptr<Script>> pendingScripts;
         boost::shared_ptr<RunService> runService;
         boost::scoped_ptr<Lua::YieldingThreads> yieldEvent;
         bool scriptsDisabled;
@@ -69,55 +80,57 @@ namespace RBX
         static Reflection::BoundProp<bool, true> propScriptsDisabled;
     
     public:
-        ScriptContext(const ScriptContext&);
         ScriptContext();
         virtual ~ScriptContext();
 
-        // TODO: typedef these long repeated types somewhere?
-        std::auto_ptr<std::vector<Reflection::Value, std::allocator<Reflection::Value>>> call(const Lua::FunctionRef&, const std::vector<Reflection::Value, std::allocator<Reflection::Value>>&);
+        std::auto_ptr<Lua::ArgList> call(const Lua::FunctionRef&, const Lua::ArgList&);
         void call(const Lua::FunctionRef&);
-        void call(const Lua::FunctionRef&, boost::function1<size_t, lua_State*, std::allocator<boost::function_base>>, boost::function2<void, lua_State*, size_t, std::allocator<boost::function_base>>);
-        std::auto_ptr<std::vector<Reflection::Value, std::allocator<Reflection::Value>>> executeInNewThread(Security::Identities, const char*, const char*, const std::vector<Reflection::Value,std::allocator<Reflection::Value>>&);
+        void call(const Lua::FunctionRef&, PushArgumentsClosure, ReadResultsClosure);
+        std::auto_ptr<Lua::ArgList> executeInNewThread(Security::Identities, const char*, const char*, const Lua::ArgList&);
         void executeInNewThread(Security::Identities, const char*, const char*);
-        void executeInNewThread(Security::Identities, const char*, const char*, boost::function1<size_t, lua_State*, std::allocator<boost::function_base>>, boost::function2<void, lua_State*, size_t, std::allocator<boost::function_base>>);
-        ScriptContext::Result resume(lua_State*, int);
-        void resume(lua_State*, boost::function1<size_t, lua_State*, std::allocator<boost::function_base>>, boost::function2<void, lua_State*, size_t, std::allocator<boost::function_base>>);
-        void gc();
+        void executeInNewThread(Security::Identities, const char*, const char*, PushArgumentsClosure pushArguments, ReadResultsClosure readResults);
+        Result resume(lua_State* thread, int nard);
+        void resume(lua_State* thread, PushArgumentsClosure pushArguments, ReadResultsClosure readResults);
+        void gc()
+        {
+            if (globalState)
+                lua_gc(globalState, LUA_GCCOLLECT, 0);
+        }
         size_t getThreadCount() const;
         bool hasState() const;
         lua_State* state();
         virtual XmlElement* write();
     
     protected:
-        virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-        virtual void onEvent(const RunService*, Heartbeat);
-        virtual void onEvent(const RunService*, RunTransition);
+        virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
+        virtual void onEvent(const RunService* source, Heartbeat event);
+        virtual void onEvent(const RunService* source, RunTransition event);
       
     private:
-        void onChangedScriptEnabled(const Reflection::PropertyDescriptor&);
+        void onChangedScriptEnabled(const Reflection::PropertyDescriptor& __formal);
       
     public:
         void closeState();
-        void addScript(Script*);
-        void removeScript(Script*);
+        void addScript(Script* script);
+        void removeScript(Script* script);
       
     private:
-        void disassociateState(Script*);
+        void disassociateState(Script* script);
         void openState();
-        void startScript(boost::shared_ptr<Script>);
+        void startScript(boost::shared_ptr<Script> script);
         void startPendingScripts();
     
     public: 
-        static ScriptContext& getContext(lua_State*);
+        static ScriptContext& getContext(lua_State* thread);
 
     private:
-        static void sandboxThread(lua_State*);
-        static void setThreadIdentity(lua_State*, Security::Identities);
-        static Security::Identities getThreadIdentity(lua_State*);
-        static int print(lua_State*);
-        static int tick(lua_State*);
-        static int wait(lua_State*);
-        static int delay(lua_State*);
+        static void sandboxThread(lua_State* thread);
+        static void setThreadIdentity(lua_State* thread, Security::Identities identity);
+        static Security::Identities getThreadIdentity(lua_State* thread);
+        static int print(lua_State* L);
+        static int tick(lua_State* L);
+        static int wait(lua_State* thread);
+        static int delay(lua_State* thread);
         static int trustedThread(lua_State*);
         static int loadfile(lua_State*);
         static int dofile(lua_State*);
@@ -125,6 +138,6 @@ namespace RBX
         static int stats(lua_State*);
         static int statsitemvalue(lua_State*);
         static int onError(lua_State*);
-        static void reportError(lua_State*);
+        static void reportError(lua_State* thread);
     };
 }

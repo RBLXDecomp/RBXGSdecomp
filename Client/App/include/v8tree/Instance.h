@@ -191,8 +191,14 @@ namespace RBX
 	public:
 
 		void remove();
-		const Association<Instance>& association() const;
-		Association<Instance>& association();
+		const Association<Instance>& association() const
+		{
+			return assoc;
+		}
+		Association<Instance>& association()
+		{
+			return assoc;
+		}
 		boost::shared_ptr<Instance> clone();
 		void removeAllChildren();
 		std::string getClassNameStr() const

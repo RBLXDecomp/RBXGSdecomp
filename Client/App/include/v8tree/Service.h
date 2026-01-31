@@ -18,15 +18,14 @@ namespace RBX
 		const boost::shared_ptr<Instance> service;
 	  
 	public:
-		//ServiceAdded(const ServiceAdded&);
+		ServiceAdded(const ServiceAdded&);
 		ServiceAdded(Instance* instance)
 			: service(shared_from(instance))
 		{
 		}
+
 	private:
 		ServiceAdded& operator=(const ServiceAdded&);
-	public:
-		~ServiceAdded();
 	};
 
 	struct ServiceRemoving
@@ -35,15 +34,14 @@ namespace RBX
 		const boost::shared_ptr<Instance> service;
 	  
 	public:
-		//ServiceRemoving(const ServiceRemoving&);
+		ServiceRemoving(const ServiceRemoving&);
 		ServiceRemoving(Instance* instance)
 			: service(shared_from(instance))
 		{
 		}
+
 	private:
 		ServiceRemoving& operator=(const ServiceRemoving&);
-	public:
-		~ServiceRemoving();
 	};
 
 	extern const char* sServiceProvider;
@@ -69,21 +67,18 @@ namespace RBX
 		virtual void onAddListener(Listener<ServiceProvider, ServiceAdded>*) const;
 		virtual bool askAddChild(const Instance*) const;
 		void clearServices();
+
 	private:
 		boost::shared_ptr<Instance> findServiceByClassName(const Name&) const;
 		boost::shared_ptr<Instance> findServiceByClassNameString(std::string);
-	public:
-		//ServiceProvider(const ServiceProvider&);
-		ServiceProvider();
-		virtual ~ServiceProvider();
-	public:
-		//ServiceProvider& operator=(const ServiceProvider&);
 	  
 	public:
 		static Instance* create(Instance*, const Name&);
 		static const ServiceProvider* findServiceProvider(const Instance*);
+
 	private:
 		static size_t newIndex();
+
 	public:
 		template<typename Class>
 		Class* find() const;

@@ -116,7 +116,6 @@ namespace RBX
 				void (Class::*changed)(const PropertyDescriptor&);
 			  
 			public:
-				//BoundPropGetSet(const BoundPropGetSet&);
 				BoundPropGetSet(BoundProp& desc, PropType (Class::*member), void (Class::*changed)(const PropertyDescriptor&))
 					: desc(desc),
 					  member(member),
@@ -147,16 +146,19 @@ namespace RBX
 			};
 
 		public:
-			//BoundProp(BoundProp&);
 			template<typename Class>
 			BoundProp(const char* name, const char* category, PropType (Class::*member), Functionality flags)
 				: TypedPropertyDescriptor(Class::classDescriptor(), name, category, std::auto_ptr<GetSet>(), flags)
 			{
 				getset.reset(new BoundPropGetSet<Class>(*this, member, NULL));
 			}
-			virtual ~BoundProp();
-		public:
-			//BoundProp& operator=(BoundProp&);
+
+			template<typename Class>
+			BoundProp(const char* name, const char* category, PropType (Class::*member), void (Class::*changed)(const PropertyDescriptor&), Functionality flags)
+				: TypedPropertyDescriptor(Class::classDescriptor(), name, category, std::auto_ptr<GetSet>(), flags)
+			{
+				getset.reset(new BoundPropGetSet<Class>(*this, member, changed));
+			}
 		};
 
 		// PropDescriptor
