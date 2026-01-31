@@ -89,7 +89,7 @@ namespace RBX
         std::auto_ptr<Lua::ArgList> executeInNewThread(Security::Identities, const char*, const char*, const Lua::ArgList&);
         void executeInNewThread(Security::Identities, const char*, const char*);
         void executeInNewThread(Security::Identities, const char*, const char*, PushArgumentsClosure pushArguments, ReadResultsClosure readResults);
-        Result resume(lua_State* thread, int nard);
+        Result resume(lua_State* thread, int narg);
         void resume(lua_State* thread, PushArgumentsClosure pushArguments, ReadResultsClosure readResults);
         void gc()
         {

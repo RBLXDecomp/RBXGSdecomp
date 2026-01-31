@@ -169,12 +169,12 @@ namespace RBX
 	  
 	private:
 		void predelete();
-	public:
-		//Instance(const Instance&);
+
 	protected:
 		Instance(const char* name);
 		Instance();
 		virtual ~Instance();
+
 	public:
 		void assignGuid(const Guid::Data& id)
 		{
@@ -186,10 +186,11 @@ namespace RBX
 		{
 			return guid;
 		}
+
 	protected:
 		virtual void onGuidChanged();
-	public:
 
+	public:
 		void remove();
 		const Association<Instance>& association() const
 		{

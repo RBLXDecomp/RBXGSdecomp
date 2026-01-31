@@ -116,29 +116,27 @@ namespace RBX
 		public:
 			virtual boost::shared_ptr<Object> create() const;
 			const Name& getClassName() const;
+
 		public:
-			//Creator(const Creator&);
 			Creator();
 			~Creator();
-		public:
-			//Creator& operator=(const Creator&);
 		};
 
 	private:
 		static const Creator creator;
 	  
-	public:
-		//FactoryProduct(const FactoryProduct&);
 	protected:
 		FactoryProduct();
-		virtual ~FactoryProduct();
+		virtual ~FactoryProduct()
+		{
+		}
+
 	public:
 		const ICreator& getCreator()
 		{
 			return creator;
 		}
 		virtual const Name& getClassName() const;
-		//FactoryProduct& operator=(const FactoryProduct&);
 	  
 	public:
 		static const Name& className();
@@ -148,7 +146,6 @@ namespace RBX
 	class NonFactoryProduct : public DerivedClass
 	{
 	public:
-		//NonFactoryProduct(const NonFactoryProduct&);
 		NonFactoryProduct()
 			: DerivedClass()
 		{
@@ -159,12 +156,9 @@ namespace RBX
 			: DerivedClass(arg0)
 		{
 		}
-	public:
+
 		virtual const Name& getClassName() const;
-	public:
 		virtual ~NonFactoryProduct();
-	public:
-		//NonFactoryProduct& operator=(const NonFactoryProduct&);
 
 	public:
 		static const Name& className();

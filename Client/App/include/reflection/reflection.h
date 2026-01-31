@@ -65,23 +65,16 @@ namespace RBX
 		// helps with constructors
 		typedef DescribedCreatable<Class, DerivedClass, ClassName> Base;
 
-	public:
-		//DescribedCreatable(const DescribedCreatable&);
 	protected:
 		DescribedCreatable();
+
 		template<typename Arg0Type>
 		DescribedCreatable(Arg0Type arg0);
-	public:
-		virtual ~DescribedCreatable();
-	public:
-		//DescribedCreatable& operator=(const DescribedCreatable&);
 	};
 
 	template<typename Class, typename DerivedClass, const char** ClassName>
 	class DescribedNonCreatable : public Reflection::Described<Class, ClassName, NonFactoryProduct<DerivedClass, ClassName>>
 	{
-	public:
-		//DescribedNonCreatable(const DescribedNonCreatable&);
 	protected:
 		DescribedNonCreatable()
 			: Described()
@@ -93,10 +86,6 @@ namespace RBX
 			: Described(arg0)
 		{
 		}
-	public:
-		virtual ~DescribedNonCreatable();
-	public:
-		//DescribedNonCreatable& operator=(const DescribedNonCreatable&);
 	};
 
 	namespace Reflection

@@ -18,8 +18,14 @@
 #include "lualib.h"
 #include "lstate.h"
 
+// TODO: where do these numbers actually come from? i don't think
+// they were actually defined like this
+#define RBX_LUA_GLOBAL_SCRIPTCONTEXT (void*)0x43 // 'C'
+#define RBX_LUA_GLOBAL_THREADREFNODE (void*)0x4E // 'N'
+#define RBX_LUA_GLOBAL_IDENTITY (void*)0x54 // 'T'
+
 static int contextCount = 0;
-bool vvvvv; // what
+bool vvvvv;
 
 using namespace RBX;
 using namespace boost::posix_time;
@@ -66,6 +72,12 @@ static inline void _removeListenerInline(RunService* runService, Listener<Class,
     if (runService)
         runService->Notifier<Class, Event>::removeListener(listener);
 }
+
+static inline void _removeListenersInline(boost::shared_ptr<RunService>& runService, ScriptContext* scriptContext)
+{
+    _removeListenerInline<RunService, RunTransition>(runService.get(), scriptContext);
+    _removeListenerInline<RunService, Heartbeat>(runService.get(), scriptContext);
+}
 // end unidentified inlines
 
 Reflection::BoundProp<bool, true> ScriptContext::propScriptsDisabled("ScriptsDisabled", "State", &ScriptContext::scriptsDisabled, &ScriptContext::onChangedScriptEnabled, Reflection::PropertyDescriptor::LEGACY); 
@@ -73,14 +85,8 @@ Reflection::BoundProp<bool, true> ScriptContext::propScriptsDisabled("ScriptsDis
 static int panic(lua_State* L)
 {
     std::string message = lua_tostring(L, -1);
-    StandardOut::singleton()->print(
-        MESSAGE_ERROR,
-        "Unprotected error in call to Lua API (%s)\n",
-        message.c_str()
-    );
-
+    StandardOut::singleton()->print(MESSAGE_ERROR, "Unprotected error in call to Lua API (%s)\n", message.c_str());
     RBXCRASH();
-
     return 0;
 }
 
@@ -114,9 +120,10 @@ void ScriptContext::openState()
 
         lua_atpanic(L, panic);
 
-        lua_pushlightuserdata(globalState, (void*)0x43);
+        lua_pushlightuserdata(globalState, RBX_LUA_GLOBAL_SCRIPTCONTEXT);
         lua_pushlightuserdata(globalState, this);
         lua_settable(globalState, LUA_GLOBALSINDEX);
+
         lua_pop(globalState, luaopen_base(globalState));
 
         _openLibInline(globalState, luaopen_string, LUA_STRLIBNAME);
@@ -190,7 +197,8 @@ void ScriptContext::openState()
     }
 }
 
-// TODO: ~100% match but misaligned stack
+// TODO: 99.79% (functional match)
+// stack offsets not the same
 void ScriptContext::closeState()
 {
     if (globalState)
@@ -235,7 +243,6 @@ ScriptContext::ScriptContext()
     setName("Script Context");
 }
 
-// TODO: check when ~Instance is implemented
 ScriptContext::~ScriptContext()
 {
     RBXASSERT(globalState == NULL);
@@ -254,7 +261,7 @@ void ScriptContext::sandboxThread(lua_State* thread)
 
 void ScriptContext::setThreadIdentity(lua_State* thread, Security::Identities identity)
 {
-    lua_pushlightuserdata(thread, (void *)0x54);
+    lua_pushlightuserdata(thread, RBX_LUA_GLOBAL_IDENTITY);
     lua_pushinteger(thread, identity);
     lua_settable(thread, LUA_GLOBALSINDEX);
 
@@ -276,13 +283,13 @@ size_t ScriptContext::getThreadCount() const
 
 ScriptContext& ScriptContext::getContext(lua_State* thread)
 {
-    lua_pushlightuserdata(thread, (void *)0x43);
+    lua_pushlightuserdata(thread, RBX_LUA_GLOBAL_SCRIPTCONTEXT);
     lua_gettable(thread, LUA_GLOBALSINDEX);
 
     RBXASSERT(lua_type(thread, -1) == LUA_TLIGHTUSERDATA);
-
     ScriptContext* sc = static_cast<ScriptContext*>(lua_touserdata(thread, -1));
     lua_pop(thread, 1);
+
     return *sc;
 }
 
@@ -517,8 +524,7 @@ void ScriptContext::onEvent(const RunService* source, RunTransition event)
 
 void ScriptContext::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 {
-    _removeListenerInline<RunService, RunTransition>(runService.get(), this);
-    _removeListenerInline<RunService, Heartbeat>(runService.get(), this);
+    _removeListenersInline(runService, this);
 
     if (oldProvider && !newProvider)
         closeState();
@@ -542,8 +548,7 @@ void ScriptContext::onServiceProvider(const ServiceProvider* oldProvider, const 
             statsItem = Creatable<Instance>::create<Stats::Item>("Lua");
             statsItem->setParent(statsService);
             statsItem->createBoundChildItem("disabled", &scriptsDisabled);
-            statsItem->createChildItem<size_t>("threads", boost::bind(&ScriptContext::getThreadCount, this));
-            // ^^ TODO: supposed to be int, not size_t
+            statsItem->createChildItem<int>("threads", boost::bind(&ScriptContext::getThreadCount, this));
         }
 
         runService = newProvider->create<RunService>();
@@ -591,7 +596,9 @@ void ScriptContext::removeScript(Script* script)
     }
 }
 
-// TODO: 98.79%
+// TODO: 98.79% (functional match)
+// incorrect placement of i initialisation
+// the code here is laid out really weirdly anyway, don't know what to make of it
 void ScriptContext::reportError(lua_State* thread)
 {
     lua_Debug ar;
@@ -602,26 +609,29 @@ void ScriptContext::reportError(lua_State* thread)
     {
         StandardOut::singleton()->print(MESSAGE_ERROR, lua_tostring(thread, -1));
 
-        if (DebugSettings::singleton().getStackTracingEnabled() && lua_getstack(thread, 1, &ar))
+        if (DebugSettings::singleton().getStackTracingEnabled())
         {
-            do
+            if (lua_getstack(thread, 1, &ar))
             {
-                i++;
+                do
+                {
+                    i++;
 
-                lua_getinfo(thread, "nSlu", &ar);
+                    lua_getinfo(thread, "nSlu", &ar);
 
-                StandardOut::singleton()->print(
-                    MESSAGE_INFO,
-                    "   stack %s, line %d: %s %s",
-                    ar.source,
-                    ar.currentline,
-                    ar.namewhat,
-                    ar.name
-                );
+                    StandardOut::singleton()->print(
+                        MESSAGE_INFO,
+                        "   stack %s, line %d: %s %s",
+                        ar.source,
+                        ar.currentline,
+                        ar.namewhat,
+                        ar.name
+                    );
+                }
+                while (lua_getstack(thread, i, &ar));
+
+                StandardOut::singleton()->print(MESSAGE_INFO, "   stack end");
             }
-            while (lua_getstack(thread, i, &ar));
-
-            StandardOut::singleton()->print(MESSAGE_INFO, "   stack end");
         }
     }
     else
@@ -639,13 +649,9 @@ static std::string getFullName(Instance* instance)
     if (parent)
     {
         if (parent->getParent())
-        {
             return getFullName(parent) + "." + instance->getName();
-        }
         else
-        {
             return instance->getName();
-        }
     }
     else 
     {
@@ -653,13 +659,10 @@ static std::string getFullName(Instance* instance)
     }
 }
 
-// TODO: 96.09%
+// TODO: 99.78% (functional match)
+// use of registers swapped in codegen
 void ScriptContext::startScript(boost::shared_ptr<Script> script)
 {
-    // (01E310)  S_BPREL32: [FFFFFF8C], Type:         0x00015915, popper
-    // (01E324)  S_BPREL32: [FFFFFF84], Type:             0x2339, code
-    // (01E338)  S_BPREL32: [FFFFFF9C], Type:             0x13AC, name
-
     if (scriptsDisabled)
     {
         pendingScripts.push_back(script);
@@ -696,16 +699,10 @@ void ScriptContext::startScript(boost::shared_ptr<Script> script)
 
     setThreadIdentity(thread, Security::GameScript);
 
-    Association<Instance>& assoc = script->association();
-
-    RBXASSERT(!assoc.contains<Lua::ThreadRef::NodePtr>());
-
-    {
-        assoc.get<Lua::ThreadRef::NodePtr>() = Lua::ThreadRef::Node::create(thread);
-    }
+    RBXASSERT(!script->association().contains<Lua::ThreadRef::NodePtr>());
+    script->association().get<Lua::ThreadRef::NodePtr>() = Lua::ThreadRef::Node::create(thread);
 
     RBXASSERT(lua_gettop(thread) == 0);
-
     Lua::ObjectBridge::push(thread, script);
     lua_setfield(thread, LUA_GLOBALSINDEX, "script");
 
