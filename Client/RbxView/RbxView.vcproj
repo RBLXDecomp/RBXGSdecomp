@@ -112,6 +112,7 @@
 				AdditionalIncludeDirectories=".\include;..\RbxViewBase;..\Rendering\RenderLib\include;..\Rendering\g3d\include;..\App\include;..\Rendering\AppDraw\include;..\boost_1_34_1\src;..\Rendering\sdl-1.2.6\include;..\RbxGraphics\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_RELEASE"
 				RuntimeLibrary="2"
+				BufferSecurityCheck="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -155,7 +156,51 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\BevelMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BrickMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CylinderMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FileMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\HeadMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MaterialFactory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Part.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PBBMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\QuadVolume.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SphereMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TorsoMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WedgeMesh.cpp"
 				>
 			</File>
 		</Filter>
@@ -165,11 +210,59 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\BevelMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BrickMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CylinderMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FileMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HeadMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MaterialFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshFactory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Part.h"
 				>
 			</File>
 			<File
+				RelativePath=".\PBBMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\QuadVolume.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SphereMesh.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TorsoMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WedgeMesh.h"
 				>
 			</File>
 			<Filter

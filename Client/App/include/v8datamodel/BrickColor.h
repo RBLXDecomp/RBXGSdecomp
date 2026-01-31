@@ -198,8 +198,14 @@ namespace RBX
 		{
 			return this->number != other.number;
 		}
-		bool operator>(const BrickColor&) const;
-		bool operator<(const BrickColor&) const;
+		bool operator>(const BrickColor& other) const
+		{
+			return this->number > other.number;
+		}
+		bool operator<(const BrickColor& other) const
+		{
+			return this->number < other.number;
+		}
 	  
 	public:
 		static const std::vector<BrickColor>& colorPalette();
