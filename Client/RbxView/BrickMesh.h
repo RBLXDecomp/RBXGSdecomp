@@ -1,3 +1,4 @@
+#pragma once
 #include "QuadVolume.h"
 #include "v8datamodel/BrickColor.h"
 
