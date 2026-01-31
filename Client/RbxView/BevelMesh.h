@@ -8,7 +8,6 @@ namespace RBX
 		class BevelMesh : public Render::Mesh
 		{
 		public:
-
 			class Builder : public LevelBuilder
 			{
 			protected:
