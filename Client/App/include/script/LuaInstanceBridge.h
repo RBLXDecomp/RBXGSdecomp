@@ -16,13 +16,13 @@ namespace RBX
             static const luaL_Reg classLibrary[0];
   
         public:
-            static int callMemberFunction(lua_State*);
+            static int callMemberFunction(lua_State* L);
             static void registerInstanceClassLibrary(lua_State* L)
             {
                 luaL_register(L, "Instance", classLibrary);
                 lua_pop(L, 1);
             }
-            static int newInstance(lua_State*);
+            static int newInstance(lua_State* thread);
             static boost::shared_ptr<RBX::Instance> getInstance(lua_State*, size_t);
         };
     }

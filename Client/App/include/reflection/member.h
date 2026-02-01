@@ -34,37 +34,62 @@ namespace RBX
 		class MemberDescriptorContainer
 		{
 		public:
-			typedef std::vector<TheDescriptor*> Collection;
+			typedef std::vector<TheDescriptor*> CollectionType;
+			class Collection : public CollectionType
+			{
+			};
 
 		public:
 			class Iterator : public std::iterator<std::forward_iterator_tag, typename TheDescriptor::Describing, void>
 			{
 			private:
 				DescribedBase* instance;
-				typename Collection::const_iterator iter;
+				typename CollectionType::const_iterator iter;
 			  
 			public:
-				Iterator(const typename Collection::const_iterator&, DescribedBase*);
+				Iterator(const typename CollectionType::const_iterator& iter, DescribedBase* instance)
+					: instance(instance),
+					  iter(iter)
+				{
+				}
+
 			public:
 				typename TheDescriptor::Describing operator*() const;
-				bool operator==(const Iterator&) const;
-				bool operator!=(const Iterator&) const;
+				bool operator==(const Iterator& other) const
+				{
+					return iter == other.iter;
+				}
+				bool operator!=(const Iterator& other) const
+				{
+					return iter != other.iter;
+				}
 				Iterator operator++(int);
 				Iterator& operator++();
 			};
 
+		public:
 			class ConstIterator : public std::iterator<std::forward_iterator_tag, typename TheDescriptor::Describing, void>
 			{
 			private:
 				const DescribedBase* instance;
-				typename Collection::const_iterator iter;
+				typename CollectionType::const_iterator iter;
 		  
 			public:
-				ConstIterator(const typename Collection::const_iterator&, const DescribedBase*);
+				ConstIterator(const typename CollectionType::const_iterator& iter, const DescribedBase* instance)
+					: instance(instance),
+					  iter(iter)
+				{
+				}
 			public:
 				typename TheDescriptor::Describing operator*() const;
-				bool operator==(const ConstIterator&) const;
-				bool operator!=(const ConstIterator&) const;
+				bool operator==(const ConstIterator& other) const
+				{
+					return iter == other.iter;
+				}
+				bool operator!=(const ConstIterator& other) const
+				{
+					return iter != other.iter;
+				}
 				ConstIterator operator++(int);
 				ConstIterator& operator++();
 				const TheDescriptor& getDescriptor() const;
@@ -93,15 +118,15 @@ namespace RBX
 		public:
 			void declare(TheDescriptor*);
 
-			typename Collection::const_iterator descriptors_begin() const
+			typename CollectionType::const_iterator descriptors_begin() const
 			{
 				return descriptors.begin();
 			}
-			typename Collection::const_iterator descriptors_end() const
+			typename CollectionType::const_iterator descriptors_end() const
 			{
 				return descriptors.end();
 			}
-			typename Collection::const_iterator findDescriptor(const Name& name) const
+			typename CollectionType::const_iterator findDescriptor(const Name& name) const
 			{
 				size_t posStart = 0;
 				size_t posEnd = descriptors.size();
@@ -133,7 +158,7 @@ namespace RBX
 							posStart = i+1;
 						}
 
-						// TODO: can we get rid of this jump?
+						// TODO: can we get rid of this jump? it's not obvious to me how
 						if (posStart >= posEnd)
 							goto notFound;
 					}
@@ -145,14 +170,32 @@ namespace RBX
 				return descriptors.end();
 			}
 
-			Iterator findMember(const Name&, DescribedBase*) const;
-			ConstIterator findConstMember(const Name&, const DescribedBase*) const;
+			Iterator findMember(const Name& name, DescribedBase* instance) const
+			{
+				return Iterator::Iterator(findDescriptor(name), instance);
+			}
+			ConstIterator findConstMember(const Name& name, const DescribedBase* instance) const
+			{
+				return ConstIterator::ConstIterator(findDescriptor(name), instance);
+			}
 
-			Iterator members_begin(DescribedBase*) const;
-			ConstIterator members_begin(const DescribedBase*) const;
+			Iterator members_begin(DescribedBase* instance) const
+			{
+				return Iterator::Iterator(descriptors_begin(), instance);
+			}
+			ConstIterator members_begin(const DescribedBase* instance) const
+			{
+				return ConstIterator::ConstIterator(descriptors_begin(), instance);
+			}
 
-			Iterator members_end(DescribedBase*) const;
-			ConstIterator members_end(const DescribedBase*) const;
+			Iterator members_end(DescribedBase* instance) const
+			{
+				return Iterator::Iterator(descriptors_end(), instance);
+			}
+			ConstIterator members_end(const DescribedBase* instance) const
+			{
+				return ConstIterator::ConstIterator(descriptors_end(), instance);
+			}
 
 			void mergeMembers(const MemberDescriptorContainer*);
 

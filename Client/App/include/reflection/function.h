@@ -56,7 +56,10 @@ namespace RBX
 			Function(const FunctionDescriptor&, const DescribedBase*);
 			Function& operator=(const Function&);
 			const Name& getName() const;
-			const FunctionDescriptor* getDescriptor() const;
+			const FunctionDescriptor* getDescriptor() const
+			{
+				return descriptor;
+			}
 			void execute(FunctionDescriptor::Arguments&) const;
 		};
 

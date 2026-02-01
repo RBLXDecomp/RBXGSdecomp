@@ -19,7 +19,7 @@ namespace RBX
         
         protected:
             static int on_index(lua_State*);
-            static int on_index(const T&, const char*, lua_State*);
+            static int on_index(const T& object, const char* name, lua_State* L);
             static int on_newindex(lua_State*);
             static void on_newindex(T&, const char*, lua_State*);
             static int on_tostring(lua_State*);
