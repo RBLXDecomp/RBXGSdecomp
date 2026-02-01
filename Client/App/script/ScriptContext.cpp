@@ -90,6 +90,8 @@ static int panic(lua_State* L)
     return 0;
 }
 
+const char* RBX::sScriptContext = "ScriptContext";
+
 void ScriptContext::openState()
 {
     if (!globalState)

@@ -39,6 +39,8 @@ namespace RBX
             ThreadRef* next;
             lua_State* L;
             int threadId;
+            
+        private:
             static boost::shared_ptr<boost::mutex> syncSingleton;
         
         private:

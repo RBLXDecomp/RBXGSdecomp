@@ -3,9 +3,11 @@
 #include "v8datamodel/Workspace.h"
 #include "boost/thread/once.hpp"
 
-const RBX::Reflection::PropDescriptor<RBX::Script, std::string> RBX::Script::prop_EmbeddedSourceCode("Source", "Data", &Script::getEmbeddedCode, &Script::setEmbeddedCode, Reflection::PropertyDescriptor::LEGACY);
-const RBX::Reflection::PropDescriptor<RBX::Script, RBX::ContentId> RBX::Script::prop_SourceCodeId("LinkedSource", "Data", &Script::getScriptId, &Script::setScriptId, Reflection::PropertyDescriptor::LEGACY);
-RBX::Reflection::BoundProp<bool, true> RBX::Script::prop_Disabled("Disabled", "Behavior", &Script::disabled, Reflection::PropertyDescriptor::STANDARD);
+using namespace RBX;
+
+const Reflection::PropDescriptor<Script, std::string> Script::prop_EmbeddedSourceCode("Source", "Data", &Script::getEmbeddedCode, &Script::setEmbeddedCode, Reflection::PropertyDescriptor::LEGACY);
+const Reflection::PropDescriptor<Script, ContentId> Script::prop_SourceCodeId("LinkedSource", "Data", &Script::getScriptId, &Script::setScriptId, Reflection::PropertyDescriptor::LEGACY);
+Reflection::BoundProp<bool, true> Script::prop_Disabled("Disabled", "Behavior", &Script::disabled, Reflection::PropertyDescriptor::STANDARD);
 
 static boost::shared_ptr<const std::string> helloWorld;
 
@@ -16,113 +18,110 @@ void initScriptCpp()
     helloWorld.reset(new std::string("print(\"Hello world!\")\r\n"));
 }
 
-namespace RBX
+const char* RBX::sScript = "Script";
+
+Script::Script()
+    : DescribedCreatable("Script"),
+      disabled(false),
+      owner(NULL)
 {
-    const char* sScript = "Script";
+    boost::call_once(&initScriptCpp, flagInitScriptCpp);
+    embeddedSource = helloWorld;
+}
 
-    Script::Script()
-        : DescribedCreatable("Script"),
-          disabled(false),
-          owner(NULL)
+const char* RBX::sLocalScript = "LocalScript";
+
+LocalScript::LocalScript()
+{
+    setName("LocalScript");
+}
+
+Script::~Script()
+{
+    RBXASSERT(owner == NULL);
+}
+
+void Script::setEmbeddedCode(const std::string& value)
+{
+    if (getEmbeddedCode() != value)
     {
-        boost::call_once(&initScriptCpp, flagInitScriptCpp);
-        embeddedSource = helloWorld;
+        embeddedSource.reset(new std::string(value));
+        raisePropertyChanged(prop_EmbeddedSourceCode);
     }
+}
 
-    const char* sLocalScript = "LocalScript";
-
-    LocalScript::LocalScript()
+void Script::setScriptId(const ContentId& value)
+{
+    if (getScriptId() != value)
     {
-        setName("LocalScript");
+        scriptId = value;
+        requestCode();
+        raisePropertyChanged(prop_SourceCodeId);
     }
+}
 
-    Script::~Script()
-    {
-        RBXASSERT(owner == NULL);
-    }
+void Script::onAncestorChanged(const AncestorChanged& event)
+{
+    Instance::onAncestorChanged(event);
 
-    void Script::setEmbeddedCode(const std::string& value)
+    IScriptOwner* newOwner = NULL;
+    Instance* parent = this->getParent();
+
+    while (parent)
     {
-        if (getEmbeddedCode() != value)
+        IScriptOwner* parentOwner = dynamic_cast<IScriptOwner*>(parent);
+
+        if (parentOwner)
         {
-            embeddedSource.reset(new std::string(value));
-            raisePropertyChanged(prop_EmbeddedSourceCode);
-        }
-    }
+            newOwner = parentOwner->scriptShouldRun(this);
 
-	void Script::setScriptId(const ContentId& value)
-    {
-        if (getScriptId() != value)
-        {
-            scriptId = value;
-            requestCode();
-            raisePropertyChanged(prop_SourceCodeId);
-        }
-    }
-
-	void Script::onAncestorChanged(const AncestorChanged& event)
-    {
-        Instance::onAncestorChanged(event);
-
-        IScriptOwner* newOwner = NULL;
-        Instance* parent = this->getParent();
-
-        while (parent)
-        {
-            IScriptOwner* parentOwner = dynamic_cast<IScriptOwner*>(parent);
-
-            if (parentOwner)
-            {
-                newOwner = parentOwner->scriptShouldRun(this);
-
-                if (newOwner)
-                    break;
-            }
-
-            parent = parent->getParent();
+            if (newOwner)
+                break;
         }
 
-        if (newOwner != owner)
+        parent = parent->getParent();
+    }
+
+    if (newOwner != owner)
+    {
+        if (owner)
+            owner->releaseScript(this);
+
+        owner = newOwner;
+
+        ScriptContext* sc = ServiceProvider::find<ScriptContext>(this);
+
+        if (sc)
         {
+            sc->removeScript(this);
+
             if (owner)
-                owner->releaseScript(this);
-
-            owner = newOwner;
-
-            ScriptContext* sc = ServiceProvider::find<ScriptContext>(this);
-
-            if (sc)
-            {
-                sc->removeScript(this);
-
-                if (owner)
-                    owner->runScript(this, sc);
-            }
+                owner->runScript(this, sc);
         }
     }
+}
 
-	void Script::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+void Script::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+{
+    if (oldProvider)
     {
-        if (oldProvider)
-        {
-            ScriptContext* sc = oldProvider->find<ScriptContext>();
+        ScriptContext* sc = oldProvider->find<ScriptContext>();
 
-            if (sc)
-                sc->removeScript(this);
-        }
-
-        Instance::onServiceProvider(oldProvider, newProvider);
+        if (sc)
+            sc->removeScript(this);
     }
 
-	boost::shared_ptr<const std::string> Script::requestCode()
+    Instance::onServiceProvider(oldProvider, newProvider);
+}
+
+boost::shared_ptr<const std::string> Script::requestCode()
+{
+    if (scriptId.isNull())
     {
-        if (scriptId.isNull())
-        {
-            return embeddedSource;
-        }
-        else 
-        {
-            return ContentProvider::singleton().requestContentString(scriptId);
-        }
+        return embeddedSource;
+    }
+    else 
+    {
+        return ContentProvider::singleton().requestContentString(scriptId);
     }
 }
