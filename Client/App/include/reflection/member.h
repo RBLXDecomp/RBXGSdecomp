@@ -16,8 +16,6 @@ namespace RBX
 			const Name& category;
 			const ClassDescriptor& owner;
 		  
-		public:
-			//MemberDescriptor(const MemberDescriptor&);
 		protected:
 			MemberDescriptor(const ClassDescriptor& owner, const char* name, const char* category)
 				: Descriptor(name),
@@ -26,10 +24,10 @@ namespace RBX
 			{
 			}
 			virtual ~MemberDescriptor();
+
 		public:
 			bool isMemberOf(const DescribedBase*) const;
 			bool isMemberOf(const ClassDescriptor&) const;
-			//MemberDescriptor& operator=(const MemberDescriptor&);
 		};
 
 		template<typename TheDescriptor>
@@ -77,8 +75,6 @@ namespace RBX
 			std::vector<MemberDescriptorContainer*> derivedContainers;
 			MemberDescriptorContainer* base;
 
-		public:
-			//MemberDescriptorContainer(const MemberDescriptorContainer&);
 		protected:
 			// TODO: check if matches
 			MemberDescriptorContainer(MemberDescriptorContainer* base)
@@ -93,20 +89,72 @@ namespace RBX
 					base->derivedContainers.push_back(this);
 				}
 			}
+
 		public:
 			void declare(TheDescriptor*);
-			typename Collection::const_iterator descriptors_begin() const;
-			typename Collection::const_iterator descriptors_end() const;
-			typename Collection::const_iterator findDescriptor(const Name&) const;
+
+			typename Collection::const_iterator descriptors_begin() const
+			{
+				return descriptors.begin();
+			}
+			typename Collection::const_iterator descriptors_end() const
+			{
+				return descriptors.end();
+			}
+			typename Collection::const_iterator findDescriptor(const Name& name) const
+			{
+				size_t posStart = 0;
+				size_t posEnd = descriptors.size();
+
+				if (posEnd)
+				{
+					size_t i;
+
+					while (true)
+					{
+						i = (posStart+posEnd)/2;
+
+						const Name& descName = descriptors[i]->name;
+
+						if (name == descName)
+							break;
+						
+						int compare = name.compare(descName);
+
+						if (compare < 0)
+						{
+							posEnd = i;	
+						}
+						else
+						{
+							if (compare <= 0)
+								break;
+
+							posStart = i+1;
+						}
+
+						// TODO: can we get rid of this jump?
+						if (posStart >= posEnd)
+							goto notFound;
+					}
+
+					return descriptors.begin()+i;
+				}
+
+			notFound:
+				return descriptors.end();
+			}
+
 			Iterator findMember(const Name&, DescribedBase*) const;
 			ConstIterator findConstMember(const Name&, const DescribedBase*) const;
+
 			Iterator members_begin(DescribedBase*) const;
 			ConstIterator members_begin(const DescribedBase*) const;
+
 			Iterator members_end(DescribedBase*) const;
 			ConstIterator members_end(const DescribedBase*) const;
+
 			void mergeMembers(const MemberDescriptorContainer*);
-		public:
-			~MemberDescriptorContainer() {} // TODO: does not match
 
 		public:
 			static bool compare(const TheDescriptor*, const TheDescriptor*);
