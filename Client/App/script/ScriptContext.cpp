@@ -510,9 +510,7 @@ void ScriptContext::startPendingScripts()
     if (!scriptsDisabled)
     {
         std::vector<boost::shared_ptr<Script>> copy(pendingScripts);
-
         pendingScripts.erase(pendingScripts.begin(), pendingScripts.end());
-
         std::for_each(copy.begin(), copy.end(), boost::bind(&ScriptContext::startScript, this, _1));
     }
 }
