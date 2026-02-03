@@ -48,7 +48,17 @@ namespace RBX
 			}
 
 		public:
-			static Context& current();
+			static Context& current()
+			{
+				Context* context = ptr().get();
+				if (!context)
+				{
+					context = new Context(Anonymous);
+					ptr().reset(context);
+				}
+
+				return *context;
+			}
 			static __declspec(noinline) bool isInRole(Identities identity, Permissions permission);
 		private:
 			static boost::thread_specific_ptr<Context>& ptr()
