@@ -537,31 +537,29 @@ void ScriptContext::onServiceProvider(const ServiceProvider* oldProvider, const 
 
     Instance::onServiceProvider(oldProvider, newProvider);
 
-    RunService* runService;
+    RunService* newRunService;
 
     if (newProvider)
     {
         Stats::StatsService* statsService = newProvider->create<Stats::StatsService>();
-
         if (statsService)
         {
             statsItem = Creatable<Instance>::create<Stats::Item>("Lua");
             statsItem->setParent(statsService);
-            statsItem->createBoundChildItem("disabled", &scriptsDisabled);
+            statsItem->createBoundChildItem("disabled", scriptsDisabled);
             statsItem->createChildItem<int>("threads", boost::bind(&ScriptContext::getThreadCount, this));
         }
 
-        runService = newProvider->create<RunService>();
+        newRunService = newProvider->create<RunService>();
     }
     else
     {
-        runService = NULL;
+        newRunService = NULL;
     }
 
-    this->runService = shared_from(runService);
-
-    _addListenerInline<RunService, RunTransition>(this->runService.get(), this);
-    _addListenerInline<RunService, Heartbeat>(this->runService.get(), this);
+    runService = shared_from(newRunService);
+    _addListenerInline<RunService, RunTransition>(runService.get(), this);
+    _addListenerInline<RunService, Heartbeat>(runService.get(), this);
 }
 
 void ScriptContext::onChangedScriptEnabled(const Reflection::PropertyDescriptor& __formal)

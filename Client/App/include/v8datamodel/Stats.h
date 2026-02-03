@@ -36,7 +36,7 @@ namespace RBX
 
         public:
             template<typename T>
-            Item* createBoundChildItem(const char* name, const T* v);
+            Item* createBoundChildItem(const char* name, const T& v);
 
             template<typename T>
             Item* createChildItem(const char* name, boost::function0<T> func);
