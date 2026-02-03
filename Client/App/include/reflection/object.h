@@ -80,71 +80,67 @@ namespace RBX
 				return *descriptor;
 			}
 
-			// TODO: findSignal (non-const) is an 80.19% functional match
-			// therefore findFunction and findProperty are very likely also wrong
-			// begin/end iterator getters should all be correct though
 			MDCProperty::ConstIterator findProperty(const Name& name) const
 			{
-				return descriptor->MDCProperty::findConstMember(name, this);
+				return getDescriptor().MDCProperty::findConstMember(name, this);
 			}
 			MDCProperty::Iterator findProperty(const Name& name)
 			{
-				return descriptor->MDCProperty::findMember(name, this);
+				return getDescriptor().MDCProperty::findMember(name, this);
 			}
 			MDCProperty::Iterator properties_begin()
 			{
-				return descriptor->MDCProperty::members_begin(this);
+				return getDescriptor().MDCProperty::members_begin(this);
 			}
 			MDCProperty::ConstIterator properties_begin() const
 			{
-				return descriptor->MDCProperty::members_begin(this);
+				return getDescriptor().MDCProperty::members_begin(this);
 			}
 			MDCProperty::Iterator properties_end()
 			{
-				return descriptor->MDCProperty::members_end(this);
+				return getDescriptor().MDCProperty::members_end(this);
 			}
 			MDCProperty::ConstIterator properties_end() const
 			{
-				return descriptor->MDCProperty::members_end(this);
+				return getDescriptor().MDCProperty::members_end(this);
 			}
 
 			MDCFunction::ConstIterator findFunction(const Name& name) const
 			{
-				return descriptor->MDCFunction::findConstMember(name, this);
+				return getDescriptor().MDCFunction::findConstMember(name, this);
 			}
 			MDCFunction::ConstIterator functions_begin() const
 			{
-				return descriptor->MDCFunction::members_begin(this);
+				return getDescriptor().MDCFunction::members_begin(this);
 			}
 			MDCFunction::ConstIterator functions_end() const
 			{
-				return descriptor->MDCFunction::members_end(this);
+				return getDescriptor().MDCFunction::members_end(this);
 			}
 
 			MDCSignal::ConstIterator findSignal(const Name& name) const
 			{
-				return descriptor->MDCSignal::findConstMember(name, this);
+				return getDescriptor().MDCSignal::findConstMember(name, this);
 			}
 			MDCSignal::Iterator findSignal(const Name& name)
 			{
-				// return MDCSignal::Iterator(descriptor->MDCSignal::findDescriptor(name), this);
-				return descriptor->MDCSignal::findMember(name, this);
+				return getDescriptor().MDCSignal::findMember(name, this);
 			}
 			MDCSignal::Iterator signals_begin()
 			{
-				return descriptor->MDCSignal::members_begin(this);
+				return getDescriptor().MDCSignal::members_begin(this);
 			}
 			MDCSignal::ConstIterator signals_begin() const
 			{
-				return descriptor->MDCSignal::members_begin(this);
+				return getDescriptor().MDCSignal::members_begin(this);
 			}
 			MDCSignal::Iterator signals_end()
 			{
-				return descriptor->MDCSignal::members_end(this);
+				return getDescriptor().MDCSignal::members_end(this);
 			}
 			MDCSignal::ConstIterator signals_end() const
 			{
-				return descriptor->MDCSignal::members_end(this);
+				return getDescriptor().MDCSignal::members_end(this);
 			}
 		  
 		public:

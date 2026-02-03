@@ -78,8 +78,7 @@ namespace RBX
 {
     namespace Lua
     {
-        // TODO: 91.43% 
-        // seems like it's due to the descriptor inlines from object.h -- *very* close but not quite yet
+        // TODO: 94.87%
         template<>
         int ObjectBridge::on_index(const boost::shared_ptr<Reflection::DescribedBase>& object, const char* name, lua_State* L)
         {
