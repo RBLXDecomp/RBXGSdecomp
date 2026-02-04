@@ -13,16 +13,22 @@ namespace RBX
 {
 	namespace Reflection
 	{
+		typedef MemberDescriptorContainer<PropertyDescriptor> PropertyContainer;
+		typedef MemberDescriptorContainer<PropertyDescriptor>::Iterator PropertyIterator;
+		typedef MemberDescriptorContainer<PropertyDescriptor>::ConstIterator ConstPropertyIterator;
+
+		typedef MemberDescriptorContainer<FunctionDescriptor> FunctionContainer;
+		typedef MemberDescriptorContainer<FunctionDescriptor>::ConstIterator FunctionIterator;
+
+		typedef MemberDescriptorContainer<SignalDescriptor> SignalContainer;
+		typedef MemberDescriptorContainer<SignalDescriptor>::Iterator SignalIterator;
+		typedef MemberDescriptorContainer<SignalDescriptor>::ConstIterator ConstSignalIterator;
+
 		class ClassDescriptor : public Descriptor,
 								public MemberDescriptorContainer<PropertyDescriptor>,
 								public MemberDescriptorContainer<SignalDescriptor>,
 								public MemberDescriptorContainer<FunctionDescriptor>
 		{
-		public:
-			typedef MemberDescriptorContainer<PropertyDescriptor> PropertyContainer;
-			typedef MemberDescriptorContainer<SignalDescriptor> SignalContainer;
-			typedef MemberDescriptorContainer<FunctionDescriptor> FunctionContainer;
-
 		private:
 			std::vector<ClassDescriptor*> derivedClasses;
 			ClassDescriptor* base;
@@ -60,11 +66,6 @@ namespace RBX
 
 		class __declspec(novtable) DescribedBase : public SignalSource
 		{
-		public:
-			typedef MemberDescriptorContainer<PropertyDescriptor> MDCProperty;
-			typedef MemberDescriptorContainer<FunctionDescriptor> MDCFunction;
-			typedef MemberDescriptorContainer<SignalDescriptor> MDCSignal;
-
 		protected:
 			const ClassDescriptor* descriptor;
 		  
@@ -74,73 +75,74 @@ namespace RBX
 				ClassDescriptor::lockedDown = true;
 				descriptor = &ClassDescriptor::rootDescriptor();
 			}
+
 		public:
 			const ClassDescriptor& getDescriptor() const
 			{
 				return *descriptor;
 			}
 
-			MDCProperty::ConstIterator findProperty(const Name& name) const
+			ConstPropertyIterator findProperty(const Name& name) const
 			{
-				return getDescriptor().MDCProperty::findConstMember(name, this);
+				return getDescriptor().PropertyContainer::findConstMember(name, this);
 			}
-			MDCProperty::Iterator findProperty(const Name& name)
+			PropertyIterator findProperty(const Name& name)
 			{
-				return getDescriptor().MDCProperty::findMember(name, this);
+				return getDescriptor().PropertyContainer::findMember(name, this);
 			}
-			MDCProperty::Iterator properties_begin()
+			PropertyIterator properties_begin()
 			{
-				return getDescriptor().MDCProperty::members_begin(this);
+				return getDescriptor().PropertyContainer::members_begin(this);
 			}
-			MDCProperty::ConstIterator properties_begin() const
+			ConstPropertyIterator properties_begin() const
 			{
-				return getDescriptor().MDCProperty::members_begin(this);
+				return getDescriptor().PropertyContainer::members_begin(this);
 			}
-			MDCProperty::Iterator properties_end()
+			PropertyIterator properties_end()
 			{
-				return getDescriptor().MDCProperty::members_end(this);
+				return getDescriptor().PropertyContainer::members_end(this);
 			}
-			MDCProperty::ConstIterator properties_end() const
+			ConstPropertyIterator properties_end() const
 			{
-				return getDescriptor().MDCProperty::members_end(this);
-			}
-
-			MDCFunction::ConstIterator findFunction(const Name& name) const
-			{
-				return getDescriptor().MDCFunction::findConstMember(name, this);
-			}
-			MDCFunction::ConstIterator functions_begin() const
-			{
-				return getDescriptor().MDCFunction::members_begin(this);
-			}
-			MDCFunction::ConstIterator functions_end() const
-			{
-				return getDescriptor().MDCFunction::members_end(this);
+				return getDescriptor().PropertyContainer::members_end(this);
 			}
 
-			MDCSignal::ConstIterator findSignal(const Name& name) const
+			FunctionIterator findFunction(const Name& name) const
 			{
-				return getDescriptor().MDCSignal::findConstMember(name, this);
+				return getDescriptor().FunctionContainer::findConstMember(name, this);
 			}
-			MDCSignal::Iterator findSignal(const Name& name)
+			FunctionIterator functions_begin() const
 			{
-				return getDescriptor().MDCSignal::findMember(name, this);
+				return getDescriptor().FunctionContainer::members_begin(this);
 			}
-			MDCSignal::Iterator signals_begin()
+			FunctionIterator functions_end() const
 			{
-				return getDescriptor().MDCSignal::members_begin(this);
+				return getDescriptor().FunctionContainer::members_end(this);
 			}
-			MDCSignal::ConstIterator signals_begin() const
+
+			ConstSignalIterator findSignal(const Name& name) const
 			{
-				return getDescriptor().MDCSignal::members_begin(this);
+				return getDescriptor().SignalContainer::findConstMember(name, this);
 			}
-			MDCSignal::Iterator signals_end()
+			SignalIterator findSignal(const Name& name)
 			{
-				return getDescriptor().MDCSignal::members_end(this);
+				return getDescriptor().SignalContainer::findMember(name, this);
 			}
-			MDCSignal::ConstIterator signals_end() const
+			SignalIterator signals_begin()
 			{
-				return getDescriptor().MDCSignal::members_end(this);
+				return getDescriptor().SignalContainer::members_begin(this);
+			}
+			ConstSignalIterator signals_begin() const
+			{
+				return getDescriptor().SignalContainer::members_begin(this);
+			}
+			SignalIterator signals_end()
+			{
+				return getDescriptor().SignalContainer::members_end(this);
+			}
+			ConstSignalIterator signals_end() const
+			{
+				return getDescriptor().SignalContainer::members_end(this);
 			}
 		  
 		public:

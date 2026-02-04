@@ -7,6 +7,10 @@ namespace RBX
 {
     namespace Lua
     {
+        class FunctionRef;
+        FunctionRef lua_tofunction(lua_State* L, int index);
+        void lua_pushfunction(lua_State* L, const FunctionRef& function);
+
         class ThreadRef 
         {
         public:

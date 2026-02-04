@@ -88,7 +88,7 @@ namespace RBX
 
 		public:
 			template<typename T>
-			T getValue();
+			T getValue() const;
 		};
 
 		class Property : public ConstProperty

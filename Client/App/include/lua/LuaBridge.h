@@ -16,6 +16,9 @@ namespace RBX
             static T* pushNewObject(lua_State*);
             static T& getObject(lua_State*, size_t);
             static void registerClass(lua_State*);
+
+            template <typename Object>
+            static Object* pushNewObject(lua_State*, Object);
         
         protected:
             static int on_index(lua_State*);

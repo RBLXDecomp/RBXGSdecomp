@@ -9,6 +9,7 @@ namespace RBX
 	class Name : boost::noncopyable
 	{
 	private:
+		// TODO: NamMap is a new class, not a typedef
 		typedef std::map<std::string, Name*> NamMap;
 
 	private:
