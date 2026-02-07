@@ -3,6 +3,7 @@
 #include "v8tree/Instance.h"
 #include "util/Debug.h"
 #include "boost/shared_ptr.hpp"
+#include "boost/signals.hpp"
 
 namespace RBX
 {
@@ -11,6 +12,19 @@ namespace RBX
 	extern const char* sScript;
 	class Script : public DescribedCreatable<Script, Instance, &sScript>
 	{
+	public:
+		class Slot
+		{
+		public:
+			boost::shared_ptr<boost::signals::connection> cnction;
+
+		protected:
+			Slot()
+				: cnction(new boost::signals::connection())
+			{
+			}
+		};
+
 	private:
 	  	boost::shared_ptr<const std::string> embeddedSource;
 	  	ContentId scriptId;

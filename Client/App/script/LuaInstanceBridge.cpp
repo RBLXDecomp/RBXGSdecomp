@@ -378,7 +378,7 @@ void ObjectBridge::on_newindex(boost::shared_ptr<DescribedBase>& object, const c
 
     DescribedBase* objectPtr = object.get();
     PropertyIterator iter = object->findProperty(Name::lookup(name));
-    if (iter == object->properties_end())
+    if (iter != object->properties_end())
     {
         if ((*iter).getDescriptor() == Instance::propParent)
         {
