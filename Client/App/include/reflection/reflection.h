@@ -291,8 +291,6 @@ namespace RBX
 			std::auto_ptr<typename TypedPropertyDescriptor<ReturnType*>::GetSet> getset;
 		  
 		public:
-			//RefPropDescriptor(RefPropDescriptor&);
-		public:
 			virtual bool isReadOnly() const;
 			ReturnType* getValue(const DescribedBase*) const;
 			void setValue(DescribedBase*, ReturnType*) const;
@@ -302,6 +300,7 @@ namespace RBX
 			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
 			virtual void writeValue(const DescribedBase*, XmlElement*) const;
 			virtual void assignIDREF(DescribedBase*, const InstanceHandle&) const;
+
 		public:
 			template<typename GetFunction, typename SetFunction>
 			RefPropDescriptor(char const* name, char const* category, typename GetFunction get, typename SetFunction set, Functionality flags)
@@ -310,9 +309,6 @@ namespace RBX
 				  getset(PropDescriptor<Class, ReturnType*>::getset(get, set))
 			{
 			}
-			virtual ~RefPropDescriptor();
-		public:
-			//RefPropDescriptor& operator=(RefPropDescriptor&);
 		};
 
 		// EnumPropDescriptor

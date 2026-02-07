@@ -82,6 +82,7 @@ namespace RBX
 				return *descriptor;
 			}
 
+			// TODO: find iterators don't fully match when inlined (see LuaInstanceBridge.cpp)
 			ConstPropertyIterator findProperty(const Name& name) const
 			{
 				return getDescriptor().PropertyContainer::findConstMember(name, this);

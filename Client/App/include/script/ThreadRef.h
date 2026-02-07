@@ -92,7 +92,7 @@ namespace RBX
 
         public:
             FunctionRef(const FunctionRef&);
-            FunctionRef(lua_State*, size_t);
+            FunctionRef(lua_State*, int);
             FunctionRef();
             ~FunctionRef();
 

@@ -40,7 +40,10 @@ namespace RBX
 			bool isPublic() const;
 			virtual bool isReadOnly() const = 0;
 			bool canStreamWrite() const;
-			bool operator==(const PropertyDescriptor&) const;
+			bool operator==(const PropertyDescriptor& other) const
+			{
+				return this == &other;
+			}
 			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const = 0;
 			virtual bool hasStringValue() const = 0;
 			virtual std::string getStringValue(const DescribedBase*) const = 0;
@@ -99,6 +102,7 @@ namespace RBX
 				: ConstProperty(descriptor, instance)
 			{
 			}
+
 		public:
 			Property& operator=(const Property&);
 			bool operator==(const Property&) const;
@@ -109,6 +113,10 @@ namespace RBX
 			}
 			bool setStringValue(const std::string&);
 			void read(const XmlElement*, IReferenceBinder&);
+
+		public:
+			template<typename T>
+			void setValue(const T& value);
 		};
 
 		template<typename PropType>

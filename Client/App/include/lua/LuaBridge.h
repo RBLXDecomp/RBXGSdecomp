@@ -1,5 +1,6 @@
 #pragma once
 #include "lua.h"
+#include "lauxlib.h"
 #include "boost/shared_ptr.hpp"
 
 namespace RBX
@@ -23,10 +24,16 @@ namespace RBX
         protected:
             static int on_index(lua_State*);
             static int on_index(const T& object, const char* name, lua_State* L);
-            static int on_newindex(lua_State*);
+            static int on_newindex(lua_State* L)
+            {
+                const char* name = luaL_checkstring(L, 2);
+                T* object = static_cast<T*>(luaL_checkudata(L, 1, className));
+                on_newindex(*object, name, L);
+                return 0;
+            }
             static void on_newindex(T&, const char*, lua_State*);
-            static int on_tostring(lua_State*);
-            static int on_tostring(const T&, lua_State*);
+            static int on_tostring(lua_State* L);
+            static int on_tostring(const T& object, lua_State* L);
             static int on_gc(lua_State*);
             static int on_eq(lua_State*);
         };

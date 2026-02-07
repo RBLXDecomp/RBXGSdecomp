@@ -8,7 +8,6 @@ namespace RBX
 		class SoundId : public ContentId
 		{
 		public:
-			//SoundId(const SoundId&);
 			SoundId()
 				: ContentId()
 			{
@@ -25,11 +24,6 @@ namespace RBX
 				: ContentId(id)
 			{
 			}
-			~SoundId()
-			{
-			}
-		public:
-			//SoundId& operator=(const SoundId&);
 		};
 	}
 }
