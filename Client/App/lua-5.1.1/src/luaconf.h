@@ -756,19 +756,13 @@ public:
 	{
 		// insert of fromstate(L) from lstate.c
 		if (L)
-        	return reinterpret_cast<RobloxExtraSpace*>(reinterpret_cast<char*>(L) - LUAI_EXTRASPACE);
+        	return reinterpret_cast<RobloxExtraSpace*>(reinterpret_cast<unsigned char*>(L) - LUAI_EXTRASPACE);
 		else
 		 	return NULL;
 	}
-	__declspec(noinline) static void construct(lua_State* L, RobloxExtraSpace* parent)
+	static void construct(lua_State* L, RobloxExtraSpace* parent)
 	{
-		// TODO: match this (NULL case gets optimised out)
-		// noinline being required to match luai_userstatethread is probably relevant
-
-		RobloxExtraSpace* ptr = L ? get(L) : NULL;
-
-		if (ptr)
-			new(ptr) RobloxExtraSpace(parent);
+		new(get(L)) RobloxExtraSpace(parent);
 	}
 	static void destroy(lua_State* L)
 	{
@@ -781,11 +775,11 @@ public:
 ** CHANGE them if you defined LUAI_EXTRASPACE and need to do something
 ** extra when a thread is created/deleted/resumed/yielded.
 */
-#define luai_userstateopen(L)		((void)L) // TODO
+#define luai_userstateopen(L)		RobloxExtraSpace::construct(L, NULL)
 #define luai_userstateclose(L)		RobloxExtraSpace::destroy(L)
-#define luai_userstatethread(L,L1)	RobloxExtraSpace::construct(L1, RobloxExtraSpace::get(L))
+#define luai_userstatethread(L,L1)	RobloxExtraSpace::construct(L1, RobloxExtraSpace::get(L)) // TODO: codegen slightly wrong
 #define luai_userstatefree(L)		RobloxExtraSpace::destroy(L)
-#define luai_userstateresume(L,n)	{ RobloxExtraSpace::get(L)->yieldCaptured = false; } // TODO: doesn't match
+#define luai_userstateresume(L,n)	{ RobloxExtraSpace::get(L)->yieldCaptured = false; }
 #define luai_userstateyield(L,n)	((void)L)
 
 
