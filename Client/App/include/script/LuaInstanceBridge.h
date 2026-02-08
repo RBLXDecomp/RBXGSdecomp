@@ -15,7 +15,7 @@ namespace RBX
         class ObjectBridge : public SharedPtrBridge<Reflection::DescribedBase>
         {
         private:
-            static const luaL_Reg classLibrary[0];
+            static const luaL_Reg classLibrary[2];
   
         public:
             static int callMemberFunction(lua_State* L);

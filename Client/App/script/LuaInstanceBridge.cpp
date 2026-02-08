@@ -26,6 +26,11 @@ void RBX::Lua::newweaktable(lua_State* L, const char* mode)
     lua_settable(L, -3);
 }
 
+const luaL_Reg ObjectBridge::classLibrary[] = 
+{
+    {"new", ObjectBridge::newInstance}
+};
+
 int ObjectBridge::newInstance(lua_State* thread)
 {
     const Name& name = Name::lookup(lua_tostring(thread, 1));

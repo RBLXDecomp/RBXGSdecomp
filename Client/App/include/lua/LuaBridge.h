@@ -2,6 +2,8 @@
 #include "lua.h"
 #include "lauxlib.h"
 #include "boost/shared_ptr.hpp"
+#include "G3D/format.h"
+#include <stdexcept>
 
 namespace RBX
 {
@@ -21,7 +23,8 @@ namespace RBX
             }
             static void registerClass(lua_State*);
 
-            template <typename Object>
+        public:
+            template<typename Object>
             static Object* pushNewObject(lua_State* L, Object param1)
             {
                 Object* ptr = static_cast<Object*>(lua_newuserdata(L, sizeof(Object)));
@@ -30,7 +33,32 @@ namespace RBX
                 lua_setmetatable(L, -2);
                 return ptr;
             }
-        
+
+            template<typename Object>
+            static bool getValue(lua_State* L, size_t index, Object& value)
+            {
+                const Object* object = static_cast<const Object*>(lua_touserdata(L,static_cast<int>(index)));
+                if (object)
+                {
+                    if (lua_getmetatable(L, static_cast<int>(index)))
+                    {
+                        luaL_getmetatable(L, className);
+                        if (lua_rawequal(L, -1, -2))
+                        {
+                            lua_pop(L, 2);
+                            value = *object;
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        lua_pop(L, 1);
+                    }
+                }
+
+                return false;
+            }
+
         protected:
             static int on_index(lua_State*);
             static int on_index(const T& object, const char* name, lua_State* L);
@@ -41,7 +69,10 @@ namespace RBX
                 on_newindex(*object, name, L);
                 return 0;
             }
-            static void on_newindex(T& object, const char* name, lua_State* L);
+            static void on_newindex(T& object, const char* name, lua_State* L)
+            {
+                throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
+            }
             static int on_tostring(lua_State* L);
             static int on_tostring(const T& object, lua_State* L);
             static int on_gc(lua_State*);
