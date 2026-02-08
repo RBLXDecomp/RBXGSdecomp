@@ -72,7 +72,6 @@ int Vector3Bridge::on_sub(lua_State* L)
     return 1;
 }
 
-// TODO: 84.15% (functional match)
 int Vector3Bridge::on_mul(lua_State* L)
 {
     G3D::Vector3 a;
@@ -81,9 +80,7 @@ int Vector3Bridge::on_mul(lua_State* L)
         G3D::Vector3 b;
         if (getValue(L, 2, b))
         {
-            G3D::Vector3 result = a*b;
-            pushVector3(L, result);
-            // pushVector3(L, a*b);
+            pushVector3(L, a*b);
             return 1;
         }
         else
