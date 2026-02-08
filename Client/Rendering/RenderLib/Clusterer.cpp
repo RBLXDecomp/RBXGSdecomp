@@ -51,6 +51,42 @@ namespace RBX
 			return *bestCluster;
 		}
 
+		size_t Clusterer::moveSamples()
+		{
+			size_t moveCount = 0;
+
+
+			for (std::vector<Clusterer::Cluster>::iterator it = clusters.begin(); it != clusters.end(); it++)
+			{
+				it->visitIndex = 0;
+			}
+
+			for (std::vector<Clusterer::Cluster>::iterator it = clusters.begin(); it != clusters.end(); it++)
+			{
+				Clusterer::Cluster& cluster = *it;
+
+				while (cluster.visitIndex < cluster.samples.size())
+				{
+					Chunk* sample = cluster.samples[cluster.visitIndex];
+					Clusterer::Cluster& bestCluster = findClosestCluster(sample);
+
+					if (&bestCluster != &cluster)
+					{
+						cluster.samples[cluster.visitIndex] = *(cluster.samples.end() - 1);
+						cluster.samples.pop_back();
+
+						moveCount += moveSample(sample, bestCluster);
+					}
+					else
+					{
+						cluster.visitIndex++;
+					}
+				}
+			}
+
+			return moveCount;
+		}
+
 		template<class Iterator>
 		void Clusterer::addSamples(Iterator _Iter, Iterator _End)
 		{
