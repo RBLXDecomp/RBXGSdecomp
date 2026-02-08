@@ -21,7 +21,12 @@ namespace RBX
                 float elapsedTime;
   
             public: 
-                WaitingThread(lua_State*, float);
+                WaitingThread(lua_State* L, float requestedDelay)
+                    : thread(new ThreadRef(L)),
+                      requestedDelay(requestedDelay),
+                      elapsedTime(0.0f)
+                {
+                }
             };
 
         private:
@@ -29,10 +34,10 @@ namespace RBX
             std::vector<WaitingThread> waitingThreads;
 
         public:
-            YieldingThreads(ScriptContext*);
-            void queueWaiter(lua_State*, float);
-            void queueWaiter(lua_State*);
-            void resume(Heartbeat);
+            YieldingThreads(ScriptContext* context);
+            void queueWaiter(lua_State* L, float delay);
+            void queueWaiter(lua_State* L);
+            void resume(Heartbeat heartbeat);
   
         private:
             void clearAllSinks();
