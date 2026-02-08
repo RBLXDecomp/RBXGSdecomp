@@ -18,12 +18,6 @@
 #include "lualib.h"
 #include "lstate.h"
 
-// TODO: where do these numbers actually come from? i don't think
-// they were actually defined like this
-#define RBX_LUA_GLOBAL_SCRIPTCONTEXT (void*)0x43 // 'C'
-#define RBX_LUA_GLOBAL_THREADREFNODE (void*)0x4E // 'N'
-#define RBX_LUA_GLOBAL_IDENTITY (void*)0x54 // 'T'
-
 static int contextCount = 0;
 bool vvvvv;
 
@@ -139,7 +133,7 @@ void ScriptContext::openState()
         Lua::Vector3Bridge::registerClass(globalState);
         Lua::Color3Bridge::registerClass(globalState);
         Lua::BrickColorBridge::registerClass(globalState);
-        Lua::Bridge<boost::shared_ptr<Lua::ThreadRef::Node>, true>::registerClass(globalState);
+        Lua::ThreadRef::NodeBridge::registerClass(globalState);
 
         Lua::CoordinateFrameBridge::registerClassLibrary(globalState);
         Lua::Vector3Bridge::registerClassLibrary(globalState);

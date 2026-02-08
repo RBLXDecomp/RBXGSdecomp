@@ -13,6 +13,12 @@
 #include "boost/date_time.hpp"
 #include "lua.h"
 
+// TODO: where do these numbers actually come from? i don't think
+// they were actually defined like this
+#define RBX_LUA_GLOBAL_SCRIPTCONTEXT (void*)0x43 // 'C'
+#define RBX_LUA_GLOBAL_THREADREFNODE (void*)0x4E // 'N'
+#define RBX_LUA_GLOBAL_IDENTITY (void*)0x54 // 'T'
+
 namespace RBX
 {
     class Script;

@@ -16,7 +16,14 @@ namespace RBX
             static const char* className;
   
         public:
-            static T* pushNewObject(lua_State* L);
+            static T* pushNewObject(lua_State* L)
+            {
+                T* ptr = static_cast<T*>(lua_newuserdata(L, sizeof(T)));
+                new(ptr) T();
+                luaL_getmetatable(L, className);
+                lua_setmetatable(L, -2);
+                return ptr;
+            }
             static T& getObject(lua_State* L, size_t index)
             {
                 return *static_cast<T*>(luaL_checkudata(L, static_cast<int>(index), className));
@@ -24,11 +31,11 @@ namespace RBX
             static void registerClass(lua_State*);
 
         public:
-            template<typename Object>
-            static Object* pushNewObject(lua_State* L, Object param1)
+            template<typename Param1Type>
+            static T* pushNewObject(lua_State* L, Param1Type param1)
             {
-                Object* ptr = static_cast<Object*>(lua_newuserdata(L, sizeof(Object)));
-                new(ptr) Object(param1);
+                T* ptr = static_cast<T*>(lua_newuserdata(L, sizeof(T)));
+                new(ptr) T(param1);
                 luaL_getmetatable(L, className);
                 lua_setmetatable(L, -2);
                 return ptr;
