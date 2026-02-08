@@ -55,7 +55,6 @@ namespace RBX
 		{
 			size_t moveCount = 0;
 
-
 			for (std::vector<Clusterer::Cluster>::iterator it = clusters.begin(); it != clusters.end(); it++)
 			{
 				it->visitIndex = 0;
