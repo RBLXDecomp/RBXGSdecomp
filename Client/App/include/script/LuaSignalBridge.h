@@ -10,6 +10,15 @@ namespace RBX
 {
     namespace Lua
     {
+        template<>
+        int SharedPtrBridge<Reflection::SignalInstance>::on_tostring(const boost::shared_ptr<Reflection::SignalInstance>& object, lua_State* L)
+        {
+            std::string name = "Signal ";
+            name += object->descriptor.name.name;
+            lua_pushstring(L, name.c_str());
+            return 1;
+        }
+
         class SignalBridge : public SharedPtrBridge<Reflection::SignalInstance>
         {
         public:
@@ -19,12 +28,19 @@ namespace RBX
 
         class SignalConnectionBridge : public Bridge<boost::signals::connection, true>
         {
-            // wha
+            // hmm
             friend class Bridge<boost::signals::connection, true>;
 
         private:
             static int disconnect(lua_State* L);
         };
+
+        template<>
+        int SignalConnectionBridge::on_tostring(const boost::signals::connection& object, lua_State* L)
+        {
+            lua_pushstring(L, "Connection");
+            return 1;
+        }
     }
 }
 

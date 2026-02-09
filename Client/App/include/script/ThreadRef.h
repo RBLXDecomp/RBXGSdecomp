@@ -134,6 +134,13 @@ namespace RBX
             }
         };
 
+        template<>
+        int ThreadRef::NodeBridge::on_tostring(const ThreadRef::NodePtr& object, lua_State* L)
+        {
+            lua_pushstring(L, "ThreadRef");
+            return 1;
+        }
+
         class FunctionRef : public ThreadRef
         {
         // TODO: how is lua_pushfunction supposed to access this when private?

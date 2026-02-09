@@ -122,6 +122,7 @@ namespace RBX
             return node;
         }
 
+        // TODO: this might also be the base definition of Bridge::on_index, not currently clear
         template<>
         int ThreadRef::NodeBridge::on_index(const ThreadRef::NodePtr& object, const char* name, lua_State* L)
         {

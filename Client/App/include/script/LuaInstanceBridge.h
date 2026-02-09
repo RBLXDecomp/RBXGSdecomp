@@ -12,6 +12,19 @@ namespace RBX
     {
         void newweaktable(lua_State* L, const char* mode);
 
+        template <>
+        int SharedPtrBridge<Reflection::DescribedBase>::on_tostring(const boost::shared_ptr<Reflection::DescribedBase>& object, lua_State* L)
+        {
+            Instance* instance = dynamic_cast<Instance*>(object.get());
+
+            if (instance)
+                lua_pushstring(L, instance->getName().c_str());
+            else
+                lua_pushstring(L, object->classDescriptor().name.c_str());
+
+            return 1;
+        }
+
         class ObjectBridge : public SharedPtrBridge<Reflection::DescribedBase>
         {
         private:
@@ -37,19 +50,5 @@ namespace RBX
                 return shared_from(static_cast<Instance*>(object2));
             }
         };
-
-        // TODO: put this before class definition
-        template <>
-        int ObjectBridge::on_tostring(const boost::shared_ptr<Reflection::DescribedBase>& object, lua_State* L)
-        {
-            Instance* instance = dynamic_cast<Instance*>(object.get());
-
-            if (instance)
-                lua_pushstring(L, instance->getName().c_str());
-            else
-                lua_pushstring(L, object->classDescriptor().name.c_str());
-
-            return 1;
-        }
     }
 }

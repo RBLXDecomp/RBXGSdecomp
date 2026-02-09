@@ -2,6 +2,7 @@
 #include "lua.h"
 #include "lauxlib.h"
 #include "boost/shared_ptr.hpp"
+#include "util/Utilities.h"
 #include "G3D/format.h"
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ namespace RBX
 {
     namespace Lua
     {
-        template <typename T, bool unknown>
+        template <typename T, bool isComparable>
         class Bridge
         {
         protected: 
@@ -28,7 +29,35 @@ namespace RBX
             {
                 return *static_cast<T*>(luaL_checkudata(L, static_cast<int>(index), className));
             }
-            static void registerClass(lua_State*);
+            static void registerClass(lua_State* L)
+            {
+                luaL_newmetatable(L, className);
+
+                lua_pushstring(L, "__index");
+                lua_pushcfunction(L, on_index);
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "__newindex");
+                lua_pushcfunction(L, on_newindex);
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "__gc");
+                lua_pushcfunction(L, on_gc);
+                lua_settable(L, -3);
+
+                if (isComparable)
+                {
+                    lua_pushstring(L, "__eq");
+                    lua_pushcfunction(L, on_eq);
+                    lua_settable(L, -3);
+                }
+
+                lua_pushstring(L, "__tostring");
+                lua_pushcfunction(L, on_tostring);
+                lua_settable(L, -3);
+
+                lua_settop(L, -2);
+            }
 
         public:
             template<typename Param1Type>
@@ -67,23 +96,47 @@ namespace RBX
             }
 
         protected:
-            static int on_index(lua_State*);
+            static int on_index(lua_State* L)
+            {
+                const char* name = luaL_checkstring(L, 2);
+                T& object = getObject(L, 1);
+                return on_index(object, name, L);
+            }
             static int on_index(const T& object, const char* name, lua_State* L);
             static int on_newindex(lua_State* L)
             {
+                // TODO: function return not matching
                 const char* name = luaL_checkstring(L, 2);
-                T* object = static_cast<T*>(luaL_checkudata(L, 1, className));
-                on_newindex(*object, name, L);
+                T& object = getObject(L, 1);
+                on_newindex(object, name, L);
                 return 0;
             }
             static void on_newindex(T& object, const char* name, lua_State* L)
             {
                 throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
             }
-            static int on_tostring(lua_State* L);
-            static int on_tostring(const T& object, lua_State* L);
-            static int on_gc(lua_State*);
-            static int on_eq(lua_State*);
+            static int on_tostring(lua_State* L)
+            {
+                T& object = getObject(L, 1);
+                return on_tostring(object, L);
+            }
+            static int on_tostring(const T& object, lua_State* L)
+            {
+                std::string name = StringConverter<T>::convertToString(object);
+                lua_pushstring(L, name.c_str());
+                return 1;
+            }
+            static int on_gc(lua_State* L)
+            {
+                T& object = getObject(L, 1);
+                object.~T();
+                return 0;
+            }
+            static int on_eq(lua_State* L)
+            {
+                lua_pushboolean(L, getObject(L, 1) == getObject(L, 2));
+                return 1;
+            }
         };
 
         template <typename T>
@@ -102,8 +155,11 @@ namespace RBX
             }
             static void push(lua_State* L, boost::shared_ptr<T> instance)
             {
-                // TODO: check match
-                if (instance)
+                if (!instance)
+                {
+                    lua_pushnil(L);
+                }
+                else
                 {
                     lua_gettop(L);
                     lua_pushlightuserdata(L, push);
@@ -121,10 +177,6 @@ namespace RBX
                     }
 
                     lua_remove(L, -2);
-                }
-                else
-                {
-                    lua_pushnil(L);
                 }
             }
             static boost::shared_ptr<T> getPtr(lua_State*, size_t);
