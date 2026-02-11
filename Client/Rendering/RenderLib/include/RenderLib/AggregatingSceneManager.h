@@ -31,7 +31,13 @@ namespace RBX
 				float polygonOffset;
 				G3D::ReferenceCountedPointer<Material> material;
 
-				BucketKey(const G3D::ReferenceCountedPointer<Chunk>& that);
+				BucketKey(const G3D::ReferenceCountedPointer<Chunk>& that)
+					: castsShadows(that->castsShadows()),
+					  cullable(that->cullable()),
+					  polygonOffset(that->polygonOffset),
+					  material(that->getMaterial())
+				{
+				}
 
 				bool operator<(const BucketKey&) const;
 			};
@@ -55,7 +61,7 @@ namespace RBX
 			virtual void prerender(double);
 		private:
 			void dequeueSleepingChunk(const G3D::ReferenceCountedPointer<Chunk>& chunk);
-			void queueSleepingChunk(const G3D::ReferenceCountedPointer<Chunk>&);
+			void queueSleepingChunk(const G3D::ReferenceCountedPointer<Chunk>& chunk);
 			void deconstructAggregate(G3D::ReferenceCountedPointer<AggregateChunk>);
 		};
 	}
