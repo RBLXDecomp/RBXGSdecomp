@@ -56,7 +56,7 @@ namespace RBX
                 lua_pushcfunction(L, on_tostring);
                 lua_settable(L, -3);
 
-                lua_settop(L, -2);
+                lua_pop(L, 1);
             }
 
         public:
@@ -179,7 +179,33 @@ namespace RBX
                     lua_remove(L, -2);
                 }
             }
-            static boost::shared_ptr<T> getPtr(lua_State*, size_t);
+            static boost::shared_ptr<T> getPtr(lua_State* L, size_t index)
+            {
+                // TODO: check match for T=boost::shared_ptr<Reflection::DescribedBase>
+                // when security is implemented
+                
+                if (lua_type(L, static_cast<int>(index)) == LUA_TNIL)
+                {
+                    return boost::shared_ptr<T>();
+                }
+                else
+                {
+                    return getObject(L, index);
+                }
+            }
+
+        public:
+            template<typename ValueType>
+            static bool getPtr(lua_State* L, size_t index, ValueType& value)
+            {
+                if (lua_type(L, static_cast<int>(index)) == LUA_TNIL)
+                {
+                    value = boost::shared_ptr<T>();
+                    return 1;
+                }
+
+                return getValue(L, index, value);
+            }
         };
     }
 }

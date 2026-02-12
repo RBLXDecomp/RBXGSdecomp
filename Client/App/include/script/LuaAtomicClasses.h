@@ -155,7 +155,7 @@ namespace RBX
             lua_pushcfunction(L, Vector3Bridge::on_unm);
             lua_settable(L, -3);
 
-            lua_settop(L, -2);
+            lua_pop(L, 1);
         }
 
         template<>
@@ -199,7 +199,7 @@ namespace RBX
             lua_pushcfunction(L, CoordinateFrameBridge::on_inverse);
             lua_settable(L, -3);
 
-            lua_settop(L, -2);
+            lua_pop(L, 1);
         }
     }
 }
