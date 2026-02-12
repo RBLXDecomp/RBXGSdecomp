@@ -289,12 +289,12 @@ ScriptContext& ScriptContext::getContext(lua_State* thread)
     return *sc;
 }
 
-static size_t pushArguments(const Lua::ArgList& arguments, lua_State* thread)
+static size_t pushArguments(const Reflection::ValueCollection& arguments, lua_State* thread)
 {
     size_t result = 0;
 
-    Lua::ArgList::const_iterator it = arguments.begin();
-    Lua::ArgList::const_iterator end = arguments.end();
+    Reflection::ValueCollection::const_iterator it = arguments.begin();
+    Reflection::ValueCollection::const_iterator end = arguments.end();
 
     for (; it != end; it++)
         result += Lua::LuaArguments::push(*it, thread);
@@ -302,9 +302,9 @@ static size_t pushArguments(const Lua::ArgList& arguments, lua_State* thread)
     return result;
 }
 
-static void readResults(std::auto_ptr<Lua::ArgList>& result, lua_State *thread, size_t returnCount)
+static void readResults(std::auto_ptr<Reflection::ValueCollection>& result, lua_State *thread, size_t returnCount)
 {
-    result.reset(new Lua::ArgList(returnCount));
+    result.reset(new Reflection::ValueCollection(returnCount));
 
     if (returnCount)
     {
@@ -313,9 +313,9 @@ static void readResults(std::auto_ptr<Lua::ArgList>& result, lua_State *thread, 
     }
 }
 
-std::auto_ptr<Lua::ArgList> ScriptContext::executeInNewThread(Security::Identities identity, const char* script, const char* name, const Lua::ArgList& arguments)
+std::auto_ptr<Reflection::ValueCollection> ScriptContext::executeInNewThread(Security::Identities identity, const char* script, const char* name, const Reflection::ValueCollection& arguments)
 {
-    std::auto_ptr<Lua::ArgList> result;
+    std::auto_ptr<Reflection::ValueCollection> result;
     executeInNewThread(
         identity,
         script,

@@ -89,10 +89,10 @@ namespace RBX
         ScriptContext();
         virtual ~ScriptContext();
 
-        std::auto_ptr<Lua::ArgList> call(const Lua::FunctionRef&, const Lua::ArgList&);
+        std::auto_ptr<Reflection::ValueCollection> call(const Lua::FunctionRef&, const Reflection::ValueCollection&);
         void call(const Lua::FunctionRef&);
         void call(const Lua::FunctionRef&, PushArgumentsClosure, ReadResultsClosure);
-        std::auto_ptr<Lua::ArgList> executeInNewThread(Security::Identities, const char*, const char*, const Lua::ArgList&);
+        std::auto_ptr<Reflection::ValueCollection> executeInNewThread(Security::Identities, const char*, const char*, const Reflection::ValueCollection&);
         void executeInNewThread(Security::Identities, const char*, const char*);
         void executeInNewThread(Security::Identities, const char*, const char*, PushArgumentsClosure pushArguments, ReadResultsClosure readResults);
         Result resume(lua_State* thread, int narg);

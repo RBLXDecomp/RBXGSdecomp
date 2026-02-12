@@ -20,8 +20,7 @@ namespace RBX
 	class ServiceProvider;
 	class RaiseDescendentAdded2;
 
-	// TODO: should this be const?
-	typedef std::vector<boost::shared_ptr<Instance>> Instances;
+	typedef const std::vector<boost::shared_ptr<Instance>> Instances;
 
 	// EVENTS
 	// TODO: are these meant to be here?

@@ -130,13 +130,13 @@ static void pushLuaValue(ConstProperty p, lua_State* L)
         return;
     }
 
-    if (descriptor.type == Type::singleton<boost::shared_ptr<const Instances>>())
+    if (descriptor.type == Type::singleton<boost::shared_ptr<Instances>>())
     {
-        boost::shared_ptr<const Instances> objects = p.getValue<boost::shared_ptr<const Instances>>();
+        boost::shared_ptr<Instances> objects = p.getValue<boost::shared_ptr<Instances>>();
         if (objects)
         {
-            Instances::const_iterator iter = objects->begin();    
-            Instances::const_iterator end = objects->end();    
+            Instances::const_iterator iter = objects->begin();
+            Instances::const_iterator end = objects->end();
 
             // objects->size() doesn't match
             lua_createtable(L, end-iter, 0);

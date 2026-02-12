@@ -25,9 +25,9 @@ namespace RBX
 		}
 
 		template<>
-		const Type& Type::singleton<boost::shared_ptr<const Instances>>()
+		const Type& Type::singleton<boost::shared_ptr<Instances>>()
 		{
-			static Type type("Objects", typeid(boost::shared_ptr<const Instances>));
+			static Type type("Objects", typeid(boost::shared_ptr<Instances>));
 			return type;
 		}
 
