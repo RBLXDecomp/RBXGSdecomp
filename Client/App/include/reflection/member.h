@@ -134,15 +134,19 @@ namespace RBX
 				if (posEnd)
 				{
 					size_t i;
+					bool found = false;
 
-					while (true)
+					do
 					{
 						i = (posStart+posEnd)/2;
 
 						const Name& descName = descriptors[i]->name;
 
 						if (name == descName)
+						{
+							found = true;
 							break;
+						}
 						
 						int compare = name.compare(descName);
 
@@ -153,20 +157,19 @@ namespace RBX
 						else
 						{
 							if (compare <= 0)
+							{
+								found = true;
 								break;
+							}
 
 							posStart = i+1;
 						}
+					} while (posStart < posEnd);
 
-						// TODO: can we get rid of this jump? it's not obvious to me how
-						if (posStart >= posEnd)
-							goto notFound;
-					}
-
-					return descriptors.begin()+i;
+					if (found)
+						return descriptors.begin()+i;
 				}
 
-			notFound:
 				return descriptors.end();
 			}
 
