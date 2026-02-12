@@ -16,23 +16,18 @@ namespace RBX
 		{
 		protected:
 			virtual bool askAddChild(const Instance*) const;
-		public:
-			//Item(const Item&);
-			Item();
-			~Item();
-			//Item& operator=(const Item&);
 		};
 
+	public:
 		static boost::recursive_mutex mutex;
 
-		//GlobalSettings(const GlobalSettings&);
+	public:
 		GlobalSettings();
 		void loadState();
 		void saveState();
 		void eraseSettingsStore();
-		~GlobalSettings();
-		//GlobalSettings& operator=(const GlobalSettings&);
 
+	public:
 		static boost::shared_ptr<GlobalSettings> singleton();
 	};
 
@@ -41,14 +36,12 @@ namespace RBX
 	{
 	private:
 		static GlobalSettingsItem* sing;
-	public:
-		//GlobalSettingsItem(const GlobalSettingsItem&);
+
 	protected:
 		GlobalSettingsItem();
 		~GlobalSettingsItem();
-	public:
-		//GlobalSettingsItem& operator=(const GlobalSettingsItem&);
 
+	public:
 		static Class& singleton();
 	};
 }

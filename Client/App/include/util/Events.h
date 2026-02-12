@@ -13,22 +13,20 @@ namespace RBX
 		size_t upper;
 		RaiseRange* previous;
 	public:
-		void removeIndex(unsigned int);
+		void removeIndex(size_t);
 	};
 
 	template<typename Class, typename Event>
-	class Listener
+	class __declspec(novtable) Listener
 	{
 		friend class Notifier<Class, Event>;
 
 	protected:
 		virtual void onEvent(const Class*, Event) = 0;
 		Listener& operator=(const Listener&);
-		virtual ~Listener();
-
-	public:
-		//Listener(const Listener&);
-		Listener();
+		virtual ~Listener()
+		{
+		}
 	};
 
 	template<typename Class, typename Event>
@@ -39,13 +37,14 @@ namespace RBX
 		mutable RaiseRange* raiseRange;
 
 	protected:
-		//Notifier(const Notifier&);
+		Notifier(const Notifier&);
 		Notifier()
 			: listeners(),
 			  raiseRange(NULL)
 		{
 		}
 		Notifier& operator=(const Notifier&);
+		virtual ~Notifier();
 
 	public:
 		void addListener(Listener<Class, Event>*) const;

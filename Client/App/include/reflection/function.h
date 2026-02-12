@@ -16,6 +16,7 @@ namespace RBX
 				NeedTrustedCaller = 0,
 				AnyCaller = 1
 			};
+
 		public:
 			class Arguments
 			{
@@ -25,32 +26,23 @@ namespace RBX
 			public:
 				virtual size_t size() const = 0;
 				virtual void get(int, Value&) const = 0;
-			public:
-				//Arguments(const Arguments&);
-				Arguments();
-				~Arguments();
-			public:
-				//Arguments& operator=(const Arguments&);
 			};
+
 		public:
 			typedef Function Describing;
 
 		public:
 			const Security security;
+
 		protected:
 			SignatureDescriptor signature;
 		  
-		public:
-			//FunctionDescriptor(const FunctionDescriptor&);
 		protected:
 			FunctionDescriptor(ClassDescriptor& classDescriptor, const char* name, Security security);
+
 		public:
 			const SignatureDescriptor& getSignature() const;
 			virtual void execute(DescribedBase*, Arguments&) const = 0;
-		public:
-			virtual ~FunctionDescriptor();
-		public:
-			//FunctionDescriptor& operator=(const FunctionDescriptor&);
 		};
 
 		class Function
@@ -60,29 +52,25 @@ namespace RBX
 			const DescribedBase* instance;
 		  
 		public:
-			//Function(const Function&);
+			Function(const Function&);
 			Function(const FunctionDescriptor&, const DescribedBase*);
-		public:
 			Function& operator=(const Function&);
 			const Name& getName() const;
-			const FunctionDescriptor* getDescriptor() const;
+			const FunctionDescriptor* getDescriptor() const
+			{
+				return descriptor;
+			}
 			void execute(FunctionDescriptor::Arguments&) const;
 		};
 
 		template<typename Class>
 		class FuncDesc : public FunctionDescriptor
 		{
-		public:
-			//FuncDesc(const FuncDesc&);
 		protected:
 			FuncDesc(const char* name, Security security)
 				: FunctionDescriptor(Class::classDescriptor(), name, security)
 			{
 			}
-		public:
-			virtual ~FuncDesc();
-		public:
-			//FuncDesc& operator=(const FuncDesc&);
 		};
 	}
 }

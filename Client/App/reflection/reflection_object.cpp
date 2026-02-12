@@ -33,10 +33,6 @@ namespace RBX
 		{
 		}
 
-		ClassDescriptor::~ClassDescriptor()
-		{
-		}
-
 		bool ClassDescriptor::operator==(const ClassDescriptor& other) const
 		{
 			return this == &other;

@@ -68,9 +68,6 @@ namespace RBX
 	public:
 		virtual void InvalidateRunView() = 0;
 		virtual void AdjustThrottle(double) = 0;
-		//IRunView(const IRunView&);
-		IRunView();
-		//IRunView& operator=(const IRunView&);
 	};
 
 	class RunService : public DescribedCreatable<RunService, Instance, &sRunService>,
@@ -97,7 +94,6 @@ namespace RBX
 	private:
 		void start();
 	public:
-		//RunService(const RunService&);
 		RunService();
 		virtual ~RunService();
 		void setRunState(RunState newState);
@@ -120,8 +116,5 @@ namespace RBX
 		virtual void onAncestorChanged(const AncestorChanged& event);
 	private:
 		void runProc(boost::shared_ptr<DataModel> dataModel);
-	public:
-		//RunService& operator=(const RunService&);
 	};
-
 }

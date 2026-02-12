@@ -65,23 +65,16 @@ namespace RBX
 		// helps with constructors
 		typedef DescribedCreatable<Class, DerivedClass, ClassName> Base;
 
-	public:
-		//DescribedCreatable(const DescribedCreatable&);
 	protected:
 		DescribedCreatable();
+
 		template<typename Arg0Type>
 		DescribedCreatable(Arg0Type arg0);
-	public:
-		virtual ~DescribedCreatable();
-	public:
-		//DescribedCreatable& operator=(const DescribedCreatable&);
 	};
 
 	template<typename Class, typename DerivedClass, const char** ClassName>
 	class DescribedNonCreatable : public Reflection::Described<Class, ClassName, NonFactoryProduct<DerivedClass, ClassName>>
 	{
-	public:
-		//DescribedNonCreatable(const DescribedNonCreatable&);
 	protected:
 		DescribedNonCreatable()
 			: Described()
@@ -93,10 +86,6 @@ namespace RBX
 			: Described(arg0)
 		{
 		}
-	public:
-		virtual ~DescribedNonCreatable();
-	public:
-		//DescribedNonCreatable& operator=(const DescribedNonCreatable&);
 	};
 
 	namespace Reflection
@@ -116,7 +105,6 @@ namespace RBX
 				void (Class::*changed)(const PropertyDescriptor&);
 			  
 			public:
-				//BoundPropGetSet(const BoundPropGetSet&);
 				BoundPropGetSet(BoundProp& desc, PropType (Class::*member), void (Class::*changed)(const PropertyDescriptor&))
 					: desc(desc),
 					  member(member),
@@ -147,16 +135,19 @@ namespace RBX
 			};
 
 		public:
-			//BoundProp(BoundProp&);
 			template<typename Class>
 			BoundProp(const char* name, const char* category, PropType (Class::*member), Functionality flags)
 				: TypedPropertyDescriptor(Class::classDescriptor(), name, category, std::auto_ptr<GetSet>(), flags)
 			{
 				getset.reset(new BoundPropGetSet<Class>(*this, member, NULL));
 			}
-			virtual ~BoundProp();
-		public:
-			//BoundProp& operator=(BoundProp&);
+
+			template<typename Class>
+			BoundProp(const char* name, const char* category, PropType (Class::*member), void (Class::*changed)(const PropertyDescriptor&), Functionality flags)
+				: TypedPropertyDescriptor(Class::classDescriptor(), name, category, std::auto_ptr<GetSet>(), flags)
+			{
+				getset.reset(new BoundPropGetSet<Class>(*this, member, changed));
+			}
 		};
 
 		// PropDescriptor
@@ -300,8 +291,6 @@ namespace RBX
 			std::auto_ptr<typename TypedPropertyDescriptor<ReturnType*>::GetSet> getset;
 		  
 		public:
-			//RefPropDescriptor(RefPropDescriptor&);
-		public:
 			virtual bool isReadOnly() const;
 			ReturnType* getValue(const DescribedBase*) const;
 			void setValue(DescribedBase*, ReturnType*) const;
@@ -311,6 +300,7 @@ namespace RBX
 			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
 			virtual void writeValue(const DescribedBase*, XmlElement*) const;
 			virtual void assignIDREF(DescribedBase*, const InstanceHandle&) const;
+
 		public:
 			template<typename GetFunction, typename SetFunction>
 			RefPropDescriptor(char const* name, char const* category, typename GetFunction get, typename SetFunction set, Functionality flags)
@@ -319,9 +309,6 @@ namespace RBX
 				  getset(PropDescriptor<Class, ReturnType*>::getset(get, set))
 			{
 			}
-			virtual ~RefPropDescriptor();
-		public:
-			//RefPropDescriptor& operator=(RefPropDescriptor&);
 		};
 
 		// EnumPropDescriptor

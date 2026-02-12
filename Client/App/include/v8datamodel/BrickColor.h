@@ -216,15 +216,39 @@ namespace RBX
 
 	public:
 		static BrickColor random();
-		static BrickColor legoWhite();
-		static BrickColor legoGray();
-		static BrickColor legoDarkGray();
-		static BrickColor legoBlack();
-		static BrickColor legoRed();
-		static BrickColor legoYellow();
-		static BrickColor legoGreen();
+		static BrickColor legoWhite()
+		{
+			return lego_1;
+		}
+		static BrickColor legoGray()
+		{
+			return lego_194;
+		}
+		static BrickColor legoDarkGray()
+		{
+			return lego_199;
+		}
+		static BrickColor legoBlack()
+		{
+			return lego_26;
+		}
+		static BrickColor legoRed()
+		{
+			return lego_21;
+		}
+		static BrickColor legoYellow()
+		{
+			return lego_24;
+		}
+		static BrickColor legoGreen()
+		{
+			return lego_28;
+		}
 		static BrickColor baseplateGreen();
-		static BrickColor legoBlue();
+		static BrickColor legoBlue()
+		{
+			return lego_23;
+		}
 		static BrickColor defaultColor()
 		{
 			return lego_194;

@@ -20,6 +20,8 @@ namespace RBX
 	class ServiceProvider;
 	class RaiseDescendentAdded2;
 
+	typedef const std::vector<boost::shared_ptr<Instance>> Instances;
+
 	// EVENTS
 	// TODO: are these meant to be here?
 	struct ChildAdded
@@ -169,12 +171,12 @@ namespace RBX
 	  
 	private:
 		void predelete();
-	public:
-		//Instance(const Instance&);
+
 	protected:
 		Instance(const char* name);
 		Instance();
 		virtual ~Instance();
+
 	public:
 		void assignGuid(const Guid::Data& id)
 		{
@@ -186,13 +188,20 @@ namespace RBX
 		{
 			return guid;
 		}
+
 	protected:
 		virtual void onGuidChanged();
-	public:
 
+	public:
 		void remove();
-		const Association<Instance>& association() const;
-		Association<Instance>& association();
+		const Association<Instance>& association() const
+		{
+			return assoc;
+		}
+		Association<Instance>& association()
+		{
+			return assoc;
+		}
 		boost::shared_ptr<Instance> clone();
 		void removeAllChildren();
 		std::string getClassNameStr() const
@@ -262,7 +271,7 @@ namespace RBX
 	protected:
 		virtual void readProperty(const XmlElement* propertyElement, IReferenceBinder& binder);
 	public:
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		void readProperties(const XmlElement* container, IReferenceBinder& binder);
 		virtual boost::shared_ptr<Instance> createChild(const Name&);
 		virtual XmlElement* write();

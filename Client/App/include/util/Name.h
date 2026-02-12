@@ -9,6 +9,7 @@ namespace RBX
 	class Name : boost::noncopyable
 	{
 	private:
+		// TODO: NamMap is a new class, not a typedef
 		typedef std::map<std::string, Name*> NamMap;
 
 	private:
@@ -22,7 +23,10 @@ namespace RBX
 		bool empty() const { return &getNullName() == this; }
 		const std::string& toString() const { return name; } // guess
 		const char* c_str() const { return name.c_str(); } // guess
-		int compare(const Name& other) const;
+		int compare(const Name& other) const
+		{
+			return toString().compare(other.toString());
+		}
 
 		bool operator <(const RBX::Name& other) const;
 		bool operator >(const RBX::Name& other) const;
