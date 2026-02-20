@@ -33,12 +33,12 @@ namespace RBX
 
 		Clusterer::Cluster& Clusterer::findClosestCluster(Chunk* sample)
 		{
-			Clusterer::Cluster* bestCluster = NULL;
+			Cluster* bestCluster = NULL;
 			float bestDistance = G3D::inf();
 
-			std::vector<Clusterer::Cluster>::iterator end = clusters.end();
+			std::vector<Cluster>::iterator end = clusters.end();
 
-			for (std::vector<Clusterer::Cluster>::iterator iter = clusters.begin(); iter != end; iter++)
+			for (std::vector<Cluster>::iterator iter = clusters.begin(); iter != end; iter++)
 			{
 				float distance = iter->getDistanceFromCentroid(sample);
 				if (distance < bestDistance)
@@ -55,19 +55,19 @@ namespace RBX
 		{
 			size_t moveCount = 0;
 
-			for (std::vector<Clusterer::Cluster>::iterator it = clusters.begin(); it != clusters.end(); it++)
+			for (std::vector<Cluster>::iterator it = clusters.begin(); it != clusters.end(); it++)
 			{
 				it->visitIndex = 0;
 			}
 
-			for (std::vector<Clusterer::Cluster>::iterator it = clusters.begin(); it != clusters.end(); it++)
+			for (std::vector<Cluster>::iterator it = clusters.begin(); it != clusters.end(); it++)
 			{
-				Clusterer::Cluster& cluster = *it;
+				Cluster& cluster = *it;
 
 				while (cluster.visitIndex < cluster.samples.size())
 				{
 					Chunk* sample = cluster.samples[cluster.visitIndex];
-					Clusterer::Cluster& bestCluster = findClosestCluster(sample);
+					Cluster& bestCluster = findClosestCluster(sample);
 
 					if (&bestCluster != &cluster)
 					{
