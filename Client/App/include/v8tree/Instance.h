@@ -347,7 +347,6 @@ namespace RBX
 	protected:
 		XmlElement root;
 	public:
-		//XmlState(const XmlState&);
 		XmlState();
 		const XmlElement* getData() const;
 		virtual void addState(XmlElement*, Instance&) = 0;
@@ -355,6 +354,5 @@ namespace RBX
 		void addParentProperty(Instance&);
 		void addDelete(Instance&);
 		void addProperty(Reflection::Property&);
-		~XmlState();
 	};
 }
