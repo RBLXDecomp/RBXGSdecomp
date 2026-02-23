@@ -390,6 +390,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\IndexBox.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\InsertMode.h"
 					>
 				</File>
@@ -794,9 +798,17 @@
 					>
 				</File>
 				<File
-					RelativePath=".\include\v8datamodel\Feature.h"
+					RelativePath=".\include\v8datamodel\Decal.h"
 					>
 				</File>
+				<File
+					RelativePath=".\include\v8datamodel\FaceInstance.h"
+					>
+        		</File>
+ 				<File
+					RelativePath=".\include\v8datamodel\Feature.h"
+					>
+				</File>        
 				<File
 					RelativePath=".\include\v8datamodel\GlobalSettings.h"
 					>
@@ -1020,6 +1032,10 @@
 			</File>
 			<File
 				RelativePath=".\util\Http.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\IndexBox.cpp"
 				>
 			</File>
 			<File
@@ -1271,6 +1287,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Decal.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\FaceInstance.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Feature.cpp"
 				>
 			</File>
@@ -1320,6 +1344,22 @@
 			</File>
 			<File
 				RelativePath=".\v8xml\XmlSerializer.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="gui"
+			>
+			<File
+				RelativePath=".\gui\GUI.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\GuiDraw.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\Widget.cpp"
 				>
 			</File>
 		</Filter>
