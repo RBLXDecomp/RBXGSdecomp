@@ -81,12 +81,21 @@ namespace RBX
 			virtual void clear() = 0;
 			virtual void setSleeping(const G3D::ReferenceCountedPointer<Chunk>&, bool) = 0;
 			virtual void prerender(double) = 0;
-			virtual ~SceneManager();
+			virtual ~SceneManager() {}
 			//SceneManager(const SceneManager&);
 		protected:
-			SceneManager(RenderScene*);
-			void clearScene();
-			void addToScene(const G3D::ReferenceCountedPointer<Chunk>&);
+			SceneManager(RenderScene* renderScene)
+				: renderScene(renderScene)
+			{
+			}
+			void clearScene()
+			{
+				renderScene->chunkArray.clear();
+			}
+			void addToScene(const G3D::ReferenceCountedPointer<Chunk>& chunk)
+			{
+				renderScene->chunkArray.push_back(chunk);
+			}
 			void removeFromScene(const G3D::ReferenceCountedPointer<Chunk>& chunk)
 			{
 				renderScene->chunkArray.fastRemove(renderScene->chunkArray.findIndex(chunk));
