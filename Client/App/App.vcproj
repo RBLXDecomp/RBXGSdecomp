@@ -804,11 +804,11 @@
 				<File
 					RelativePath=".\include\v8datamodel\FaceInstance.h"
 					>
-        		</File>
- 				<File
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Feature.h"
 					>
-				</File>        
+				</File>
 				<File
 					RelativePath=".\include\v8datamodel\GlobalSettings.h"
 					>
@@ -1284,6 +1284,10 @@
 			>
 			<File
 				RelativePath=".\v8datamodel\BrickColor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Camera.cpp"
 				>
 			</File>
 			<File
