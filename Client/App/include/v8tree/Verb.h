@@ -16,10 +16,6 @@ namespace RBX
 	public:
 		virtual void setDirty(bool) = 0;
 		virtual bool isDirty() const = 0;
-		//IDataState(const IDataState&);
-		IDataState();
-		~IDataState();
-		//IDataState& operator=(const IDataState&);
 	};
 
 	class Verb : public Debugable
@@ -27,8 +23,7 @@ namespace RBX
 	private:
 		const Name& name;
 		VerbContainer* container;
-	public:
-		Verb(const Verb&);
+
 	protected:
 		Verb(VerbContainer*, const Name&);
 		Verb(VerbContainer*, std::string);
@@ -46,8 +41,8 @@ namespace RBX
 	private:
 		std::map<const Name*, Verb*> verbs;
 		VerbContainer* parent;
+
 	public:
-		VerbContainer(const VerbContainer&);
 		VerbContainer(VerbContainer* parent);
 		virtual ~VerbContainer();
 
@@ -58,7 +53,5 @@ namespace RBX
 	private:
 		void addVerb(Verb*);
 		void removeVerb(Verb*);
-	public:
-		//VerbContainer& operator=(const VerbContainer&);
 	};
 }
