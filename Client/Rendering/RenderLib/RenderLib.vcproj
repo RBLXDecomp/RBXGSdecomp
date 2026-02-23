@@ -160,6 +160,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Clusterer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DepthBlur.cpp"
 				>
 			</File>
@@ -194,7 +198,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\include\RenderLib\AggregatingSceneManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\RenderLib\Chunk.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Clusterer.h"
 				>
 			</File>
 			<File

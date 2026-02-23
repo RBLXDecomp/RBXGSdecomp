@@ -31,6 +31,10 @@ namespace RBX
 		//ViewBase& operator=(const ViewBase&);
 	  
 	public:
-		static bool& getShadowsEnabled();
+		static bool& getShadowsEnabled()
+		{
+			static bool _shadowsEnabled = false;
+			return _shadowsEnabled;
+		}
 	};
 }

@@ -5,6 +5,8 @@
 
 namespace RBX
 {
+	typedef G3D::ReferenceCountedPointer<class TextureProxyBase> TextureProxyBaseRef;
+
 	class TextureProxyBase : public G3D::ReferenceCountedObject
 	{
 	public:

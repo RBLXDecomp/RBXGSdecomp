@@ -36,14 +36,24 @@ namespace RBX
 		{
 		}
 		GuiResponse(ResponseType response)
-			: response(response)
+			: response(response),
+			  target(NULL)
 		{
 		}
 	public:
-		bool wasUsed();
-		bool wasNotUsed();
+		bool wasUsed()
+		{
+			return response != NOT_USED; // NOTE: might be incorrect although it does make sense 
+		}
+		bool wasNotUsed()
+		{
+			return response == NOT_USED;
+		}
 		bool wasFinished();
-		GuiTarget* getTarget();
+		GuiTarget* getTarget()
+		{
+			return target;
+		}
 	  
 	public:
 		static GuiResponse notUsed()
@@ -51,8 +61,14 @@ namespace RBX
 			return GuiResponse(NOT_USED);
 		}
 		static GuiResponse used(GuiTarget*);
-		static GuiResponse used();
-		static GuiResponse finished();
+		static GuiResponse used()
+		{
+			return GuiResponse(USED);
+		}
+		static GuiResponse finished()
+		{
+			return GuiResponse(USED_AND_FINISHED);
+		}
 	};
 
 	class GuiTarget
