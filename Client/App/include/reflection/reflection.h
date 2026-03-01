@@ -15,13 +15,6 @@ namespace RBX
 
 	private:
 		virtual void assignIDREF(Reflection::DescribedBase*, const InstanceHandle&) const = 0;
-	public:
-		//IIDREF(const IIDREF&);
-		IIDREF()
-		{
-		}
-	public:
-		//IIDREF& operator=(const IIDREF&);
 	};
 
 	namespace Reflection

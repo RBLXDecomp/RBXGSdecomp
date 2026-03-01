@@ -14,11 +14,6 @@ namespace RBX
 		virtual void announceIDREF(const XmlNameValuePair* valueIDREF, Reflection::DescribedBase* propertyOwner, const IIDREF* idref) = 0;
 	protected:
 		void assign(const IIDREF*, Reflection::DescribedBase*, const InstanceHandle&);
-	public:
-		//IReferenceBinder(const IReferenceBinder&);
-		IReferenceBinder();
-	public:
-		//IReferenceBinder& operator=(const IReferenceBinder&);
 	};
 
 	class MergeBinder : public IReferenceBinder
@@ -69,12 +64,6 @@ public:
 	virtual bool processIDREF(const XmlNameValuePair* valueIDREF, RBX::Reflection::DescribedBase* propertyOwner, const RBX::IIDREF* idref);
 	bool resolveIDREF(IDREFBinding binding);
 	virtual bool resolveRefs();
-public:
-	//ArchiveBinder(const ArchiveBinder&);
-	ArchiveBinder();
-	~ArchiveBinder();
-public:
-	ArchiveBinder& operator=(const ArchiveBinder&);
 };
 
 class SerializerV2

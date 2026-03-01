@@ -3,6 +3,7 @@
 #include "RenderLib/RenderSurface.h"
 #include "RenderLib/Chunk.h"
 #include <GLG3D/Sky.h>
+#include <G3D/GCamera.h>
 
 namespace RBX
 {
@@ -48,7 +49,7 @@ namespace RBX
 			void sortProxies();
 			void computeProxyArrays(G3D::RenderDevice* rd, const G3D::GCamera& camera);
 			void sendDiffuseProxyMeshGeometry(G3D::RenderDevice* rd) const;
-			void markStencilShadows(G3D::RenderDevice*, const G3D::GCamera&, const G3D::GLight&);
+			void markStencilShadows(G3D::RenderDevice* rd, const G3D::GCamera& camera, const G3D::GLight& light);
 			void sendShadowProxyMeshGeometry(G3D::RenderDevice*, const G3D::GLight&) const;
 			void turnOnLights(G3D::RenderDevice* rd, bool allLights) const;
 			void diffusePass(G3D::RenderDevice*);
@@ -66,7 +67,7 @@ namespace RBX
 			void setThrottle(float t, float m, bool s, float c);
 			float getShadingQuality() const;
 			float getMeshDetail() const;
-			void render(G3D::RenderDevice*, const G3D::GCamera&);
+			void render(G3D::RenderDevice* rd, const G3D::GCamera& camera);
 			//RenderScene& operator=(const RenderScene&);
 		};
 

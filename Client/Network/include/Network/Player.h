@@ -1,13 +1,16 @@
 #pragma once
+#include <winsock2.h>
+#include "Network/Players.h"
+#include "security/SecurityContext.h"
+#include "humanoid/Humanoid.h"
 #include "v8tree/Instance.h"
+#include "v8tree/Service.h"
 #include "v8datamodel/BrickColor.h"
+#include "v8datamodel/Backpack.h"
+#include "v8datamodel/Workspace.h"
 
 namespace RBX
 {
-	class ServiceProvider;
-	class ModelInstance;
-	class Backpack;
-
 	namespace Network
 	{
 		struct CharacterAdded
@@ -46,7 +49,7 @@ namespace RBX
 			bool under13;
 			bool superSafeChat;
 			int userId;
-			double lastActivityTime;
+			G3D::RealTime lastActivityTime;
 
 		public:
 			static Reflection::BoundProp<int, 1> prop_userId;
@@ -56,7 +59,7 @@ namespace RBX
 
 		private:
 			virtual bool askAddChild(const Instance*) const;
-			virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 			void onCharacterChangedFrontend();
 			void registerLocalPlayerNotIdle();
 		public:
@@ -65,7 +68,7 @@ namespace RBX
 			virtual ~Player();
 		public:
 			virtual XmlElement* write();
-			virtual void setName(const std::string&);
+			virtual void setName(const std::string& value);
 			ModelInstance* getCharacter() const
 			{
 				return character.get();
@@ -75,19 +78,31 @@ namespace RBX
 			{
 				return teamColor;
 			}
-			void setTeamColor(BrickColor);
+			void setTeamColor(BrickColor value);
 			bool getNeutral() const
 			{
 				return neutral;
 			}
-			void setNeutral(bool);
-			std::string getCharacterAppearance() const;
-			void setCharacterAppearance(const std::string&);
+			void setNeutral(bool value);
+			std::string getCharacterAppearance() const
+			{
+				return characterAppearance;
+			}
+			void setCharacterAppearance(const std::string& value);
 			bool getUnder13() const;
 			bool getSuperSafeChat() const;
-			void setUnder13(bool);
-			void setSuperSafeChat(bool);
-			int getUserID() const;
+			void setUnder13(bool value)
+			{
+				prop_Under13.setValue(this, value);
+			}
+			void setSuperSafeChat(bool value)
+			{
+				prop_SuperSafeChat.setValue(this, value);
+			}
+			int getUserID() const
+			{
+				return userId;
+			}
 			void rebuildBackpack();
 			Backpack* getPlayerBackpack() const;
 			void loadCharacter();
