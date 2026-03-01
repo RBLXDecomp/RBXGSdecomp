@@ -24,11 +24,11 @@ namespace RBX
 		virtual bool askSetParent(const Instance*) const;
 		virtual bool askAddChild(const Instance*) const;
 		int getScore() const;
-		void setScore(int);
+		void setScore(int newScore);
 		BrickColor getTeamColor() const;
-		void setTeamColor(BrickColor);
+		void setTeamColor(BrickColor newColor);
 		bool getAutoAssignable() const;
-		void setAutoAssignable(bool);
+		void setAutoAssignable(bool value);
 	public:
 		//Team& operator=(const Team&);
 	};
