@@ -4,6 +4,8 @@
 
 namespace RBX
 {
+	const char* const category_Part = "Part";
+
 	static const Reflection::PropDescriptor<PartInstance, G3D::Vector3> prop_PositionUi("Position", "Data", &PartInstance::getTranslationUi, &PartInstance::setTranslationUi, Reflection::PropertyDescriptor::UI);
 	static const Reflection::PropDescriptor<PartInstance, G3D::Vector3> prop_Velocity("Velocity", "Data", &PartInstance::getLinearVelocity, &PartInstance::setLinearVelocity, Reflection::PropertyDescriptor::STANDARD);
 	static const Reflection::PropDescriptor<PartInstance, G3D::Vector3> prop_SizeUi("Size", category_Part, &PartInstance::getPartSizeUi, &PartInstance::setPartSizeUi, Reflection::PropertyDescriptor::UI);
