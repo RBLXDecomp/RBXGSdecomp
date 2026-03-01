@@ -1323,6 +1323,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Lighting.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\ModelInstance.cpp"
 				>
 			</File>
