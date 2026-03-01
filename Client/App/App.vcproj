@@ -886,6 +886,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\TimerService.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Tool.h"
 					>
 				</File>
@@ -951,6 +955,14 @@
 				>
 				<File
 					RelativePath=".\include\humanoid\Humanoid.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="security"
+				>
+				<File
+					RelativePath=".\include\security\SecurityContext.h"
 					>
 				</File>
 			</Filter>
@@ -1344,6 +1356,14 @@
 			</File>
 		</Filter>
 		<Filter
+			Name="security"
+			>
+			<File
+				RelativePath=".\security\SecurityContext.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
 			Name="gui"
 			>
 			<File
@@ -1356,6 +1376,7 @@
 			</File>
 			<File
 				RelativePath=".\gui\Widget.cpp"
+
 				>
 			</File>
 		</Filter>
