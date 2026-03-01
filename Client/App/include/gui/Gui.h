@@ -4,6 +4,7 @@
 #include "gui/GuiEvent.h"
 #include "gui/Layout.h"
 #include "util/Rect.h"
+#include <G3D/Matrix4.h>
 #include <G3D/Vector2.h>
 
 namespace RBX
@@ -16,42 +17,95 @@ namespace RBX
 		G3D::Vector2 guiSize;
 	  
 	private:
-		GuiResponse processNonFocus(const GuiEvent&);
+		GuiResponse processNonFocus(const GuiEvent& event);
 		void switchFocus(GuiItem*);
-		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>&);
-		virtual bool askAddChild(const Instance*) const;
-		virtual const Name& getClassName() const;
+		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
+		virtual bool askAddChild(const Instance* instance) const
+		{
+			return fastDynamicCast<const GuiItem>(instance) != NULL;
+		}
+		virtual const Name& getClassName() const
+		{
+			return Name::getNullName();
+		}
 	protected:
 		GuiItem* getFocus();
-		void loseFocus();
+		void loseFocus()
+		{
+			if (focus)
+				focus->onLoseFocus();
+
+			focus.reset();
+		}
+
 		Rect getMyRect() const;
-		G3D::Rect2D getMyRect2D() const;
+		G3D::Rect2D getMyRect2D() const
+		{
+			return getMyRect().toRect2D();
+		}
 	protected:
 		void label2d(Adorn*, const std::string&, const G3D::Color4&, const G3D::Color4&, Adorn::XAlign) const;
-		virtual void onLoseFocus();
-		virtual bool canLoseFocus();
-		virtual G3D::Vector2 getPosition() const;
-		virtual G3D::Vector2 getChildPosition(const GuiItem*) const;
-		virtual int getFontSize() const;
-		virtual bool isVisible() const;
-		virtual std::string getTitle();
+
+		virtual void onLoseFocus()
+		{
+			return;
+		}
+
+		virtual bool canLoseFocus()
+		{
+			return false;
+		}
+
+		virtual G3D::Vector2 getPosition() const
+		{
+			return getGuiParent()->getChildPosition(this);
+		}
+
+		virtual G3D::Vector2 getChildPosition(const GuiItem* child) const
+		{
+			RBXASSERT(0);
+			return G3D::Vector2::zero();
+		}
+
+		virtual int getFontSize() const
+		{
+			return 14;
+		}
+
+		virtual bool isVisible() const
+		{
+			return true;
+		}
+
+		virtual std::string getTitle()
+		{
+			return getName();
+		}
+
 	public:
-		virtual G3D::Vector2 getSize() const;
-		virtual GuiResponse process(const GuiEvent&);
-		virtual void render2d(Adorn*);
+		virtual G3D::Vector2 getSize() const
+		{
+			return guiSize;
+		}
+		virtual GuiResponse process(const GuiEvent& event);
+		virtual void render2d(Adorn* adorn)
+		{
+			return;
+		}
 	public:
 		GuiItem(const GuiItem&);
 		GuiItem();
 	public:
 		void addGuiItem(boost::shared_ptr<GuiItem>);
-		void setGuiSize(const G3D::Vector2&);
+		void setGuiSize(const G3D::Vector2& guiSize)
+		{
+			this->guiSize = guiSize;
+		}
 		const G3D::Vector2& getGuiSize() const;
-		const GuiItem* getGuiParent() const;
+		__declspec(noinline) const GuiItem* getGuiParent() const;
 		GuiItem* getGuiParent();
 		const GuiItem* getGuiItem(int) const;
 		GuiItem* getGuiItem(int);
-	public:
-		virtual ~GuiItem();
 	public:
 		//GuiItem& operator=(const GuiItem&);
 
@@ -76,19 +130,25 @@ namespace RBX
 		bool visible;
 
 	private:
-		void init();
+		__declspec(noinline) void init();
 	protected:
-		virtual G3D::Vector2 getChildPosition(const GuiItem*) const;
+		virtual G3D::Vector2 getChildPosition(const GuiItem* child) const;
 	public:
 		//TopMenuBar(const TopMenuBar&);
 		TopMenuBar(const std::string&, Layout::Style, G3D::Color4);
 		TopMenuBar(const std::string&, Layout::Style, bool);
-		TopMenuBar();
+		TopMenuBar()
+		{
+			init();
+		}
 	public:
-		virtual GuiResponse process(const GuiEvent&);
-		virtual void render2d(Adorn*);
+		virtual GuiResponse process(const GuiEvent& event);
+		virtual void render2d(Adorn* adorn);
 		virtual G3D::Vector2 getSize() const;
-		virtual bool isVisible() const;
+		virtual bool isVisible() const
+		{
+			return visible;
+		}
 		void setVisible(bool);
 	public:
 		virtual ~TopMenuBar();
@@ -104,16 +164,51 @@ namespace RBX
 		G3D::Vector2int16 offset;
 	  
 	protected:
-		void init(const Layout&);
+		void init(const Layout& layout);
 	public:
 		//RelativePanel(const RelativePanel&);
 		RelativePanel(const Layout&);
-		RelativePanel();
+		RelativePanel()
+		{
+			init(Layout());
+		}
 	public:
 		virtual G3D::Vector2 getPosition() const;
 	public:
 		virtual ~RelativePanel();
 	public:
 		//RelativePanel& operator=(const RelativePanel&);
+	};
+
+	class GuiRoot : public GuiItem
+	{
+	private:
+		static G3D::Vector2 canvasSize;
+		static G3D::Matrix4 oldProjectionMatrix;
+		static G3D::CoordinateFrame oldCameraWorld;
+
+	private:
+		virtual G3D::Vector2 getSize() const
+		{
+			return getCanvasSize();
+		}
+	public:
+		GuiRoot();
+		virtual void render2d(Adorn*);
+	protected:
+		virtual bool askSetParent(const Instance*) const;
+	
+	private:
+		static bool preProcess(const GuiEvent&);
+	public:
+		static GuiResponse processTarget(const GuiEvent&, GuiTarget*);
+		static void render2dItem(Adorn*, GuiItem*);
+		static void setCanvasSize(const G3D::Vector2&);
+		static G3D::Vector2 getCanvasSize()
+		{
+			return canvasSize;
+		}
+		static G3D::Vector2 toPixelSize(const G3D::Vector2&);
+		static int normalizedFontSize(int fontSize);
 	};
 }
