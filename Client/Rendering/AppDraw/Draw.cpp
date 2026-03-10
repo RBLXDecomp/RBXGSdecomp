@@ -84,7 +84,7 @@ namespace RBX
 
         G3D::Vector3 halfSize = part.gridSize * 0.5f;
 
-        G3D::Matrix3 rot = Math::getAxisRotationMatrix(face);
+       const G3D::Matrix3& relativeRotation = Math::getAxisRotationMatrix(face);
 
         G3D::Vector3 relativeTranslation;
 
@@ -93,7 +93,7 @@ namespace RBX
 
         relativeTranslation[axis] = halfSize[axis]*posNeg;
 
-        G3D::CoordinateFrame translation(rot, relativeTranslation);
+        G3D::CoordinateFrame translation(relativeRotation, relativeTranslation);
         G3D::CoordinateFrame newObject = part.coordinateFrame*translation;
 
         adorn->setObjectToWorldMatrix(newObject);

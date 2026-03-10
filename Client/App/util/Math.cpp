@@ -203,8 +203,8 @@ namespace RBX
 
 	const G3D::Matrix3& Math::getAxisRotationMatrix(int face)
 	{
-		static G3D::Matrix3 y = G3D::Matrix3::fromEulerAnglesXYZ(0, 0, G3D::halfPi());
-		static G3D::Matrix3 z = G3D::Matrix3::fromEulerAnglesXYZ(0, G3D::halfPi(), 0);
+		static G3D::Matrix3 y = G3D::Matrix3::fromEulerAnglesXYZ(0.0f, 0.0f, (float)G3D::halfPi());
+		static G3D::Matrix3 z = G3D::Matrix3::fromEulerAnglesXYZ(0.0f, (float)G3D::halfPi(), 0.0f);
 		static G3D::Matrix3 y_neg = G3D::Matrix3(y);
 		static G3D::Matrix3 z_neg = G3D::Matrix3(z);
 
