@@ -3,6 +3,7 @@
 #include "RenderLib/RenderSurface.h"
 #include "RenderLib/Chunk.h"
 #include <GLG3D/Sky.h>
+#include <G3D/GCamera.h>
 
 namespace RBX
 {
@@ -48,7 +49,7 @@ namespace RBX
 			void sortProxies();
 			void computeProxyArrays(G3D::RenderDevice* rd, const G3D::GCamera& camera);
 			void sendDiffuseProxyMeshGeometry(G3D::RenderDevice* rd) const;
-			void markStencilShadows(G3D::RenderDevice*, const G3D::GCamera&, const G3D::GLight&);
+			void markStencilShadows(G3D::RenderDevice* rd, const G3D::GCamera& camera, const G3D::GLight& light);
 			void sendShadowProxyMeshGeometry(G3D::RenderDevice*, const G3D::GLight&) const;
 			void turnOnLights(G3D::RenderDevice* rd, bool allLights) const;
 			void diffusePass(G3D::RenderDevice*);
@@ -66,7 +67,7 @@ namespace RBX
 			void setThrottle(float t, float m, bool s, float c);
 			float getShadingQuality() const;
 			float getMeshDetail() const;
-			void render(G3D::RenderDevice*, const G3D::GCamera&);
+			void render(G3D::RenderDevice* rd, const G3D::GCamera& camera);
 			//RenderScene& operator=(const RenderScene&);
 		};
 
@@ -81,12 +82,21 @@ namespace RBX
 			virtual void clear() = 0;
 			virtual void setSleeping(const G3D::ReferenceCountedPointer<Chunk>&, bool) = 0;
 			virtual void prerender(double) = 0;
-			virtual ~SceneManager();
+			virtual ~SceneManager() {}
 			//SceneManager(const SceneManager&);
 		protected:
-			SceneManager(RenderScene*);
-			void clearScene();
-			void addToScene(const G3D::ReferenceCountedPointer<Chunk>&);
+			SceneManager(RenderScene* renderScene)
+				: renderScene(renderScene)
+			{
+			}
+			void clearScene()
+			{
+				renderScene->chunkArray.clear();
+			}
+			void addToScene(const G3D::ReferenceCountedPointer<Chunk>& chunk)
+			{
+				renderScene->chunkArray.push_back(chunk);
+			}
 			void removeFromScene(const G3D::ReferenceCountedPointer<Chunk>& chunk)
 			{
 				renderScene->chunkArray.fastRemove(renderScene->chunkArray.findIndex(chunk));

@@ -15,14 +15,25 @@ namespace RBX
 		class Item : public NonFactoryProduct<Instance, NULL>
 		{
 		protected:
-			virtual bool askAddChild(const Instance*) const;
+			virtual bool askAddChild(const Instance* instance) const
+			{
+				return fastDynamicCast<const GlobalSettings::Item>(instance) != NULL;
+			}
+		public:
+			//Item(const Item&);
+			Item();
+			~Item();
+			//Item& operator=(const Item&);
 		};
 
 	public:
 		static boost::recursive_mutex mutex;
 
-	public:
-		GlobalSettings();
+		//GlobalSettings(const GlobalSettings&);
+		GlobalSettings()
+		{
+			setName("Global Settings");
+		}
 		void loadState();
 		void saveState();
 		void eraseSettingsStore();

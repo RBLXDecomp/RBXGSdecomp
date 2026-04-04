@@ -31,19 +31,37 @@ namespace RBX
 				G3D::LightingParameters&
 			);
 
-			bool stencilShadows() const;
+			bool stencilShadows() const
+			{
+				return _stencilShadows;
+			}
 			bool hemisphereLighting() const
 			{
 				return _hemisphereLighting;
 			}
-			bool skyBox() const;
+			bool skyBox() const
+			{
+				return _skyBox;
+			}
 			float farCullZ() const;
-			bool alphaBlendShadowLights() const;
-			bool useAllLightsInUnshadowedPass() const;
+			bool alphaBlendShadowLights() const
+			{
+				return _alphaBlendShadowLights;
+			}
+			bool useAllLightsInUnshadowedPass() const
+			{
+				return _useAllLightsInUnshadowedPass;
+			}
 			float groundLOD() const;
 			float LODShift() const;
-			bool applyToneMap() const;
-			bool applyDepthBlur() const;
+			bool applyToneMap() const
+			{
+				return _toneMap;
+			}
+			bool applyDepthBlur() const
+			{
+				return _depthBlur;
+			}
 
 			static G3D::ToneMap* getToneMap();
 			static DepthBlur* getDepthBlur();

@@ -233,5 +233,241 @@ namespace RBX
 
 			setLighting(lighting);
 		}
+
+		void RenderScene::classifyProxies()
+		{
+			for (int i = 0; i < proxyArray.size(); i++)
+			{
+				RenderSurface* ptr = &proxyArray[i];
+				if (ptr->material)
+				{
+					if (ptr->material->transparent() > 0.0f)
+					{
+						transparentProxyArray.push_back(ptr);
+					}
+					else
+					{
+						diffuseProxyArray.push_back(ptr);
+
+						if (ptr->material->reflect() > 0.0f)
+							reflectProxyArray.push_back(ptr);
+					}
+				}
+			}
+		}
+
+		void RenderScene::render(G3D::RenderDevice* rd, const G3D::GCamera& camera)
+		{
+			int startTriangleCount = rd->getTriangleCount();
+			int markShadowsTriCount = 0;
+			int unshadowedTriCount = 0;
+			int shadowedTriCount = 0;
+
+			renderStats.cpuRenderTotal.tick();
+
+			rd->setStencilConstant(0);
+			rd->setStencilClearValue(0);
+			rd->setProjectionAndCameraMatrix(camera);
+
+			if (effectSettings.applyToneMap())
+			{
+				effectSettings.getToneMap()->beginFrame(rd);
+			}
+
+			rd->setColorClearValue(colorClearValue);
+			rd->clear(sky.isNull() || !effectSettings.skyBox(), true, true);
+
+			if (sky.notNull() && effectSettings.skyBox())
+			{
+				sky->render(rd, skyParameters);
+			}
+
+			computeProxyArrays(rd, camera);
+
+			rd->setShadeMode(G3D::RenderDevice::SHADE_SMOOTH);
+			rd->setDepthTest(G3D::RenderDevice::DEPTH_LEQUAL);
+			rd->setAlphaTest(G3D::RenderDevice::ALPHA_GREATER, 0.1);
+			rd->pushState();
+
+			turnOnLights(rd, effectSettings.useAllLightsInUnshadowedPass());
+
+			Mesh::beginRender(rd, true, false);
+
+			if (!debugShadowVolumes)
+			{
+				int prevTriangleCount = rd->getTriangleCount();
+				sendDiffuseProxyMeshGeometry(rd);
+				unshadowedTriCount = rd->getTriangleCount() - prevTriangleCount;
+			}
+
+			Mesh::endRender(rd);
+
+			rd->popState();
+
+			if (effectSettings.stencilShadows())
+			{
+				rd->pushState();
+				rd->disableDepthWrite();
+				rd->setDepthTest(G3D::RenderDevice::DEPTH_LEQUAL);
+
+				for (int i = 0; i < lighting->shadowedLightArray.size(); i++)
+				{
+					if (i > 0)
+					{
+						rd->clear(false, false, true);
+					}
+
+					const G3D::GLight& current = lighting->shadowedLightArray[i];
+
+					if (effectSettings.alphaBlendShadowLights())
+					{
+						rd->setBlendFunc(G3D::RenderDevice::BLEND_ONE, G3D::RenderDevice::BLEND_ONE, G3D::RenderDevice::BLENDEQ_ADD);
+						rd->enableLighting();
+						rd->setLight(0, current); 
+					}
+					else
+					{
+						turnOnLights(rd, true);
+					}
+
+					int prevTriangleCount = rd->getTriangleCount();
+					markStencilShadows(rd, camera, current);
+					markShadowsTriCount += rd->getTriangleCount() - prevTriangleCount;
+
+					if (!debugShadowVolumes)
+					{
+						rd->setStencilConstant(0);
+						rd->setDepthTest(G3D::RenderDevice::DEPTH_LEQUAL);
+
+						int prevTriCount = rd->getTriangleCount();
+
+						rd->setPolygonOffset(0.0);
+						rd->setStencilTest(G3D::RenderDevice::STENCIL_EQUAL);
+						
+						Mesh::beginRender(rd, true, false);
+						sendDiffuseProxyMeshGeometry(rd);
+						Mesh::endRender(rd);
+
+						shadowedTriCount += rd->getTriangleCount() - prevTriCount;
+					}
+				}
+				
+				rd->popState();
+			}
+			else
+			{
+				renderStats.cpuShadow.tick();
+				renderStats.cpuShadow.tock();
+			}
+
+			rd->pushState();
+
+			Mesh::beginRender(rd, true, false);
+			reflectionPass(rd);
+			Mesh::endRender(rd);
+
+			rd->popState();
+
+			rd->pushState();
+
+			turnOnLights(rd, true);
+			Mesh::beginRender(rd, true, false);
+			transparentPass(rd);
+			Mesh::endRender(rd);
+
+			rd->popState();
+
+			if (sky.notNull() && effectSettings.skyBox())
+			{
+				sky->renderLensFlare(rd, skyParameters);
+			}
+
+			if (effectSettings.applyDepthBlur())
+			{
+				effectSettings.getDepthBlur()->apply(rd);
+			}
+
+			if (effectSettings.applyToneMap())
+			{
+				effectSettings.getToneMap()->endFrame(rd);
+			}
+
+			renderStats.cpuRenderTotal.tock();
+			renderStats.pushPopCount = rd->debugNumPushStateCalls();
+
+			int endTriangleCount = rd->getTriangleCount();
+
+			renderStats.markShadowsTriangles = markShadowsTriCount;
+			renderStats.totalTriangles = endTriangleCount - startTriangleCount;
+			renderStats.shadowedLightTriangles = shadowedTriCount;
+			renderStats.unshadowedTriangles = unshadowedTriCount;
+			renderStats.majorGLStateChanges = rd->debugNumMajorOpenGLStateChanges();
+			renderStats.minorGLStateChanges = rd->debugNumMinorOpenGLStateChanges();
+			renderStats.majorStateChanges = rd->debugNumMajorStateChanges();
+			renderStats.minorStateChanges = rd->debugNumMinorStateChanges();
+		}
+
+		void RenderScene::markStencilShadows(G3D::RenderDevice* rd, const G3D::GCamera& camera, const G3D::GLight& light)
+		{
+			static G3D::Array<G3D::Vector3> shadowVertex;
+
+			float farPlane = G3D::min(10000.0f, -camera.getFarPlaneZ() * 0.2f);
+
+			shadowIndexArray.fastClear();
+			computeShadowVolumeGeometry(shadowIndexArray, shadowVertex, light, true, farPlane);
+
+			updateShadowVAR(shadowVertex);
+
+			rd->pushState();
+			rd->setDepthTest(G3D::RenderDevice::DEPTH_LEQUAL);
+
+			if (debugShadowVolumes)
+			{
+				rd->setColor(G3D::Color3::white() * 0.25);
+				rd->setCullFace(G3D::RenderDevice::CULL_NONE);
+				rd->setBlendFunc(G3D::RenderDevice::BLEND_ONE, G3D::RenderDevice::BLEND_ONE, G3D::RenderDevice::BLENDEQ_ADD);
+				rd->disableDepthWrite();
+			}
+			else
+			{
+				rd->disableDepthWrite();
+				rd->disableColorWrite();
+				rd->setDepthTest(G3D::RenderDevice::DEPTH_LESS);
+				rd->setPolygonOffset(0.2);
+
+				if (G3D::GLCaps::supports_two_sided_stencil())
+				{
+					rd->setCullFace(G3D::RenderDevice::CULL_NONE);
+					rd->setStencilOp(
+						G3D::RenderDevice::STENCIL_KEEP, G3D::RenderDevice::STENCIL_DECR_WRAP, G3D::RenderDevice::STENCIL_KEEP,
+						G3D::RenderDevice::STENCIL_KEEP, G3D::RenderDevice::STENCIL_INCR_WRAP, G3D::RenderDevice::STENCIL_KEEP
+					);
+				}
+				else
+				{
+					rd->setCullFace(G3D::RenderDevice::CULL_BACK);
+					rd->setStencilOp(G3D::RenderDevice::STENCIL_KEEP, G3D::RenderDevice::STENCIL_DECR_WRAP, G3D::RenderDevice::STENCIL_KEEP);
+				}
+
+				rd->disableLighting();
+			}
+
+			rd->setShadeMode(G3D::RenderDevice::SHADE_FLAT);
+			rd->setObjectToWorldMatrix(G3D::CoordinateFrame());
+			renderShadowVolumeGeometry(rd, light, true, farPlane);
+
+			if (!G3D::GLCaps::supports_two_sided_stencil() && !debugShadowVolumes)
+			{
+				rd->setCullFace(G3D::RenderDevice::CULL_FRONT);
+				rd->setStencilOp(G3D::RenderDevice::STENCIL_KEEP, G3D::RenderDevice::STENCIL_INCR_WRAP, G3D::RenderDevice::STENCIL_KEEP);
+
+				renderShadowVolumeGeometry(rd, light, true, farPlane);
+
+				rd->setCullFace(G3D::RenderDevice::CULL_BACK);
+				rd->setStencilOp(G3D::RenderDevice::STENCIL_KEEP, G3D::RenderDevice::STENCIL_DECR_WRAP, G3D::RenderDevice::STENCIL_KEEP);
+			}
+
+			rd->popState();
+		}
 	}
 }

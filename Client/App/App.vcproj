@@ -390,6 +390,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\IndexBox.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\InsertMode.h"
 					>
 				</File>
@@ -798,6 +802,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Decal.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\FaceInstance.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Feature.h"
 					>
 				</File>
@@ -879,6 +891,10 @@
 				</File>
 				<File
 					RelativePath=".\include\v8datamodel\Teams.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\TimerService.h"
 					>
 				</File>
 				<File
@@ -994,6 +1010,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="security"
+				>
+				<File
+					RelativePath=".\include\security\SecurityContext.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="v8kernel"
@@ -1072,6 +1096,10 @@
 			</File>
 			<File
 				RelativePath=".\util\Http.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\IndexBox.cpp"
 				>
 			</File>
 			<File
@@ -1323,6 +1351,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Decal.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\FaceInstance.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Feature.cpp"
 				>
 			</File>
@@ -1332,6 +1372,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\JointInstance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Lighting.cpp"
 				>
 			</File>
 			<File
@@ -1352,6 +1396,14 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\Stats.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Team.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Teams.cpp"
 				>
 			</File>
 		</Filter>
@@ -1804,6 +1856,31 @@
 			</File>
 			<File
 				RelativePath=".\lua-5.1.1\src\lzio.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="security"
+			>
+			<File
+				RelativePath=".\security\SecurityContext.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="gui"
+			>
+			<File
+				RelativePath=".\gui\GUI.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\GuiDraw.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\Widget.cpp"
+
 				>
 			</File>
 		</Filter>

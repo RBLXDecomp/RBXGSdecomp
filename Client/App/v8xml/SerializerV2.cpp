@@ -51,6 +51,22 @@ namespace RBX
 		else
 			return false;
 	}
+
+	bool MergeBinder::resolveRefs()
+	{
+		for (std::vector<IDREFItem>::iterator iter = deferredIDREFItems.begin(); iter != deferredIDREFItems.end(); iter++)
+		{
+			const IIDREF*& idref = iter->idref;
+			Reflection::DescribedBase*& propertyOwner = iter->propertyOwner;
+			InstanceHandle& value = iter->value;
+
+			idref->assignIDREF(propertyOwner, value);
+		}
+
+		deferredIDREFItems.clear();
+
+		return true;
+	}
 }
 
 bool ArchiveBinder::resolveRefs()
@@ -82,6 +98,22 @@ bool ArchiveBinder::resolveIDREF(IDREFBinding binding)
 		binding.idref->assignIDREF(binding.propertyOwner,RBX::InstanceHandle(NULL));
 		return false;
 	}
+}
+
+bool ArchiveBinder::processID(const XmlNameValuePair* valueID, RBX::Instance* source)
+{
+	if (!MergeBinder::processID(valueID, source))
+	{
+		std::string s;
+		bool success = valueID->getValue(s);
+
+		RBXASSERT(success);
+		RBXASSERT(idMap.find(s) == idMap.end());
+
+		idMap[s] = shared_from(source);
+	}
+
+	return true;
 }
 
 bool ArchiveBinder::processIDREF(const XmlNameValuePair* valueIDREF, RBX::Reflection::DescribedBase* propertyOwner, const RBX::IIDREF* idref)

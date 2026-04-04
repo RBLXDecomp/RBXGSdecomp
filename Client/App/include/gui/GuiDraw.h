@@ -1,5 +1,6 @@
 #pragma once
 #include "gui/Gui.h"
+#include "gui/Widget.h"
 #include "util/TextureId.h"
 
 namespace RBX
@@ -22,7 +23,7 @@ namespace RBX
 		GuiDrawImage(Adorn*, const std::string&);
 		GuiDrawImage();
 	public:
-		void render2d(Adorn*, bool, Rect&, Widget::WidgetState);
+		void render2d(Adorn* adorn, bool enabled, Rect& rect, Widget::WidgetState state);
 		void setImageSize(const G3D::Vector2&);
 		G3D::Vector2 getImageSize() const;
 		bool setImage(Adorn*, const TextureId&);

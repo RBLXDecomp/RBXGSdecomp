@@ -29,13 +29,22 @@ namespace RBX
 
 	public:
 		//Rect(const Rect&);
-		Rect(const G3D::Vector2&, const G3D::Vector2&);
+		Rect(const G3D::Vector2& low, const G3D::Vector2& high)
+			: low(low),
+			  high(high)
+		{
+		}
 		Rect(const G3D::Vector2&);
 		Rect(float, float, float, float);
-		Rect(G3D::Rect2D);
+		Rect(G3D::Rect2D rect) : low(rect.x0y0()), high(rect.x1y1())
+		{
+		}
 		Rect();
 	public:
-		G3D::Rect2D toRect2D() const;
+		G3D::Rect2D toRect2D() const
+		{
+			return G3D::Rect2D::xyxy(low, high);
+		}
 		void unionWith(const G3D::Vector2&);
 		void unionWith(const Rect&);
 		bool operator==(const Rect&) const;

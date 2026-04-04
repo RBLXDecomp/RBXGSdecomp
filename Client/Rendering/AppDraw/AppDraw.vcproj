@@ -106,12 +106,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\SDL-1.2.6\include;..\G3D\png;..\g3d\include;.\include;..\g3d\include\zlib;..\RenderLib\include;..\RenderLibNew\include;..\RbxGraphics\include;..\..\RbxGraphics\;..\..\app\include;..\..\boost_1_34_1\src;..\OgreSDK\include"
+				AdditionalIncludeDirectories="..\SDL-1.2.6\include;..\G3D\png;..\g3d\include;.\include;..\g3d\include\zlib;..\RenderLib\include;..\RenderLibNew\include;..\..\RbxGraphics\include;..\..\RbxGraphics\;..\..\app\include;..\..\boost_1_34_1\src;..\OgreSDK\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_RELEASE"
 				RuntimeLibrary="2"
+				BufferSecurityCheck="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -155,12 +156,40 @@
 				RelativePath=".\AdornG3D.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Draw.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DrawAdorn.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DrawPrimitives.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Fonts.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\HitTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Textures.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\include\AppDraw\AdornG3D.h"
+				>
+			</File>
 			<File
 				RelativePath=".\include\AppDraw\Draw.h"
 				>
@@ -170,11 +199,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\AppDraw\DrawPrimitives.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\AppDraw\Fonts.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\AppDraw\HandleType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\AppDraw\HitTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\AppDraw\Part.h"
 				>
 			</File>
 			<File
 				RelativePath=".\include\AppDraw\SelectState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\AppDraw\Textures.h"
 				>
 			</File>
 		</Filter>

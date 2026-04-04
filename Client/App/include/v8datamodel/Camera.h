@@ -1,9 +1,9 @@
 #pragma once
-#include "v8tree/Instance.h"
 #include <G3D/GCamera.h>
 #include <G3D/CoordinateFrame.h>
 #include <G3D/Rect2D.h>
 #include <G3D/Array.h>
+#include "v8tree/Instance.h"
 #include "util/Extents.h"
 
 namespace RBX
@@ -54,17 +54,17 @@ namespace RBX
 		void updateFocus();
 		void updateGoal();
 		bool characterZoom(float);
-		bool nonCharacterZoom(float);
-		void tryZoomExtents(float, float, float, const Extents&, const G3D::Rect2D&);
+		bool nonCharacterZoom(float in);
+		void tryZoomExtents(float low, float current, float high, const RBX::Extents& extents, const G3D::Rect2D& viewPort);
 		ContactManager& getContactManager();
 		float goalToFocusDistance() const;
 		void setGCameraCoordinateFrame(const G3D::CoordinateFrame&);
 		G3D::CoordinateFrame computeLineOfSiteGoal();
-		void getHeadingElevationDistance(float&, float&, float&);
+		void getHeadingElevationDistance(float& heading, float& elevation, float& distance);
 		void setHeadingElevationDistance(float, float, float);
 		void tellCameraMoved();
 		void getIgnorePrims(G3D::Array<const Primitive*>&);
-		virtual bool askSetParent(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const;
 	public:
 		//Camera(const Camera&);
 		Camera();
@@ -81,29 +81,32 @@ namespace RBX
 		bool isFirstPersonCamera() const;
 		ICameraSubject* getCameraSubject() const;
 		Instance* getCameraSubjectInstance() const;
-		void setCameraSubject(Instance*);
-		const G3D::CoordinateFrame& getCameraFocus() const;
-		void setCameraFocus(const G3D::CoordinateFrame&);
+		void setCameraSubject(Instance* newSubject);
+		const G3D::CoordinateFrame& getCameraFocus() const
+		{
+			return cameraFocus;
+		}
+		void setCameraFocus(const G3D::CoordinateFrame& value);
 		G3D::CoordinateFrame getCameraCoordinateFrame() const
 		{
 			return gCamera.getCoordinateFrame();
 		}
-		void setCameraCoordinateFrameNoLerp(const G3D::CoordinateFrame&);
+		void setCameraCoordinateFrameNoLerp(const G3D::CoordinateFrame& value);
 		void goalToCamera();
 		CameraType getCameraType() const;
-		void setCameraType(CameraType);
+		void setCameraType(CameraType type);
 		bool canZoom(int) const;
 		bool canTilt(int) const;
 		void onWrapMouse(const G3D::Vector2&);
-		bool zoom(float);
-		bool setDistanceFromTarget(float);
-		void zoomExtents(Extents, const G3D::Rect2D&, ZoomType);
-		bool zoomExtents(const G3D::Rect2D&);
-		void panRadians(float);
+		bool zoom(float in);
+		bool setDistanceFromTarget(float newDistance);
+		void zoomExtents(Extents extents, const G3D::Rect2D& viewPort, ZoomType zoomType);
+		bool zoomExtents(const G3D::Rect2D& viewPort);
+		void panRadians(float angle);
 		void panUnits(int);
 		bool tiltRadians(float);
 		bool tiltUnits(int);
-		void lookAt(const G3D::Vector3&);
+		void lookAt(const G3D::Vector3& point);
 		void setImageServerViewNoLerp(const G3D::CoordinateFrame&, const G3D::Rect2D&);
 	public:
 		//Camera& operator=(const Camera&);

@@ -22,7 +22,13 @@ namespace RBX
 
 	public:
 		//Layout(const Layout&);
-		Layout();
+		Layout() // TODO: this constructor is a guess based on another function that uses Layout class (RelativePanel ctor). is this correct?
+			: backdropColor(G3D::Color4::clear()),
+			  layoutStyle(HORIZONTAL),
+			  xLocation(Rect::LEFT),
+			  yLocation(Rect::TOP)
+		{
+		}
 	public:
 		//Layout& operator=(const Layout&);
 	};

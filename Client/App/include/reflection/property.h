@@ -144,8 +144,14 @@ namespace RBX
 
 		public:
 			virtual bool isReadOnly() const;
-			PropType getValue(const DescribedBase*) const;
-			void setValue(DescribedBase*, const PropType&) const;
+			PropType getValue(const DescribedBase* object) const
+			{
+				return getset->getValue(object);
+			}
+			void setValue(DescribedBase* object, const PropType& value) const
+			{
+				getset->setValue(object, value);
+			}
 			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const;
 			virtual bool hasStringValue() const;
 			virtual std::string getStringValue(const DescribedBase*) const;

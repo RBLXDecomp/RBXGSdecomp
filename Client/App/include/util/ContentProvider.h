@@ -193,4 +193,6 @@ namespace RBX
 	public:
 		static MD5Hasher* create();
 	};
+
+	bool operator!=(const ContentId&, const ContentId&);
 }

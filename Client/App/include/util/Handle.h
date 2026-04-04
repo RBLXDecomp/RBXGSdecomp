@@ -17,7 +17,11 @@ namespace RBX
 		{
 		}
 	public:
-		InstanceHandle& operator=(boost::shared_ptr<Instance>); // possibly just linkTo
+		InstanceHandle& operator=(boost::shared_ptr<Instance> object)
+		{
+			linkTo(object);
+			return *this;
+		}
 		//InstanceHandle& operator=(const InstanceHandle&);
 		bool empty() const;
 		boost::shared_ptr<Instance> getTarget() const;
@@ -42,7 +46,5 @@ namespace RBX
 		bool operatorEqual(const InstanceHandle& other) const;
 		bool operatorLess(const InstanceHandle& other) const;
 		bool operatorGreater(const InstanceHandle& other) const;
-	public:
-		~InstanceHandle() {}
 	};
 }

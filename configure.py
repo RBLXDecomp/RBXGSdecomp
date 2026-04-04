@@ -9,7 +9,7 @@ parser.add_argument("targetPath", help="The directory to your target object file
 
 def configure(desiredTargetPath):
     targetPath = root / desiredTargetPath
-    basePath = root / "Client/App/ReleaseAssert"
+    basePath = root / "Client/App/obj/ReleaseAssert"
 
     if not targetPath.is_dir():
         print("Specified target directory does not exist.")

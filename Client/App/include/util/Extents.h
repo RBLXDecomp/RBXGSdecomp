@@ -42,7 +42,11 @@ namespace RBX
 		NormalId closestFace(const G3D::Vector3& point);
 		void unionWith(const Extents& other);
 		void shift(const G3D::Vector3&);
-		void scale(float);
+		void scale(float scale)
+		{
+			this->low *= scale;
+			this->high *= scale;
+		}
 		void expand(float f)
 		{
 			this->low -= G3D::Vector3(f, f, f);
