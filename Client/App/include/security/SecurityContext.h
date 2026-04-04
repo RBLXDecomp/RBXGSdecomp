@@ -1,3 +1,4 @@
+#pragma once
 #include <boost/thread/tss.hpp>
 #include <G3D/format.h>
 
