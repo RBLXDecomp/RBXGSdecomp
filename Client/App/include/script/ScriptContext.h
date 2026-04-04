@@ -9,6 +9,7 @@
 #include "v8datamodel/Stats.h"
 #include "util/Events.h"
 #include "util/RunStateOwner.h"
+#include "security/SecurityContext.h"
 #include "boost/shared_ptr.hpp"
 #include "boost/date_time.hpp"
 #include "lua.h"
@@ -26,21 +27,6 @@ namespace RBX
     namespace Lua
     {
         class YieldingThreads;
-    }
-
-    // TODO: remove when appropriate
-    namespace Security
-    {
-        enum Identities
-        {
-            Anonymous,
-            LocalGUI,
-            GameScript,
-            CmdLine,
-            TrustedCOM,
-            TrustedWebService,
-            Replicator
-        };
     }
 
     extern const char *sScriptContext;

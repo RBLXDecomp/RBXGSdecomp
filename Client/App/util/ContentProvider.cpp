@@ -143,9 +143,4 @@ namespace RBX
 	{
 		return new MD5HasherImpl();
 	}
-
-	bool operator!=(const ContentId& a, const ContentId& b) 
-	{
-		return a.toString() != b.toString();
-	}
 }
