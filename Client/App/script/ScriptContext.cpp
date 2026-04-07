@@ -72,6 +72,23 @@ static inline void _removeListenersInline(boost::shared_ptr<RunService>& runServ
     _removeListenerInline<RunService, RunTransition>(runService.get(), scriptContext);
     _removeListenerInline<RunService, Heartbeat>(runService.get(), scriptContext);
 }
+
+static inline Security::Identities _getIdentityInline(lua_State* thread)
+{
+    lua_pushlightuserdata(thread, RBX_LUA_GLOBAL_IDENTITY);
+    lua_gettable(thread, LUA_GLOBALSINDEX);
+
+    if (!lua_isnumber(thread, -1))
+    {
+        return Security::Anonymous;
+    }
+    else
+    {
+        int identity = lua_tointeger(thread, -1);
+        lua_pop(thread, 1);
+        return static_cast<Security::Identities>(identity);
+    }
+}
 // end unidentified inlines
 
 Reflection::BoundProp<bool, true> ScriptContext::propScriptsDisabled("ScriptsDisabled", "State", &ScriptContext::scriptsDisabled, &ScriptContext::onChangedScriptEnabled, Reflection::PropertyDescriptor::LEGACY); 
@@ -442,7 +459,69 @@ int ScriptContext::wait(lua_State* thread)
     return lua_yield(thread, 0);
 }
 
-// TODO: functions that depend on RBX::Security
+int ScriptContext::settings(lua_State* thread)
+{
+    Security::Context::current().requirePermission(Security::Administrator, NULL);
+    Lua::ObjectBridge::push(thread, GlobalSettings::singleton());
+    return 1;
+}
+
+int ScriptContext::trustedThread(lua_State* thread)
+{
+    bool trusted = Security::Context::current().hasPermission(Security::Administrator);
+    lua_pushboolean(thread, trusted != false);
+    return 1;
+}
+
+int ScriptContext::loadfile(lua_State* L)
+{
+    Security::Context::current().requirePermission(Security::Administrator, "loadfile");
+
+    RBX::ContentId contentId = lua_tostring(L, -1);
+    const std::string& file = ContentProvider::singleton().getFile(contentId);
+
+    int n;
+
+    if (luaL_loadfile(L, file.c_str()) == 0)
+    {
+        n = 1;
+    }
+    else
+    {
+        lua_pushnil(L);
+        lua_insert(L, -2);
+        n = 2;
+    }
+
+    return n;
+}
+
+// TODO: 99.04%
+// swapped registers
+int ScriptContext::stats(lua_State* L)
+{
+    Security::Context::current().requirePermission(Security::Administrator, "Stats");
+    Stats::StatsService* statsService = ServiceProvider::create<Stats::StatsService>(&getContext(L));
+    Lua::ObjectBridge::push(L, shared_from(statsService));
+    return 1;
+}
+
+int ScriptContext::dofile(lua_State* L)
+{
+    Security::Context::current().requirePermission(Security::Administrator, "dofile");
+
+    const char* path = luaL_optstring(L, 1, 0);
+    int n = lua_gettop(L);
+
+    RBX::ContentId contentId = path;
+    const std::string& file = ContentProvider::singleton().getFile(contentId);
+
+    if (luaL_loadfile(L, file.c_str()) != 0)
+        lua_error(L);
+
+    lua_call(L, 0, -1);
+    return lua_gettop(L) - n;
+}
 
 int ScriptContext::tick(lua_State* L)
 {
@@ -632,7 +711,35 @@ void ScriptContext::reportError(lua_State* thread)
     }
 }
 
-// TODO: ScriptContext::Impersonator and ScriptContext::resume
+ScriptContext::ScriptImpersonator::ScriptImpersonator(lua_State* thread)
+    : Security::Impersonator(_getIdentityInline(thread))
+{
+}
+
+ScriptContext::Result ScriptContext::resume(lua_State* thread, int narg)
+{
+    int n;
+    {
+        ScriptImpersonator impersonate(thread);
+        n = lua_resume(thread, narg);
+    }
+    
+    switch (n)
+    {
+        case 0:
+            return Success;
+
+        case 1:
+            if (!RobloxExtraSpace::get(thread)->yieldCaptured)
+                yieldEvent->queueWaiter(thread);
+
+            return Yield;
+
+        default:
+            reportError(thread);
+            return Error;
+    }
+}
 
 static std::string getFullName(Instance* instance)
 {

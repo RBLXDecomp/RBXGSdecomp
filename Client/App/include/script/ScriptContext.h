@@ -47,13 +47,11 @@ namespace RBX
             Error
         };
 
-        // TODO: come back to this when luasoft gets his stuff done
     public:
-        class ScriptImpersonator// : public Security::Impersonator
+        class ScriptImpersonator : public Security::Impersonator
         {
         public:
-            ScriptImpersonator(lua_State*);
-            ~ScriptImpersonator();
+            ScriptImpersonator(lua_State* thread);
         };
 
     private:
@@ -123,11 +121,11 @@ namespace RBX
         static int tick(lua_State* L);
         static int wait(lua_State* thread);
         static int delay(lua_State* thread);
-        static int trustedThread(lua_State*);
-        static int loadfile(lua_State*);
-        static int dofile(lua_State*);
-        static int settings(lua_State*);
-        static int stats(lua_State*);
+        static int trustedThread(lua_State* thread);
+        static int loadfile(lua_State* L);
+        static int dofile(lua_State* L);
+        static int settings(lua_State* thread);
+        static int stats(lua_State* L);
         static int statsitemvalue(lua_State*);
         static int onError(lua_State*);
         static void reportError(lua_State* thread);

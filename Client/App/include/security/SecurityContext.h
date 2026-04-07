@@ -41,7 +41,10 @@ namespace RBX
 				}
 			}
 
-			bool hasPermission(Permissions);
+			bool hasPermission(Permissions permission)
+			{
+				return isInRole(identity, permission);
+			}
 		private:
 			Context(Identities identity)
 				: identity(identity)
