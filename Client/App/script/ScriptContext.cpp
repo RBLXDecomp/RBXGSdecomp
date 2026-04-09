@@ -72,23 +72,6 @@ static inline void _removeListenersInline(boost::shared_ptr<RunService>& runServ
     _removeListenerInline<RunService, RunTransition>(runService.get(), scriptContext);
     _removeListenerInline<RunService, Heartbeat>(runService.get(), scriptContext);
 }
-
-static inline Security::Identities _getIdentityInline(lua_State* thread)
-{
-    lua_pushlightuserdata(thread, RBX_LUA_GLOBAL_IDENTITY);
-    lua_gettable(thread, LUA_GLOBALSINDEX);
-
-    if (!lua_isnumber(thread, -1))
-    {
-        return Security::Anonymous;
-    }
-    else
-    {
-        int identity = lua_tointeger(thread, -1);
-        lua_pop(thread, 1);
-        return static_cast<Security::Identities>(identity);
-    }
-}
 // end unidentified inlines
 
 Reflection::BoundProp<bool, true> ScriptContext::propScriptsDisabled("ScriptsDisabled", "State", &ScriptContext::scriptsDisabled, &ScriptContext::onChangedScriptEnabled, Reflection::PropertyDescriptor::LEGACY); 
@@ -712,7 +695,7 @@ void ScriptContext::reportError(lua_State* thread)
 }
 
 ScriptContext::ScriptImpersonator::ScriptImpersonator(lua_State* thread)
-    : Security::Impersonator(_getIdentityInline(thread))
+    : Security::Impersonator(getThreadIdentity(thread))
 {
 }
 

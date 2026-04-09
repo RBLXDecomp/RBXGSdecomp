@@ -1,7 +1,6 @@
 #pragma once
 #include "script/ScriptContext.h"
 #include "v8tree/Instance.h"
-#include "util/Debug.h"
 #include "boost/shared_ptr.hpp"
 #include "boost/signals.hpp"
 

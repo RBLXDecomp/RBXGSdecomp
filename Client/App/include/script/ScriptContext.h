@@ -116,7 +116,22 @@ namespace RBX
     private:
         static void sandboxThread(lua_State* thread);
         static void setThreadIdentity(lua_State* thread, Security::Identities identity);
-        static Security::Identities getThreadIdentity(lua_State* thread);
+        static Security::Identities getThreadIdentity(lua_State* thread)
+        {
+            lua_pushlightuserdata(thread, RBX_LUA_GLOBAL_IDENTITY);
+            lua_gettable(thread, LUA_GLOBALSINDEX);
+        
+            if (!lua_isnumber(thread, -1))
+            {
+                return Security::Anonymous;
+            }
+            else
+            {
+                int identity = lua_tointeger(thread, -1);
+                lua_pop(thread, 1);
+                return static_cast<Security::Identities>(identity);
+            }
+        }
         static int print(lua_State* L);
         static int tick(lua_State* L);
         static int wait(lua_State* thread);

@@ -1,6 +1,5 @@
 #include "script/Script.h"
 #include "v8tree/Service.h"
-#include "v8datamodel/Workspace.h"
 #include "boost/thread/once.hpp"
 
 using namespace RBX;
@@ -10,8 +9,7 @@ const Reflection::PropDescriptor<Script, ContentId> Script::prop_SourceCodeId("L
 Reflection::BoundProp<bool, true> Script::prop_Disabled("Disabled", "Behavior", &Script::disabled, Reflection::PropertyDescriptor::STANDARD);
 
 static boost::shared_ptr<const std::string> helloWorld;
-
-boost::once_flag flagInitScriptCpp = BOOST_ONCE_INIT;
+static boost::once_flag flagInitScriptCpp = BOOST_ONCE_INIT;
 
 void initScriptCpp()
 {
