@@ -28,7 +28,8 @@ void RBX::Lua::newweaktable(lua_State* L, const char* mode)
 
 const luaL_Reg ObjectBridge::classLibrary[] = 
 {
-    {"new", ObjectBridge::newInstance}
+    {"new", ObjectBridge::newInstance},
+    {NULL, NULL}
 };
 
 int ObjectBridge::newInstance(lua_State* thread)
@@ -413,4 +414,24 @@ void ObjectBridge::on_newindex(boost::shared_ptr<DescribedBase>& object, const c
     throw std::runtime_error(G3D::format("%s is not a valid member of %s", name, object->classDescriptor().name.c_str()));
 }
 
-// ObjectBridge::callMemberFunction depends on RBX::Security
+int ObjectBridge::callMemberFunction(lua_State* L)
+{
+    int idx = lua_upvalueindex(1);
+    RBXASSERT(lua_type(L, idx) == LUA_TLIGHTUSERDATA);
+    Reflection::FunctionDescriptor* fd = static_cast<Reflection::FunctionDescriptor*>(lua_touserdata(L, idx));
+
+    if (fd->security == FunctionDescriptor::NeedTrustedCaller)
+        Security::Context::current().requirePermission(Security::Administrator, fd->name.c_str());
+
+    boost::shared_ptr<Reflection::DescribedBase> instance;
+
+    if (!getPtr(L, 1, instance) || !instance)
+        throw std::runtime_error(G3D::format("Did you forget a semicolon?  The first argument of member function %s must be an Object", fd->name.c_str()));
+
+    if (!fd->isMemberOf(instance.get()))
+        throw std::runtime_error(G3D::format("The function %s is not a member of \"%s\"", fd->name.c_str(), instance->classDescriptor().name.c_str()));
+
+    LuaArguments args(L, 1);
+    fd->execute(instance.get(), args);
+    return args.pushReturnValue();
+}

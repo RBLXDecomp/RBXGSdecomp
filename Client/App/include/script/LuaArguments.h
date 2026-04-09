@@ -16,7 +16,11 @@ namespace RBX
             lua_State* L;
   
         public:
-            LuaArguments(lua_State*, int);
+            LuaArguments(lua_State* L, int offset)
+                : offset(offset),
+                  L(L)
+            {
+            }
             virtual size_t size() const
             {
                 // TODO: check match
@@ -30,7 +34,10 @@ namespace RBX
                 get(L, pos, value);
             }
             int push(const Reflection::Value&) const;
-            int pushReturnValue() const;
+            int pushReturnValue() const
+            {
+                return push(returnValue, L);
+            }
 
         public:
             // TODO: 97.00%

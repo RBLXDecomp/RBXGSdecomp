@@ -18,7 +18,7 @@ namespace RBX
 			};
 
 		public:
-			class Arguments
+			class __declspec(novtable) Arguments
 			{
 			public:
 				Value returnValue;
@@ -42,7 +42,7 @@ namespace RBX
 
 		public:
 			const SignatureDescriptor& getSignature() const;
-			virtual void execute(DescribedBase*, Arguments&) const = 0;
+			virtual void execute(DescribedBase* instance, Arguments& arguments) const = 0;
 		};
 
 		class Function

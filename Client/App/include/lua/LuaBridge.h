@@ -105,7 +105,8 @@ namespace RBX
             static int on_index(const T& object, const char* name, lua_State* L);
             static int on_newindex(lua_State* L)
             {
-                // TODO: function return not matching
+                // TODO: when compiled this code doesn't return
+                // not unless the call to on_newindex is removed
                 const char* name = luaL_checkstring(L, 2);
                 T& object = getObject(L, 1);
                 on_newindex(object, name, L);
