@@ -650,43 +650,35 @@ void ScriptContext::removeScript(Script* script)
     }
 }
 
-// TODO: 98.79% (functional match)
-// incorrect placement of i initialisation
-// the code here is laid out really weirdly anyway, don't know what to make of it
 void ScriptContext::reportError(lua_State* thread)
 {
     lua_Debug ar;
+    int level = 0;
 
-    int i = 1;
-
-    if (lua_getstack(thread, 0, &ar))
+    if (lua_getstack(thread, level++, &ar))
     {
         StandardOut::singleton()->print(MESSAGE_ERROR, lua_tostring(thread, -1));
 
-        if (DebugSettings::singleton().getStackTracingEnabled())
+        if (!DebugSettings::singleton().getStackTracingEnabled())
+            return;
+
+        bool hasStack = false;
+        while (lua_getstack(thread, level++, &ar))
         {
-            if (lua_getstack(thread, 1, &ar))
-            {
-                do
-                {
-                    i++;
+            hasStack = true;
+            lua_getinfo(thread, "nSlu", &ar);
 
-                    lua_getinfo(thread, "nSlu", &ar);
-
-                    StandardOut::singleton()->print(
-                        MESSAGE_INFO,
-                        "   stack %s, line %d: %s %s",
-                        ar.source,
-                        ar.currentline,
-                        ar.namewhat,
-                        ar.name
-                    );
-                }
-                while (lua_getstack(thread, i, &ar));
-
-                StandardOut::singleton()->print(MESSAGE_INFO, "   stack end");
-            }
+            StandardOut::singleton()->print(
+                MESSAGE_INFO,
+                "   stack %s, line %d: %s %s",
+                ar.source,
+                ar.currentline,
+                ar.namewhat,
+                ar.name);
         }
+
+        if (hasStack)
+            StandardOut::singleton()->print(MESSAGE_INFO, "   stack end");
     }
     else
     {
