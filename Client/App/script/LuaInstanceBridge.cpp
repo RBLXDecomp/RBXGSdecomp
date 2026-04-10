@@ -426,10 +426,15 @@ int ObjectBridge::callMemberFunction(lua_State* L)
     boost::shared_ptr<Reflection::DescribedBase> instance;
 
     if (!getPtr(L, 1, instance) || !instance)
-        throw std::runtime_error(G3D::format("Did you forget a semicolon?  The first argument of member function %s must be an Object", fd->name.c_str()));
+        throw std::runtime_error(G3D::format(
+            "Did you forget a semicolon?  The first argument of member function %s must be an Object",
+            fd->name.c_str()));
 
     if (!fd->isMemberOf(instance.get()))
-        throw std::runtime_error(G3D::format("The function %s is not a member of \"%s\"", fd->name.c_str(), instance->classDescriptor().name.c_str()));
+        throw std::runtime_error(G3D::format(
+        "The function %s is not a member of \"%s\"",
+        fd->name.c_str(),
+        instance->classDescriptor().name.c_str()));
 
     LuaArguments args(L, 1);
     fd->execute(instance.get(), args);

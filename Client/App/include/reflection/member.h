@@ -54,7 +54,10 @@ namespace RBX
 				}
 
 			public:
-				typename TheDescriptor::Describing operator*() const;
+				typename TheDescriptor::Describing operator*() const
+				{
+					return TheDescriptor::Describing(**iter, instance);
+				}
 				bool operator==(const Iterator& other) const
 				{
 					return iter == other.iter;
@@ -81,7 +84,10 @@ namespace RBX
 				{
 				}
 			public:
-				typename TheDescriptor::Describing operator*() const;
+				typename TheDescriptor::Describing operator*() const
+				{
+					return TheDescriptor::Describing(getDescriptor(), instance);
+				}
 				bool operator==(const ConstIterator& other) const
 				{
 					return iter == other.iter;
@@ -92,7 +98,10 @@ namespace RBX
 				}
 				ConstIterator operator++(int);
 				ConstIterator& operator++();
-				const TheDescriptor& getDescriptor() const;
+				const TheDescriptor& getDescriptor() const
+				{
+					return **iter;
+				}
 			};
 
 		protected:

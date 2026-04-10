@@ -53,7 +53,11 @@ namespace RBX
 		  
 		public:
 			Function(const Function&);
-			Function(const FunctionDescriptor&, const DescribedBase*);
+			Function(const FunctionDescriptor& descriptor, const DescribedBase* instance)
+				: descriptor(&descriptor),
+				  instance(instance)
+			{
+			}
 			Function& operator=(const Function&);
 			const Name& getName() const;
 			const FunctionDescriptor* getDescriptor() const

@@ -33,10 +33,13 @@ namespace RBX
                 RBXASSERT(pos > 0);
                 get(L, pos, value);
             }
-            int push(const Reflection::Value&) const;
+            int push(const Reflection::Value& value) const
+            {
+                return push(value, L);
+            }
             int pushReturnValue() const
             {
-                return push(returnValue, L);
+                return push(returnValue);
             }
 
         public:

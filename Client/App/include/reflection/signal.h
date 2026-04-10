@@ -117,7 +117,11 @@ namespace RBX
 		  
 		public:
 			Signal(const Signal&);
-			Signal(const SignalDescriptor&, DescribedBase*);
+			Signal(const SignalDescriptor& descriptor, DescribedBase* instance)
+				: descriptor(&descriptor),
+				  instance(instance)
+			{
+			}
 
 		public:
 			Signal& operator=(const Signal&);
