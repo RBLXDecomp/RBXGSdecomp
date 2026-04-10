@@ -2,7 +2,6 @@
 #include "script/Script.h"
 #include "script/ScriptEvent.h"
 #include "script/LuaMemory.h"
-#include "script/LuaArguments.h"
 #include "script/ThreadRef.h"
 #include "v8tree/Instance.h"
 #include "v8tree/Service.h"

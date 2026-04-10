@@ -173,7 +173,8 @@ namespace RBX
 
 							posStart = i+1;
 						}
-					} while (posStart < posEnd);
+					}
+					while (posStart < posEnd);
 
 					if (found)
 						return descriptors.begin()+i;

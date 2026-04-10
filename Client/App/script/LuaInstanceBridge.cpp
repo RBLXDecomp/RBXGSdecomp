@@ -1,5 +1,6 @@
 #include "script/LuaInstanceBridge.h"
 #include "script/LuaSignalBridge.h"
+#include "script/LuaArguments.h"
 #include "script/LuaAtomicClasses.h"
 #include "script/ThreadRef.h"
 #include "util/Sound.h"
@@ -177,20 +178,15 @@ static void pushLuaValue(ConstProperty p, lua_State* L)
         return;
     }
 
-    throw std::runtime_error(G3D::format("Unable to get property %s, type %s", descriptor.name.c_str(), descriptor.type.name.c_str()));
+    throw std::runtime_error(G3D::format(
+        "Unable to get property %s, type %s",
+        descriptor.name.c_str(),
+        descriptor.type.name.c_str()));
 }
 
-// TODO: 95.24% (functional match)
-// likely due to DescribedBase inlines
 template<>
 int ObjectBridge::on_index(const boost::shared_ptr<DescribedBase>& object, const char* name, lua_State* L)
 {
-    // (003FA0)  S_BPREL32: [FFFFFF54], Type:             0x3058, iter
-    // (003FB4)  S_BPREL32: [FFFFFF54], Type:             0x316B, iter
-    // (003FC8)  S_BPREL32: [FFFFFF54], Type:             0x30E9, iter
-    // (003FDC)  S_BPREL32: [FFFFFF74], Type:             0x2EF7, s
-    // (003FEC)  S_BPREL32: [FFFFFF54], Type:             0x13AC, name2
-
     if (!object)
         throw std::runtime_error("The object has been deleted");
 
@@ -300,8 +296,8 @@ static void assignLuaValue(Property p, lua_State* L, int index)
     {
         p.setValue(FunctionRef(L, index));
         return;
-
     }
+
     if (descriptor.type == Type::singleton<boost::shared_ptr<Instance>>())
     {
         p.setValue(ObjectBridge::getInstance(L, index));
