@@ -5,11 +5,10 @@
 
 namespace RBX
 {
-	// TODO: check if matches
 	template<typename Class>
 	boost::shared_ptr<Class> shared_from(Class* r)
 	{
-		return boost::shared_static_cast<Class>(r->shared_from_this());
+		return r ? boost::shared_static_cast<Class>(r->shared_from_this()) : boost::shared_ptr<Class>();
 	}
 
 	class Object
@@ -24,11 +23,6 @@ namespace RBX
 	{
 	public:
 		virtual boost::shared_ptr<Object> create() const = 0;
-	public:
-		//ICreator(const ICreator&);
-		ICreator();
-	public:
-		//ICreator& operator=(const ICreator&);
 	};
 
 	template<typename T>
@@ -158,7 +152,6 @@ namespace RBX
 		}
 
 		virtual const Name& getClassName() const;
-		virtual ~NonFactoryProduct();
 
 	public:
 		static const Name& className();
