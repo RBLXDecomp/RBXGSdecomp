@@ -32,17 +32,6 @@ static inline void _openLibInline(lua_State* L, lua_CFunction f, const char* nam
     lua_call(L, 1, 0);
 }
 
-static inline void _disassociateScriptInline(Script* script)
-{
-    Association<Instance>& assoc = script->association();
-
-    if (assoc.contains<Lua::ThreadRef::NodePtr>())
-    {
-        assoc.get<Lua::ThreadRef::NodePtr>()->eraseAllRefs();
-        assoc.remove<Lua::ThreadRef::NodePtr>();
-    }
-}
-
 static inline Instance* _findDataModelInline(ScriptContext* sc)
 {
     Instance* parent = sc->getParent();
@@ -65,7 +54,7 @@ static inline void _removeListenerInline(RunService* runService, Listener<Class,
 {
     if (runService)
         runService->Notifier<Class, Event>::removeListener(listener);
-}
+        }
 
 static inline void _removeListenersInline(boost::shared_ptr<RunService>& runService, ScriptContext* scriptContext)
 {
@@ -635,14 +624,20 @@ void ScriptContext::addScript(Script* script)
 
 void ScriptContext::disassociateState(Script* script)
 {
-    _disassociateScriptInline(script);
+    Association<Instance>& assoc = script->association();
+
+    if (assoc.contains<Lua::ThreadRef::NodePtr>())
+    {
+        assoc.get<Lua::ThreadRef::NodePtr>()->eraseAllRefs();
+        assoc.remove<Lua::ThreadRef::NodePtr>();
+    }
 }
 
 void ScriptContext::removeScript(Script* script)
 {
     if (scripts.erase(script))
     {
-        _disassociateScriptInline(script);
+        disassociateState(script);
 
         std::vector<boost::shared_ptr<Script>>::iterator it = std::find(pendingScripts.begin(), pendingScripts.end(), shared_from(script));
         if (it != pendingScripts.end())
