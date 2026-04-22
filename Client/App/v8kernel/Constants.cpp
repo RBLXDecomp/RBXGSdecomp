@@ -72,7 +72,7 @@ const float Constants::getJointKMultiplier(const G3D::Vector3& clippedSortedSize
 	{
 		RBXASSERT(size.x >= 1);
 
-		switch(size.x)
+		switch (size.x)
 		{
 		case 1:
 			return 0.23f;

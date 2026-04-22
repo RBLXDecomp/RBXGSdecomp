@@ -60,7 +60,7 @@ namespace RBX
 		}
 		void setNext(Primitive* p, Edge* e)
 		{
-			if(p == prim0)
+			if (p == prim0)
 				next0 = e;
 			else
 				next1 = e;

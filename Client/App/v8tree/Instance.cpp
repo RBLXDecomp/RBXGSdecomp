@@ -55,7 +55,7 @@ namespace RBX
 	{
 		const Instance* p = descendent;
 
-		while(p != NULL)
+		while (p != NULL)
 		{
 			p = p->parent;
 			if (p == this)
@@ -255,7 +255,7 @@ namespace RBX
 
 	void Instance::readChildren(const XmlElement* element, IReferenceBinder& binder)
 	{
-		if(element)
+		if (element)
 		{
 			for (const XmlElement* current = element->findFirstChildByTag(tag_Item); current != NULL; current = element->findNextChildWithSameTag(current))
 			{

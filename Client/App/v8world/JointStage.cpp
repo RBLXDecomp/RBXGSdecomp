@@ -55,7 +55,7 @@ namespace RBX
 	{
 		typedef std::multimap<Primitive*, Joint*>::const_iterator Iterator;
 
-		for(Iterator it = jointMap.lower_bound(p); it != jointMap.upper_bound(p); it++)
+		for (Iterator it = jointMap.lower_bound(p); it != jointMap.upper_bound(p); it++)
 		{
 			if (it->second == j)
 				return true;
@@ -77,12 +77,12 @@ namespace RBX
 	{
 		typedef std::multimap<Primitive*, Joint*>::iterator Iterator;
 
-		if(!p)
+		if (!p)
 			return;
 
 		RBXASSERT(pairInMap(j, p));
 
-		for(Iterator it = jointMap.lower_bound(p); it != jointMap.upper_bound(p); it++)
+		for (Iterator it = jointMap.lower_bound(p); it != jointMap.upper_bound(p); it++)
 		{
 			if (it->second == j) 
 			{
@@ -223,13 +223,13 @@ namespace RBX
 
 		std::vector<Joint*> jointsToPush;
 
-		for(Iterator it = jointMap.lower_bound(p); it != jointMap.upper_bound(p); it++)
+		for (Iterator it = jointMap.lower_bound(p); it != jointMap.upper_bound(p); it++)
 		{
-			if(edgeHasPrimitivesDownstream(it->second))
+			if (edgeHasPrimitivesDownstream(it->second))
 				jointsToPush.push_back(it->second);
 		}
 
-		for(size_t i = 0; i < jointsToPush.size(); i++)
+		for (size_t i = 0; i < jointsToPush.size(); i++)
 		{
 			Joint* current = jointsToPush[i];
 

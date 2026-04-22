@@ -67,7 +67,7 @@ namespace RBX
 
 			raiseRange = &range;
 
-			for(; range.index < range.upper; range.index++)
+			for (; range.index < range.upper; range.index++)
 			{
 				raise(event, listeners[range.index]);
 			}

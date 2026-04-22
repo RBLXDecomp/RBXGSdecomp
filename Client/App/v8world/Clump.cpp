@@ -255,6 +255,8 @@ namespace RBX
 
 	void Clump::addPrimitive(Primitive* p, Primitive* parent, RigidJoint* j)
 	{
+		MaxRadius.setDirty();
+
 		RBXASSERT(!p->getAnchorObject());
 		RBXASSERT(!p->getClump());
 		RBXASSERT(p->getClumpDepth() == -1);
@@ -269,16 +271,16 @@ namespace RBX
 	void Clump::onPrimitiveCanSleepChanged(Primitive* p)
 	{
 		RBXASSERT(containsPrimitive(p));
-		bool primCanSleep = p->getCanSleep();
-		if (primCanSleep)
+
+		if (p->getCanSleep() && !canSleep)
 		{
-			if (!canSleep)
-				canSleep = computeCanSleep();
+			canSleep = computeCanSleep();
+			return;
 		}
-		else
+
+		if (!p->getCanSleep() && canSleep)
 		{
-			if (canSleep)
-				canSleep = false;
+			canSleep = false;
 		}
 	}
 
@@ -310,7 +312,7 @@ namespace RBX
 
 	bool Clump::computeCanSleep()
 	{
-		typedef std::set<Primitive*>::const_iterator Iterator;
+		typedef std::set<Primitive*>::iterator Iterator;
 
 		for (Iterator iter = primitives.begin(); iter != primitives.end(); iter++)
 		{
@@ -371,7 +373,7 @@ namespace RBX
 	{
 		typedef std::set<Primitive*>::const_iterator Iterator;
 
-		if(primitives.size() == 1)
+		if (primitives.size() == 1)
 			return (rootPrimitive->getGeometry()->getGridSize() * 0.5f).magnitude();
 		else
 		{
@@ -381,7 +383,7 @@ namespace RBX
 
 			G3D::Vector3 branchPos = rootPrimitive->getBody()->getBranchCofmPos();
 
-			for(Iterator it = primitives.begin(); it != primitives.end(); it++)
+			for (Iterator it = primitives.begin(); it != primitives.end(); it++)
 			{
 				Primitive* current = *it;
 
