@@ -111,7 +111,10 @@ namespace RBX
 			void resolvePendingBindings(Instance* instance, Guid::Data id);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&);
 			bool deserializeInstanceRef(RakNet::BitStream&, Instance*&, Guid::Data&);
-			size_t numWaitingRefs() const;
+			size_t numWaitingRefs() const
+			{
+				return waitItems.size();
+			}
 			void serializeRef(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
 			void deserializeRef(Reflection::Property&, RakNet::BitStream&);
 		protected:

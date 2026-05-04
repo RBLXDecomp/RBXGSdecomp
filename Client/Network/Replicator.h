@@ -152,7 +152,7 @@ namespace RBX
 				virtual void write(RakNet::BitStream&);
 			};
 
-			class ReplicatorStatsItem : public Item // TODO (PR #124 has implementations of RBX::Stats classes)
+			class ReplicatorStatsItem : public Stats::Item
 			{
 			private:
 				Stats::Item* waitingRefs;
@@ -167,7 +167,7 @@ namespace RBX
 				size_t instanceBits;
 
 			public:
-				ReplicatorStatsItem(const boost::shared_ptr<Replicator>&, const RakNetStatistics*);
+				ReplicatorStatsItem(const boost::shared_ptr<Replicator>& replicator, const RakNetStatistics* statistics);
 				virtual void update();
 			};
 
@@ -241,7 +241,7 @@ namespace RBX
 			{
 				return shared_from(findTargetPlayer());
 			}
-			virtual void Update(RakPeerInterface*);
+			virtual void Update(RakPeerInterface* peer);
 			virtual PluginReceiveResult OnReceive(RakPeerInterface*, Packet*);
 			virtual const Name& getClassName() const
 			{
@@ -276,7 +276,7 @@ namespace RBX
 			bool sendPhysicsPacket();
 			void sendPhysicsData(RakNet::BitStream&, const Mechanism&);
 			void sendPhysicsData(RakNet::BitStream&, const Assembly&);
-			void createStatsItems(Stats::StatsService*);
+			void createStatsItems(Stats::StatsService* stats);
 			virtual bool remoteDeleteOnDisconnect(const Instance* instance) const;
 			void serializeValue(const Reflection::ConstProperty&, bool, RakNet::BitStream&);
 			void deserializeValue(RakNet::BitStream&, bool, Reflection::Property&);

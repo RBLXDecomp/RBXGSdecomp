@@ -1,12 +1,13 @@
 #include <RakPeer.h>
 #include <PacketLogger.h>
+#include <GetTime.h>
 #include "Replicator.h"
 #include "NetworkSettings.h"
+#include "v8datamodel/Stats.h"
 #include "v8datamodel/PartInstance.h"
 #include "v8world/SimJobStage.h"
 #include "util/Log.h"
 #include "util/standardout.h"
-#include <GetTime.h>
 #include <g3d/system.h>
 
 enum ValueType // NOTE: may not be intended for this file
@@ -487,6 +488,73 @@ namespace RBX
 			}
 		}
 
+		//99% match
+		void Replicator::Update(RakPeerInterface* peer)
+		{
+			PluginInterface::Update(peer);
+
+			if (getParent())
+			{
+				Profiling::Mark mark(*profileReplication, false);
+
+				RakNetStatistics* statistics = peer->GetStatistics(remotePlayerId);
+
+				if (statistics)
+				{
+					G3D::RealTime t = G3D::System::getLocalTime();
+
+					if (1.0f / NetworkSettings::singleton().sendRate + lastSendTime < t)
+					{
+						int maxBuffer = NetworkSettings::singleton().maxDataModelSendBuffer;
+						int sendBuffer = statistics->messageSendBuffer[MEDIUM_PRIORITY] + statistics->messageSendBuffer[HIGH_PRIORITY];
+
+						if (maxBuffer - sendBuffer >= 2 && !statistics->bandwidthExceeded)
+						{
+							sendPhysicsPacket();
+							sendItems();
+							lastSendTime = t;
+						}
+					}
+
+					if (NetworkSettings::singleton().printPacketBuffer)
+					{
+						size_t sendBuffer = statistics->messageSendBuffer[MEDIUM_PRIORITY] + statistics->messageSendBuffer[HIGH_PRIORITY] * 2;
+						size_t maxBuffer = NetworkSettings::singleton().maxDataModelSendBuffer;
+
+						if (sendBuffer > maxBuffer)
+						{
+							StandardOut::singleton()->print(MESSAGE_WARNING, "SendBuffer = %d", sendBuffer);
+						}
+						else if (sendBuffer > 0)
+						{
+							StandardOut::singleton()->print(MESSAGE_INFO, "SendBuffer = %d", sendBuffer);
+						}
+					}
+				}
+			}
+		}
+
+		void Replicator::createStatsItems(Stats::StatsService* stats)
+		{
+			if (statsItem)
+			{
+				statsItem->setParent(NULL);
+				statsItem.reset();
+			}
+
+			if (stats)
+			{
+				boost::shared_ptr<Player> network = shared_from_polymorphic_downcast<Player>(stats->findFirstChildByName("Network"));
+
+				if (network)
+				{
+					statsItem = Creatable::create<ReplicatorStatsItem>(shared_from(this), peer->GetStatistics(remotePlayerId));
+					statsItem->setName(getName());
+					statsItem->setParent2(network);
+				}
+			}
+		}
+
 		void Replicator::Item::readItemType(RakNet::BitStream& stream, ItemType& value)
 		{
 			value = ItemTypeEnd;
@@ -618,6 +686,53 @@ namespace RBX
 			}
 
 			replicator.onSentMarker(id);
+		}
+
+		Replicator::ReplicatorStatsItem::ReplicatorStatsItem(const boost::shared_ptr<Replicator>& replicator, const RakNetStatistics* statistics)
+			: replicator(replicator),
+			  statistics(statistics),
+			  instanceCount(0),
+			  instanceBits(0)
+		{
+			bps = createChildItem("Bytes/s");
+			bps->createBoundChildItem<bool>("Bandwidth Exceeded", statistics->bandwidthExceeded);
+
+			packetLoss = bps->createChildItem("Packet Loss");
+			ping = createChildItem("Ping");
+
+			Item* rep = createBoundChildItem(*replicator->profileReplication);
+
+			rep->createBoundChildItem(*replicator->profileDataListening);
+			rep->createBoundChildItem(*replicator->profileDataOut);
+			rep->createBoundChildItem(*replicator->profilePhysicsOut);
+			rep->createBoundChildItem(*replicator->profileDataIn);
+			rep->createBoundChildItem(*replicator->profilePhysicsIn);
+
+			instanceSize = rep->createChildItem("Instance size (In)");
+			waitingRefs = createChildItem("Waiting Refs");
+		}
+
+		void Replicator::ReplicatorStatsItem::update()
+		{
+			if (replicator->peer)
+			{
+				bps->formatMem((size_t)statistics->bitsPerSecond / 8);
+
+				ping->formatValue(
+					replicator->peer->GetLastPing(replicator->remotePlayerId),
+					"%d avg:%d best:%d",
+					replicator->peer->GetLastPing(replicator->remotePlayerId),
+					replicator->peer->GetAveragePing(replicator->remotePlayerId),
+					replicator->peer->GetLowestPing(replicator->remotePlayerId)
+				);
+
+				waitingRefs->formatValue(replicator->numWaitingRefs());
+
+				float ratio = (float)statistics->messagesTotalBitsResent / statistics->totalBitsSent;
+				packetLoss->formatValue(ratio, "%.1g%%", ratio * 100.0);
+
+				instanceSize->formatMem(instanceCount != 0 ? instanceBits / (instanceCount * 8) : 0);
+			}
 		}
 	}
 }
