@@ -1,6 +1,6 @@
-#include "Streaming.h"
 #include <BitStream.h>
 #include <StringCompressor.h>
+#include "Streaming.h"
 #include <algorithm>
 
 namespace RBX

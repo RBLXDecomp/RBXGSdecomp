@@ -1,5 +1,7 @@
-#include "Players.h"
+#include <RakPeer.h>
+#include <BitStream.h>
 #include "Client.h"
+#include "Players.h"
 #include "Streaming.h"
 
 template<class Class>
