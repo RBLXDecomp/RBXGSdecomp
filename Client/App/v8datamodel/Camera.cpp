@@ -156,7 +156,7 @@ namespace RBX
 	//87.80% matching.
 	void Camera::updateGoal()
 	{
-		switch(cameraType)
+		switch (cameraType)
 		{
 			case WATCH_CAMERA:
 			{
@@ -204,7 +204,7 @@ namespace RBX
 			case CUSTOM_CAMERA:
 			{
 				ICameraSubject* cameraSubject = getCameraSubject();
-				if(cameraSubject)
+				if (cameraSubject)
 					cameraSubject->stepGoalAndFocus(cameraGoal, cameraFocus, cameraExternallyAdjusted);
 				cameraExternallyAdjusted = false;
 				break;

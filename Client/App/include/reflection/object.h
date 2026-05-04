@@ -13,24 +13,35 @@ namespace RBX
 {
 	namespace Reflection
 	{
-		class ClassDescriptor : public Descriptor, public MemberDescriptorContainer<PropertyDescriptor>, public MemberDescriptorContainer<SignalDescriptor>, public MemberDescriptorContainer<FunctionDescriptor>
-		{
-		public:
-			typedef MemberDescriptorContainer<PropertyDescriptor> PropertyContainer;
-			typedef MemberDescriptorContainer<SignalDescriptor> SignalContainer;
-			typedef MemberDescriptorContainer<FunctionDescriptor> FunctionContainer;
+		typedef MemberDescriptorContainer<PropertyDescriptor> PropertyContainer;
+		typedef MemberDescriptorContainer<PropertyDescriptor>::Iterator PropertyIterator;
+		typedef MemberDescriptorContainer<PropertyDescriptor>::ConstIterator ConstPropertyIterator;
 
+		typedef MemberDescriptorContainer<FunctionDescriptor> FunctionContainer;
+		typedef MemberDescriptorContainer<FunctionDescriptor>::ConstIterator FunctionIterator;
+
+		typedef MemberDescriptorContainer<SignalDescriptor> SignalContainer;
+		typedef MemberDescriptorContainer<SignalDescriptor>::Iterator SignalIterator;
+		typedef MemberDescriptorContainer<SignalDescriptor>::ConstIterator ConstSignalIterator;
+
+		class ClassDescriptor : public Descriptor,
+								public MemberDescriptorContainer<PropertyDescriptor>,
+								public MemberDescriptorContainer<SignalDescriptor>,
+								public MemberDescriptorContainer<FunctionDescriptor>
+		{
 		private:
 			std::vector<ClassDescriptor*> derivedClasses;
 			ClassDescriptor* base;
+
 		public:
 			static bool lockedDown;
 		  
 		public:
-			//ClassDescriptor(const ClassDescriptor&);
 			ClassDescriptor(ClassDescriptor& base, const char* name);
+
 		private:
 			ClassDescriptor();
+
 		public:
 			const ClassDescriptor* getBase() const
 			{
@@ -44,10 +55,6 @@ namespace RBX
 			std::vector<ClassDescriptor*>::const_iterator derivedClasses_end() const;
 			bool operator==(const ClassDescriptor& other) const;
 			bool operator!=(const ClassDescriptor& other) const;
-		public:
-			virtual ~ClassDescriptor();
-		public:
-			//ClassDescriptor& operator=(const ClassDescriptor&);
 		  
 		public:
 			static ClassDescriptor& rootDescriptor() // TODO: check
@@ -59,11 +66,6 @@ namespace RBX
 
 		class __declspec(novtable) DescribedBase : public SignalSource
 		{
-		public:
-			typedef MemberDescriptorContainer<PropertyDescriptor> MDCProperty;
-			typedef MemberDescriptorContainer<FunctionDescriptor> MDCFunction;
-			typedef MemberDescriptorContainer<SignalDescriptor> MDCSignal;
-
 		protected:
 			const ClassDescriptor* descriptor;
 		  
@@ -73,26 +75,76 @@ namespace RBX
 				ClassDescriptor::lockedDown = true;
 				descriptor = &ClassDescriptor::rootDescriptor();
 			}
+
 		public:
 			const ClassDescriptor& getDescriptor() const
 			{
 				return *descriptor;
 			}
-			MDCProperty::ConstIterator findProperty(const Name&) const;
-			MDCProperty::Iterator findProperty(const Name&);
-			MDCProperty::Iterator properties_begin();
-			MDCProperty::ConstIterator properties_begin() const;
-			MDCProperty::Iterator properties_end();
-			MDCProperty::ConstIterator properties_end() const;
-			MDCFunction::ConstIterator findFunction(const Name&) const;
-			MDCFunction::ConstIterator functions_begin() const;
-			MDCFunction::ConstIterator functions_end() const;
-			MDCSignal::ConstIterator findSignal(const Name&) const;
-			MDCSignal::Iterator findSignal(const Name&);
-			MDCSignal::Iterator signals_begin();
-			MDCSignal::ConstIterator signals_begin() const;
-			MDCSignal::Iterator signals_end();
-			MDCSignal::ConstIterator signals_end() const;
+
+			// TODO: find iterators don't fully match when inlined (see LuaInstanceBridge.cpp)
+			ConstPropertyIterator findProperty(const Name& name) const
+			{
+				return getDescriptor().PropertyContainer::findConstMember(name, this);
+			}
+			PropertyIterator findProperty(const Name& name)
+			{
+				return getDescriptor().PropertyContainer::findMember(name, this);
+			}
+			PropertyIterator properties_begin()
+			{
+				return getDescriptor().PropertyContainer::members_begin(this);
+			}
+			ConstPropertyIterator properties_begin() const
+			{
+				return getDescriptor().PropertyContainer::members_begin(this);
+			}
+			PropertyIterator properties_end()
+			{
+				return getDescriptor().PropertyContainer::members_end(this);
+			}
+			ConstPropertyIterator properties_end() const
+			{
+				return getDescriptor().PropertyContainer::members_end(this);
+			}
+
+			FunctionIterator findFunction(const Name& name) const
+			{
+				return getDescriptor().FunctionContainer::findConstMember(name, this);
+			}
+			FunctionIterator functions_begin() const
+			{
+				return getDescriptor().FunctionContainer::members_begin(this);
+			}
+			FunctionIterator functions_end() const
+			{
+				return getDescriptor().FunctionContainer::members_end(this);
+			}
+
+			ConstSignalIterator findSignal(const Name& name) const
+			{
+				return getDescriptor().SignalContainer::findConstMember(name, this);
+			}
+			SignalIterator findSignal(const Name& name)
+			{
+				return getDescriptor().SignalContainer::findMember(name, this);
+			}
+			SignalIterator signals_begin()
+			{
+				return getDescriptor().SignalContainer::members_begin(this);
+			}
+			ConstSignalIterator signals_begin() const
+			{
+				return getDescriptor().SignalContainer::members_begin(this);
+			}
+			SignalIterator signals_end()
+			{
+				return getDescriptor().SignalContainer::members_end(this);
+			}
+			ConstSignalIterator signals_end() const
+			{
+				return getDescriptor().SignalContainer::members_end(this);
+			}
 		  
 		public:
 			static ClassDescriptor& classDescriptor()

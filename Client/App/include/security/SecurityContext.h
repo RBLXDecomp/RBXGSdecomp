@@ -1,3 +1,4 @@
+#pragma once
 #include <boost/thread/tss.hpp>
 #include <G3D/format.h>
 
@@ -40,7 +41,10 @@ namespace RBX
 				}
 			}
 
-			bool hasPermission(Permissions);
+			bool hasPermission(Permissions permission)
+			{
+				return isInRole(identity, permission);
+			}
 		private:
 			Context(Identities identity)
 				: identity(identity)

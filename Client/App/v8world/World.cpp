@@ -238,10 +238,10 @@ namespace RBX
 		assertNotInStep();
 
 		std::set<Primitive*> ignore;
-		for(int i = 0; i < primitives.size(); i++)
+		for (int i = 0; i < primitives.size(); i++)
 			ignore.insert(primitives[i]);
 
-		for(int i = 0; i < primitives.size(); i++)
+		for (int i = 0; i < primitives.size(); i++)
 			createJoints(primitives[i], &ignore);
 	}
 
@@ -250,10 +250,10 @@ namespace RBX
 		assertNotInStep();
 
 		std::set<Primitive*> ignore;
-		for(int i = 0; i < primitives.size(); i++)
+		for (int i = 0; i < primitives.size(); i++)
 			ignore.insert(primitives[i]);
 
-		for(int i = 0; i < primitives.size(); i++)
+		for (int i = 0; i < primitives.size(); i++)
 			destroyJoints(primitives[i], &ignore);
 	}
 
@@ -289,7 +289,7 @@ namespace RBX
 
 	void World::removeFromBreakable(Joint* j)
 	{
-		if(j->isBreakable())
+		if (j->isBreakable())
 		{
 			size_t success = breakableJoints.erase(j);
 			RBXASSERT(success == 1);
@@ -310,7 +310,7 @@ namespace RBX
 
 	void World::joinAll()
 	{
-		for(int i = 0; i < primitives.size(); i++)
+		for (int i = 0; i < primitives.size(); i++)
 			createJoints(primitives[i]);
 	}
 
@@ -359,17 +359,17 @@ namespace RBX
 
 		const SleepStage* sStage = rbx_static_cast<SleepStage*>(jointStage->findStage(IStage::SLEEP_STAGE)); // World::getSleepStage()
 
-		for(Iter cIt = sStage->getAwakeAssemblies().begin(); cIt != sStage->getAwakeAssemblies().end(); cIt++)
+		for (Iter cIt = sStage->getAwakeAssemblies().begin(); cIt != sStage->getAwakeAssemblies().end(); cIt++)
 		{
 			const Assembly* current = *cIt;
-			if(current->getMainPrimitive()->getCoordinateFrame().translation.y < -500.0f)
+			if (current->getMainPrimitive()->getCoordinateFrame().translation.y < -500.0f)
 			{
 				Assembly::PrimIterator it = Assembly::PrimIterator::begin(current);
 				Assembly::PrimIterator pEnd = Assembly::PrimIterator::end(current);
-				for(; it != pEnd; ++it)
+				for (; it != pEnd; ++it)
 				{
 					Primitive* currentPrim = *it;
-					if(currentPrim->getCoordinateFrame().translation.y < -500.0f)
+					if (currentPrim->getCoordinateFrame().translation.y < -500.0f)
 						fallen.push_back(currentPrim);
 				}
 			}

@@ -37,7 +37,7 @@ namespace RBX
 		InstanceHandle h;
 		if (valueIDREF->getValue(h))
 		{
-			if(!h.empty())
+			if (!h.empty())
 				idref->assignIDREF(propertyOwner, h);
 			else
 			{
@@ -87,7 +87,7 @@ bool ArchiveBinder::resolveIDREF(IDREFBinding binding)
 	RBXASSERT(s != "");
 
 	std::map<std::string, RBX::InstanceHandle>::iterator found = idMap.find(s);
-	if(found != idMap.end())
+	if (found != idMap.end())
 	{
 		RBX::InstanceHandle& foundHandle = found->second;
 		binding.idref->assignIDREF(binding.propertyOwner,foundHandle);
@@ -118,7 +118,7 @@ bool ArchiveBinder::processID(const XmlNameValuePair* valueID, RBX::Instance* so
 
 bool ArchiveBinder::processIDREF(const XmlNameValuePair* valueIDREF, RBX::Reflection::DescribedBase* propertyOwner, const RBX::IIDREF* idref)
 {
-	if(!MergeBinder::processIDREF(valueIDREF, propertyOwner, idref))
+	if (!MergeBinder::processIDREF(valueIDREF, propertyOwner, idref))
 	{
 		IDREFBinding binding = {valueIDREF, propertyOwner, idref};
 		idrefBindings.push_back(binding);
@@ -133,10 +133,10 @@ void isolate(XmlElement* element, const std::map<RBX::Instance*, RBX::InstanceHa
 {
 	element->replaceHandles(isolationMap);
 
-	for(XmlAttribute* attr = element->getFirstAttribute(); attr != NULL; attr = element->getNextAttribute(attr))
+	for (XmlAttribute* attr = element->getFirstAttribute(); attr != NULL; attr = element->getNextAttribute(attr))
 		attr->replaceHandles(isolationMap);
 
-	for(XmlElement* elem = element->firstChild(); elem != NULL; elem = element->nextChild(elem))
+	for (XmlElement* elem = element->firstChild(); elem != NULL; elem = element->nextChild(elem))
 		isolate(elem, isolationMap);
 }
 

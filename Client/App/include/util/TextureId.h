@@ -6,7 +6,6 @@ namespace RBX
 	class TextureId : public ContentId
 	{
 	public:
-		//TextureId(const TextureId&);
 		TextureId()
 			: ContentId()
 		{
@@ -23,10 +22,5 @@ namespace RBX
 			: ContentId(id)
 		{
 		}
-		~TextureId()
-		{
-		}
-	public:
-		//TextureId& operator=(const TextureId&);
 	};
 }

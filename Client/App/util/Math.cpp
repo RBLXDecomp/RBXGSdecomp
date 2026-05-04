@@ -602,16 +602,16 @@ namespace RBX
 		int maxI = -1, maxJ = -1;
 		float maxDot = 0.0f;
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			G3D::Vector3 aAxis = align.getColumn(i);
-			for(int j = 0; j < 3; j++)
+			for (int j = 0; j < 3; j++)
 			{
 				G3D::Vector3 tAxis = target.getColumn(j);
 				float atDot = aAxis.dot(tAxis);
 				dots[i][j] = atDot;
 
-				if(fabs(atDot) > fabs(maxDot))
+				if (fabs(atDot) > fabs(maxDot))
 				{
 					maxI = i;
 					maxJ = j;
@@ -626,12 +626,12 @@ namespace RBX
 		float maxDot1 = 0.0f;
 		int maxI1 = -1, maxJ1 = -1;
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
-			if(i != maxI)
-				for(int j = 0; j < 3; j++)
+			if (i != maxI)
+				for (int j = 0; j < 3; j++)
 				{
-					if(j != maxJ && fabs(dots[i][j]) > fabs(maxDot1))
+					if (j != maxJ && fabs(dots[i][j]) > fabs(maxDot1))
 					{
 						maxDot1 = dots[i][j];
 						maxI1 = i;

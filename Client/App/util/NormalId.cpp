@@ -86,7 +86,7 @@ namespace RBX
 
 	NormalId inlinedFunction1(NormalId id)
 	{
-		switch(id)
+		switch (id)
 		{
 		case NORM_X:
 			return NORM_Z_NEG;
@@ -108,7 +108,7 @@ namespace RBX
 
 	NormalId inlinedFunction2(NormalId id)
 	{
-		switch(id)
+		switch (id)
 		{
 		case NORM_X:
 			return NORM_Z;
@@ -130,7 +130,7 @@ namespace RBX
 
 	const G3D::Matrix3& normalIdToMatrix3(NormalId normalId)
 	{
-		switch(normalId)
+		switch (normalId)
 		{
 		case NORM_X:
 			{
@@ -199,7 +199,7 @@ namespace RBX
 
 	G3D::Vector3 uvwToObject(const G3D::Vector3& uvwPt, NormalId faceId)
 	{
-		switch(faceId)
+		switch (faceId)
 		{
 		case NORM_X:
 			return G3D::Vector3(uvwPt.z, uvwPt.y, -uvwPt.x);
@@ -220,7 +220,7 @@ namespace RBX
 
 	G3D::Vector3 objectToUvw(const G3D::Vector3& objectPt, NormalId faceId)
 	{
-		switch(faceId)
+		switch (faceId)
 		{
 		case NORM_X:
 			return G3D::Vector3(-objectPt.z, objectPt.y, objectPt.x);

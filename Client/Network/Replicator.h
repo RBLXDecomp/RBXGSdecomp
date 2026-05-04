@@ -1,15 +1,14 @@
 #pragma once
-#include <winsock2.h>
-#include "v8tree/Instance.h"
-#include "v8tree/Service.h"
+#include <PluginInterface.h>
+#include "util/RunStateOwner.h"
 #include "util/Events.h"
 #include "util/Profiling.h"
-#include "util/RunStateOwner.h"
-#include <PacketLogger.h>
-#include <PluginInterface.h>
-#include <RakPeer.h>
-#include <RakPeerInterface.h>
 #include <boost/scoped_ptr.hpp>
+
+class RakPeer;
+class RakPeerInterface;
+
+class PacketLogger;
 
 namespace RBX
 {
