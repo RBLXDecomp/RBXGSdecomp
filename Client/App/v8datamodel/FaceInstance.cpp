@@ -22,12 +22,6 @@ namespace RBX
 		}
 	}
 
-
-	NormalId FaceInstance::getFace() const 
-	{
-		return face;
-	}
-
 	bool FaceInstance::askSetParent(const Instance* instance) const 
 	{
 		return fastDynamicCast<const PartInstance>(instance) != NULL;

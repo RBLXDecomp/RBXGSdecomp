@@ -7,9 +7,14 @@ root = Path(__file__).parent
 parser = argparse.ArgumentParser()
 parser.add_argument("targetPath", help="The directory to your target object files.")
 
+basePaths = [
+    root / "Client/App/obj/ReleaseAssert",
+    root / "Client/RBXView/obj/Release"
+]
+
 def configure(desiredTargetPath):
     targetPath = root / desiredTargetPath
-    basePath = root / "Client/App/obj/ReleaseAssert"
+#    basePath = root / "Client/App/obj/ReleaseAssert"
 
     if not targetPath.is_dir():
         print("Specified target directory does not exist.")
@@ -33,10 +38,13 @@ def configure(desiredTargetPath):
                 "target_path": str(targetPath / objName)
             })
 
-            if basePath.joinpath(objName).is_file():
-                config["units"][i].update({
-                    "base_path": str(basePath / objName)
-                })
+            for j in range(len(basePaths)):
+                basePath = basePaths[j]
+
+                if basePath.joinpath(objName).is_file():
+                    config["units"][i].update({
+                        "base_path": str(basePath / objName)
+                    })
 
         json.dump(config, file, indent=4)
 

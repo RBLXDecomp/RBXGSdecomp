@@ -15,7 +15,10 @@ namespace RBX
 	public:
 		static const Reflection::EnumPropDescriptor<FaceInstance,NormalId> prop_Face;
 		FaceInstance();
-		NormalId getFace() const;
+		NormalId getFace() const
+		{
+			return face;
+		}
 		void setFace(NormalId);
 	protected:
 		virtual bool askSetParent(const Instance*) const;

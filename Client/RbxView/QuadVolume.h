@@ -24,7 +24,7 @@ namespace RBX
 				: data(0)
 			{
 			}
-			void setSurfaceType(NormalId, RenderSurfaceType);
+			void setSurfaceType(NormalId normal, RenderSurfaceType type);
 			RenderSurfaceType getSurfaceType(NormalId) const;
 			unsigned int hashCode() const;
 

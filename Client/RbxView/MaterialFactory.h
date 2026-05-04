@@ -9,6 +9,7 @@ namespace RBX
 	{
 		class MaterialFactory
 		{
+		public:
 			struct Attributes
 			{
 				const BrickColor color;
