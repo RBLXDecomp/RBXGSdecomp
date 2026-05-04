@@ -1,5 +1,4 @@
 #pragma once
-#include <winsock2.h>
 #include "Network/Players.h"
 #include "security/SecurityContext.h"
 #include "humanoid/Humanoid.h"
