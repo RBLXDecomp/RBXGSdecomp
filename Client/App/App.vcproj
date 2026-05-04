@@ -1880,7 +1880,14 @@
 			</File>
 			<File
 				RelativePath=".\gui\Widget.cpp"
-
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="tool"
+			>
+			<File
+				RelativePath=".\tool\DragUtilities.cpp"
 				>
 			</File>
 		</Filter>
