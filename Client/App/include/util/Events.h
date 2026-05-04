@@ -13,7 +13,7 @@ namespace RBX
 		size_t upper;
 		RaiseRange* previous;
 	public:
-		void removeIndex(unsigned int);
+		void removeIndex(size_t);
 	};
 
 	template<typename Class, typename Event>
@@ -24,7 +24,10 @@ namespace RBX
 	protected:
 		virtual void onEvent(const Class*, Event) = 0;
 		Listener& operator=(const Listener&);
-		virtual ~Listener() {}
+
+		virtual ~Listener()
+		{
+		}
 	};
 
 	template<typename Class, typename Event>
@@ -35,13 +38,14 @@ namespace RBX
 		mutable RaiseRange* raiseRange;
 
 	protected:
-		//Notifier(const Notifier&);
+		Notifier(const Notifier&);
 		Notifier()
 			: listeners(),
 			  raiseRange(NULL)
 		{
 		}
 		Notifier& operator=(const Notifier&);
+		virtual ~Notifier();
 
 	public:
 		void addListener(Listener<Class, Event>*) const;
@@ -63,7 +67,7 @@ namespace RBX
 
 			raiseRange = &range;
 
-			for(; range.index < range.upper; range.index++)
+			for (; range.index < range.upper; range.index++)
 			{
 				raise(event, listeners[range.index]);
 			}

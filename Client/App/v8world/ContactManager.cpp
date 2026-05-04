@@ -66,9 +66,9 @@ namespace RBX
 	{
 		std::set<Primitive*> checkSet(check.begin(), check.end());
 
-		for(int i = 0; i < check.size(); i++)
+		for (int i = 0; i < check.size(); i++)
 		{
-			if(intersectingOthers(check[i], checkSet, overlapIgnored))
+			if (intersectingOthers(check[i], checkSet, overlapIgnored))
 				return true;
 		}
 		return false;
@@ -76,9 +76,9 @@ namespace RBX
 
 	bool ContactManager::intersectingOthers(Primitive* check, const std::set<Primitive*>& checkSet, float overlapIgnored)
 	{
-		for(Contact* cur = check->getFirstContact(); cur != NULL; cur = check->getNextContact(cur))
+		for (Contact* cur = check->getFirstContact(); cur != NULL; cur = check->getNextContact(cur))
 		{
-			if(checkSet.find(cur->otherPrimitive(check)) == checkSet.end() && cur->computeIsColliding(overlapIgnored))
+			if (checkSet.find(cur->otherPrimitive(check)) == checkSet.end() && cur->computeIsColliding(overlapIgnored))
 				return true;
 		}
 		return false;
@@ -88,13 +88,13 @@ namespace RBX
 	{
 		G3D::Array<Contact*> newContacts;
 
-		for(Contact* cur = p->getFirstContact(); cur != NULL; cur = p->getFirstContact())
+		for (Contact* cur = p->getFirstContact(); cur != NULL; cur = p->getFirstContact())
 		{
 			newContacts.push_back(createContact(cur->getPrimitive(0), cur->getPrimitive(1)));
 			world->destroyContact(cur);
 		}
 
-		for(int i = 0; i < newContacts.size(); i++)
+		for (int i = 0; i < newContacts.size(); i++)
 		{
 			world->insertContact(newContacts[i]);
 		}
@@ -116,10 +116,10 @@ namespace RBX
 
 		Primitive* fastHit = getFastHit(worldRay, ignorePrim, filter, hitPoint, inside, stopped);
 
-		if(stopped) 
+		if (stopped) 
 			fastHit = NULL;
 
-		if(!fastHit) 
+		if (!fastHit) 
 		{
 			hitPoint = G3D::Vector3::zero();
 			inside = false;
@@ -146,14 +146,14 @@ namespace RBX
 			spatialHash->getPrimitivesInGrid(grid, primitives);
 			Primitive* slowHit = getSlowHit(primitives, unitRay, ignorePrim, filter, hitPointWorld, magnitude, inside, stopped);
 
-			if(slowHit)
+			if (slowHit)
 			{
 				Extents hashGrid = SpatialHash::hashGridToRealExtents(grid.toVector3());
-				if(hashGrid.fuzzyContains(hitPointWorld, 0.001f))
+				if (hashGrid.fuzzyContains(hitPointWorld, 0.001f))
 					return slowHit;
 			}
 		}
-		while(spatialHash->getNextGrid(grid, unitRay, magnitude));
+		while (spatialHash->getNextGrid(grid, unitRay, magnitude));
 
 		return NULL;
 	}
@@ -166,14 +166,14 @@ namespace RBX
 		G3D::Ray worldRay = G3D::Ray::fromOriginAndDirection(originDirection.origin, maxSearchVec);
 		G3D::Array<Primitive const*> ignorePrims;
 
-		if(ignorePrim)
+		if (ignorePrim)
 			ignorePrims.push_back(ignorePrim);
 
 		Primitive* hit = getHit(worldRay, &ignorePrims, filter, hitPointWorld, ContactManager::ignoreBool);
 
 		float tempDist;
 
-		if(hit)
+		if (hit)
 		{
 			G3D::Vector3 temp = hitPointWorld - worldRay.origin;
 			tempDist = temp.magnitude();
@@ -197,14 +197,14 @@ namespace RBX
 		stopped = false;
 		inside = false;
 
-		for(int i = 0; i < primitives.size(); i++)
+		for (int i = 0; i < primitives.size(); i++)
 		{
 			Primitive* currentPrimitive = primitives[i];
 
 			bool isNotFound = ignorePrim ? ignorePrim->find(currentPrimitive) == ignorePrim->end() : true;
 			HitTestFilter::Result hitResult = filter ? filter->filterResult(currentPrimitive) : HitTestFilter::INCLUDE_PRIM;
 
-			if(isNotFound && hitResult != HitTestFilter::IGNORE_PRIM)
+			if (isNotFound && hitResult != HitTestFilter::IGNORE_PRIM)
 			{
 				G3D::Vector3 trans = currentPrimitive->getCoordinateFrame().translation;
 				float radius = currentPrimitive->getRadius();
@@ -212,26 +212,26 @@ namespace RBX
 				G3D::Vector3 math2 = trans - (unitRay.origin + unitRay.direction * math1);
 				float dist = math2.magnitude();
 
-				if(dist <= radius)
+				if (dist <= radius)
 				{
 					G3D::Vector3 thisHitPoint;
 					bool insideTemp;
-					if(currentPrimitive->hitTest(unitRay, thisHitPoint, insideTemp))
+					if (currentPrimitive->hitTest(unitRay, thisHitPoint, insideTemp))
 					{
 						float thisOffset = unitRay.direction.dot(thisHitPoint - unitRay.origin);
-						if(thisOffset > 0.0f)
+						if (thisOffset > 0.0f)
 						{
-							switch(hitResult)
+							switch (hitResult)
 							{
 							case HitTestFilter::STOP_TEST:
-								if(thisOffset < stopOffset)
+								if (thisOffset < stopOffset)
 								{
 									stopOffset = thisOffset;
 									stopped = true;
 								}
 								break;
 							case HitTestFilter::INCLUDE_PRIM:
-								if(thisOffset < bestOffset)
+								if (thisOffset < bestOffset)
 								{
 									inside = insideTemp;
 									bestOffset = thisOffset;
@@ -248,7 +248,7 @@ namespace RBX
 			}
 		}
 
-		if((stopped && bestPrimitive) && bestOffset < stopOffset)
+		if ((stopped && bestPrimitive) && bestOffset < stopOffset)
 			stopped = false;
 
 		return bestPrimitive;
@@ -259,17 +259,17 @@ namespace RBX
 		Geometry::GeometryType type0 = p0->getGeometry()->getGeometryType();
 		Geometry::GeometryType type1 = p1->getGeometry()->getGeometryType();
 
-		if(type0 > type1)
+		if (type0 > type1)
 			std::swap(p0, p1);
 
 		type0 = p0->getGeometry()->getGeometryType();
 		type1 = p1->getGeometry()->getGeometryType();
 
-		switch(type0)
+		switch (type0)
 		{
 		case Geometry::GEOMETRY_BALL:
 
-			switch(type1)
+			switch (type1)
 			{
 			case Geometry::GEOMETRY_BALL:
 				return new BallBallContact(p0, p1);

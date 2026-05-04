@@ -22,10 +22,10 @@ namespace RBX
 	{
 	public:
 		bool anchored;
-		int surfaceAreaJoints;
+		size_t surfaceAreaJoints;
 	  
 	public:
-		//PrimitiveSort(const PrimitiveSort&);
+		PrimitiveSort(const PrimitiveSort& other);
 		PrimitiveSort(const Primitive* p);
 		PrimitiveSort();
 	public:

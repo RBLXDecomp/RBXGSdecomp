@@ -33,7 +33,7 @@ namespace RBX
 		{
 			if (this->nodes[i])
 			{
-				while(this->nodes[i])
+				while (this->nodes[i])
 				{
 					SpatialNode* backup = this->nodes[i];
 					this->nodes[i] = this->nodes[i]->nextHashLink;
@@ -43,7 +43,7 @@ namespace RBX
 			}
 		}
 
-		while(this->extraNodes)
+		while (this->extraNodes)
 		{
 			SpatialNode* node = this->extraNodes;
 			this->extraNodes = node->nextHashLink;

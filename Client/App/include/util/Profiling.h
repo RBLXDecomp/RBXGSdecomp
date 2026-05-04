@@ -1,8 +1,7 @@
 #pragma once
-#include <windows.h>
+#include <G3D/Vector3.h>
 #include <boost/noncopyable.hpp>
 #include <string>
-#include <g3d/g3dmath.h>
 
 namespace RBX
 {

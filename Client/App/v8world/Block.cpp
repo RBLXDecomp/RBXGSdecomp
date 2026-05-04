@@ -114,7 +114,7 @@ namespace RBX
 
 		float area = ((grid.x * grid.z + grid.y * grid.z) + grid.x * grid.y) * 2;
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			float X = grid[(i    ) % 3];
 			float Y = grid[(i + 1) % 3];

@@ -12,6 +12,11 @@ namespace RBX
 		return a.toString() < b.toString();
 	}
 
+	bool operator!=(const ContentId& a, const ContentId& b)
+	{
+		return a.toString() != b.toString();
+	}
+
 	ContentProvider& ContentProvider::singleton()
 	{
 		static ContentProvider sing;
@@ -137,10 +142,5 @@ namespace RBX
 	MD5Hasher* MD5Hasher::create()
 	{
 		return new MD5HasherImpl();
-	}
-
-	bool operator!=(const ContentId& a, const ContentId& b) 
-	{
-		return a.toString() != b.toString();
 	}
 }

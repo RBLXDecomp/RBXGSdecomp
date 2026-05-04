@@ -35,7 +35,7 @@ namespace RBX
 		JointK(this, &Primitive::computeJointK),
 		controller(NullController::getStaticNullController())
 	{
-		for(int i = 0; i < 6; i++) 
+		for (int i = 0; i < 6; i++) 
 		{
 			surfaceType[i] = NO_SURFACE;
 			surfaceData[i] = NULL;
@@ -47,12 +47,12 @@ namespace RBX
 	{
 		Geometry::GeometryType type = geometry->getGeometryType();
 
-		if(type != Geometry::GEOMETRY_NONE) {
+		if (type != Geometry::GEOMETRY_NONE) {
 			delete geometry;
 			delete body;
 		}
 
-		for(int i = 0; i < 6; i++)
+		for (int i = 0; i < 6; i++)
 			delete surfaceData[i];
 
 		RBXASSERT(!world);
@@ -63,7 +63,7 @@ namespace RBX
 	{
 		G3D::Vector3 r = newSize.min(G3D::Vector3(512.0f, 512.0f, 512.0f));
 
-		if(r.x * r.y * r.z > 1e+6f) 
+		if (r.x * r.y * r.z > 1e+6f) 
 		{
 			r.y = floorf(1e+6f / (r.x * r.z));
 		}
@@ -86,7 +86,7 @@ namespace RBX
 
 	void Primitive::setClump(Clump* set)
 	{
-		if(set != clump)
+		if (set != clump)
 		{
 			clump = set;
 		}
@@ -126,7 +126,7 @@ namespace RBX
 		G3D::Ray localRay = body->getPV().position.toObjectSpace(worldRay);
 		G3D::Vector3 localHitPoint;
 
-		if(geometry->hitTest(localRay, localHitPoint, inside))
+		if (geometry->hitTest(localRay, localHitPoint, inside))
 		{
 			worldHitPoint = body->getPV().position.pointToWorldSpace(localHitPoint);
 			return true;
@@ -151,26 +151,26 @@ namespace RBX
 
 	void Primitive::setSurfaceType(NormalId id, SurfaceType newSurfaceType)
 	{
-		if(surfaceType[id] != newSurfaceType)
+		if (surfaceType[id] != newSurfaceType)
 			surfaceType[id] = newSurfaceType;
 	}
 
 	void Primitive::setSurfaceData(NormalId id, const SurfaceData& newSurfaceData)
 	{
-		if(!surfaceData[id] && newSurfaceData.isEmpty())
+		if (!surfaceData[id] && newSurfaceData.isEmpty())
 			return;
 
-		if(surfaceData[id] && *surfaceData[id] == newSurfaceData)
+		if (surfaceData[id] && *surfaceData[id] == newSurfaceData)
 			return;
 
-		if(newSurfaceData.isEmpty())
+		if (newSurfaceData.isEmpty())
 		{
 			RBXASSERT(surfaceData[id]);
 			delete surfaceData[id];
 			surfaceData[id] = NULL;
 			return;
 		}
-		else if(!surfaceData[id])
+		else if (!surfaceData[id])
 		{
 			surfaceData[id] = new SurfaceData;
 		}
@@ -205,7 +205,7 @@ namespace RBX
 
 	Geometry* Primitive::newGeometry(Geometry::GeometryType geometryType)
 	{
-		switch(geometryType)
+		switch (geometryType)
 		{
 			case Geometry::GEOMETRY_BLOCK: return new Block;
 			case Geometry::GEOMETRY_BALL: return new Ball;
@@ -221,7 +221,7 @@ namespace RBX
 		RBXASSERT(clumpTouch);
 		RBXASSERT(clumpOTouch);
 
-		if(touch->getOwner()->reportTouches() && 
+		if (touch->getOwner()->reportTouches() && 
 			((!clumpTouch->getAnchored() && clumpTouch->getSleepStatus() == Sim::AWAKE) ||
 			(!clumpOTouch->getAnchored() && clumpOTouch->getSleepStatus() == Sim::AWAKE)))
 		{
@@ -245,15 +245,15 @@ namespace RBX
 		RBXASSERT(geometry->getGeometryType() != Geometry::GEOMETRY_NONE);
 		RBXASSERT(geometryType != Geometry::GEOMETRY_NONE);
 
-		if(geometry->getGeometryType() != geometryType)
+		if (geometry->getGeometryType() != geometryType)
 		{
 			G3D::Vector3 oldSize = geometry->getGridSize();
-			if(geometry)
+			if (geometry)
 				delete geometry;
 
 			geometry = newGeometry(geometryType);
 
-			if(world)
+			if (world)
 				world->onPrimitiveGeometryTypeChanged(this);
 
 			setGridSize(oldSize);
@@ -263,25 +263,25 @@ namespace RBX
 
 	void Primitive::setCoordinateFrame(const G3D::CoordinateFrame& value)
 	{
-		if(value != body->getPV().position)
+		if (value != body->getPV().position)
 		{
 			Assembly* assembly = getAssembly();
-			if(!assembly)
+			if (!assembly)
 			{
 				body->setCoordinateFrame(value);
 				myOwner->notifyMoved();
-				if(world)
+				if (world)
 					world->onPrimitiveExtentsChanged(this);
 			}
 			else
 			{
 				RBXASSERT(world);
-				if(assembly->getMainPrimitive() == this)
+				if (assembly->getMainPrimitive() == this)
 				{
 					body->setCoordinateFrame(value);
 					assembly->notifyMoved();
 					world->onAssemblyExtentsChanged(assembly);
-					if(!anchored)
+					if (!anchored)
 						world->ticklePrimitive(this);
 				}
 			}
@@ -290,16 +290,16 @@ namespace RBX
 
 	void Primitive::setDragging(bool _dragging)
 	{
-		if(dragging != _dragging)
+		if (dragging != _dragging)
 		{
 			bool oldDrag = !dragging && canCollide;
 			dragging = _dragging;
 
 			setAnchor(anchored);
-			if(world)
+			if (world)
 			{
 				bool newDrag = !dragging && canCollide;
-				if(newDrag != oldDrag)
+				if (newDrag != oldDrag)
 					world->onPrimitiveCanCollideChanged(this);
 			}
 		}
@@ -311,26 +311,26 @@ namespace RBX
 
 		bool exists = getAnchor();
 
-		if(_anchored || dragging)
+		if (_anchored || dragging)
 			_anchored = true;
 
-		if(_anchored == exists)
+		if (_anchored == exists)
 			return;
 
-		if(_anchored)
+		if (_anchored)
 		{
 			RBXASSERT(!anchorObject);
 			anchorObject = new Anchor(this);
-			if(world)
+			if (world)
 				world->onPrimitiveAddedAnchor(this);
 		}
 		else
 		{
 			RBXASSERT(anchorObject);
-			if(world)
+			if (world)
 				world->onPrimitiveRemovingAnchor(this);
 			
-			if(anchorObject)
+			if (anchorObject)
 				delete anchorObject;
 
 			anchorObject = NULL;
@@ -341,13 +341,13 @@ namespace RBX
 	{
 		bool oldDrag = !dragging && canCollide;
 
-		if(canCollide != value)
+		if (canCollide != value)
 		{
 			canCollide = value;
-			if(world)
+			if (world)
 			{
 				bool newDrag = !dragging && value;
-				if(oldDrag != newDrag)
+				if (oldDrag != newDrag)
 					world->onPrimitiveCanCollideChanged(this);
 			}
 		}
@@ -355,30 +355,30 @@ namespace RBX
 
 	void Primitive::setCanSleep(bool _canSleep)
 	{
-		if(_canSleep != canSleep)
+		if (_canSleep != canSleep)
 		{
 			canSleep = _canSleep;
-			if(world)
+			if (world)
 				world->onPrimitiveCanSleepChanged(this);
 		}
 	}
 
 	void Primitive::setFriction(float _friction)
 	{
-		if(_friction != friction)
+		if (_friction != friction)
 		{
 			friction = _friction;
-			if(world)
+			if (world)
 				world->onPrimitiveContactParametersChanged(this);
 		}
 	}
 
 	void Primitive::setElasticity(float _elasticity)
 	{
-		if(_elasticity != elasticity)
+		if (_elasticity != elasticity)
 		{
 			elasticity = _elasticity;
-			if(world)
+			if (world)
 				world->onPrimitiveContactParametersChanged(this);
 		}
 	}
@@ -387,7 +387,7 @@ namespace RBX
 	{
 		G3D::Vector3 protectedSize = clipToSafeSize(gridSize);
 
-		if(protectedSize != geometry->getGridSize())
+		if (protectedSize != geometry->getGridSize())
 		{
 			fuzzyExtentsStateId = -2;
 			geometry->setGridSize(protectedSize);
@@ -397,7 +397,7 @@ namespace RBX
 			body->setMoment(geometry->getMoment(newSize));
 			JointK.setDirty();
 
-			if(world)
+			if (world)
 				world->onPrimitiveExtentsChanged(this);
 
 			JointK.setDirty();
@@ -428,16 +428,16 @@ namespace RBX
 
 	void Primitive::setController(Controller* _controller)
 	{
-		if(!_controller)
+		if (!_controller)
 			_controller = NullController::getStaticNullController();
 
-		if(controller != _controller)
+		if (controller != _controller)
 			controller = _controller;
 	}
 
 	const Extents& Primitive::getFastFuzzyExtents() const
 	{
-		if(fuzzyExtentsStateId != body->getStateIndex())
+		if (fuzzyExtentsStateId != body->getStateIndex())
 		{
 			fuzzyExtents = computeFuzzyExtents();
 			fuzzyExtentsStateId = body->getStateIndex();
@@ -460,7 +460,7 @@ namespace RBX
 	{
 		Edge* next = e->getNext(this);
 
-		if(next)
+		if (next)
 			return next;
 		else
 			return Joint::isJoint(e) ? contacts.first : NULL;
@@ -470,9 +470,9 @@ namespace RBX
 	{
 		Primitive* least = p0->getNumJoints2() < p1->getNumJoints2() ? p0 : p1;
 
-		for(Joint* current = least->getFirstJoint(); current != NULL; current = least->getNextJoint(current))
+		for (Joint* current = least->getFirstJoint(); current != NULL; current = least->getNextJoint(current))
 		{
-			if(p0 == current->getPrimitive(0) && p1 == current->getPrimitive(1) || p0 == current->getPrimitive(1) && p1 == current->getPrimitive(0))
+			if (p0 == current->getPrimitive(0) && p1 == current->getPrimitive(1) || p0 == current->getPrimitive(1) && p1 == current->getPrimitive(0))
 			   return current;
 		}
 		return NULL;
@@ -482,9 +482,9 @@ namespace RBX
 	{
 		Primitive* least = p0->getNumContacts() < p1->getNumContacts() ? p0 : p1;
 
-		for(Contact* current = least->getFirstContact(); current != NULL; current = least->getNextContact(current))
+		for (Contact* current = least->getFirstContact(); current != NULL; current = least->getNextContact(current))
 		{
-			if(p0 == current->getPrimitive(0) && p1 == current->getPrimitive(1) || p0 == current->getPrimitive(1) && p1 == current->getPrimitive(0))
+			if (p0 == current->getPrimitive(0) && p1 == current->getPrimitive(1) || p0 == current->getPrimitive(1) && p1 == current->getPrimitive(0))
 			   return current;
 		}
 		return NULL;
@@ -492,9 +492,9 @@ namespace RBX
 
 	RigidJoint* Primitive::getFirstRigidAt(Edge* start)
 	{
-		for(Edge* current = start; current != NULL; current = getNextEdge(current))
+		for (Edge* current = start; current != NULL; current = getNextEdge(current))
 		{
-			if(RigidJoint::isRigidJoint(current))
+			if (RigidJoint::isRigidJoint(current))
 				return rbx_static_cast<RigidJoint*>(current);
 		}
 		return NULL;
@@ -503,10 +503,10 @@ namespace RBX
 	int Primitive::countNumJoints() const
 	{
 		int counter = 0;
-		for(Joint* current = getFirstJoint(); current != NULL; current = getNextJoint(current))
+		for (Joint* current = getFirstJoint(); current != NULL; current = getNextJoint(current))
 		{
 			Joint::JointType type = current->getJointType();
-			if(type != Joint::FREE_JOINT && type != Joint::ANCHOR_JOINT)
+			if (type != Joint::FREE_JOINT && type != Joint::ANCHOR_JOINT)
 				counter++;
 		}
 		return counter;
@@ -517,11 +517,11 @@ namespace RBX
 		Primitive* p0 = e->getPrimitive(0);
 		Primitive* p1 = e->getPrimitive(1);
 
-		if(Joint::isJoint(e))
+		if (Joint::isJoint(e))
 		{
 			EdgeList::insertEdge(p0, e, e->getPrimitive(0)->joints);
 
-			if(p1)
+			if (p1)
 				EdgeList::insertEdge(p1, e, e->getPrimitive(1)->joints);
 			else
 				RBXASSERT(rbx_static_cast<Joint*>(e)->getJointType() == Joint::ANCHOR_JOINT || rbx_static_cast<Joint*>(e)->getJointType() == Joint::FREE_JOINT);
@@ -538,11 +538,11 @@ namespace RBX
 		Primitive* p0 = e->getPrimitive(0);
 		Primitive* p1 = e->getPrimitive(1);
 
-		if(Joint::isJoint(e))
+		if (Joint::isJoint(e))
 		{
 			EdgeList::removeEdge(p0, e, e->getPrimitive(0)->joints);
 
-			if(p1)
+			if (p1)
 				EdgeList::removeEdge(p1, e, e->getPrimitive(1)->joints);
 			else
 				RBXASSERT(rbx_static_cast<Joint*>(e)->getJointType() == Joint::ANCHOR_JOINT || rbx_static_cast<Joint*>(e)->getJointType() == Joint::FREE_JOINT);
@@ -563,15 +563,15 @@ namespace RBX
 
 	void EdgeList::removeEdge(Primitive* p, Edge* e, EdgeList& list)
 	{
-		if(list.first == e)
+		if (list.first == e)
 		{
-			list.first = list.first->getNext(p);
+			list.first = e->getNext(p);
 		}
 		else
 		{
 			Edge* currentEdge = list.first;
 
-			while(currentEdge->getNext(p) != e)
+			while (currentEdge->getNext(p) != e)
 			{
 				currentEdge = currentEdge->getNext(p);
 			}

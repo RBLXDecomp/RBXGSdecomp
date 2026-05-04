@@ -26,6 +26,12 @@ namespace RBX
 		this->anchored = p->getAnchor();
 	}
 
+	PrimitiveSort::PrimitiveSort(const PrimitiveSort& other)
+		: anchored(other.anchored),
+		  surfaceAreaJoints(other.surfaceAreaJoints)
+	{
+	}
+
 	PrimitiveEntry::PrimitiveEntry(Primitive* primitive, PrimitiveSort power)
 		: primitive(primitive),
 		  power(power)
@@ -322,18 +328,10 @@ namespace RBX
 		}
 		else
 		{
-			// NOTE: if you get this matching, you will also be able to match processMotors
 			Primitive* c1Root = clump1->getRootPrimitive();
 			Primitive* c0Root = clump0->getRootPrimitive();
-			PrimitiveSort s1 = PrimitiveSort(c1Root);
-			PrimitiveSort s0 = PrimitiveSort(c0Root);
-			//PrimitiveSort* selectedSort = &s1;
 
-			//if (s0 > s1)
-			//	selectedSort = &s0;
-
-			//return *selectedSort;
-			return s0 < s1 ? s1 : s0;
+			return G3D::max(PrimitiveSort(c0Root), PrimitiveSort(c1Root));
 		}
 	}
 
@@ -1026,7 +1024,7 @@ namespace RBX
 			RigidJoint* r = *c->getInconsistents().begin();
 
 			Clump* otherClump = c->otherClump(r);
-			RBXASSERT(otherClump == c);
+			RBXASSERT(otherClump != c);
 
 			otherClump->removeInconsistent(r);
 			c->removeInconsistent(r);

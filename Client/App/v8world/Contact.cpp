@@ -549,9 +549,9 @@ namespace RBX
 
 		int foundCounter = 0;
 
-		for(int i = 3; i >= 0; i--)
+		for (int i = 3; i >= 0; i--)
 		{
-			if(otherQuad[i].y <= planeRect.y)
+			if (otherQuad[i].y <= planeRect.y)
 			{
 				quadCrossRect[0][i] = true;
 			}
@@ -561,7 +561,7 @@ namespace RBX
 				quadIn[i] = false;
 			}
 
-			if(otherQuad[i].x >= -planeRect.x)
+			if (otherQuad[i].x >= -planeRect.x)
 			{
 				quadCrossRect[1][i] = true;
 			}
@@ -571,7 +571,7 @@ namespace RBX
 				quadIn[i] = false;
 			}
 
-			if(otherQuad[i].y >= -planeRect.y)
+			if (otherQuad[i].y >= -planeRect.y)
 			{
 				quadCrossRect[2][i] = true;
 			}
@@ -581,7 +581,7 @@ namespace RBX
 				quadIn[i] = false;
 			}
 
-			if(otherQuad[i].x <= planeRect.x)
+			if (otherQuad[i].x <= planeRect.x)
 			{
 				quadCrossRect[3][i] = true;
 			}
@@ -592,16 +592,16 @@ namespace RBX
 			}
 		}
 
-		for(int i = 3; i >= 0; i--)
+		for (int i = 3; i >= 0; i--)
 		{
-			if(quadIn[i])
+			if (quadIn[i])
 			{
 				loadGeoPairPointPlane(bOther, bPlane, i, otherPlaneID, planeID);
 				foundCounter++;
 			}
 		}
 
-		if(foundCounter == 4)
+		if (foundCounter == 4)
 			return foundCounter;
 		else
 		{
@@ -614,16 +614,16 @@ namespace RBX
 
 			bool rectIn[4] = {true, true, true, true};
 
-			for(int i = 3; i >= 0; i--)
+			for (int i = 3; i >= 0; i--)
 			{
 				G3D::Vector2& current = otherQuad[i];
 				G3D::Vector2& currentO = otherQuad[(i + 3) % 4];
-				for(int j = 0; j < 4; j++)
+				for (int j = 0; j < 4; j++)
 				{
 					G3D::Vector2 math1 = rect[j] - current;
 					G3D::Vector2 math2 = currentO - current;
 
-					if((math2.x * math1.y) - (math2.y * math1.x) >= 0.0f)
+					if ((math2.x * math1.y) - (math2.y * math1.x) >= 0.0f)
 					{
 						rectCrossQuad[i][j] = true;
 					}
@@ -637,24 +637,24 @@ namespace RBX
 
 			int wasZero = foundCounter == 0;
 
-			for(int i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
-				if(rectIn[i])
+				if (rectIn[i])
 				{
 					loadGeoPairPointPlane(bPlane, bOther, i, planeID, otherPlaneID);
 					foundCounter++;
 				}
 			}
 
-			if(wasZero && foundCounter == 4)
+			if (wasZero && foundCounter == 4)
 				return foundCounter;
 			else
 			{
-				for(int i = 0; i < 4; i++)
+				for (int i = 0; i < 4; i++)
 				{
-					for(int j = 3; j >= 0; j--)
+					for (int j = 3; j >= 0; j--)
 					{
-						if(quadCrossRect[i][j] != quadCrossRect[i][(j + 3) % 4] && rectCrossQuad[j][i] != rectCrossQuad[j][(i + 1) % 4])
+						if (quadCrossRect[i][j] != quadCrossRect[i][(j + 3) % 4] && rectCrossQuad[j][i] != rectCrossQuad[j][(i + 1) % 4])
 						{
 
 							loadGeoPairEdgeEdgePlane(bOther, bPlane, block(bOther)->faceVertexToEdge(otherPlaneID, (j+3)%4), block(bPlane)->faceVertexToEdge(planeID, i));
@@ -670,7 +670,7 @@ namespace RBX
 
 	bool BlockBlockContact::computeIsColliding(bool& planeContact, float overlapIgnored)
 	{
-		if(Primitive::aaBoxCollide(*getPrimitive(0), *getPrimitive(1)))
+		if (Primitive::aaBoxCollide(*getPrimitive(0), *getPrimitive(1)))
 			return getBestPlaneEdge(planeContact, overlapIgnored);
 		else
 			return false;
@@ -685,13 +685,13 @@ namespace RBX
 	bool BlockBlockContact::stepContact()
 	{
 		bool planeContact;
-		if(computeIsColliding(planeContact, 0.0f))
+		if (computeIsColliding(planeContact, 0.0f))
 		{
-			if(inStage(IStage::KERNEL_STAGE))
+			if (inStage(IStage::KERNEL_STAGE))
 			{
 				matched.resize(0);
 				matched.resize(connectors.size());
-				if(planeContact)
+				if (planeContact)
 				{
 					computePlaneContact();
 					deleteUnmatchedConnectors();
@@ -713,7 +713,7 @@ namespace RBX
 
 	int BlockBlockContact::computePlaneContact()
 	{
-		if(feature[0] >= 0)
+		if (feature[0] >= 0)
 		{
 			planeID = (NormalId)feature[0];
 			bPlane = 0;
@@ -741,7 +741,7 @@ namespace RBX
 
 		G3D::Vector2 otherQuad[4] = {};
 
-		for(int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			G3D::Vector3 world = otherToPlane.pointToWorldSpace(*(otherBlock->getFaceVertex(otherPlaneID, i)));
 			otherQuad[i] = otherBlock->getProjectedVertex(world, planeID);

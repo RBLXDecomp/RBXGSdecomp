@@ -46,7 +46,7 @@ const RBX::Name& tag_xsinoNamespaceSchemaLocation = RBX::Name::declare("xsi:noNa
 
 void XmlNameValuePair::clearValue() const
 {
-	switch(valueType)
+	switch (valueType)
 	{
 	case HANDLE:
 		delete handleValue;
@@ -260,7 +260,7 @@ bool XmlNameValuePair::isValueType<std::string>() const
 
 bool XmlNameValuePair::isValueEqual(const RBX::Name* value) const
 {
-	switch(valueType)
+	switch (valueType)
 	{
 	case NAME:
 		return value == nameValue;
@@ -314,11 +314,11 @@ void XmlNameValuePair::replaceHandles(const std::map<RBX::Instance*, RBX::Instan
 {
 	typedef std::map<RBX::Instance*, RBX::InstanceHandle>::const_iterator Iter;
 
-	if(valueType == HANDLE)
+	if (valueType == HANDLE)
 	{
 		Iter r = isolationMap.find(handleValue->getTarget().get());
 
-		if(r != isolationMap.end())
+		if (r != isolationMap.end())
 		{
 			*handleValue = r->second;
 		}

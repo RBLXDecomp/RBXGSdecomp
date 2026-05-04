@@ -1,3 +1,5 @@
+#include <RakPeer.h>
+#include <PacketLogger.h>
 #include "Replicator.h"
 #include "NetworkSettings.h"
 #include "v8datamodel/PartInstance.h"

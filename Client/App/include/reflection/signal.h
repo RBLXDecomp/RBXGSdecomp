@@ -13,17 +13,30 @@ namespace RBX
 {
 	namespace Reflection
 	{
+		typedef std::vector<boost::any> Arguments;
+
 		class GenericSlotWrapper
 		{
 		public:
 			virtual ~GenericSlotWrapper();
-		public:
 			virtual void execute(const std::vector<boost::any>&) = 0;
+
 		public:
-			//GenericSlotWrapper(const GenericSlotWrapper&);
-			GenericSlotWrapper();
+			template<typename T>
+			static GenericSlotWrapper* create(T);
+		};
+
+		template<typename T>
+		class TGenericSlotWrapper : public GenericSlotWrapper
+		{
+		private:
+			T slot;
+		
+		private:
+		  	TGenericSlotWrapper(const T&);
+
 		public:
-			//GenericSlotWrapper& operator=(const GenericSlotWrapper&);
+			virtual void execute(const Arguments&);
 		};
 
 		class SignalSource;
@@ -35,22 +48,25 @@ namespace RBX
 		public:
 			const SignalDescriptor& descriptor;
 		  
-		public:
-			//SignalInstance(const SignalInstance&);
 		protected:
 			SignalInstance(SignalSource* source, const SignalDescriptor& descriptor)
 				: source(source),
 				  descriptor(descriptor)
 			{
 			}
+
 		public:
 			virtual ~SignalInstance();
+
 		public:
 			SignalSource* getSource()
 			{
 				return source;
 			}
-			//SignalInstance& operator=(const SignalInstance&);
+
+		public:
+			template<typename T>
+			boost::signals::connection connectGeneric(T slot, boost::signals::connect_position pos);
 		};
 
 		class __declspec(novtable) SignalSource
@@ -74,25 +90,23 @@ namespace RBX
 
 		public:
 			void (*signalCreatedHook)(SignalSource*);
+
 		protected:
 			SignatureDescriptor signature;
 		  
-		public:
-			//SignalDescriptor(const SignalDescriptor&);
 		protected:
 			SignalDescriptor(ClassDescriptor& classDescriptor, const char* name);
+
 		protected:
 			SignalInstance* findSignalInstance(const SignalSource* source) const;
+
 		private:
 			virtual boost::signals::connection connectGeneric(SignalInstance*, GenericSlotWrapper*, boost::signals::connect_position) const = 0;
 			virtual SignalInstance* newSignalInstance(SignalSource&) const = 0;
+
 		public:
 			boost::shared_ptr<SignalInstance> getSignalInstance(SignalSource& source) const;
 			const SignatureDescriptor& getSignature() const;
-		public:
-			virtual ~SignalDescriptor() {}
-		public:
-			//SignalDescriptor& operator=(const SignalDescriptor&);
 		};
 
 		class Signal
@@ -102,10 +116,15 @@ namespace RBX
 			DescribedBase* instance;
 		  
 		public:
-			//Signal(const Signal&);
-			Signal(const SignalDescriptor&, DescribedBase*);
+			Signal(const Signal&);
+			Signal(const SignalDescriptor& descriptor, DescribedBase* instance)
+				: descriptor(&descriptor),
+				  instance(instance)
+			{
+			}
+
 		public:
-			//Signal& operator=(const Signal&); // maybe?
+			Signal& operator=(const Signal&);
 			const Name& getName() const;
 			const SignalDescriptor* getDescriptor() const;
 			boost::shared_ptr<SignalInstance> getSignalInstance() const;
@@ -118,29 +137,25 @@ namespace RBX
 			class TSignalInstance : public SignalInstance, public boost::signal<CallbackSignature>
 			{
 			public:
-				//TSignalInstance(const TSignalInstance&);
 				TSignalInstance(SignalSource* source, const SignalDescriptor& descriptor)
 					: SignalInstance(source, descriptor),
 					  boost::signal<CallbackSignature>()
 				{
 				}
-				virtual ~TSignalInstance() {}
-			public:
-				//TSignalInstance& operator=(const TSignalInstance&);
 			};
 
-		public:
-			//TSignalDesc(const TSignalDesc&);
 		protected:
 			TSignalDesc(ClassDescriptor& classDescriptor, const char* name)
 				: SignalDescriptor(classDescriptor, name)
 			{
 			}
+
 		private:
 			virtual SignalInstance* newSignalInstance(SignalSource& source) const
 			{
 				return new TSignalInstance(&source, *this);
 			}
+
 		protected:
 			TSignalInstance* findSig(const SignalSource* source) const
 			{
@@ -150,6 +165,7 @@ namespace RBX
 			{
 				return *(TSignalInstance*)(getSignalInstance(source).get());
 			}
+
 		public:
 			boost::signals::connection connect(SignalSource* source, const boost::slot<boost::function<CallbackSignature>>& slot)
 			{
@@ -163,8 +179,6 @@ namespace RBX
 				TSignalInstance* instance = findSig(source);
 				return !instance || instance->empty();
 			}
-			virtual ~TSignalDesc() {}
-			//TSignalDesc& operator=(const TSignalDesc&);
 		};
 
 
@@ -184,18 +198,12 @@ namespace RBX
 				boost::shared_ptr<GenericSlotWrapper> wrapper;
 			  
 			public:
-				//GenericSlotAdapter(const GenericSlotAdapter&);
 				GenericSlotAdapter(GenericSlotWrapper*);
+
 			public:
 				void operator()();
-			public:
-				~GenericSlotAdapter();
-			public:
-				//GenericSlotAdapter& operator=(const GenericSlotAdapter&);
 			};
 
-		public:
-			//SignalDescImpl(const SignalDescImpl&);
 		protected:
 			SignalDescImpl(ClassDescriptor& classDescriptor, const char* name)
 				: TSignalDesc(classDescriptor, name)
@@ -212,11 +220,6 @@ namespace RBX
 
 		protected:
 			virtual boost::signals::connection connectGeneric(SignalInstance*, GenericSlotWrapper*, boost::signals::connect_position) const;
-
-		public:
-			virtual ~SignalDescImpl() {}
-		public:
-			//SignalDescImpl& operator=(const SignalDescImpl&);
 		};
 
 		template<typename CallbackSignature>
@@ -229,8 +232,8 @@ namespace RBX
 				boost::shared_ptr<GenericSlotWrapper> wrapper;
 			  
 			public:
-				//GenericSlotAdapter(const GenericSlotAdapter&);
 				GenericSlotAdapter(GenericSlotWrapper*);
+
 			public:
 				void operator()(typename FunctionTraits<CallbackSignature>::Arg1Type arg1)
 				{
@@ -239,14 +242,8 @@ namespace RBX
 
 					wrapper->execute(args);
 				}
-			public:
-				~GenericSlotAdapter();
-			public:
-				//GenericSlotAdapter& operator=(const GenericSlotAdapter&);
 			};
 
-		public:
-			//SignalDescImpl(const SignalDescImpl&);
 		protected:
 			SignalDescImpl(ClassDescriptor& classDescriptor, const char* name)
 				: TSignalDesc(classDescriptor, name)
@@ -263,35 +260,24 @@ namespace RBX
 
 		protected:
 			virtual boost::signals::connection connectGeneric(SignalInstance*, GenericSlotWrapper*, boost::signals::connect_position) const;
-
-		public:
-			virtual ~SignalDescImpl() {}
-		public:
-			//SignalDescImpl& operator=(const SignalDescImpl&);
 		};
 
 		template<typename CallbackSignature>
 		class SignalDescImpl<2, CallbackSignature> : public TSignalDesc<CallbackSignature>
 		{
-		protected:
+		public:
 			class GenericSlotAdapter
 			{
 			private:
 				boost::shared_ptr<GenericSlotWrapper> wrapper;
 			  
 			public:
-				//GenericSlotAdapter(const GenericSlotAdapter&);
 				GenericSlotAdapter(GenericSlotWrapper*);
+
 			public:
 				void operator()(typename FunctionTraits<CallbackSignature>::Arg1Type arg1, typename FunctionTraits<CallbackSignature>::Arg2Type arg2);
-			public:
-				~GenericSlotAdapter();
-			public:
-				//GenericSlotAdapter& operator=(const GenericSlotAdapter&);
 			};
 
-		public:
-			//SignalDescImpl(const SignalDescImpl&);
 		protected:
 			SignalDescImpl(ClassDescriptor& classDescriptor, const char* name)
 				: TSignalDesc(classDescriptor, name)
@@ -308,18 +294,12 @@ namespace RBX
 
 		protected:
 			virtual boost::signals::connection connectGeneric(SignalInstance*, GenericSlotWrapper*, boost::signals::connect_position) const;
-
-		public:
-			virtual ~SignalDescImpl() {}
-		public:
-			//SignalDescImpl& operator=(const SignalDescImpl&);
 		};
 
 		template<typename Class, typename CallbackSignature>
 		class SignalDesc : public SignalDescImpl<FunctionTraits<CallbackSignature>::ArgCount, CallbackSignature>
 		{
 		public:
-			//SignalDesc(const SignalDesc&);
 			SignalDesc(const char* name, const char* arg1name, const char* arg2name)
 				: SignalDescImpl(Class::classDescriptor(), name)
 			{
@@ -339,9 +319,6 @@ namespace RBX
 				: SignalDescImpl(Class::classDescriptor(), name)
 			{
 			}
-			virtual ~SignalDesc() {}
-		public:
-			//SignalDesc& operator=(const SignalDesc&);
 		};
 	}
 }

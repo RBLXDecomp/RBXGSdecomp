@@ -3,12 +3,34 @@
 #include <g3d/vector3.h>
 #include <boost/shared_ptr.hpp>
 #include "v8tree/Instance.h"
+#include "v8datamodel/BrickColor.h"
 
 namespace RBX
 {
 	namespace Reflection
 	{
 		// TODO: check if type singletons are matching
+		template<>
+		const Type& Type::singleton<boost::shared_ptr<RBX::Reflection::DescribedBase>>()
+		{
+			static Type type("Object", typeid(boost::shared_ptr<RBX::Reflection::DescribedBase>));
+			return type;
+		}
+
+		template<>
+		const Type& Type::singleton<boost::shared_ptr<Instance>>()
+		{
+			static Type type("Instance", typeid(boost::shared_ptr<Instance>));
+			return type;
+		}
+
+		template<>
+		const Type& Type::singleton<boost::shared_ptr<Instances>>()
+		{
+			static Type type("Objects", typeid(boost::shared_ptr<Instances>));
+			return type;
+		}
+
 		template<>
 		const Type& Type::singleton<int>()
 		{
@@ -38,6 +60,13 @@ namespace RBX
 		}
 
 		template<>
+		const Type& Type::singleton<ContentId>()
+		{
+			static Type type("ContentId", typeid(ContentId));
+			return type;
+		}
+
+		template<>
 		const Type& Type::singleton<std::string>()
 		{
 			static Type type("string", typeid(std::string));
@@ -59,30 +88,16 @@ namespace RBX
 		}
 
 		template<>
-		const Type& Type::singleton<boost::shared_ptr<Instance>>()
-		{
-			static Type type("Instance", typeid(boost::shared_ptr<Instance>));
-			return type;
-		}
-
-		template<>
-		const Type& Type::singleton<boost::shared_ptr<RBX::Reflection::DescribedBase>>()
-		{
-			static Type type("Object", typeid(boost::shared_ptr<RBX::Reflection::DescribedBase>));
-			return type;
-		}
-
-		template<>
-		const Type& Type::singleton<boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>>>()
-		{
-			static Type type("Objects", typeid(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>>));
-			return type;
-		}
-
-		template<>
 		const Type& Type::singleton<std::vector<Value>>()
 		{
 			static Type type("Table", typeid(std::vector<Value>));
+			return type;
+		}
+
+		template<>
+		const Type& Type::singleton<BrickColor>()
+		{
+			static Type type("BrickColor", typeid(BrickColor));
 			return type;
 		}
 	}

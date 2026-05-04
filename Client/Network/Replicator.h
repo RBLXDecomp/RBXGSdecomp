@@ -1,14 +1,22 @@
 #pragma once
-#include <winsock2.h>
-#include "Streaming.h"
+#include <PluginInterface.h>
 #include "Network/Players.h"
 #include "v8world/Assembly.h"
 #include "v8world/Mechanism.h"
 #include "util/Profiling.h"
 #include "util/RunStateOwner.h"
-#include <PacketLogger.h>
-#include <RakPeer.h>
+#include "util/Events.h"
 #include <boost/scoped_ptr.hpp>
+
+class RakPeer;
+class RakPeerInterface;
+
+class PacketLogger;
+
+namespace RakNet
+{
+	class BitStream;
+}
 
 namespace RBX
 {
