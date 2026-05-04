@@ -1,10 +1,13 @@
 #pragma once
 #include <PluginInterface.h>
+#include <PacketLogger.h>
+#include <RakNetStatistics.h>
+#include <BitStream.h>
+#include "Streaming.h"
 #include "Network/Players.h"
 #include "v8world/Assembly.h"
 #include "v8world/Mechanism.h"
 #include "util/Profiling.h"
-#include "util/RunStateOwner.h"
 #include "util/Events.h"
 #include <boost/scoped_ptr.hpp>
 
@@ -12,11 +15,6 @@ class RakPeer;
 class RakPeerInterface;
 
 class PacketLogger;
-
-namespace RakNet
-{
-	class BitStream;
-}
 
 namespace RBX
 {

@@ -1,3 +1,4 @@
+#include <RakPeer.h>
 #include "Server.h"
 #include "API.h"
 #include "util/standardout.h"

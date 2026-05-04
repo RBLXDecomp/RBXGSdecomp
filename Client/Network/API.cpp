@@ -1,6 +1,6 @@
 #include "API.h"
-#include "Server.h"
 #include "Client.h"
+#include "Server.h"
 #include "IdManager.h"
 #include "NetworkSettings.h"
 #include "Network/Players.h"
