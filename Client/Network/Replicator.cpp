@@ -544,7 +544,7 @@ namespace RBX
 
 			if (stats)
 			{
-				boost::shared_ptr<Player> network = shared_from_polymorphic_downcast<Player>(stats->findFirstChildByName("Network"));
+				boost::shared_ptr<Stats::Item> network = shared_from_polymorphic_downcast<Stats::Item>(stats->findFirstChildByName("Network"));
 
 				if (network)
 				{
@@ -732,6 +732,84 @@ namespace RBX
 				packetLoss->formatValue(ratio, "%.1g%%", ratio * 100.0);
 
 				instanceSize->formatMem(instanceCount != 0 ? instanceBits / (instanceCount * 8) : 0);
+			}
+		}
+
+		Replicator::ChangePropertyItem::ChangePropertyItem(Replicator& replicator, const boost::shared_ptr<const Instance>& instance, const Reflection::PropertyDescriptor& desc)
+			: Item(replicator),
+			  instance(instance),
+			  desc(desc)
+		{
+		}
+
+		void Replicator::ChangePropertyItem::write(RakNet::BitStream& bitStream)
+		{
+			if (replicator.isInReplicationScope(instance.get()))
+			{
+				writeItemType(bitStream, ItemTypeChangeProperty);
+
+				const Name& descName = desc.name;
+
+				replicator.serializeId(bitStream, instance.get());
+
+				SharedStringDictionary& r = replicator.propNames;
+
+				r.send(bitStream, descName.toString());
+
+				if (NetworkSettings::singleton().printProperties)
+				{
+					StandardOut::singleton()->print(
+						MESSAGE_INFO, 
+						"Replication: %s << %s:%s.%s", 
+						replicator.remotePlayerId.ToString(true), 
+						instance->getClassName().c_str(),
+						instance->getGuid().readableString(4).c_str(),
+						descName.c_str()
+					);
+				}
+
+				replicator.serializeValue(Reflection::ConstProperty(desc, instance.get()), true, bitStream);
+			}
+		}
+
+		void Replicator::DeleteInstanceItem::write(RakNet::BitStream& bitStream)
+		{
+			size_t erased = replicator.pendingDeleteInstances.erase(instance.get());
+
+			if (erased)
+			{
+				if (!instance.get())
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Replication: %s << ~NULL", replicator.remotePlayerId.ToString(true));
+					return;
+				}
+				
+				try 
+				{
+					writeItemType(bitStream, ItemTypeDelete);
+					replicator.serializeId(bitStream, instance.get());
+
+					if (NetworkSettings::singleton().printInstances)
+					{
+						StandardOut::singleton()->print(
+							MESSAGE_INFO,
+							"Replication: %s << ~%s:%s",
+							replicator.remotePlayerId.ToString(true),
+							instance->getClassName().c_str(),
+							instance->getGuid().readableString(4).c_str()
+						);
+					}
+				}
+				catch (std::runtime_error& e)
+				{
+					StandardOut::singleton()->print(
+						MESSAGE_ERROR,
+						"Replication: %s << ~%s, %s",
+						replicator.remotePlayerId.ToString(true),
+						instance->getClassName().c_str(),
+						e.what()
+					);
+				}
 			}
 		}
 	}

@@ -1888,7 +1888,6 @@
 			</File>
 			<File
 				RelativePath=".\gui\Widget.cpp"
-
 				>
 			</File>
 		</Filter>

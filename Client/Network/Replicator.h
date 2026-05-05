@@ -178,18 +178,18 @@ namespace RBX
 				const boost::shared_ptr<const Instance> instance;
 
 			public:
-				ChangePropertyItem(Replicator&, const boost::shared_ptr<const Instance>&, const Reflection::PropertyDescriptor&);
-				virtual void write(RakNet::BitStream&);
+				ChangePropertyItem(Replicator& replicator, const boost::shared_ptr<const Instance>& instance, const Reflection::PropertyDescriptor& desc);
+				virtual void write(RakNet::BitStream& bitStream);
 			};
 
 			class DeleteInstanceItem : public Item
 			{
 			private:
-				const boost::shared_ptr<const Instance> instance;
+				boost::shared_ptr<const Instance> instance;
 
 			public:
 				DeleteInstanceItem(Replicator& replicator, const boost::shared_ptr<const Instance>& instance);
-				virtual void write(RakNet::BitStream&);
+				virtual void write(RakNet::BitStream& bitStream);
 			};
 
 		private:
