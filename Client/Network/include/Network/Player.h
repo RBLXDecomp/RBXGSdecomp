@@ -1,6 +1,5 @@
 #pragma once
 #include "Network/Players.h"
-#include "security/SecurityContext.h"
 #include "humanoid/Humanoid.h"
 #include "v8datamodel/BrickColor.h"
 #include "v8datamodel/Backpack.h"
@@ -16,7 +15,10 @@ namespace RBX
 			const boost::shared_ptr<Instance> character;
 		  
 		public:
-			CharacterAdded(Instance*);
+			CharacterAdded(Instance* character)
+				: character(shared_from(character))
+			{
+			}
 		};
 
 		struct CharacterRemoving
@@ -25,7 +27,10 @@ namespace RBX
 			const boost::shared_ptr<Instance> character;
 		  
 		public:
-			CharacterRemoving(Instance*);
+			CharacterRemoving(Instance* character)
+				: character(shared_from(character))
+			{
+			}
 		};
 
 		extern const char* sPlayer;
@@ -65,7 +70,7 @@ namespace RBX
 			{
 				return character.get();
 			}
-			void setCharacter(ModelInstance*);
+			void setCharacter(ModelInstance* value);
 			BrickColor getTeamColor() const
 			{
 				return teamColor;

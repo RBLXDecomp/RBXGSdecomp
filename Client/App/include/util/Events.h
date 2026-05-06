@@ -39,13 +39,18 @@ namespace RBX
 
 	protected:
 		Notifier(const Notifier&);
+
 		Notifier()
 			: listeners(),
 			  raiseRange(NULL)
 		{
 		}
+
 		Notifier& operator=(const Notifier&);
-		virtual ~Notifier();
+
+		virtual ~Notifier()
+		{
+		}
 
 	public:
 		void addListener(Listener<Class, Event>*) const;
