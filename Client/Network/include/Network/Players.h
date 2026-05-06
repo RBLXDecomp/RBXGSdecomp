@@ -112,7 +112,7 @@ namespace RBX
 			{
 				return maxPlayers;
 			}
-			void setMaxPlayers(int);
+			void setMaxPlayers(int value);
 			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getPlayers()
 			{
 				return players.read();
