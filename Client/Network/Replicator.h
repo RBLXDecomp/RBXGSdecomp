@@ -257,7 +257,7 @@ namespace RBX
 			virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
 			void onDescendentAdded(boost::shared_ptr<Instance>);
 			void onDescendentRemoving(boost::shared_ptr<Instance>);
-			void onPropertyChanged(boost::shared_ptr<Instance>, const Reflection::PropertyDescriptor*);
+			void onPropertyChanged(boost::shared_ptr<Instance> instance, const Reflection::PropertyDescriptor* descriptor);
 			const Instance* getDefault(const Name& className);
 			void deleteDisconnectInstances();
 			void connectPropertyChanged(boost::shared_ptr<Instance> instance);

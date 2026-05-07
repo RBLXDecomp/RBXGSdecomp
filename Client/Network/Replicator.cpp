@@ -555,6 +555,56 @@ namespace RBX
 			}
 		}
 
+		//95.65% match
+		//functionally accurate, *slightly* different instruction ordering
+		bool Replicator::isChildOfPendingDeleteInstance(const Instance* instance) const
+		{
+			for (const Instance* current = instance->getParent(); current != NULL; current = current->getParent())
+			{
+				if (pendingDeleteInstances.find(current) != pendingDeleteInstances.end())
+					return true;
+			}
+
+			return false;
+		}
+
+		void Replicator::onPropertyChanged(boost::shared_ptr<Instance> instance, const Reflection::PropertyDescriptor* descriptor)
+		{
+			Profiling::Mark mark(*profileReplication, false);
+			Profiling::Mark mark2(*profileDataListening, false);
+
+			if (instance.get() != removingInstance)
+			{
+				bool isDeserializeProperty = false;
+
+				if (deserializeProperty)
+				{
+					const DescribedBase* inst = static_cast<DescribedBase*>(instance.get()); // force static cast outside of the RBXASSERT block
+					RBXASSERT(descriptor->isMemberOf(inst));
+
+					if (descriptor == &deserializeProperty->getDescriptor() && inst == deserializeProperty->getInstance())
+						isDeserializeProperty = true;
+				}
+				
+				if (!isDeserializeProperty && (descriptor->canStreamWrite() || descriptor == &Instance::propParent) && !isSerializePending(instance.get()))
+				{
+					const DescribedBase* inst = static_cast<DescribedBase*>(instance.get());
+					RBXASSERT(descriptor->isMemberOf(inst));
+
+					Player* targetPlayer = findTargetPlayer();
+
+					if (targetPlayer && targetPlayer->getCharacter() && instance->isDescendentOf(targetPlayer->getCharacter()))
+					{
+						pendingItems.push_front(boost::shared_ptr<Item>(new ChangePropertyItem(*this, instance, *descriptor)));
+					}
+					else
+					{
+						pendingItems.push_back(boost::shared_ptr<Item>(new ChangePropertyItem(*this, instance, *descriptor)));
+					}
+				}
+			}
+		}
+
 		void Replicator::Item::readItemType(RakNet::BitStream& stream, ItemType& value)
 		{
 			value = ItemTypeEnd;
