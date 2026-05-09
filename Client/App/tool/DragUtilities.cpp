@@ -160,7 +160,7 @@ namespace RBX
 			boost::shared_ptr<PartInstance> part = parts[i].lock();
 			if (PartInstance::nonNullInWorkspace(part))
 			{
-				primitives.append(part->getPrimitive());
+				primitives.push_back(part->getPrimitive());
 
 				if (!world)
 					world = Workspace::getMyWorldFast(part.get());
