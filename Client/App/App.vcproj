@@ -1891,6 +1891,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="tool"
+			>
+			<File
+				RelativePath=".\tool\DragUtilities.cpp"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
