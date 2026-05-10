@@ -10,7 +10,7 @@ namespace RBX
 	class Primitive;
 	class ContactManager;
 
-	class ICharacterSubject : public ICameraSubject
+	class __declspec(novtable) ICharacterSubject : public ICameraSubject
 	{
 	private:
 		Vector3ERA focusERA;
@@ -24,13 +24,12 @@ namespace RBX
 		G3D::Vector3 goalInFocus;
 
 	private:
-		G3D::CoordinateFrame getFocusLookingAtGoal(const G3D::CoordinateFrame&, const G3D::CoordinateFrame&);
+		G3D::CoordinateFrame getFocusLookingAtGoal(const G3D::CoordinateFrame& cameraFocus, const G3D::CoordinateFrame& cameraGoal);
 		bool testOcclusion(const G3D::CoordinateFrame&, const G3D::CoordinateFrame&, float&);
-		G3D::CoordinateFrame goalFromDistance(const G3D::CoordinateFrame&, const G3D::CoordinateFrame&, const float);
-		virtual bool zoom(const float, G3D::CoordinateFrame&, G3D::CoordinateFrame&);
+		G3D::CoordinateFrame goalFromDistance(const G3D::CoordinateFrame& cameraFocus, const G3D::CoordinateFrame& cameraGoal, const float distance);
+		virtual bool zoom(const float in, G3D::CoordinateFrame& cameraGoal, G3D::CoordinateFrame& cameraFocus);
 		virtual void stepGoalAndFocus(G3D::CoordinateFrame&, G3D::CoordinateFrame&, bool);
 	public:
-		//ICharacterSubject(const ICharacterSubject&);
 		ICharacterSubject();
 	public:
 		virtual ContactManager* getContactManager() = 0;
@@ -43,9 +42,5 @@ namespace RBX
 		void onHeartBeat(G3D::CoordinateFrame&, G3D::CoordinateFrame&);
 		void setCursorCenterLocked(bool);
 		bool getCursorCenterLocked() const;
-	public:
-		virtual ~ICharacterSubject();
-	public:
-		//ICharacterSubject& operator=(const ICharacterSubject&);
 	};
 }

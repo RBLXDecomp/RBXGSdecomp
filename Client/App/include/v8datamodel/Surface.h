@@ -1,5 +1,4 @@
 #pragma once
-#include "reflection/property.h"
 #include "v8world/Controller.h"
 #include "v8xml/XmlElement.h"
 #include "util/SurfaceType.h"
@@ -8,6 +7,7 @@
 namespace RBX
 {
 	class PartInstance;
+	class IReferenceBinder;
 
 	class Surface
 	{
@@ -18,19 +18,19 @@ namespace RBX
 	public:
 		void flat();
 	public:
-		Surface(PartInstance*, NormalId);
+		Surface(PartInstance* partInstance, NormalId surfId);
 	public:
 		PartInstance* getPartInstance() const;
 		NormalId getNormalId() const;
 		bool isControllable() const;
 		SurfaceType getSurfaceType() const;
-		void setSurfaceType(SurfaceType);
+		void setSurfaceType(SurfaceType type);
 		Controller::InputType getInput() const;
-		void setSurfaceInput(Controller::InputType);
+		void setSurfaceInput(Controller::InputType value);
 		float getParamA() const;
 		float getParamB() const;
-		void setParamA(float);
-		void setParamB(float);
+		void setParamA(float value);
+		void setParamB(float value);
 		void toggleSurfaceType();
 		void writeValue(XmlElement*) const;
 		void readValue(const XmlElement*, IReferenceBinder&);

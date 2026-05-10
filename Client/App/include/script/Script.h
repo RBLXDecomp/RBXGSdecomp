@@ -74,7 +74,7 @@ namespace RBX
 		virtual ~LocalScript();
 	};
 
-	class IScriptOwner
+	class __declspec(novtable) IScriptOwner
 	{
 		friend class Script;
 
@@ -82,8 +82,5 @@ namespace RBX
 		virtual IScriptOwner* scriptShouldRun(Script* script);
 		virtual void runScript(Script* script, ScriptContext* context);
 		virtual void releaseScript(Script* script);
-
-	public:
-		IScriptOwner();
 	};
 }

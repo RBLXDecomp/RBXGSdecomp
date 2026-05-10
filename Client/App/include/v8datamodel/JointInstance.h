@@ -22,6 +22,7 @@ namespace RBX
 	public:
 		JointInstance(Joint* joint);
 		~JointInstance();
+		Joint::JointType getJointType() const;
     };
 
 	extern const char* sAutoJoint;
@@ -63,7 +64,6 @@ namespace RBX
 	public:
 		Snap(Joint* joint);
 		Snap();
-		virtual ~Snap();
 	};
 
 	extern const char* sWeld;
@@ -72,7 +72,6 @@ namespace RBX
 	public:
 		Weld(Joint* joint);
 		Weld();
-		virtual ~Weld();
 	};
 
 	extern const char* sGlue;
@@ -81,7 +80,6 @@ namespace RBX
 	public:
 		Glue(Joint* joint);
 		Glue();
-		virtual ~Glue();
 	};
 
 	extern const char* sRotate;
@@ -90,7 +88,6 @@ namespace RBX
 	public:
 		Rotate(Joint* joint);
 		Rotate();
-		virtual ~Rotate();
 	};
 
 	extern const char* sRotateP;
@@ -99,7 +96,6 @@ namespace RBX
 	public:
 		RotateP(Joint* joint);
 		RotateP();
-		virtual ~RotateP();
 	};
 
 	extern const char* sRotateV;
@@ -108,7 +104,6 @@ namespace RBX
 	public:
 		RotateV(Joint* joint);
 		RotateV();
-		virtual ~RotateV();
 	};
 
 	extern const char* sMotor;
@@ -131,7 +126,5 @@ namespace RBX
 
 		float getCurrentAngle() const;
 		void setCurrentAngle(float value);
-
-		virtual ~Motor();
 	};
 }
