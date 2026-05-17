@@ -31,7 +31,6 @@ namespace RBX
 			static Reflection::SignalDesc<Client, void(std::string)> event_ConnectionRejected;
 
 		public:
-			//Client(const Client&);
 			Client();
 			virtual ~Client();
 			void connect(std::string, int, int, int);
@@ -44,9 +43,8 @@ namespace RBX
 		protected:
 			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 			virtual void onEvent(const ServiceProvider* source, Closing event);
-		public:
-			//Client& operator=(const Client&);
 
+		public:
 			static bool clientIsPresent(const Instance* context, bool testInDatamodel);
 		};
 	}

@@ -23,7 +23,6 @@ namespace RBX
 	public:
 		Mechanism* nextMechanism(std::list<Mechanism*>& list, const Mechanism* current);
 	public:
-		//SimJobStage(const SimJobStage&);
 		SimJobStage(IStage* upstream, World* world);
 		virtual ~SimJobStage();
 	public:
@@ -36,6 +35,8 @@ namespace RBX
 		void onAssemblyAdded(Assembly* a);
 		void onAssemblyRemoving(Assembly* a);
 		void notifyMovingPrimitives();
-		//SimJobStage& operator=(const SimJobStage&);
+
+		template<typename Class>
+		void reportMechanisms(Class& callback, MechanismTracker& tracker, const Mechanism* ignore);
 	};
 }
