@@ -84,7 +84,10 @@ namespace RBX
 		}
 		void addedBodyForce();
 		void setCanThrottle(bool);
-		ContactManager& getContactManager();
+		ContactManager& getContactManager()
+		{
+			return *contactManager;
+		}
 		ClumpStage* getClumpStage();
 		const CollisionStage* getCollisionStage() const;
 		CollisionStage* getCollisionStage();

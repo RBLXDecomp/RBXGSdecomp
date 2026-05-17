@@ -28,7 +28,10 @@ namespace RBX
 	public:
 		void setCameraIgnoreParts(const std::vector<PartInstance*>&);
 		void setCameraIgnoreParts(PartInstance*);
-		void clearCameraIgnoreParts();
+		void clearCameraIgnoreParts()
+		{
+			cameraIgnoreParts.clear();
+		}
 		void getCameraIgnorePrimitives(std::vector<const Primitive*>&);
 	};
 }

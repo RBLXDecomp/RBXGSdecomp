@@ -4,6 +4,7 @@
 #include <G3D/Vector3.h>
 #include <G3D/Matrix3.h>
 #include "util/UIEvent.h"
+#include "util/Debug.h"
 
 namespace RBX
 {
@@ -23,8 +24,8 @@ namespace RBX
 
 	public:
 		//MegaDragger(const MegaDragger&);
-		MegaDragger(PartInstance*, const std::vector<boost::weak_ptr<PartInstance>>&, RootInstance*);
-		MegaDragger(PartInstance*, const std::vector<PVInstance*>&, RootInstance*);
+		MegaDragger(PartInstance* mousePartPtr, const std::vector<boost::weak_ptr<PartInstance>>& partArray, RootInstance* rootInstance);
+		MegaDragger(PartInstance* mousePartPtr, const std::vector<PVInstance*>& pvInstances, RootInstance* rootInstance);
 		~MegaDragger();
 	public:
 		void startDragging();
@@ -32,12 +33,16 @@ namespace RBX
 		void finishDragging();
 		bool mousePartAlive();
 		bool anyDragPartAlive();
-		boost::weak_ptr<PartInstance> getMousePart();
+		boost::weak_ptr<PartInstance> getMousePart()
+		{
+			RBXASSERT(!mousePart.expired());
+			return mousePart;
+		}
 		void alignAndCleanParts();
 		G3D::Vector3 hitObjectOrPlane(const UIEvent&);
-		G3D::Vector3 safeMoveYDrop(const G3D::Vector3&);
+		G3D::Vector3 safeMoveYDrop(const G3D::Vector3& tryDrag);
 		G3D::Vector3 safeMoveAlongLine(const G3D::Vector3&);
-		G3D::Vector3 safeMoveNoDrop(const G3D::Vector3&);
-		void safeRotate(const G3D::Matrix3&);
+		G3D::Vector3 safeMoveNoDrop(const G3D::Vector3& tryDrag);
+		void safeRotate(const G3D::Matrix3& rotMatrix);
 	};
 }

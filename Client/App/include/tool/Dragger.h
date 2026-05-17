@@ -25,7 +25,11 @@ namespace RBX
 		static void searchUpGross(const G3D::Array<Primitive*>&, G3D::Vector3&, ContactManager&);
 		static void searchDownGross(const G3D::Array<Primitive*>&, G3D::Vector3&, ContactManager&);
 	public:
-		static const G3D::Vector3& dragSnap();
+		static const G3D::Vector3& dragSnap()
+		{
+			static G3D::Vector3 v(1, 0.1, 1); 
+			return v;
+		}
 		static G3D::Vector3 toGrid(const G3D::Vector3&);
 		static G3D::Vector3 safeMoveNoDrop(const G3D::Array<Primitive*>&, const G3D::Vector3&, ContactManager&);
 		static G3D::Vector3 safeMoveYDrop(const G3D::Array<Primitive*>&, const G3D::Vector3&, ContactManager&);
