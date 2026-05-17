@@ -115,7 +115,10 @@ namespace RBX
 		void insertContent(ContentId, std::vector<boost::shared_ptr<Instance>>&, InsertMode, PromptMode);
 		void makeJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>>);
 		void breakJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>>);
-		void raiseDrawChanged() const;
+		void raiseDrawChanged() const
+		{
+			Notifier<Workspace, DrawChanged>::raise(DrawChanged());
+		}
 	public:
 		//Workspace& operator=(Workspace&);
 

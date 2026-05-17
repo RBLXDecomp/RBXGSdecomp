@@ -30,15 +30,13 @@ namespace RBX
 		const boost::shared_ptr<Instance> child;
   
 	public:
-		//ChildAdded(const ChildAdded&);
+		ChildAdded(const ChildAdded&);
 		ChildAdded(Instance* child)
 			: child(shared_from(child))
 		{
 		}
 	private:
 		ChildAdded& operator=(const ChildAdded&);
-	public:
-		~ChildAdded();
 	};
 
 	struct ChildRemoved
@@ -47,12 +45,10 @@ namespace RBX
 		const boost::shared_ptr<Instance> child;
   
 	public:
-		//ChildRemoved(const ChildRemoved&);
+		ChildRemoved(const ChildRemoved&);
 		ChildRemoved(Instance*);
 	private:
 		ChildRemoved& operator=(const ChildRemoved&);
-	public:
-		~ChildRemoved();
 	};
 
 	struct DescendentAdded
@@ -64,8 +60,6 @@ namespace RBX
 		const boost::shared_ptr<Instance> instance;
 		const boost::shared_ptr<Instance> parent;
 	  
-	public:
-		//DescendentAdded(const DescendentAdded&);
 	private:
 		DescendentAdded(Instance* instance, Instance* parent)
 			: instance(shared_from(instance)),
@@ -73,8 +67,6 @@ namespace RBX
 		{
 		}
 		DescendentAdded(boost::shared_ptr<Instance>, boost::shared_ptr<Instance>);
-	public:
-		~DescendentAdded() {}
 	};
 
 	struct DescendentRemoving
@@ -84,14 +76,11 @@ namespace RBX
 		const boost::shared_ptr<Instance> parent;
 	  
 	public:
-		//DescendentRemoving(const DescendentRemoving&);
 		DescendentRemoving(const boost::shared_ptr<Instance>& instance, const boost::shared_ptr<Instance>& parent)
 			: instance(instance),
 			  parent(parent)
 		{
 		}
-	public:
-		~DescendentRemoving();
 	};
 
 	struct AncestorChanged

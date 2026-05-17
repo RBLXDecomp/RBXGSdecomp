@@ -34,6 +34,8 @@ namespace RBX
 						 public virtual ICameraSubject,
 						 public virtual ISelectable3d
 	{
+		friend class Surface;
+
 	public:
 		enum FormFactor
 		{
@@ -85,7 +87,6 @@ namespace RBX
 		bool computeSurfacesNeedAdorn() const;
 		void safeMove();
 	public:
-		//PartInstance(const PartInstance&);
 		PartInstance();
 		virtual ~PartInstance();
 	public:
@@ -231,8 +232,6 @@ namespace RBX
 		void onSurfaceChanged(RBX::NormalId surfId);
 		void writeSize(XmlState*);
 		void raiseSurfacePropertyChanged(const RBX::Reflection::PropertyDescriptor&);
-	public:
-		//PartInstance& operator=(const PartInstance&);
 	  
 	public:
 		static float plateHeight();

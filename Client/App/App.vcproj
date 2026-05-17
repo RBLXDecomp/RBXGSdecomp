@@ -1347,6 +1347,10 @@
 			Name="v8datamodel"
 			>
 			<File
+				RelativePath=".\v8datamodel\Backpack.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\BrickColor.cpp"
 				>
 			</File>
@@ -1371,11 +1375,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Hopper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\ICameraOwner.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\ICharacterSubject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\IEquipable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\JointInstance.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\v8datamodel\Lighting.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\LocakBackpack.cpp"
 				>
 			</File>
 			<File
@@ -1395,7 +1419,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Sky.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\SpawnLocation.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Stats.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Surface.cpp"
 				>
 			</File>
 			<File

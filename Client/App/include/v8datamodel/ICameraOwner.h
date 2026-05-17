@@ -26,12 +26,12 @@ namespace RBX
 		virtual void cameraMoved() = 0;
 		virtual Extents computeCameraOwnerExtents() = 0;
 	public:
-		void setCameraIgnoreParts(const std::vector<PartInstance*>&);
-		void setCameraIgnoreParts(PartInstance*);
+		void setCameraIgnoreParts(const std::vector<PartInstance*>& _set);
+		void setCameraIgnoreParts(PartInstance* _set);
 		void clearCameraIgnoreParts()
 		{
 			cameraIgnoreParts.clear();
 		}
-		void getCameraIgnorePrimitives(std::vector<const Primitive*>&);
+		void getCameraIgnorePrimitives(std::vector<const Primitive*>& primitives);
 	};
 }

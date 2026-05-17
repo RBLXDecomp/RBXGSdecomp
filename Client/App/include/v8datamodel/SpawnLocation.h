@@ -1,9 +1,13 @@
 #pragma once
 #include "v8datamodel/PartInstance.h"
+#include "v8tree/Service.h"
 
 namespace RBX
 {
-	class ServiceProvider;
+	namespace Network
+	{
+		class Player;
+	}
 
 	extern const char* sSpawnLocation;
 	class SpawnLocation : public DescribedCreatable<SpawnLocation, PartInstance, &sSpawnLocation>
@@ -22,15 +26,24 @@ namespace RBX
 	private:
 		void onEvent_spawnerTouched(boost::shared_ptr<Instance>);
 	public:
-		//SpawnLocation(const SpawnLocation&);
 		SpawnLocation();
 	public:
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		BrickColor getTeamColor() const;
-		void setTeamColor(BrickColor);
+		void setTeamColor(BrickColor color);
+	};
+
+	extern const char* sSpawnerService;
+	class SpawnerService : public DescribedCreatable<SpawnerService, Instance, &sSpawnerService>, public Service
+	{
+	private:
+		std::list<SpawnLocation*> spawners;
+
 	public:
-		virtual ~SpawnLocation();
-	public:
-		//SpawnLocation& operator=(const SpawnLocation&);
+		SpawnerService();
+		virtual ~SpawnerService();
+		G3D::Vector3 FindSpawnPositionForPlayer(Network::Player* p);
+		void RegisterSpawner(SpawnLocation* spawner);
+		void UnregisterSpawner(SpawnLocation* spawner);
 	};
 }

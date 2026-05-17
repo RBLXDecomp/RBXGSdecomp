@@ -9,20 +9,16 @@ namespace RBX
 	class PartInstance;
 	class Workspace;
 
-	class IEquipable
+	class __declspec(novtable) IEquipable
 	{
 	protected:
 		boost::shared_ptr<Weld> weld;
 		Workspace* workspace;
 
 	protected:
-		void buildWeld(PartInstance*, PartInstance*, const G3D::CoordinateFrame&, const G3D::CoordinateFrame&, const std::string&);
-	public:
-		//IEquipable(const IEquipable&);
+		void buildWeld(PartInstance* humanoidPart, PartInstance* gadgetPart, const G3D::CoordinateFrame& humanoidCoord, const G3D::CoordinateFrame& gadgetCoord, const std::string& name);
 	protected:
 		IEquipable();
 		virtual ~IEquipable();
-	public:
-		//IEquipable& operator=(const IEquipable&);
 	};
 }

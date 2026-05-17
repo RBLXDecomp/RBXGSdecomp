@@ -1,7 +1,7 @@
 #pragma once
+#include <GLG3D/Sky.h>
 #include "v8tree/Instance.h"
 #include "util/TextureId.h"
-#include <GLG3D/Sky.h>
 
 namespace RBX
 {
@@ -28,11 +28,7 @@ namespace RBX
 		static Reflection::BoundProp<bool, 1> prop_CelestialBodiesShown;
 
 	public:
-		//Sky(const Sky&);
 		Sky();
-		virtual ~Sky();
-	public:
-		//Sky& operator=(const Sky&);
 
 	public:
 		static G3D::ReferenceCountedPointer<G3D::Sky> getG3DSky(Sky*);

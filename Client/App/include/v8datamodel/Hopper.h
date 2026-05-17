@@ -1,20 +1,17 @@
 #pragma once
-#include "v8datamodel/LocalBackpack.h"
 #include "v8tree/Service.h"
+#include "gui/Widget.h"
+#include "gui/GuiDraw.h"
 
 namespace RBX
 {
 	class Hopper : public RelativePanel
 	{
 	protected:
-		virtual bool askSetParent(const Instance*) const;
-		virtual bool askAddChild(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const;
+		virtual bool askAddChild(const Instance* instance) const;
 	public:
-		//Hopper(const Hopper&);
 		Hopper();
-		virtual ~Hopper();
-	public:
-		//Hopper& operator=(const Hopper&);
 	};
 
 	extern const char* sStarterPackService;
@@ -22,14 +19,62 @@ namespace RBX
 							   public Service
 	{
 	public:
-		//StarterPackService(const StarterPackService&);
 		StarterPackService();
-	public:
+		virtual void render2d(Adorn* adorn);
+	};
+}
+
+namespace RBX
+{
+	extern const char* sBackpackItem;
+	class BackpackItem : public DescribedNonCreatable<BackpackItem, Widget, &sBackpackItem>
+	{
+	private:
+		GuiDrawImage guiImageDraw;
+		TextureId textureId;
+	  
+	private:
+		bool inBackpack();
+		virtual bool askSetParent(const Instance* instance) const;
+		virtual bool askAddChild(const Instance* instance) const;
+	protected:
+		virtual G3D::Vector2 getSize() const;
 		virtual void render2d(Adorn*);
+		/*
+			TODO:
+
+			isEnabled is defined in the header, however defining it here causes problems,
+			as doing so would require including Backpack.h in this header.
+
+			This is not easily possible without doing some very hacky workarounds,
+			as Hopper needs to be defined before Backpack is, and
+			Backpack needs to be defined before BackpackItem is.
+		*/
+		virtual bool isEnabled();
+		int getBinId() const;
 	public:
-		virtual ~StarterPackService();
-	public:
-		//StarterPackService& operator=(const StarterPackService&);
+		void setTextureId(const TextureId& value);
+		const TextureId getTextureId() const;
+
+		virtual bool drawEnabled() const
+		{
+			return true;
+		}
+
+		virtual bool drawSelected() const
+		{
+			return false;
+		}
+
+		virtual void onLocalClicked()
+		{
+			return;
+		}
+
+		virtual void onLocalOtherClicked()
+		{
+			return;
+		}
 	};
 
 	extern const char* sHopperBin;
@@ -56,20 +101,22 @@ namespace RBX
 		void onSelectScript();
 		void onSelectCommand();
 		int getCursor();
-		virtual bool drawSelected() const;
+		virtual bool drawSelected() const
+		{
+			return active;
+		}
 	public:
-		//HopperBin(const HopperBin&);
 		HopperBin();
 	public:
-		BinType getBinType() const;
-		void setBinType(const BinType);
+		BinType getBinType() const
+		{
+			return binType;
+		}
+
+		void setBinType(const BinType value);
 		virtual void onLocalClicked();
 		virtual void onLocalOtherClicked();
-		void setLegacyCommand(const std::string&);
-		void setLegacyTextureName(const std::string&);
-	public:
-		virtual ~HopperBin();
-	public:
-		//HopperBin& operator=(const HopperBin&);
+		void setLegacyCommand(const std::string& text);
+		void setLegacyTextureName(const std::string& value);
 	};
 }
