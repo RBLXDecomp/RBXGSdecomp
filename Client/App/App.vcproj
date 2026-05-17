@@ -1406,6 +1406,10 @@
 				RelativePath=".\v8datamodel\Teams.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\v8datamodel\UserController.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="v8xml"
