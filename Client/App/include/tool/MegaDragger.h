@@ -4,6 +4,7 @@
 #include <G3D/Vector3.h>
 #include <G3D/Matrix3.h>
 #include "util/UIEvent.h"
+#include "util/Debug.h"
 
 namespace RBX
 {
@@ -32,7 +33,11 @@ namespace RBX
 		void finishDragging();
 		bool mousePartAlive();
 		bool anyDragPartAlive();
-		boost::weak_ptr<PartInstance> getMousePart();
+		boost::weak_ptr<PartInstance> getMousePart()
+		{
+			RBXASSERT(!mousePart.expired());
+			return mousePart;
+		}
 		void alignAndCleanParts();
 		G3D::Vector3 hitObjectOrPlane(const UIEvent&);
 		G3D::Vector3 safeMoveYDrop(const G3D::Vector3& tryDrag);

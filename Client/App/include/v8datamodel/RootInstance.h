@@ -65,7 +65,10 @@ namespace RBX
 		void setInsertPoint(const G3D::Vector3& topCenter);
 		void moveToPoint(PVInstance* pv, G3D::Vector3 point);
 		ControllerTypeArray getControllersUsed() const;
-		World* getWorld();
+		World* getWorld()
+		{
+			return world.get();
+		}
 		const G3D::Rect2D& getViewPort();
 	public:
 		//RootInstance& operator=(RootInstance&);

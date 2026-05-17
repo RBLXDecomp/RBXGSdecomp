@@ -132,10 +132,4 @@ namespace RBX
 	{
 		return PartInstance::nonNullInWorkspace(mousePart.lock());
 	}
-
-	boost::weak_ptr<PartInstance> MegaDragger::getMousePart()
-	{
-		RBXASSERT(mousePart.use_count());
-		return mousePart;
-	}
 }
