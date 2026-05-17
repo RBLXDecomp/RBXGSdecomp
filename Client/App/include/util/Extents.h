@@ -28,7 +28,13 @@ namespace RBX
 		G3D::Vector3 size() const { return this->high - this->low; }
 		G3D::Vector3 center() const { return (this->high + this->low) * 0.5f; }
 		G3D::Vector3 bottomCenter() const;
-		G3D::Vector3 topCenter() const;
+		G3D::Vector3 topCenter() const
+		{
+			G3D::Vector3 v = (this->low + this->high) * 0.5f;
+			v.y = high.y;
+
+			return v;
+		}
 		float longestSide() const;
 		float volume() const;
 		float areaXZ() const;
