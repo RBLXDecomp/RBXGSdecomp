@@ -338,6 +338,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\Evaluator.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\Events.h"
 					>
 				</File>
@@ -799,6 +803,10 @@
 				</File>
 				<File
 					RelativePath=".\include\v8datamodel\Camera.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\DataModel.h"
 					>
 				</File>
 				<File

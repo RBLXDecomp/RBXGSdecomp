@@ -79,7 +79,7 @@ namespace RBX
 		void setSelection(boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>);
 		void setSelection(Instance*);
 		void clearSelection();
-		boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>> getSelection2();
+		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getSelection2();
 		void addToSelection(const boost::shared_ptr<Instance>&);
 		void addToSelection(Instance*);
 		void toggleSelection(Instance*);
