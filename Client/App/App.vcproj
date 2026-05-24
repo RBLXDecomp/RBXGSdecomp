@@ -786,6 +786,10 @@
 				Name="v8datamodel"
 				>
 				<File
+					RelativePath=".\include\v8datamodel\Accoutrement.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Backpack.h"
 					>
 				</File>
@@ -798,11 +802,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\DebrisService.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\DebugSettings.h"
 					>
 				</File>
 				<File
 					RelativePath=".\include\v8datamodel\Decal.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Explosion.h"
 					>
 				</File>
 				<File
@@ -814,7 +826,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Flag.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\FlagStand.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\GameSettings.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\GlobalSettings.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Gyro.h"
 					>
 				</File>
 				<File
@@ -842,6 +870,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\JointsService.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Lighting.h"
 					>
 				</File>
@@ -850,7 +882,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Message.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\ModelInstance.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Mouse.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\MouseCommand.h"
 					>
 				</File>
 				<File
@@ -863,6 +907,22 @@
 				</File>
 				<File
 					RelativePath=".\include\v8datamodel\RootInstance.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\SafeChat.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\ScriptMouseCommand.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Seat.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Selection.h"
 					>
 				</File>
 				<File
@@ -898,11 +958,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\TimeState.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Tool.h"
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\ToolMouseCommand.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\UserController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Value.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\v8datamodel\Visit.h"
 					>
 				</File>
 				<File

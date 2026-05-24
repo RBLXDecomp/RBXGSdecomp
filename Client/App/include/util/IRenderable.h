@@ -2,7 +2,6 @@
 #include "RbxGraphics/Adorn.h"
 #include "AppDraw/SelectState.h"
 #include "util/IndexArray.h"
-#include "AppDraw/SelectState.h"
 
 namespace RBX 
 {

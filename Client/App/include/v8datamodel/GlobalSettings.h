@@ -19,17 +19,11 @@ namespace RBX
 			{
 				return fastDynamicCast<const GlobalSettings::Item>(instance) != NULL;
 			}
-		public:
-			//Item(const Item&);
-			Item();
-			~Item();
-			//Item& operator=(const Item&);
 		};
 
 	public:
 		static boost::recursive_mutex mutex;
 
-		//GlobalSettings(const GlobalSettings&);
 		GlobalSettings()
 		{
 			setName("Global Settings");

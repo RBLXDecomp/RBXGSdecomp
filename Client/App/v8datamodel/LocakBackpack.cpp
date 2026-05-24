@@ -33,8 +33,7 @@ namespace RBX
 	{
 		Instance* child = event.child.get();
 
-		Network::Player* player = fastDynamicCast<Network::Player>(child);
-		if (player)
+		if (Network::Player* player = fastDynamicCast<Network::Player>(child))
 		{
 			if (player == Network::Players::findLocalPlayer(this))
 			{
@@ -43,16 +42,13 @@ namespace RBX
 		}
 		else
 		{
-			Backpack* backpack = fastDynamicCast<Backpack>(child);
-			if (backpack)
+			if (Backpack* backpack = fastDynamicCast<Backpack>(child))
 			{
 				onLocalBackpackAdded(backpack);
 			}
-			else
+			else if (BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(child))
 			{
-				BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(child);
-				if (backpackItem)
-					insertBackpackItem(backpackItem);
+				insertBackpackItem(backpackItem);
 			}
 		}
 	}
@@ -61,8 +57,7 @@ namespace RBX
 	{
 		Instance* child = event.child.get();
 
-		Network::Player* player = fastDynamicCast<Network::Player>(child);
-		if (player)
+		if (Network::Player* player = fastDynamicCast<Network::Player>(child))
 		{
 			if (player == localPlayer.get())
 			{
@@ -71,17 +66,14 @@ namespace RBX
 		}
 		else
 		{
-			Backpack* backpack = fastDynamicCast<Backpack>(child);
-			if (backpack)
+			if (Backpack* backpack = fastDynamicCast<Backpack>(child))
 			{
 				RBXASSERT(localBackpack);
 				clearLocalBackpack();
 			}
-			else
+			else if (BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(child))
 			{
-				BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(child);
-				if (backpackItem)
-					removeBackpackItem(backpackItem);
+				removeBackpackItem(backpackItem);
 			}
 		}
 	}

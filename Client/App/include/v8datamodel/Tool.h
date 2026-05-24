@@ -1,5 +1,5 @@
 #pragma once
-#include "v8datamodel/LocalBackpack.h"
+#include "v8datamodel/Hopper.h"
 #include "v8datamodel/IEquipable.h"
 #include "util/IRenderable.h"
 #include "util/ILocation.h"

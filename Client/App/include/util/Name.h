@@ -90,10 +90,16 @@ namespace RBX
 	{
 	public:
 		virtual const Name& getName() const = 0;
+	};
+
+	template<typename DerivedClass, const char** ClassName>
+	class Named
+	{
 	public:
-		//INamed(const INamed&);
-		INamed();
+		Named();
+		virtual const Name& getName() const;
+
 	public:
-		//INamed& operator=(const INamed&);
+		static const Name& name();
 	};
 }
