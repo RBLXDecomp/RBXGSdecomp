@@ -12,15 +12,30 @@ namespace RBX
 		std::string text;
 
 	protected:
-		void renderFullScreen(Adorn*);
-		void renderPersonalMsg(Adorn*);
+		void renderFullScreen(Adorn* adorn);
+		void renderPersonalMsg(Adorn* adorn);
 	public:
 		Message();
-		virtual bool shouldRender2d() const;
-		virtual void render2d(Adorn*);
-		virtual bool askSetParent(const Instance*) const;
-		const std::string& getText() const;
-		void setText(const std::string&);
+
+		virtual bool shouldRender2d() const
+		{
+			return true;
+
+		}
+
+		virtual void render2d(Adorn* adorn);
+
+		virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
+
+		const std::string& getText() const
+		{
+			return text;
+		}
+
+		void setText(const std::string& value);
 	};
 
 	extern const char* sHint;
@@ -28,6 +43,6 @@ namespace RBX
 	class Hint : public DescribedCreatable<Hint, Message, &sHint>
 	{
 	private:
-		virtual void render2d(Adorn*);
+		virtual void render2d(Adorn* adorn);
 	};
 }

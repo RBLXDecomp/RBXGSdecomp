@@ -1447,6 +1447,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\GameSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\GlobalSettings.cpp"
 				>
 			</File>
@@ -1476,6 +1480,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\LocakBackpack.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Message.cpp"
 				>
 			</File>
 			<File
