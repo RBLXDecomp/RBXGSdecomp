@@ -86,7 +86,10 @@ namespace RBX
 			return world.get();
 		}
 		IDataState& getDataState() const;
-		MouseCommand* getCurrentMouseCommand();
+		MouseCommand* getCurrentMouseCommand()
+		{
+			return currentCommand.get();
+		}
 		void cancelMouseCommand();
 		void setMouseCommand(MouseCommand*);
 		void setDefaultMouseCommand();

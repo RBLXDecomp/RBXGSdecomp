@@ -32,7 +32,7 @@ namespace RBX
 			void doLock(const DataModel*);
 		public:
 			Lock(const DataModel*);
-			Lock(boost::shared_ptr<const DataModel*>);
+			Lock(boost::shared_ptr<const DataModel>);
 			~Lock();
 		};
 

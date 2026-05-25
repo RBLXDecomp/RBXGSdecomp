@@ -15,12 +15,21 @@ namespace RBX
 	public:
 		Visit();
 		virtual ~Visit();
-		void setPing(std::string, int);
-		void setUploadUrl(std::string);
-		std::string getUploadUrl();
+		void setPing(std::string url, int interval);
+
+		void setUploadUrl(std::string value)
+		{
+			uploadUrl = value;
+		}
+
+		std::string getUploadUrl()
+		{
+			return uploadUrl;
+		}
+
 		virtual XmlElement* write();
 
 	public:
-		static worker_thread::work_result ping(std::string, int);
+		static worker_thread::work_result ping(std::string url, int interval);
 	};
 }

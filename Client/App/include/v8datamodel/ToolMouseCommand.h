@@ -13,13 +13,13 @@ namespace RBX
 		boost::shared_ptr<Tool> tool;
 
 	private:
-		void updateTargetPoint(const UIEvent&);
+		void updateTargetPoint(const UIEvent& uiEvent);
 	public:
-		ToolMouseCommand(Workspace*, Tool*);
+		ToolMouseCommand(Workspace* workspace, Tool* tool);
 		virtual ~ToolMouseCommand();
-		virtual MouseCommand* onMouseDown(const UIEvent&);
-		virtual void onMouseHover(const UIEvent&);
-		virtual void onMouseIdle(const UIEvent&);
-		virtual MouseCommand* onMouseUp(const UIEvent&);
+		virtual MouseCommand* onMouseDown(const UIEvent& uiEvent);
+		virtual void onMouseHover(const UIEvent& uiEvent);
+		virtual void onMouseIdle(const UIEvent& uiEvent);
+		virtual MouseCommand* onMouseUp(const UIEvent& uiEvent);
 	};
 }

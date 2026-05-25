@@ -93,10 +93,22 @@ namespace RBX
 	};
 
 	template<typename DerivedClass, const char** ClassName>
-	class Named
+	class Named : public DerivedClass
 	{
 	public:
-		Named();
+		typedef Named<DerivedClass, ClassName> Base;
+
+		Named()
+			: DerivedClass()
+		{
+		}
+
+		template<typename Arg0Type>
+		Named(Arg0Type type)
+			: DerivedClass(type)
+		{
+		}
+
 		virtual const Name& getName() const;
 
 	public:

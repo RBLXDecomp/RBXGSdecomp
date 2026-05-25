@@ -36,8 +36,8 @@ namespace RBX
 			return *spatialHash;
 		}
 
-		Primitive* getHit(const G3D::Ray& worldRay, const std::vector<Primitive const*>* ignorePrim, const HitTestFilter* filter, G3D::Vector3& hitPoint, bool& inside) const;
-		Primitive* getHit(const G3D::Ray& worldRay, const G3D::Array<Primitive const*>* ignorePrim, const HitTestFilter* filter, G3D::Vector3& hitPoint, bool& inside) const;
+		Primitive* getHit(const G3D::Ray& worldRay, const std::vector<Primitive const*>* ignorePrim, const HitTestFilter* filter, G3D::Vector3& hitPoint, bool& inside = ignoreBool) const;
+		Primitive* getHit(const G3D::Ray& worldRay, const G3D::Array<Primitive const*>* ignorePrim, const HitTestFilter* filter, G3D::Vector3& hitPoint, bool& inside = ignoreBool) const;
 		void getPrimitivesTouchingExtents(const Extents& extents, const Primitive* ignore, G3D::Array<Primitive*>& found);
 		bool intersectingOthers(Primitive* check, const std::set<Primitive*>& checkSet, float overlapIgnored);
 		bool intersectingOthers(const G3D::Array<Primitive*>& check, float overlapIgnored);

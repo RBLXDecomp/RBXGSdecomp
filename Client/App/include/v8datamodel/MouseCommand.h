@@ -26,45 +26,96 @@ namespace RBX
 		static G3D::Vector3 ignoreVector3;
 
 	public:
-		G3D::Ray getUnitMouseRay(const UIEvent&) const;
-		G3D::Ray getSearchRay(const UIEvent&) const;
-		PartInstance* getPart(const UIEvent&, const HitTestFilter*, G3D::Vector3&);
+		G3D::Ray getUnitMouseRay(const UIEvent& uiEvent) const;
+		G3D::Ray getSearchRay(const UIEvent& uiEvent) const;
+		PartInstance* getPart(const UIEvent& uiEvent, const HitTestFilter* filter, G3D::Vector3& hitWorld = ignoreVector3);
 		PartInstance* getUnlockedPart(const UIEvent&, G3D::Vector3&);
 		PartInstance* getPartByLocalCharacter(const UIEvent&, G3D::Vector3&);
 		PartInstance* getUnlockedPartByLocalCharacter(const UIEvent&, G3D::Vector3&);
 		Surface* getSurface(const UIEvent&, PartInstance*&, int&);
 		Surface* getSurface(const UIEvent&);
-		virtual MouseCommand* onMouseDown(const UIEvent&);
+
+		virtual MouseCommand* onMouseDown(const UIEvent& uiEvent)
+		{
+			return this;
+		}
 	protected:
-		virtual void onMouseIdle(const UIEvent&);
-		virtual void onMouseHover(const UIEvent&);
-		virtual MouseCommand* onKeyDown(const UIEvent&);
-		virtual MouseCommand* onPeekKeyDown(const UIEvent&);
-		virtual void onMouseMove(const UIEvent&);
-		virtual void onMouseDelta(const UIEvent&);
-		virtual MouseCommand* onMouseUp(const UIEvent&);
+		virtual void onMouseIdle(const UIEvent& uiEvent)
+		{
+			return;
+		}
+
+		virtual void onMouseHover(const UIEvent& uiEvent)
+		{
+			return;
+		}
+
+		virtual MouseCommand* onKeyDown(const UIEvent& uiEvent)
+		{
+			return this;
+		}
+
+		virtual MouseCommand* onPeekKeyDown(const UIEvent& uiEvent)
+		{
+			return NULL;
+		}
+
+		virtual void onMouseMove(const UIEvent& uiEvent)
+		{
+			return;
+		}
+
+		virtual void onMouseDelta(const UIEvent& uiEvent)
+		{
+			return;
+		}
+
+		virtual MouseCommand* onMouseUp(const UIEvent& uiEvent)
+		{
+			releaseCapture();
+			return NULL;
+		}
+
 		virtual void capture();
-		virtual void releaseCapture();
-		virtual void cancel();
+
+		virtual void releaseCapture()
+		{
+			capturedMouse = false;
+		}
+
+		virtual void cancel()
+		{
+			if (capturedMouse)
+				releaseCapture();
+		}
+
 		void snapshotSelectionPosition(XmlState*);
-		bool characterCanReach(const G3D::Vector3&) const;
-		MouseCommand(Workspace*);
+		bool characterCanReach(const G3D::Vector3& hitPoint) const;
+		MouseCommand(Workspace* workspace);
 	public:
 		virtual ~MouseCommand();
 		bool captured() const;
-		virtual MouseCommand* isSticky() const;
+
+		virtual MouseCommand* isSticky() const
+		{
+			return false;
+		}
+
 		virtual TextureId getCursorId() const;
 	private:
-		virtual const std::string getCursorName() const;
+		virtual const std::string getCursorName() const
+		{
+			return "ArrowCursor";
+		}
 
 	private:
 		static const float maxSearch();
 	public:
-		static G3D::Ray getUnitMouseRay(UIEvent&, ICameraOwner*);
-		static G3D::Ray getSearchRay(const G3D::Ray&);
-		static G3D::Ray getSearchRay(const UIEvent&, ICameraOwner*);
-		static Instance* getTopSelectable3d(PartInstance*);
-		static PartInstance* getMousePart(const G3D::Ray&, const ContactManager&, const std::vector<const Primitive*>&, const HitTestFilter*, G3D::Vector3&, float);
-		static PartInstance* getMousePart(const G3D::Ray&, const ContactManager&, const Primitive*, const HitTestFilter*, G3D::Vector3&, float);
+		static G3D::Ray getUnitMouseRay(const UIEvent& uiEvent, ICameraOwner* _workspace);
+		static inline G3D::Ray getSearchRay(const G3D::Ray& unitRay);
+		static G3D::Ray getSearchRay(const UIEvent& uiEvent, ICameraOwner* _workspace);
+		static Instance* getTopSelectable3d(PartInstance* part);
+		static PartInstance* getMousePart(const G3D::Ray& unitRay, const ContactManager& contactManager, const std::vector<const Primitive*>& ignore, const HitTestFilter* filter, G3D::Vector3& hitPoint, float maxSearchGrid);
+		static PartInstance* getMousePart(const G3D::Ray& unitRay, const ContactManager& contactManager, const Primitive* ignore, const HitTestFilter* filter, G3D::Vector3& hitPoint, float maxSearchGrid);
 	};
 }

@@ -11,15 +11,20 @@ namespace RBX
 		boost::shared_ptr<Mouse> mouse;
 
 	public:
-		ScriptMouseCommand(Workspace*);
+		ScriptMouseCommand(Workspace* workspace);
 		virtual ~ScriptMouseCommand();
-		boost::shared_ptr<Mouse> getMouse();
+
+		boost::shared_ptr<Mouse> getMouse()
+		{
+			return mouse;
+		}
+
 		virtual TextureId getCursorId() const;
-		virtual MouseCommand* onMouseDown(const UIEvent&);
-		virtual void onMouseHover(const UIEvent&);
-		virtual void onMouseIdle(const UIEvent&);
-		virtual MouseCommand* onMouseUp(const UIEvent&);
-		virtual MouseCommand* onPeekKeyDown(const UIEvent&);
+		virtual MouseCommand* onMouseDown(const UIEvent& uiEvent);
+		virtual void onMouseHover(const UIEvent& uiEvent);
+		virtual void onMouseIdle(const UIEvent& uiEvent);
+		virtual MouseCommand* onMouseUp(const UIEvent& uiEvent);
+		virtual MouseCommand* onPeekKeyDown(const UIEvent& uiEvent);
 		virtual const Name& getName() const;
 	};
 }

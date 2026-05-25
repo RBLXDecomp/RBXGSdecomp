@@ -1499,6 +1499,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Mouse.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\MouseCommand.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\PartInstance.cpp"
 				>
 			</File>
@@ -1508,6 +1516,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\RootInstance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\ScriptMouseCommand.cpp"
 				>
 			</File>
 			<File
@@ -1532,6 +1544,18 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\Teams.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\TimeState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\ToolMouseCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Visit.cpp"
 				>
 			</File>
 		</Filter>
