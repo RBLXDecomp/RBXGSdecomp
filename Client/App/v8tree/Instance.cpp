@@ -86,14 +86,6 @@ namespace RBX
 		return askAddChild(instance) || askSetParent(instance);
 	}
 
-	size_t Instance::numChildren() const
-	{
-		if (&(*children))
-			return children->size();
-		else
-			return 0;
-	}
-
 	Instance* Instance::getRootAncestor()
 	{
 		Instance* ancestor = this;

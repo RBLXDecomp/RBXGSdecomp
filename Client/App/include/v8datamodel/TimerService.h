@@ -1,4 +1,5 @@
 #include "util/RunStateOwner.h"
+#include <G3D/System.h>
 
 namespace RBX
 {

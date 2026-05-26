@@ -212,7 +212,13 @@ namespace RBX
 		bool isAncestorOf2(boost::shared_ptr<Instance> descendent);
 		bool isDescendentOf2(boost::shared_ptr<Instance>);
 		bool isDescendentOf(const Instance* ancestor) const;
-		size_t numChildren() const;
+		size_t numChildren() const
+		{
+			if (&(*children))
+				return children->size();
+			else
+				return 0;
+		}
 		int findChildIndex(const Instance*) const;
 		const Instance* getChild(size_t i) const
 		{

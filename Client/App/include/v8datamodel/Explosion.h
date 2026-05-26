@@ -28,18 +28,31 @@ namespace RBX
 		float blastMaxObjectRadius() const;
 		float killMaxObjectRadius() const;
 		void doKill();
-		void doBlast(const G3D::Array<Primitive*>&);
-		void signalBlast(const G3D::Array<Primitive*>&);
+		void doBlast(const G3D::Array<Primitive*>& primitives);
+		void signalBlast(const G3D::Array<Primitive*>& primitives);
 		virtual void onEvent(const RunService*, Stepped);
-		virtual bool askSetParent(const Instance*) const;
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-		virtual bool shouldRender3dAdorn() const;
-		virtual void render3dAdorn(Adorn*);
+		virtual bool askSetParent(const Instance* instance) const;
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
+
+		virtual bool shouldRender3dAdorn() const
+		{
+			return true;
+		}
+
+		virtual void render3dAdorn(Adorn* adorn);
 	public:
 		Explosion();
-		virtual ~Explosion();
+
+		virtual ~Explosion()
+		{
+		}
+
 		void setVisualOnly();
-		void setBlastRadius(float);
-		float getBlastRadius() const;
+		void setBlastRadius(float _blastRadius);
+
+		float getBlastRadius() const
+		{
+			return blastRadius;
+		}
 	};
 }

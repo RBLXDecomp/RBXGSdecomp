@@ -22,6 +22,11 @@ namespace RBX
 	public:
 		bool operator==(const Extents&) const;
 		bool operator!=(const Extents&) const;
+		Extents& operator=(const Extents& other)
+		{
+			this->low = other.low;
+			this->high = other.high;
+		}
 		const G3D::Vector3& min() const {return this->low;}
 		const G3D::Vector3& max() const {return this->high;}
 		G3D::Vector3 getCorner(int i) const;

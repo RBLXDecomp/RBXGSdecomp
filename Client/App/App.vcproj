@@ -1443,7 +1443,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\DebrisService.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Decal.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Explosion.cpp"
 				>
 			</File>
 			<File
@@ -1452,6 +1460,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\Feature.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Flag.cpp"
 				>
 			</File>
 			<File

@@ -32,17 +32,21 @@ namespace RBX
 		BrickColor teamColor;
 
 	private:
-		void onEvent_FlagTouched(boost::shared_ptr<Instance>);
+		void onEvent_flagTouched(boost::shared_ptr<Instance>);
 		void doUglyPeriodicCloneHack();
 	protected:
-		virtual bool canUnequip();
-		virtual bool canBePickedUpByPlayer(Network::Player*);
+		virtual bool canUnequip()
+		{
+			return false;
+		}
+
+		virtual bool canBePickedUpByPlayer(Network::Player* p);
 	public:
 		BrickColor getTeamColor() const;
-		void setTeamColor(BrickColor);
+		void setTeamColor(BrickColor color);
 		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
 		Flag();
 		virtual ~Flag();
-		virtual void onChildAdded(Instance*);
+		virtual void onChildAdded(Instance* instance);
 	};
 }

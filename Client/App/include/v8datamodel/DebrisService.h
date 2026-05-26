@@ -18,11 +18,14 @@ namespace RBX
 
 	public:
 		DebrisService();
-		void addItem(boost::shared_ptr<Instance>, double);
-		void setMaxItems(int);
-		int getMaxItems() const;
+		void addItem(boost::shared_ptr<Instance> item, double lifetime);
+		void setMaxItems(int value);
+		int getMaxItems() const
+		{
+			return maxItems;
+		}
 	protected:
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 	private:
 		void cleanup();
 	};
