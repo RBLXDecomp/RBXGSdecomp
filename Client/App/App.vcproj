@@ -1467,6 +1467,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\FlagStand.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\GameSettings.cpp"
 				>
 			</File>

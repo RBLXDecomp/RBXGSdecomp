@@ -20,11 +20,11 @@ namespace RBX
 	public:
 		FlagStand();
 		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-		void AffixFlag(Flag*);
+		void AffixFlag(Flag* flag);
 		bool HasFlag();
 		Flag* GetFlag();
 		BrickColor getTeamColor() const;
-		void setTeamColor(BrickColor);
+		void setTeamColor(BrickColor color);
 	};
 
 	extern const char* sFlagStandService;
@@ -38,7 +38,7 @@ namespace RBX
 		FlagStandService();
 		virtual ~FlagStandService();
 		FlagStand* FindClosestEmptyStandForFlag(Flag*);
-		FlagStand* FindStandWithFlag(Flag*);
+		FlagStand* FindStandWithFlag(Flag* f);
 		void RegisterFlagStand(FlagStand*);
 		void UnregisterFlagStand(FlagStand*);
 	};
