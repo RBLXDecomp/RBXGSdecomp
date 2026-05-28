@@ -14,7 +14,11 @@ namespace RBX
 			: url(url)
 		{
 		}
-		Http(const char*);
+
+		Http(const char* url)
+			: url(url)
+		{
+		}
 	public:
 		void post(std::istream&, bool, std::string&);
 		void get(std::string&);

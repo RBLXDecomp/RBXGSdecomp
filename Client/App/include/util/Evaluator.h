@@ -2,7 +2,7 @@
 
 namespace RBX
 {
-	class Evaluator
+	class __declspec(novtable) Evaluator
 	{
 	public:
 		virtual std::string evaluate(const std::string&) const = 0;

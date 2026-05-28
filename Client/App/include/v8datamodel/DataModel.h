@@ -29,10 +29,10 @@ namespace RBX
 			boost::recursive_mutex::scoped_lock* lock;
 
 		private:
-			void doLock(const DataModel*);
+			void doLock(const DataModel* dataModel);
 		public:
-			Lock(const DataModel*);
-			Lock(boost::shared_ptr<const DataModel>);
+			Lock(const DataModel* dataModel);
+			Lock(boost::shared_ptr<const DataModel> dataModel);
 			~Lock();
 		};
 
@@ -63,8 +63,8 @@ namespace RBX
 		virtual ~DataModel();
 		void loadContent(ContentId);
 		void save(ContentId);
-		std::string httpGet(std::string, bool);
-		std::string httpPost(std::string, std::string, bool);
+		std::string httpGet(std::string url, bool synchronous);
+		std::string httpPost(std::string url, std::string data, bool synchronous);
 		void close();
 		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> get(ContentId);
 		void raiseClose();
@@ -73,33 +73,72 @@ namespace RBX
 		void processGui(const UIEvent&);
 		GuiRoot* getGuiRoot() const;
 		GuiRoot* getGuiHooks() const;
-		virtual void setDirty(bool);
-		virtual bool isDirty() const;
+
+		virtual void setDirty(bool dirty)
+		{
+			this->dirty = dirty;
+		}
+
+		virtual bool isDirty() const
+		{
+			return dirty;
+		}
+
 		virtual bool isStackTooBig() const;
 		Workspace* getWorkspace() const;
 		float step(float);
 		float getSimTime() const;
 		TimeState* getTimeState();
-		virtual std::string evalute(const std::string&) const;
+		virtual std::string evaluate(const std::string&) const;
 		void renderPass2d(Adorn*, IMetric*);
 		void renderPass3dAdorn(Adorn*);
-		void setUiMessage(std::string);
-		void clearUiMessage();
-		void setUiMessageBrickCount();
+
+		void setUiMessage(std::string message)
+		{
+			uiMessage = message;
+		}
+
+		void clearUiMessage()
+		{
+			uiMessage = "";
+		}
+
+		void setUiMessageBrickCount()
+		{
+			uiMessage = "[[[progress]]]";
+		}
+
 		bool canDelaySwapBuffer() const;
 	protected:
-		virtual bool askAddChild(const Instance*) const;
-		virtual void onChildAdded(Instance*);
-		virtual void onChildChanged(Instance*, const PropertyChanged&);
-		virtual void onDescendentAdded(Instance*);
-		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>&);
-		virtual void onEvent(const RunService*, RunTransition);
+		virtual bool askAddChild(const Instance* instance) const;
+		virtual void onChildAdded(Instance* child);
+
+		virtual void onChildChanged(Instance* instance, const PropertyChanged& event)
+		{
+			Instance::onChildChanged(instance, event);
+			setDirty(true);
+		}
+
+		virtual void onDescendentAdded(Instance* instance)
+		{
+			ServiceProvider::onDescendentAdded(instance);
+			setDirty(true);
+		}
+
+		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance)
+		{
+			ServiceProvider::onDescendentRemoving(instance);
+			setDirty(true);
+		}
+
+		virtual void onEvent(const RunService* source, RunTransition event);
 
 	public:
 		static boost::shared_ptr<boost::recursive_mutex> getMutex(Instance*);
 		static boost::shared_ptr<DataModel> createDataModel();
 		static void closeDataModel(boost::shared_ptr<DataModel>, bool);
-		static std::string doHttpGet(std::string);
-		static std::string doHttpPost(std::string, std::string);
+	private:
+		static std::string doHttpGet(std::string url);
+		static std::string doHttpPost(std::string url, std::string data);
 	};
 }

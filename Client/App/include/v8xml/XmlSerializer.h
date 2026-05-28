@@ -13,25 +13,16 @@ protected:
 	std::streambuf* buffer;
 	std::stack<XmlElement*> elements;
   
-public:
-	//XmlParser(const XmlParser&);
 protected:
 	XmlParser(std::streambuf* buffer);
 
 public:
 	virtual std::auto_ptr<XmlElement> parse() = 0;
- 
-public:
-	~XmlParser();
-
-public:
-	//XmlParser& operator=(const XmlParser&);
 };
 
 class TextXmlParser : public XmlParser
 {
 public:
-	//TextXmlParser(const TextXmlParser&);
 	TextXmlParser(std::streambuf* buffer)
 		: XmlParser(buffer)
 	{
@@ -49,28 +40,15 @@ private:
 	std::string findNextToken(const std::string&, int&);
 	std::string findText(const std::string&);
 	XmlElement* parseAttributes(const std::string&);
-
-public:
-	~TextXmlParser();
-
-public:
-	//TextXmlParser& operator=(const TextXmlParser&);
 };
 
 class BinaryXmlParser : public XmlParser
 {
 public:
-	//BinaryXmlParser(const BinaryXmlParser&);
 	BinaryXmlParser(std::streambuf*);
 
 public:
 	virtual std::auto_ptr<XmlElement> parse();
-
-public:
-	~BinaryXmlParser();
-
-public:
-	//BinaryXmlParser& operator=(const BinaryXmlParser&);
 };
 
 class XmlWriter : public boost::noncopyable
@@ -78,27 +56,18 @@ class XmlWriter : public boost::noncopyable
 protected:
 	std::map<RBX::InstanceHandle, int> handles;
 	std::ostream& stream;
-  
-public:
-	///XmlWriter(const XmlWriter&);
+
 protected:
 	XmlWriter(std::ostream&);
 
 public:
 	virtual void serialize(const XmlElement*) = 0;
 	int getHandleIndex(RBX::InstanceHandle);
-
-public:
-	~XmlWriter();
-
-public:
-	//XmlWriter& operator=(const XmlWriter&);
 };
 
 class TextXmlWriter : public XmlWriter
 {
 public:
-	//TextXmlWriter(const TextXmlWriter&);
 	TextXmlWriter(std::ostream&);
 
 protected:
@@ -111,12 +80,6 @@ protected:
 	void writeText(const std::string&, bool);
 	void writeText(const char*, bool);
 	virtual void serializeNode(const XmlElement*, int);
-
-public:
-	~TextXmlWriter();
-
-public:
-	  //TextXmlWriter& operator=(const TextXmlWriter&);
   
 public:
 	static void encodedWrite(std::ostream&, const std::string&);
@@ -129,23 +92,15 @@ private:
 	std::set<RBX::ContentId> embeddedContent;
   
 public:
-	//TextXmlWriterWithEmbeddedContent(const TextXmlWriterWithEmbeddedContent&);
 	TextXmlWriterWithEmbeddedContent(std::ostream&);
 
 protected:
 	virtual void serializeNode(const XmlElement*, int);
-
-public:
-	~TextXmlWriterWithEmbeddedContent();
-
-public:
-	//TextXmlWriterWithEmbeddedContent& operator=(const TextXmlWriterWithEmbeddedContent&);
 };
 
 class BinaryXmlWriter : public XmlWriter
 {
 public:
-	//BinaryXmlWriter(const BinaryXmlWriter&);
 	BinaryXmlWriter(std::ostream&);
 
 private:
@@ -164,10 +119,4 @@ public:
 private:
 	void serializeAttribute(const XmlAttribute*);
 	void serializeNameValuePair(const XmlNameValuePair*);
-
-public:
-	~BinaryXmlWriter();
-
-public:
-	//BinaryXmlWriter& operator=(const BinaryXmlWriter&);
 };

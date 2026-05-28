@@ -1443,6 +1443,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\DataModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\DebrisService.cpp"
 				>
 			</File>

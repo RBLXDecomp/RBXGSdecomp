@@ -29,7 +29,7 @@ namespace RBX
 
 		RunTransition(RunState oldState, RunState newState)
 			: oldState(oldState),
-			newState(newState)
+			  newState(newState)
 		{
 		}
 

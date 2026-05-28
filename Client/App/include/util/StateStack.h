@@ -20,8 +20,11 @@ namespace RBX
 		int currentState;
 		std::vector<StateEntry> stack;
 	public:
-		//StateStack(const StateStack&);
-		//StateStack();
+		StateStack()
+			: currentState(-1)
+		{
+		}
+
 		~StateStack();
 
 		void pushState(const Name&, T*, T*);
@@ -36,7 +39,5 @@ namespace RBX
 		virtual bool isStackTooBig() const;
 	private:
 		void clearStackAfter(int);
-
-		//StateStack& operator=(const StateStack&);
 	};
 }

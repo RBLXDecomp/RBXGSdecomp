@@ -11,7 +11,7 @@ namespace RBX
 {
 	class VerbContainer;
 
-	class IDataState : public StateStack<XmlState> // NOTE: may not be intended for this file
+	class __declspec(novtable) IDataState : public StateStack<XmlState> // NOTE: may not be intended for this file
 	{
 	public:
 		virtual void setDirty(bool) = 0;
