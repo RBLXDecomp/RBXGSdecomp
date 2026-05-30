@@ -1,4 +1,5 @@
 #pragma once
+#include "v8datamodel/JointInstance.h"
 #include "v8tree/Instance.h"
 #include "v8tree/Service.h"
 #include "v8world/World.h"
@@ -16,14 +17,27 @@ namespace RBX
 		World* world;
 
 	private:
-		virtual void onDescendentAdded(Instance*);
+		virtual void onDescendentAdded(Instance* instance);
 		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>&);
-		virtual bool askAddChild(const Instance*) const;
-		virtual XmlElement* write();
+
+		virtual bool askAddChild(const Instance* instance) const
+		{
+			return fastDynamicCast<const JointInstance>(instance) != NULL;
+		}
+
+		virtual XmlElement* write()
+		{
+			return NULL;
+		}
+
 		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-		virtual void onEvent(const World*, AutoDestroy);
-		virtual void onEvent(const World*, AutoJoin);
+		virtual void onEvent(const World* source, AutoDestroy event);
+		virtual void onEvent(const World* source, AutoJoin event);
 	public:
-		JointsService();
+		JointsService()
+			: world(NULL)
+		{
+			setName("JointsService");
+		}
 	};
 }

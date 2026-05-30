@@ -27,7 +27,10 @@ namespace RBX
 			return uploadUrl;
 		}
 
-		virtual XmlElement* write();
+		virtual XmlElement* write()
+		{
+			return NULL;
+		}
 
 	public:
 		static worker_thread::work_result ping(std::string url, int interval);

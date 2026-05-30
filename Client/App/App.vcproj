@@ -1503,6 +1503,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\JointsService.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Lighting.cpp"
 				>
 			</File>
