@@ -53,7 +53,7 @@ namespace RBX
 
 	G3D::Ray MouseCommand::getSearchRay(const G3D::Ray& unitRay)
 	{
-		RBXASSERT(G3D::fuzzyEq(unitRay.direction.squaredMagnitude(), 1.0f));
+		RBXASSERT(unitRay.direction.isUnit());
 		return G3D::Ray::fromOriginAndDirection(unitRay.origin, unitRay.direction * 2048.0f);
 	}
 
