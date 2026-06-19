@@ -26,6 +26,8 @@ namespace RBX
 		{
 			this->low = other.low;
 			this->high = other.high;
+
+			return *this;
 		}
 		const G3D::Vector3& min() const {return this->low;}
 		const G3D::Vector3& max() const {return this->high;}
