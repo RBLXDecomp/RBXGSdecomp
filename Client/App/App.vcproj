@@ -798,6 +798,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\CharacterAppearance.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\DebugSettings.h"
 					>
 				</File>
@@ -1359,6 +1363,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\CharacterAppearance.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Decal.cpp"
 				>
 			</File>
@@ -1412,6 +1420,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\Teams.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\UserController.cpp"
 				>
 			</File>
 		</Filter>
