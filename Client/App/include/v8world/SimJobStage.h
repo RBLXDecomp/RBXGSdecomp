@@ -5,6 +5,7 @@
 namespace RBX
 {
 	class Mechanism;
+	class MechanismTracker;
 	class Assembly;
 	class World;
 	class Edge;
