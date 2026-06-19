@@ -806,6 +806,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\CharacterAppearance.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\DataModel.h"
 					>
 				</File>
@@ -1440,6 +1444,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\Camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\CharacterAppearance.cpp"
 				>
 			</File>
 			<File
