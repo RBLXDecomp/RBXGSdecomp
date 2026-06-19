@@ -1587,6 +1587,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\UserController.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Visit.cpp"
 				>
 			</File>
