@@ -838,6 +838,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\Filters.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Flag.h"
 					>
 				</File>
@@ -1472,6 +1476,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\Feature.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Filters.cpp"
 				>
 			</File>
 			<File

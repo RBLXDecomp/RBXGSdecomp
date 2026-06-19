@@ -18,9 +18,22 @@ namespace RBX
 		std::vector<MechanismTracker*> trackers;
 	public:
 		std::list<Mechanism*>::iterator myIt;
-		Mechanism::~Mechanism() { RBXASSERT(this->trackers.size() == 0); }
-		const std::set<Assembly*>& getAssemblies() const {return assemblies;}
-		std::set<Assembly*>& getAssemblies() {return assemblies;}
+
+		Mechanism::~Mechanism() 
+		{ 
+			RBXASSERT(this->trackers.size() == 0); 
+		}
+
+		const std::set<Assembly*>& getAssemblies() const 
+		{
+			return assemblies;
+		}
+
+		std::set<Assembly*>& getAssemblies() 
+		{
+			return assemblies;
+		}
+
 		void notifyMovingPrimitives();
 		void insertAssembly(Assembly* a);
 		void removeAssembly(Assembly* a);
@@ -38,8 +51,16 @@ namespace RBX
 		bool containedBy(Mechanism*);
 		void stopTracking();
 	public:
-		//MechanismTracker();
-		~MechanismTracker() {this->stopTracking();}
+		MechanismTracker()
+			: mechanism(NULL)
+		{
+		}
+
+		~MechanismTracker() 
+		{
+			this->stopTracking();
+		}
+
 		bool tracking();
 		void setMechanism(Mechanism*);
 		Mechanism* getMechanism();

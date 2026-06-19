@@ -25,10 +25,6 @@ namespace RBX
 			const std::string message;
 			const boost::shared_ptr<Player> source;
 			const boost::shared_ptr<Player> destination;
-		  
-		public:
-			~ChatMessage();
-			//ChatMessage(const ChatMessage&);
 		};
 
 		struct AbuseReport
@@ -48,12 +44,6 @@ namespace RBX
 
 		public:
 			void addMessage(const ChatMessage& cm);
-		public:
-			//AbuseReport(const AbuseReport&);
-			AbuseReport();
-			~AbuseReport();
-		public:
-			//AbuseReport& operator=(const AbuseReport&);
 		};
 
 		class AbuseReporter
@@ -64,13 +54,6 @@ namespace RBX
 			public:
 				std::queue<AbuseReport> queue;
 				boost::mutex requestSync;
-			  
-			public:
-				//data(const data&);
-				data();
-				~data();
-			public:
-				//data& operator=(const data&);
 			};
 
 		private:
@@ -78,14 +61,8 @@ namespace RBX
 			boost::scoped_ptr<worker_thread> requestProcessor;
 		  
 		public:
-			//AbuseReporter(const AbuseReporter&);
 			AbuseReporter(std::string abuseUrl);
-		public:
 			void add(AbuseReport& r, const std::list<ChatMessage>& chatHistory);
-		public:
-			~AbuseReporter();
-		public:
-			//AbuseReporter& operator=(const AbuseReporter&);
 
 		private:
 			static worker_thread::work_result processRequests(boost::shared_ptr<data>, std::string);
@@ -117,7 +94,6 @@ namespace RBX
 			virtual void onEvent(const Player*, CharacterAdded);
 			virtual void onChildChanged(Instance*, const PropertyChanged&);
 		public:
-			//Players(const Players&);
 			Players();
 			virtual ~Players();
 		public:
@@ -136,7 +112,7 @@ namespace RBX
 			{
 				return maxPlayers;
 			}
-			void setMaxPlayers(int);
+			void setMaxPlayers(int value);
 			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getPlayers()
 			{
 				return players.read();
@@ -158,8 +134,6 @@ namespace RBX
 			virtual void onChildRemoving(Instance*);
 		private:
 			void addChatMessage(const ChatMessage&);
-		public:
-			//Players& operator=(const Players&);
 		  
 		public:
 			static Player* getPlayerFromCharacter(Instance* character);

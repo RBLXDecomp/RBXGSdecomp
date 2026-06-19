@@ -5,13 +5,6 @@
 
 namespace RBX
 {
-	void IdManager::addInstance(Instance* instance, Guid::Data explicitId)
-	{
-		RBXASSERT(getInstance(explicitId) == NULL);
-
-		instance->assignGuid(explicitId);
-		addInstance(instance);
-	}
 
 	void IdManager::addInstance(Instance* instance)
 	{
