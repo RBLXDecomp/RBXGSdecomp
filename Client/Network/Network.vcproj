@@ -223,6 +223,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NetworkSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Player.cpp"
 				>
 			</File>
@@ -232,6 +236,10 @@
 			</File>
 			<File
 				RelativePath=".\Replicator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Server.cpp"
 				>
 			</File>
 			<File
@@ -501,6 +509,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NetworkSettings.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\Network\Player.h"
 				>
 			</File>
@@ -510,6 +522,10 @@
 			</File>
 			<File
 				RelativePath=".\Replicator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Server.h"
 				>
 			</File>
 			<File

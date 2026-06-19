@@ -41,7 +41,7 @@ namespace RBX
 		{
 		}
 
-		void ThreadProfiler::sample(void* thread)
+		void ThreadProfiler::sample(HANDLE thread)
 		{
 			double time = G3D::System::getTick();
 			if (bucketTimeSpan + lastSampleTime <= time)

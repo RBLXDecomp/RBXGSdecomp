@@ -19,6 +19,12 @@ namespace RBX
 			return stream;
 		}
 
+		RakNet::BitStream& operator<<(RakNet::BitStream& stream, long value)
+		{
+			stream.Write(value);
+			return stream;
+		}
+
 		RakNet::BitStream& operator<<(RakNet::BitStream& stream, unsigned int value)
 		{
 			stream.Write(value);
@@ -69,6 +75,12 @@ namespace RBX
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, int& value)
 		{
 			stream.Read(value);
+			return stream;
+		}
+
+		RakNet::BitStream& operator<<(RakNet::BitStream& stream, long& value)
+		{
+			stream.Write(value);
 			return stream;
 		}
 

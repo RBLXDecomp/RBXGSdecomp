@@ -40,6 +40,9 @@ namespace RBX
 
             template<typename T>
             Item* createChildItem(const char* name, boost::function0<T> func);
+
+			template<typename T>
+			void formatValue(const T& value);
         };
 
         template<typename T>

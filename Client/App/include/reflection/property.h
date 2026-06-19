@@ -39,7 +39,10 @@ namespace RBX
 		public:
 			bool isPublic() const;
 			virtual bool isReadOnly() const = 0;
-			bool canStreamWrite() const;
+			bool canStreamWrite() const
+			{
+				return bCanStreamWrite;
+			}
 			bool operator==(const PropertyDescriptor& other) const
 			{
 				return this == &other;

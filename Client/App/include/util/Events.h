@@ -24,6 +24,7 @@ namespace RBX
 	protected:
 		virtual void onEvent(const Class*, Event) = 0;
 		Listener& operator=(const Listener&);
+
 		virtual ~Listener()
 		{
 		}
@@ -38,13 +39,18 @@ namespace RBX
 
 	protected:
 		Notifier(const Notifier&);
+
 		Notifier()
 			: listeners(),
 			  raiseRange(NULL)
 		{
 		}
+
 		Notifier& operator=(const Notifier&);
-		virtual ~Notifier();
+
+		virtual ~Notifier()
+		{
+		}
 
 	public:
 		void addListener(Listener<Class, Event>*) const;

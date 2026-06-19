@@ -15,11 +15,6 @@ namespace RBX
 		};
 
 	public:
-		virtual Result filterResult(const Primitive*) const = 0;
-	public:
-		//HitTestFilter(const HitTestFilter&);
-		HitTestFilter();
-	public:
-		//HitTestFilter& operator=(const HitTestFilter&);
+		virtual Result filterResult(const Primitive* testMe) const = 0;
 	};
 }

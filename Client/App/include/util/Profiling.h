@@ -58,7 +58,7 @@ namespace RBX
 			//ThreadProfiler(const ThreadProfiler&);
 			ThreadProfiler(const char* name);
 		public:
-			void sample(void* thread);
+			void sample(HANDLE thread);
 		public:
 			~ThreadProfiler() {}
 		public:

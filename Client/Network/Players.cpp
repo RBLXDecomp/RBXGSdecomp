@@ -10,10 +10,17 @@ class PluginInterfaceAdapter : public PluginInterface
 private:
 	Class* c;
 protected:
-	PluginInterfaceAdapter(Class*);
+	PluginInterfaceAdapter(Class* c)
+		: PluginInterface(),
+		  c(c)
+	{
+	}
 public:
 	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
 };
+
+RBX::Reflection::PropDescriptor<RBX::Network::Players, int> propPlayerCount("NumPlayers", "Data", &RBX::Network::Players::numPlayers, NULL, RBX::Reflection::PropertyDescriptor::UI);
+RBX::Reflection::PropDescriptor<RBX::Network::Players, int> propPlayerMaxCount("MaxPlayers", "Data", &RBX::Network::Players::getMaxPlayers, &RBX::Network::Players::setMaxPlayers, RBX::Reflection::PropertyDescriptor::STANDARD);
 
 namespace RBX
 {
@@ -21,8 +28,20 @@ namespace RBX
 	{
 		class Players::Plugin : public PluginInterfaceAdapter<Players>
 		{
-			Plugin(Players*);
+		public:
+			Plugin(Players* players)
+				: PluginInterfaceAdapter<Players>(players)
+			{
+			}
 		};
+
+		Players::~Players()
+		{
+			if (peer)
+				peer->DetachPlugin(plugin.get());
+
+			peer = NULL;
+		}
 
 		bool Players::clientIsPresent(const Instance* context, bool testInDatamodel)
 		{
@@ -63,6 +82,15 @@ namespace RBX
 				abuseReporter.reset(NULL);
 			else
 				abuseReporter.reset(new AbuseReporter(value));
+		}
+
+		void Players::setMaxPlayers(int value)
+		{
+			if (value != maxPlayers)
+			{
+				maxPlayers = value;
+				raisePropertyChanged(propPlayerMaxCount);
+			}
 		}
 
 		void Players::reportAbuse(boost::shared_ptr<Instance> player, std::string comment)

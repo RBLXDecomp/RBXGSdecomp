@@ -14,6 +14,17 @@ namespace RBX
 {
 	namespace Network
 	{
+		Client::Client()
+		{
+			setName("NetworkClient");
+			updateLogger();
+		}
+
+		Client::~Client()
+		{
+			rakPeer->CloseConnection(serverId, true, 0);
+		}
+
 		void Client::disconnect(int blockDuration)
 		{
 			removeAllChildren();
@@ -38,6 +49,49 @@ namespace RBX
 			StandardOut::singleton()->print(MESSAGE_INFO, "Connecting to %s:%d", server.c_str(), serverPort);
 
 			updateNetworkSimulator();
+		}
+
+		void Client::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+		{
+			Listener<ServiceProvider, Closing>* oldListener = this;
+
+			if (oldProvider)
+			{
+				oldProvider->Notifier<ServiceProvider, Closing>::removeListener(oldListener);
+			}
+
+			if (oldProvider)
+			{
+				RunService* runService = oldProvider->find<RunService>();
+
+				if (runService)
+					runService->runDisabled = false;
+
+				disconnect(3000);
+
+				Players* p = oldProvider->find<Players>();
+				p->setConnection(NULL);
+			}
+
+			Instance::onServiceProvider(oldProvider, newProvider);
+
+			if (newProvider)
+			{
+				Players* p = newProvider->create<Players>();
+				p->setConnection(rakPeer.get());
+
+				RunService* runService = newProvider->find<RunService>();
+
+				if (runService)
+					runService->runDisabled = true;
+			}
+
+			Listener<ServiceProvider, Closing>* newListener = this;
+
+			if (newProvider)
+			{
+				newProvider->Notifier<ServiceProvider, Closing>::addListener(newListener);
+			}
 		}
 	}
 }

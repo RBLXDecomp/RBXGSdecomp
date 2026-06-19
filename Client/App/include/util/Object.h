@@ -11,6 +11,18 @@ namespace RBX
 		return r ? boost::shared_static_cast<Class>(r->shared_from_this()) : boost::shared_ptr<Class>();
 	}
 
+	template<typename To, typename From>
+	boost::shared_ptr<To> shared_from_dynamic_cast(boost::enable_shared_from_this<From>* r)
+	{
+		return r ? boost::shared_dynamic_cast<To, From>(r->shared_from_this()) : boost::shared_ptr<To>();
+	}
+
+	template<typename To, typename From>
+	boost::shared_ptr<To> shared_from_polymorphic_downcast(boost::enable_shared_from_this<From>* r)
+	{
+		return r ? boost::shared_polymorphic_downcast<To, From>(r->shared_from_this()) : boost::shared_ptr<To>();
+	}
+
 	class Object
 	{
 	public:
