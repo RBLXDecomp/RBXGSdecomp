@@ -11,6 +11,20 @@
 
 namespace RBX
 {
+	Reflection::PropDescriptor<Humanoid, G3D::Vector3> propWalkToPoint("WalkToPoint", "Control", &Humanoid::getWalkToPoint, &Humanoid::setWalkToPoint, Reflection::PropertyDescriptor::STREAMING);
+	Reflection::PropDescriptor<Humanoid, G3D::Vector3> propWalkDirection("WalkDirection", "Control", &Humanoid::getWalkDirection, &Humanoid::setWalkDirection, Reflection::PropertyDescriptor::STREAMING);
+	Reflection::PropDescriptor<Humanoid, float> propWalkRotationalVelocity("WalkRotationalVelocity", "Control", &Humanoid::getWalkRotationalVelocity, &Humanoid::setWalkRotationalVelocity, Reflection::PropertyDescriptor::STREAMING);
+	Reflection::PropDescriptor<Humanoid, bool> propJump("Jump", "Control", &Humanoid::getJump, &Humanoid::setJump, Reflection::PropertyDescriptor::STREAMING);
+	Reflection::PropDescriptor<Humanoid, G3D::Vector3> propTargetPoint("TargetPoint", "Control", &Humanoid::getTargetPoint, &Humanoid::setTargetPoint, Reflection::PropertyDescriptor::STREAMING);
+	Reflection::PropDescriptor<Humanoid, bool> propSit("Sit", "Control", &Humanoid::getSit, &Humanoid::setSit, Reflection::PropertyDescriptor::STREAMING);
+
+	Reflection::BoundFuncDesc<Humanoid, void(G3D::Vector3, boost::shared_ptr<Instance>), 2> func_MoveTo(&Humanoid::moveTo2, "MoveTo", "location", "part", Reflection::FunctionDescriptor::AnyCaller);
+
+	Reflection::RefPropDescriptor<Humanoid, PartInstance> propTorso("Torso", "Data", &Humanoid::getTorso, &Humanoid::setTorso, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::RefPropDescriptor<Humanoid, PartInstance> propLeftLeg("LeftLeg", "Data", &Humanoid::getLeftLeg, &Humanoid::setLeftLeg, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::RefPropDescriptor<Humanoid, PartInstance> propRightLeg("RightLeg", "Data", &Humanoid::getRightLeg, &Humanoid::setRightLeg, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::RefPropDescriptor<Humanoid, PartInstance> propWalkToPart("WalkToPart", "Control", &Humanoid::getWalkToPart, &Humanoid::setWalkToPart, Reflection::PropertyDescriptor::STREAMING);
+
 	Humanoid::Humanoid()
 		: health(100.0f),
 		  maxHealth(100.0f),
@@ -404,5 +418,111 @@ namespace RBX
 			throw std::runtime_error("Argument error: A Part is required");
 
 		moveTo(worldPosition, p);
+	}
+
+	void Humanoid::setWalkDirection(const G3D::Vector3& value)
+	{
+		if (walkDirection != value)
+		{
+			if (value == G3D::Vector3::zero())
+			{
+				walkDirection = value;
+			}
+			else
+			{
+				walkDirection = G3D::Vector3(value.x, 0.0f, value.z).direction();
+				walkMode = DIRECTION_MOVE;
+			}
+
+			raisePropertyChanged(propWalkDirection);
+		}
+	}
+
+	void Humanoid::setWalkRotationalVelocity(const float& value)
+	{
+		if (walkRotationalVelocity != value)
+		{
+			walkRotationalVelocity = value;
+			raisePropertyChanged(propWalkRotationalVelocity);
+		}
+	}
+
+	void Humanoid::setWalkToPoint(const G3D::Vector3& value)
+	{
+		if (walkToPoint != value)
+		{
+			walkToPoint = value;
+			raisePropertyChanged(propWalkToPoint);
+		}
+
+		walkMode = (walkMode == HAS_PART) ? CLICK_TO_MOVE : HAS_POINT;
+		walkTimer = (walkMode == CLICK_TO_MOVE) ? 240 : 0;
+	}
+
+	void Humanoid::setWalkToPart(PartInstance* value)
+	{
+		if (walkToPart.get() != value)
+		{
+			walkToPart = shared_from(value);
+			raisePropertyChanged(propWalkToPart);
+		}
+
+		walkMode = (walkMode == HAS_POINT) ? CLICK_TO_MOVE : HAS_PART;
+		walkTimer = (walkMode == CLICK_TO_MOVE) ? 240 : 0;
+	}
+
+	void Humanoid::setJump(bool value)
+	{
+		if (jump != value)
+		{
+			jump = value;
+			raisePropertyChanged(propJump);
+		}
+	}
+
+	void Humanoid::setSit(bool value)
+	{
+		if (sit != value)
+		{
+			sit = value;
+			raisePropertyChanged(propSit);
+		}
+	}
+
+	void Humanoid::setTargetPoint(const G3D::Vector3& value)
+	{
+		if (value != targetPoint)
+		{
+			targetPoint = value;
+			raisePropertyChanged(propTargetPoint);
+		}
+	}
+
+	void Humanoid::setLeftLeg(PartInstance* value)
+	{
+		if (leftLeg.get() != value)
+		{
+			leftLeg = shared_from(value);
+			raisePropertyChanged(propLeftLeg);
+		}
+	}
+
+	void Humanoid::setRightLeg(PartInstance* value)
+	{
+		if (rightLeg.get() != value)
+		{
+			rightLeg = shared_from(value);
+			raisePropertyChanged(propRightLeg);
+		}
+	}
+
+
+	void Humanoid::setTorso(PartInstance* value)
+	{
+		if (torso.get() != value)
+		{
+			torso = shared_from(value);
+			raisePropertyChanged(propTorso);
+		}
 	}
 }

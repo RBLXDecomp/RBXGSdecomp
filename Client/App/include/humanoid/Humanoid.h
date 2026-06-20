@@ -105,49 +105,48 @@ namespace RBX
 	public:
 		void setHealth(float);
 		float relativeHealth() const
-
 		{
 			return propHealth.getValue(this) / propMaxHealth.getValue(this);
 		}
 
 		Body* getTorsoBody();
 		Body* getRootBody();
-		void setWalkDirection(const G3D::Vector3&);
+		void setWalkDirection(const G3D::Vector3& value);
 
 		G3D::Vector3 getWalkDirection() const
 		{
 			return walkDirection;
 		}
 
-		void setWalkRotationalVelocity(const float&);
+		void setWalkRotationalVelocity(const float& value);
 
 		float getWalkRotationalVelocity() const
 		{
 			return walkRotationalVelocity;
 		}
 
-		void setWalkToPoint(const G3D::Vector3&);
+		void setWalkToPoint(const G3D::Vector3& value);
 
 		const G3D::Vector3& getWalkToPoint() const
 		{
 			return walkToPoint;
 		}
 
-		void setWalkToPart(PartInstance*);
+		void setWalkToPart(PartInstance* value);
 
 		PartInstance* getWalkToPart() const
 		{
 			return walkToPart.get();
 		}
 
-		void setJump(bool);
+		void setJump(bool value);
 
 		bool getJump() const
 		{
 			return jump;
 		}
 
-		void setSit(bool);
+		void setSit(bool value);
 
 		bool getSit() const
 		{
@@ -159,7 +158,7 @@ namespace RBX
 			return !sit && currentState->getName() == "Running";
 		}
 
-		void setTargetPoint(const G3D::Vector3&);
+		void setTargetPoint(const G3D::Vector3& value);
 
 		const G3D::Vector3& getTargetPoint() const
 		{
@@ -187,9 +186,9 @@ namespace RBX
 		PartInstance* findRightArm() const;
 		JointInstance* findRightShoulder() const;
 		float getTorsoHeading() const;
-		void setTorso(PartInstance*);
-		void setLeftLeg(PartInstance*);
-		void setRightLeg(PartInstance*);
+		void setTorso(PartInstance* value);
+		void setLeftLeg(PartInstance* value);
+		void setRightLeg(PartInstance* value);
 		World* getWorld() const
 		{
 			return world;
