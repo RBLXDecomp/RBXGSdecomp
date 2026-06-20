@@ -1086,7 +1086,39 @@
 				Name="humanoid"
 				>
 				<File
+					RelativePath=".\include\humanoid\Balancing.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\humanoid\FallingDown.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\humanoid\Flying.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\humanoid\Freefall.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\humanoid\GettingUp.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\humanoid\Humanoid.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\humanoid\Jumping.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\humanoid\Running.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\humanoid\Seated.h"
 					>
 				</File>
 			</Filter>
@@ -2088,6 +2120,46 @@
 			</File>
 			<File
 				RelativePath=".\tool\MegaDragger.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="humanoid"
+			>
+			<File
+				RelativePath=".\humanoid\Balancing.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\FallingDown.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\Flying.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\Freefall.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\GettingUp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\Humanoid.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\Jumping.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\Running.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\humanoid\Seated.cpp"
 				>
 			</File>
 		</Filter>

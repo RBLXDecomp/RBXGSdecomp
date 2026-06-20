@@ -93,7 +93,10 @@ namespace RBX
 		}
 		void setCameraCoordinateFrameNoLerp(const G3D::CoordinateFrame& value);
 		void goalToCamera();
-		CameraType getCameraType() const;
+		CameraType getCameraType() const
+		{
+			return cameraType;
+		}
 		void setCameraType(CameraType type);
 		bool canZoom(int) const;
 		bool canTilt(int) const;

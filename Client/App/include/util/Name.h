@@ -104,8 +104,20 @@ namespace RBX
 		}
 
 		template<typename Arg0Type>
-		Named(Arg0Type type)
-			: DerivedClass(type)
+		Named(Arg0Type arg0)
+			: DerivedClass(arg0)
+		{
+		}
+
+		template<typename Arg0Type, typename Arg1Type>
+		Named(Arg0Type arg0, Arg1Type arg1)
+			: DerivedClass(arg0, arg1)
+		{
+		}
+
+		template<typename Arg0Type, typename Arg1Type, typename Arg2Type>
+		Named(Arg0Type arg0, Arg1Type arg1, Arg2Type arg2)
+			: DerivedClass(arg0, arg1, arg2)
 		{
 		}
 

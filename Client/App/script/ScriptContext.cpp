@@ -607,7 +607,7 @@ void ScriptContext::onServiceProvider(const ServiceProvider* oldProvider, const 
     _addListenerInline<RunService, Heartbeat>(runService.get(), this);
 }
 
-void ScriptContext::onChangedScriptEnabled(const Reflection::PropertyDescriptor& __formal)
+void ScriptContext::onChangedScriptEnabled(const Reflection::PropertyDescriptor&)
 {
     if (scriptsDisabled)
         startPendingScripts();

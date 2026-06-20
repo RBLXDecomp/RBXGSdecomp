@@ -96,7 +96,7 @@ namespace RBX
         virtual void onEvent(const RunService* source, RunTransition event);
       
     private:
-        void onChangedScriptEnabled(const Reflection::PropertyDescriptor& __formal);
+        void onChangedScriptEnabled(const Reflection::PropertyDescriptor&);
       
     public:
         void closeState();

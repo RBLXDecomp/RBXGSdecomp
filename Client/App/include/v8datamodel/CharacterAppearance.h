@@ -40,7 +40,7 @@ namespace RBX
 	private:
 		virtual void apply(Humanoid* humanoid);
 
-		void dataChanged(const Reflection::PropertyDescriptor& __formal)
+		void dataChanged(const Reflection::PropertyDescriptor&)
 		{
 			if (Network::Players::backendProcessing(this, false))
 			{
@@ -64,7 +64,7 @@ namespace RBX
 	protected:
 		virtual void apply(Humanoid* humanoid);
 	private:
-		void dataChanged(const Reflection::PropertyDescriptor& __formal)
+		void dataChanged(const Reflection::PropertyDescriptor&)
 		{
 			if (Network::Players::backendProcessing(this, false))
 			{
@@ -92,7 +92,7 @@ namespace RBX
 	private:
 		virtual void apply(Humanoid* humanoid);
 
-		void dataChanged(const Reflection::PropertyDescriptor& __formal)
+		void dataChanged(const Reflection::PropertyDescriptor&)
 		{
 			if (Network::Players::backendProcessing(this, false))
 			{
@@ -116,7 +116,7 @@ namespace RBX
 	private:
 		virtual void apply(Humanoid* humanoid);
 
-		void dataChanged(const Reflection::PropertyDescriptor& __formal)
+		void dataChanged(const Reflection::PropertyDescriptor&)
 		{
 			if (Network::Players::backendProcessing(this, false))
 			{

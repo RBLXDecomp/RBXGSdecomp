@@ -1,12 +1,9 @@
 #pragma once
-#include "v8tree/Instance.h"
-#include "v8kernel/Connector.h"
 #include "util/RunStateOwner.h"
-#include "v8datamodel/ICharacterSubject.h"
 #include "util/IControllable.h"
 #include "util/IRenderable.h"
-#include <G3D/Vector3.h>
-#include <G3D/CoordinateFrame.h>
+#include "v8kernel/Connector.h"
+#include "v8datamodel/ICharacterSubject.h"
 #include <G3D/GCamera.h>
 
 namespace RBX
@@ -43,17 +40,24 @@ namespace RBX
 		protected:
 			Humanoid* humanoid;
 
-		public:
-			//State(const State&);
 		protected:
-			State(Humanoid*);
+			State(Humanoid* humanoid)
+				: humanoid(humanoid)
+			{
+			}
 		public:
-			virtual ~State();
+			virtual ~State()
+			{
+			}
 		public:
 			virtual void onComputeForce(const float) = 0;
 			virtual State* onStep(const float, Controller&) = 0;
 			virtual bool canSleep() const = 0;
-			virtual float getIntendedRotationAboutYAxis() const;
+
+			virtual float getIntendedRotationAboutYAxis() const
+			{
+				return 0.0f;
+			}
 		};
 
 	private:
@@ -70,12 +74,12 @@ namespace RBX
 		bool imDead : 1;
 		bool hadHeadJoint : 1;
 		bool sit : 1;
-		boost::shared_ptr<PartInstance> head;
-		boost::shared_ptr<PartInstance> torso;
-		boost::shared_ptr<PartInstance> leftLeg;
-		boost::shared_ptr<PartInstance> rightLeg;
-		boost::shared_ptr<PartInstance> rightArm;
-		boost::shared_ptr<PartInstance> leftArm;
+		mutable boost::shared_ptr<PartInstance> head;
+		mutable boost::shared_ptr<PartInstance> torso;
+		mutable boost::shared_ptr<PartInstance> leftLeg;
+		mutable boost::shared_ptr<PartInstance> rightLeg;
+		mutable boost::shared_ptr<PartInstance> rightArm;
+		mutable boost::shared_ptr<PartInstance> leftArm;
 		World* world;
 		std::auto_ptr<State> currentState;
 
@@ -96,31 +100,74 @@ namespace RBX
 		void getPrimitives(std::vector<Primitive*>&);
 		void getAccoutrements(std::vector<boost::shared_ptr<Accoutrement>>&);
 	public:
-		//Humanoid(Humanoid&);
 		Humanoid();
 		virtual ~Humanoid();
 	public:
 		void setHealth(float);
-		float relativeHealth() const;
+		float relativeHealth() const
+
+		{
+			return propHealth.getValue(this) / propMaxHealth.getValue(this);
+		}
+
 		Body* getTorsoBody();
 		Body* getRootBody();
 		void setWalkDirection(const G3D::Vector3&);
-		G3D::Vector3 getWalkDirection() const;
+
+		G3D::Vector3 getWalkDirection() const
+		{
+			return walkDirection;
+		}
+
 		void setWalkRotationalVelocity(const float&);
-		float getWalkRotationalVelocity() const;
+
+		float getWalkRotationalVelocity() const
+		{
+			return walkRotationalVelocity;
+		}
+
 		void setWalkToPoint(const G3D::Vector3&);
-		const G3D::Vector3& getWalkToPoint() const;
+
+		const G3D::Vector3& getWalkToPoint() const
+		{
+			return walkToPoint;
+		}
+
 		void setWalkToPart(PartInstance*);
-		PartInstance* getWalkToPart() const;
+
+		PartInstance* getWalkToPart() const
+		{
+			return walkToPart.get();
+		}
+
 		void setJump(bool);
-		bool getJump() const;
+
+		bool getJump() const
+		{
+			return jump;
+		}
+
 		void setSit(bool);
-		bool getSit() const;
-		bool canSit() const;
+
+		bool getSit() const
+		{
+			return sit;
+		}
+
+		bool canSit() const
+		{
+			return !sit && currentState->getName() == "Running";
+		}
+
 		void setTargetPoint(const G3D::Vector3&);
-		const G3D::Vector3& getTargetPoint() const;
-		void moveTo(const G3D::Vector3&, PartInstance*);
-		void moveTo2(G3D::Vector3, boost::shared_ptr<Instance>);
+
+		const G3D::Vector3& getTargetPoint() const
+		{
+			return targetPoint;
+		}
+
+		void moveTo(const G3D::Vector3& worldPosition, PartInstance* part);
+		void moveTo2(G3D::Vector3 worldPosition, boost::shared_ptr<Instance> part);
 		G3D::Vector3 updateWalkDirection();
 		void buildJoints();
 		Primitive* getHeadPrimitive();
@@ -143,45 +190,51 @@ namespace RBX
 		void setTorso(PartInstance*);
 		void setLeftLeg(PartInstance*);
 		void setRightLeg(PartInstance*);
-		World* getWorld() const;
+		World* getWorld() const
+		{
+			return world;
+		}
 	private:
 		void onChangedHealth(const Reflection::PropertyDescriptor&);
 		void setState(State*);
 		void checkForJointDeath();
-		bool hasWalkToPoint(G3D::Vector3&) const;
+		bool hasWalkToPoint(G3D::Vector3& worldPosition) const;
 		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-		virtual void onAncestorChanged(const AncestorChanged&);
+		virtual void onAncestorChanged(const AncestorChanged& event);
 		virtual bool askSetParent(const Instance*) const;
 		virtual bool shouldRender2d() const;
 		virtual bool shouldRender3dAdorn() const;
-		virtual void render2d(Adorn*);
-		virtual void render3dAdorn(Adorn*);
+		virtual void render2d(Adorn* adorn);
+		virtual void render3dAdorn(Adorn* adorn);
 		void renderMultiplayer(Adorn*, const G3D::GCamera&);
 		virtual bool isControllable() const;
-		virtual void onEvent(const RunService*, Stepped);
-		virtual void computeForce(const float, bool);
+		virtual void onEvent(const RunService* source, Stepped event);
+		virtual void computeForce(const float dt, bool throttling);
 		virtual const G3D::CoordinateFrame getLocation() const;
 		virtual ContactManager* getContactManager();
-		virtual void tellCameraNear(float);
+		virtual void tellCameraNear(float distance);
 		G3D::Vector3 getIntendedMovementVector(bool);
 		virtual G3D::Vector3 getIntendedMovementVector();
 		virtual float getIntendedRotationAboutYAxis();
-		virtual void getCameraIgnorePrimitives(std::vector<const Primitive*>&);
+
+		virtual void getCameraIgnorePrimitives(std::vector<const Primitive*>& primitives)
+		{
+			getIgnorePrims(primitives);
+		}
+
 		virtual void cameraSetWalkOrientation(float, bool);
 		void onLocalHumanoidEnteringWorkspace();
 	public:
 		virtual void getIgnorePrims(std::vector<const Primitive*>&);
-	public:
-		//Humanoid& operator=(Humanoid&);
 	  
 	public:
-		static Humanoid* modelIsCharacter(const Instance*);
-		static Humanoid* getLocalHumanoidFromContext(const Instance*);
-		static PartInstance* getLocalHeadFromContext(const Instance*);
+		static Humanoid* modelIsCharacter(const Instance* testModel);
+		static Humanoid* getLocalHumanoidFromContext(const Instance* context);
+		static PartInstance* getLocalHeadFromContext(const Instance* context);
 		static ModelInstance* getCharacterFromHumanoid(Humanoid*);
-		static PartInstance* getHeadFromCharacter(const ModelInstance*);
+		static PartInstance* getHeadFromCharacter(const ModelInstance* character);
 		static Weld* getGrip(const Instance*);
 		static const float walkSpeed();
-		static void renderWaypoint(Adorn*, const G3D::Vector3&);
+		static void renderWaypoint(Adorn* adorn, const G3D::Vector3& waypoint);
 	};
 }
