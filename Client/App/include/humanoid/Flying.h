@@ -16,7 +16,7 @@ namespace RBX
 		static const float kTurnAccelMax;
 
 	protected:
-		virtual Humanoid::State* onStep(const float, Controller&);
+		virtual Humanoid::State* onStep(const float stepDt, Controller& controller);
 		virtual void onComputeForce(const float);
 
 		virtual bool canSleep() const
