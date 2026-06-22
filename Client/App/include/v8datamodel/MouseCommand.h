@@ -94,7 +94,11 @@ namespace RBX
 		MouseCommand(Workspace* workspace);
 	public:
 		virtual ~MouseCommand();
-		bool captured() const;
+
+		bool captured() const
+		{
+			return capturedMouse;
+		}
 
 		virtual MouseCommand* isSticky() const
 		{
