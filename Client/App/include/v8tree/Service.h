@@ -99,4 +99,23 @@ namespace RBX
 		template<typename Class>
 		static void callDoGetClassIndex();
 	};
+
+	template<typename Class>
+	class ServiceClient
+	{
+	private:
+		Instance* context;
+		boost::shared_ptr<Class> service;
+
+	public:
+		ServiceClient(Instance*);
+		bool isNull() const;
+		operator Class*();
+		operator const Class*() const;
+		Class* operator->();
+		const Class* operator->() const;
+	private:
+		Class* findService(bool) const;
+		Class* createService(bool) const;
+	};
 }

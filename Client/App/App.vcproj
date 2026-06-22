@@ -1074,11 +1074,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\tool\DragTool.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tool\DragUtilities.h"
 					>
 				</File>
 				<File
+					RelativePath=".\include\tool\GroupDragTool.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tool\MegaDragger.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tool\NullTool.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tool\PartDragTool.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tool\RunDragger.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tool\ToolsArrow.h"
 					>
 				</File>
 			</Filter>
@@ -2083,11 +2107,31 @@
 			Name="tool"
 			>
 			<File
+				RelativePath=".\tool\Dragger.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\tool\DragUtilities.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\tool\GroupDragTool.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\tool\MegaDragger.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tool\NullTool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tool\PartDragTool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tool\RunDragger.cpp"
 				>
 			</File>
 		</Filter>
