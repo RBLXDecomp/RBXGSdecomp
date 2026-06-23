@@ -4,13 +4,13 @@
 
 namespace RBX
 {
-	extern const char* sBackpack;
-	class Backpack : public RBX::DescribedCreatable<Backpack, Hopper, &sBackpack>,
+	extern const char* sPlayerHopper;
+	class Backpack : public RBX::DescribedCreatable<PlayerHopper, Hopper, &sPlayerHopper>,
 					 public IScriptOwner
 	{
 	private:
 		virtual IScriptOwner* scriptShouldRun(Script* script);
 	public:
-		Backpack();
+		PlayerHopper();
 	};
 }
