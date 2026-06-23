@@ -151,31 +151,7 @@ namespace RBX
 
 	HopperService::HopperService()
 	{
-		setName("StarterPack");
+		setName("Hopper");
 	}
 
-	//97.87% match
-	//le EPIC TROLL
-	void HopperService::render2d(Adorn* adorn)
-	{
-		TopMenuBar::render2d(adorn);
-
-		if (findFirstChildOfType<PlayerHopperItem>())
-		{
-			G3D::Rect2D viewPort = adorn->getViewport();
-			int fontSize = GuiRoot::normalizedFontSize(12);
-			G3D::Vector2 pos2d = viewPort.x0y1() + G3D::Vector2(4.0f, -4.0f);
-
-			adorn->drawFont2D(
-				"StarterPack - these items will be given to each new player", 
-				pos2d, 
-				fontSize, 
-				G3D::Color3::white(), 
-				G3D::Color4::clear(), 
-				Adorn::XALIGN_LEFT, 
-				Adorn::YALIGN_BOTTOM,
-				Adorn::PROPORTIONAL_SPACING
-			);
-		}
-	}
 }
