@@ -13,7 +13,6 @@ namespace RBX
 		std::string filename;
 	  
 	public:
-		//TextureProxyBase(const TextureProxyBase&);
 		TextureProxyBase()
 		{
 		}
@@ -22,7 +21,5 @@ namespace RBX
 		}
 	public:
 		virtual G3D::Vector2 getSize() = 0;
-	public:
-		//TextureProxyBase& operator=(const TextureProxyBase&);
 	};
 }

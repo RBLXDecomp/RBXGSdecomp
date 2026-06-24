@@ -34,7 +34,6 @@ namespace RBX
 		};
 
 	public:
-		//Adorn(const Adorn&);
 		Adorn()
 		{
 		}
@@ -65,7 +64,5 @@ namespace RBX
 		virtual void lineSegment(const G3D::LineSegment& lineSegment, const G3D::Color4& color, float scale) = 0;
 		virtual void axes(const G3D::Color4& xColor, const G3D::Color4& yColor, const G3D::Color4& zColor, float scale) = 0;
 		virtual void quad(const G3D::Vector3& v0, const G3D::Vector3& v1, const G3D::Vector3& v2, const G3D::Vector3& v3, const G3D::Color4& color) = 0;
-	public:
-		//Adorn& operator=(const Adorn&);
 	};
 }

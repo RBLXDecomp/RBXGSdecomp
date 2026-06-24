@@ -19,7 +19,6 @@ namespace RBX
             G3D::TextureManager textureManager;
 
         public:
-            AdornG3D(const AdornG3D&);
             AdornG3D(G3D::RenderDevice*);
 
             G3D::RenderDevice* getRenderDevice();
@@ -51,7 +50,5 @@ namespace RBX
             virtual void lineSegment(const G3D::LineSegment& lineSegment, const G3D::Color4& color, float scale);
             virtual void axes(const G3D::Color4& xColor, const G3D::Color4& yColor, const G3D::Color4& zColor, float scale);
             virtual void quad(const G3D::Vector3& v0, const G3D::Vector3& v1, const G3D::Vector3& v2, const G3D::Vector3& v3, const G3D::Color4& color);
-
-            virtual ~AdornG3D();
     };
 }
