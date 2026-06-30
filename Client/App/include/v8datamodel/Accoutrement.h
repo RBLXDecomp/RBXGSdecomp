@@ -74,7 +74,7 @@ namespace RBX
 
 		bool drawSelected() const
 		{
-			return backendAccoutrementState >= 4; // EQUIPPED
+			return backendAccoutrementState >= EQUIPPED; // only EQUIPPED
 		}
 
 		virtual void render3dSelect(Adorn* adorn, SelectState selectState);

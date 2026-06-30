@@ -93,7 +93,7 @@ namespace RBX
 
 		virtual bool drawSelected() const
 		{
-			return backendToolState >= 5; // EQUIPPED or ACTIVATED
+			return backendToolState >= EQUIPPED; // EQUIPPED or ACTIVATED
 		}
 
 		virtual void onLocalClicked();
