@@ -1495,6 +1495,10 @@
 			Name="v8datamodel"
 			>
 			<File
+				RelativePath=".\v8datamodel\Accoutrement.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Backpack.cpp"
 				>
 			</File>
@@ -1644,6 +1648,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\TimeState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\Tool.cpp"
 				>
 			</File>
 			<File

@@ -38,10 +38,10 @@ namespace RBX
 		static bool writeUnlocked;
 
 	protected:
-		void onEvent_AddedBackend(boost::shared_ptr<Instance>);
+		void onEvent_AddedBackend(boost::shared_ptr<Instance> child);
 		void onEvent_RemovedBackend(boost::shared_ptr<Instance>);
 		void onEvent_HandleTouched(boost::shared_ptr<Instance>);
-		AccoutrementState computeDesiredState(Instance*);
+		AccoutrementState computeDesiredState(Instance* testParent);
 		AccoutrementState computeDesiredState();
 		void setDesiredState(AccoutrementState, const ServiceProvider*);
 		void setBackendAccoutrementStateNoReplicate(int);
@@ -58,23 +58,46 @@ namespace RBX
 		void onChildAdded();
 		void onChildRemoved();
 		virtual void onAncestorChanged(const AncestorChanged&);
-		virtual bool askSetParent(const Instance*) const;
-		virtual bool askAddChild(const Instance*) const;
-		virtual void readProperty(const XmlElement*, IReferenceBinder&);
+
+		virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
+
+		virtual bool askAddChild(const Instance* instance) const
+		{
+			return true;
+		}
+
+		virtual void readProperty(const XmlElement* propertyElement, IReferenceBinder& binder);
 		virtual const G3D::CoordinateFrame getLocation() const;
-		bool drawSelected() const;
-		virtual void render3dSelect(Adorn*, SelectState);
+
+		bool drawSelected() const
+		{
+			return backendAccoutrementState >= 4; // EQUIPPED
+		}
+
+		virtual void render3dSelect(Adorn* adorn, SelectState selectState);
 	public:
 		Accoutrement();
 		virtual ~Accoutrement();
 		virtual XmlElement* write();
 		PartInstance* getHandle();
 		const PartInstance* getHandleConst() const;
-		void setBackendAccoutrementState(int);
-		int getBackendAccoutrementState() const;
-		const G3D::CoordinateFrame& getAttachmentPoint() const;
+		void setBackendAccoutrementState(int value);
+
+		int getBackendAccoutrementState() const
+		{
+			return backendAccoutrementState;
+		}
+
+		const G3D::CoordinateFrame& getAttachmentPoint() const
+		{
+			return attachmentPoint;
+		}
+
 		void setAttachmentPoint(const G3D::CoordinateFrame&);
-		virtual void onCameraNear(float);
+		virtual void onCameraNear(float distance);
 		const G3D::Vector3 getAttachmentPos() const;
 		const G3D::Vector3 getAttachmentForward() const;
 		const G3D::Vector3 getAttachmentUp() const;
