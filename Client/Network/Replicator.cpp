@@ -398,7 +398,7 @@ namespace RBX
 
 				while (pendingItems.size() > 0)
 				{
-					boost::shared_ptr<Item> item = *pendingItems.begin();
+					boost::shared_ptr<Item> item = pendingItems.front();
 
 					if (item)
 					{

@@ -6,16 +6,24 @@ namespace RBX
 {
 	class SelectionChanged
 	{
+		friend class Selection;
+
 	public:
 		const boost::shared_ptr<Instance> addedItem;
 		const boost::shared_ptr<Instance> removedItem;
 
 	private:
-		SelectionChanged(boost::shared_ptr<Instance>, boost::shared_ptr<Instance>);
+		SelectionChanged(boost::shared_ptr<Instance> added, boost::shared_ptr<Instance> removed)
+			: addedItem(added),
+			  removedItem(removed)
+		{
+		}
 	};
 
 	class ISelectionBase
 	{
+		friend class Selection;
+
 	private:
 		virtual void onSelectionChanged(const SelectionChanged&) = 0;
 	};
@@ -70,27 +78,58 @@ namespace RBX
 	public:
 		Selection();
 		virtual ~Selection();
-		size_t size() const;
+
+		size_t size() const
+		{
+			return selection->size();
+		}
+
 		boost::shared_ptr<Instance> front() const;
 		boost::shared_ptr<Instance> back() const;
 		std::vector<boost::shared_ptr<Instance>>::const_iterator begin() const;
 		std::vector<boost::shared_ptr<Instance>>::const_iterator end() const;
 		const CopyOnWrite<std::vector<boost::shared_ptr<Instance>>> getSelection() const;
-		void setSelection(boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>);
-		void setSelection(Instance*);
+
+		template<class Iterator>
+		void setSelection(Iterator _First, Iterator _Last)
+		{
+			clearSelection();
+
+			for (; _First != _Last; _First++)
+			{
+				addToSelection(*_First);
+			}
+		}
+
+		void setSelection(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> selection)
+		{
+			setSelection(selection->begin(), selection->end());
+		}
+
+		void setSelection(Instance* instance);
 		void clearSelection();
-		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getSelection2();
-		void addToSelection(const boost::shared_ptr<Instance>&);
-		void addToSelection(Instance*);
-		void toggleSelection(Instance*);
-		void removeFromSelection(const Instance*);
+
+		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getSelection2()
+		{
+			return selection.read();
+		}
+
+		// might not be right - see Selection::setSelection template overload
+		void addToSelection(const boost::shared_ptr<Instance>& instance)
+		{
+			addToSelection(instance.get());
+		}
+
+		void addToSelection(Instance* instance);
+		void toggleSelection(Instance* instance);
+		void removeFromSelection(const Instance* instance);
 		bool isSelected(const Instance*) const;
 		virtual void onEvent(const Instance*, AncestorChanged);
-		void addFilteredSelection(ISelectionBase*);
-		void removeFilteredSelection(ISelectionBase*);
+		void addFilteredSelection(ISelectionBase* fs);
+		void removeFilteredSelection(ISelectionBase* fs);
 	private:
-		void raiseAdded(boost::shared_ptr<Instance>);
-		void raiseRemoved(boost::shared_ptr<Instance>);
+		void raiseAdded(boost::shared_ptr<Instance> instance);
+		void raiseRemoved(boost::shared_ptr<Instance> source);
 	};
 
 	template<typename Class>

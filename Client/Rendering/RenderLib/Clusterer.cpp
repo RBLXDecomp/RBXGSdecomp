@@ -71,7 +71,7 @@ namespace RBX
 
 					if (&bestCluster != &cluster)
 					{
-						cluster.samples[cluster.visitIndex] = *(cluster.samples.end() - 1);
+						cluster.samples[cluster.visitIndex] = cluster.samples.back();
 						cluster.samples.pop_back();
 
 						moveCount += moveSample(sample, bestCluster);

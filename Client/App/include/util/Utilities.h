@@ -12,7 +12,10 @@ namespace RBX
 		boost::shared_ptr<T> object;
 	  
 	public:
-		CopyOnWrite(const T&);
+		CopyOnWrite(const T& object)
+			: object(new T(object))
+		{
+		}
 		CopyOnWrite()
 		{
 		}
