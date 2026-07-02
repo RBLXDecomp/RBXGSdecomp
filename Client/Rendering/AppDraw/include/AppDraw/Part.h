@@ -33,14 +33,16 @@ namespace RBX
 			  coordinateFrame(c)
 		{
 		}
+
 		Part(PartType _type, const G3D::Vector3& _gridSize, const G3D::Color4 _color, const G3D::CoordinateFrame& c)
 			: type(_type),
 			  gridSize(_gridSize),
 			  color(_color),
-			  surfaceType(),
+			  surfaceType(NO_SURFACE),
 			  coordinateFrame(c)
 		{
 		}
+
 		Part()
 		{
 		}

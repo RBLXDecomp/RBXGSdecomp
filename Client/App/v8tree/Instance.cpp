@@ -177,7 +177,7 @@ namespace RBX
 	{
 		while (&(*children))
 		{
-			(*(children->end() - 1))->setParent(NULL);
+			children->back()->setParent(NULL);
 		}
 	}
 

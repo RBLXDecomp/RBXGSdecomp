@@ -6,13 +6,16 @@ class Vector6
 private:
 	T data[6];
 public:
-	Vector6()
+	Vector6(const T& value)
 	{
-		//TODO: Is this the best way to handle this?
-		for (int i = 5; i > -1; i--)
+		for (int i = 5; i >= 0; i--)
 		{
-			data[i] = (T)0;
+			data[i] = value;
 		}
+	}
+
+	Vector6() // see PartInstance constructor
+	{
 	}
 
 	T& operator[](int i)

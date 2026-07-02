@@ -51,8 +51,8 @@ namespace RBX
 		primitive->setAnchor(false);
 		primitive->setCanCollide(true);
 		primitive->setOwner(this);
-		RBXASSERT(!myWorld);
-		primitive->setGuid(getGuid());
+
+		onGuidChanged();
 	}
 #pragma warning (pop)
 
