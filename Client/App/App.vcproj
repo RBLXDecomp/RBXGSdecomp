@@ -834,6 +834,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\v8datamodel\FactoryRegistration.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\v8datamodel\Feature.h"
 					>
 				</File>
@@ -1532,6 +1536,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\FaceInstance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\FactoryRegistration.cpp"
 				>
 			</File>
 			<File

@@ -263,4 +263,9 @@ namespace RBX
 	{
 		return dynamic_cast<PartInstance*>(findFirstChildByName("Handle"));
 	}
+
+	Hat::Hat()
+	{
+		setName("Hat");
+	}
 }

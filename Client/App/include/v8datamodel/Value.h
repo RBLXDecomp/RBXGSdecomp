@@ -63,4 +63,6 @@ namespace RBX
 	private:
 		void onValueChanged(const Reflection::PropertyDescriptor&);
 	};
+
+	void registerValueClasses();
 }

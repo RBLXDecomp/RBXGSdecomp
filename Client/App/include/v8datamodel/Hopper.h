@@ -22,10 +22,18 @@ namespace RBX
 		StarterPackService();
 		virtual void render2d(Adorn* adorn);
 	};
-}
 
-namespace RBX
-{
+	extern const char* sLegacyHopperService;
+	class LegacyHopperService : public DescribedCreatable<LegacyHopperService, Hopper, &sLegacyHopperService>,
+								public Service
+	{
+	private:
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
+	public:
+		LegacyHopperService();
+		virtual ~LegacyHopperService();
+	};
+
 	extern const char* sBackpackItem;
 	class BackpackItem : public DescribedNonCreatable<BackpackItem, Widget, &sBackpackItem>
 	{

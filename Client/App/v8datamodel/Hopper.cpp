@@ -178,4 +178,32 @@ namespace RBX
 			);
 		}
 	}
+
+	LegacyHopperService::LegacyHopperService()
+	{
+		setName("Hopper");
+	}
+
+	LegacyHopperService::~LegacyHopperService()
+	{
+		RBXASSERT(numChildren() == 0);
+	}
+
+	void LegacyHopperService::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+	{
+		Instance::onServiceProvider(oldProvider, newProvider);
+
+		if (newProvider)
+		{
+			StarterPackService* starterPack = newProvider->find<StarterPackService>();
+			RBXASSERT(starterPack);
+
+			while (numChildren() > 0)
+			{
+				getChild(0)->setParent(starterPack);
+			}
+
+			setParent(NULL);
+		}
+	}
 }

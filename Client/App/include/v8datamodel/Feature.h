@@ -1,5 +1,6 @@
 #pragma once
 #include "v8datamodel/JointInstance.h"
+#include "v8world/MotorJoint.h"
 
 namespace RBX
 {

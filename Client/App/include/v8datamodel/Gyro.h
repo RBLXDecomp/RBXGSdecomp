@@ -159,4 +159,6 @@ namespace RBX
 		void setTarget(PartInstance*);
 		void onGoalChanged(const Reflection::PropertyDescriptor&);
 	};
+
+	void registerBodyMovers();
 }

@@ -1,3 +1,4 @@
+#pragma once
 #include "reflection/reflection.h"
 #include "v8tree/Instance.h"
 #include "v8tree/Service.h"

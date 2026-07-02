@@ -114,4 +114,12 @@ namespace RBX
 		static void dropAll(ModelInstance*);
 		static void dropAllOthers(ModelInstance*, Accoutrement*);
 	};
+
+	extern const char* sHat;
+
+	class Hat : public DescribedCreatable<Hat, Accoutrement, &sHat>
+	{
+	public:
+		Hat();
+	};
 }
