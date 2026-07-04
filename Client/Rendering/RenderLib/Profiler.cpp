@@ -72,7 +72,7 @@ namespace RBX
 			return (((G3D::int64)t1Hi << 32) + t1Lo) - (((G3D::int64)t0Hi << 32) + t0Lo);
 		}
 
-		void Delay(unsigned time)
+		static void Delay(unsigned time)
 		{
 			LARGE_INTEGER Frequency, StartCounter, EndCounter;
 			G3D::int64 x;
@@ -94,7 +94,7 @@ namespace RBX
 			while (EndCounter.QuadPart - StartCounter.QuadPart < x);
 		}
 
-		void DelayOverhead(unsigned time)
+		static void DelayOverhead(unsigned time)
 		{
 			LARGE_INTEGER Frequency, StartCounter, EndCounter;
 			G3D::int64 x;
@@ -133,10 +133,10 @@ namespace RBX
 			G3D::int64 total = 0;
 			G3D::int64 overhead = 0;
 
-			for (int i = 0; i < 2; i++)
+			for (unsigned i = 0; i < repetitions; i++)
 			{
-				total += GetCyclesDifference(&Delay, 50);
-				overhead += GetCyclesDifference(&DelayOverhead, 50);
+				total += GetCyclesDifference(&Delay, mSecPerRepetition);
+				overhead += GetCyclesDifference(&DelayOverhead, mSecPerRepetition);
 			}
 
 			// Calculate the MHz speed.

@@ -36,40 +36,57 @@ namespace RBX
         {
             return stackTracingEnabled;
         }
+
         bool getioEnabled() const
         {
             return ioEnabled;
         }
+
         bool getShowAnchoredParts() const;
-        void setShowAnchoredParts(bool);
+        void setShowAnchoredParts(bool value);
         bool getShowAggregation() const;
-        void setShowAggregation(bool);
+        void setShowAggregation(bool value);
         bool getShowUnalignedParts() const;
-        void setShowUnalignedParts(bool);
+        void setShowUnalignedParts(bool value);
         bool getHighlightSleepParts() const;
-        void setHighlightSleepParts(bool);
+        void setHighlightSleepParts(bool value);
         bool getHighlightAwakeParts() const;
-        void setHighlightAwakeParts(bool);
+        void setHighlightAwakeParts(bool value);
         bool getShowPartCoordinateFrames() const;
-        void setShowPartCoordinateFrames(bool);
+        void setShowPartCoordinateFrames(bool value);
         bool getShowModelCoordinateFrames() const;
-        void setShowModelCoordinateFrames(bool);
+        void setShowModelCoordinateFrames(bool value);
         bool getShowWorldCoordinateFrames() const;
-        void setShowWorldCoordinateFrames(bool);
+        void setShowWorldCoordinateFrames(bool value);
         bool getDisableSleep() const;
-        void setDisableSleep(bool);
+        void setDisableSleep(bool value);
         bool getDisableEnvironmentalThrottle() const;
-        void setDisableEnvironmentalThrottle(bool);
+        void setDisableEnvironmentalThrottle(bool value);
         bool getUseNewGraphics() const;
-        void setUseNewGraphics(bool);
+        void setUseNewGraphics(bool value);
         bool getShowSpanningTree() const;
-        void setShowSpanningTree(bool);
-        bool getValidatingDebug() const;
-        void setValidatingDebug(bool);
-        Debugable::AssertAction getAssertAction() const;
-        void setAssertAction(Debugable::AssertAction);
-        ErrorReporting getErrorReporting() const;
-        void setErrorReporting(ErrorReporting);
+        void setShowSpanningTree(bool value);
+
+        bool getValidatingDebug() const
+		{
+			return Debugable::validatingDebug;
+		}
+
+        void setValidatingDebug(bool value);
+
+        Debugable::AssertAction getAssertAction() const
+		{
+			return Debugable::assertAction;
+		}
+
+        void setAssertAction(Debugable::AssertAction value);
+
+        ErrorReporting getErrorReporting() const
+		{
+			return errorReporting;
+		}
+
+        void setErrorReporting(ErrorReporting value);
         float shaderModel() const;
         int videoMemory() const;
         int cpuSpeed() const;
