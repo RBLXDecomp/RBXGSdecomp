@@ -1527,6 +1527,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\DebugSettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Decal.cpp"
 				>
 			</File>
