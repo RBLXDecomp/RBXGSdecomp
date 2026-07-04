@@ -415,7 +415,7 @@ namespace RBX
 			);
 	}
 
-	//this is hell (85% match)
+	//92.55% match
 	//PLEASE NOTE THAT MOST VARIABLE NAMES ARE MOST LIKELY NOT ACCURATE OF THEIR FUNCTIONALITY
 	bool BlockBlockContact::getBestPlaneEdge(bool& planeContact, float overlapIgnored)
 	{
@@ -423,18 +423,19 @@ namespace RBX
 		float bestEdgeLength = Math::inf();
 		float lastPlaneLength = Math::inf();
 		int lastFeature[2] = {this->feature[0], this->feature[1]};
-		bool checkLastFeature = (lastFeature[0] >= 0 && lastFeature[0] < 6) || lastFeature[1] <= 5;
+		bool checkLastFeature = (lastFeature[0] >= 0 && lastFeature[0] < 6) || (lastFeature[1] >= 0 && lastFeature[1] < 6);
 
-		int sepIdCounter = this->separatingBodyId + 1;
+		bool belowOverlap = false;
 
 		for (int i = this->separatingBodyId; i < this->separatingBodyId + 2; i++)
 		{
 			int baseId = i % 2;
-			int testId = sepIdCounter % 2;
+			int testId = (i + 1) % 2;
+
 			const G3D::CoordinateFrame& primPV0 = this->getPrimitive(baseId)->getBody()->getPV().position;
 			const G3D::CoordinateFrame& primPV1 = this->getPrimitive(testId)->getBody()->getPV().position;
-			G3D::Vector3* eTest = (G3D::Vector3*)this->block(0)->getVertices();
-			G3D::Vector3* eBase = (G3D::Vector3*)this->block(1)->getVertices();
+			G3D::Vector3* eBase = (G3D::Vector3*)this->block(baseId)->getVertices();
+			G3D::Vector3* eTest = (G3D::Vector3*)this->block(testId)->getVertices();
 
 			G3D::Vector3 delta = primPV1.translation - primPV0.translation;
 
@@ -444,14 +445,14 @@ namespace RBX
 			{
 				int axisId = j % 3;
 
-				float what = Math::taxiCabMagnitude(primPV1.rotation * primPV0.rotation.getColumn(axisId) * *eTest) + *eBase[axisId]  - fabs(rotTransMul[axisId]);
+				float what = Math::taxiCabMagnitude(primPV0.rotation.getColumn(axisId) * primPV1.rotation * *eTest) + (*eBase)[axisId] - fabs(rotTransMul[axisId]);
 
-				if (overlapIgnored > what)
+				if (what > overlapIgnored)
 				{
 					if (checkLastFeature && lastFeature[baseId] % 3 == axisId )
 						lastPlaneLength = what;
 
-					if (bestPlaneLength < what)
+					if (what < bestPlaneLength)
 					{
 						bestPlaneLength = what;
 						this->feature[baseId] = rotTransMul[axisId] > 0.0f ? axisId : axisId + 3;
@@ -465,19 +466,13 @@ namespace RBX
 				{
 					this->separatingBodyId = baseId;
 					this->separatingAxisId = axisId;
-					return false;
+					belowOverlap = true;
 				}
+
+				if (belowOverlap)
+					return false;
 			}
-			sepIdCounter++;
 		}
-
-
-		/*if (checkLastFeature && (this->feature[0] != lastFeature[0] || this->feature[1] != lastFeature[1]) && !(bestPlaneLength * 1.01f < lastPlaneLength))
-		{
-			bestPlaneLength = lastPlaneLength;
-			this->feature[0] = lastFeature[0];
-			this->feature[1] = lastFeature[1];
-		}*/
 
 		if (checkLastFeature) 
 		{
@@ -493,8 +488,8 @@ namespace RBX
 		}
 		const G3D::CoordinateFrame& primPV0 = this->getPrimitive(0)->getBody()->getPV().position;
 		const G3D::CoordinateFrame& primPV1 = this->getPrimitive(1)->getBody()->getPV().position;
-		G3D::Vector3* eTest = (G3D::Vector3*)this->block(0)->getVertices();
-		G3D::Vector3* eBase = (G3D::Vector3*)this->block(1)->getVertices();
+		G3D::Vector3* e0 = (G3D::Vector3*)this->block(0)->getVertices();
+		G3D::Vector3* e1 = (G3D::Vector3*)this->block(1)->getVertices();
 
 		G3D::Vector3 p0p1 = primPV1.translation - primPV0.translation;
 
@@ -511,11 +506,13 @@ namespace RBX
 				G3D::Vector3 crossAxisMulPV0rot = primPV0.rotation * crossAxis;
 				G3D::Vector3 crossAxisMulPV1rot = primPV1.rotation * crossAxis;
 
-				float what = Math::taxiCabMagnitude(crossAxisMulPV0rot * *eTest) + Math::taxiCabMagnitude(crossAxisMulPV1rot * *eBase) - fabs(p0p1inCrossAxis);
-				if (overlapIgnored > what)
+				float what = Math::taxiCabMagnitude(crossAxisMulPV0rot * *e0) + Math::taxiCabMagnitude(crossAxisMulPV1rot * *e1) - fabs(p0p1inCrossAxis);
+				if (what > overlapIgnored)
 				{
-					if (bestEdgeLength < what)
+					if (what < bestEdgeLength)
 					{
+						bestEdgeLength = what;
+
 						if ( what * 10.0 < bestPlaneLength )
 						{
 							if ( p0p1inCrossAxis > 0.0 )
