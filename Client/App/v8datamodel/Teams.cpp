@@ -7,20 +7,22 @@ namespace RBX
 	const char* sTeams = "Teams";
 
 	Teams::Teams()
+		: teams(std::vector<boost::shared_ptr<Instance>>())
 	{
 		setName("Teams");
 	}
 
-	Team::~Team()
+	Teams::~Teams()
 	{
 	}
 
 	int Teams::getNumPlayersInTeam(BrickColor brickColor)
 	{
-		Network::Players* players = ServiceProvider::findServiceProvider(this)->find<Network::Players>();
+		int numOfPlayers = 0;
+
+		Network::Players* players = ServiceProvider::find<Network::Players>(this);
 		RBXASSERT(players);
 
-		int numOfPlayers = 0;
 		for (size_t i = 0; i < players->numChildren(); i++)
 		{
 			Network::Player* player = fastDynamicCast<Network::Player>(players->getChild(i));
@@ -53,7 +55,7 @@ namespace RBX
 
 	G3D::Color3 Teams::getTeamColorForHumanoid(Humanoid* humanoid)
 	{
-		Network::Players* players = ServiceProvider::findServiceProvider(this)->find<Network::Players>();
+		Network::Players* players = ServiceProvider::find<Network::Players>(this);
 		RBXASSERT(players);
 
 		for (size_t i = 0; i < players->numChildren(); i++)
@@ -77,29 +79,48 @@ namespace RBX
 
 	void Teams::assignNewPlayerToTeam(Network::Player* player)
 	{
-		BrickColor currentTeam = BrickColor::lego_28;
-		bool foundTeam = false;
+		BrickColor best = BrickColor::lego_28;
+		int best_count = 10000;
+		bool found = false;
 
 		for (size_t i = 0; i < numChildren(); i++)
 		{
 			Team* team = fastDynamicCast<Team>(getChild(i));
-			if (team)
+			if (team && team->getAutoAssignable() == true)
 			{
-				if (team->getAutoAssignable() == true)
+				int count = getNumPlayersInTeam(team->getTeamColor());
+
+				if (count < best_count)
 				{
-					if (getNumPlayersInTeam(team->getTeamColor()) < currentTeam.number)
-					{
-						currentTeam = team->getTeamColor();
-						foundTeam = true;
-					}
+					best = team->getTeamColor();
+					best_count = count;
+					found = true;
 				}
 			}
 		}
 		
-		if (foundTeam)
+		if (found)
 		{
-			player->setTeamColor(currentTeam);
+			player->setTeamColor(best);
 			player->setNeutral(false);
+		}
+	}
+
+	void Teams::onChildAdded(Instance* child)
+	{
+		if (fastDynamicCast<Team>(child))
+		{
+			boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>& myTeams = teams.write();
+			myTeams->push_back(shared_from(child));
+		}
+	}
+
+	void Teams::onChildRemoving(Instance* child)
+	{
+		if (fastDynamicCast<Team>(child))
+		{
+			boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>& myTeams = teams.write();
+			myTeams->erase(std::find(myTeams->begin(), myTeams->end(), shared_from(child)));
 		}
 	}
 }

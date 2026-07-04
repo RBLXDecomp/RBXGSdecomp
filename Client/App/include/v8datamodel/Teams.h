@@ -20,7 +20,6 @@ namespace RBX
 		CopyOnWrite<std::vector<boost::shared_ptr<Instance>>> teams;
 
 	public:
-		//Teams(const Teams&);
 		Teams();
 		virtual ~Teams();
 	public:
@@ -32,15 +31,15 @@ namespace RBX
 		BrickColor getUnusedTeamColor();
 		Team* getTeamFromTeamColor(BrickColor brickColor);
 		Team* getTeamFromPlayer(Network::Player*);
+
 		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> getTeams()
 		{
 			return teams.read();
 		}
+
 		G3D::Color3 getTeamColorForHumanoid(Humanoid* humanoid);
 	protected:
-		virtual void onChildAdded(Instance*);
-		virtual void onChildRemoving(Instance*);
-	public:
-		//Teams& operator=(const Teams&);
+		virtual void onChildAdded(Instance* child);
+		virtual void onChildRemoving(Instance* child);
 	};
 }

@@ -17,19 +17,24 @@ namespace RBX
 		static Reflection::BoundProp<bool, 1> prop_AutoColorCharacters;
 	  
 	public:
-		//Team(const Team&);
 		Team();
 		virtual ~Team();
 	public:
-		virtual bool askSetParent(const Instance*) const;
-		virtual bool askAddChild(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
+
+		virtual bool askAddChild(const Instance* instance) const
+		{
+			return true;
+		}
+
 		int getScore() const;
 		void setScore(int newScore);
 		BrickColor getTeamColor() const;
 		void setTeamColor(BrickColor newColor);
 		bool getAutoAssignable() const;
 		void setAutoAssignable(bool value);
-	public:
-		//Team& operator=(const Team&);
 	};
 }
