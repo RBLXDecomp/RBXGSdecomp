@@ -25,10 +25,6 @@ namespace RBX
 		setName("Lighting");
 	}
 
-	Lighting::~Lighting()
-	{
-	}
-
 	G3D::Vector3 Lighting::getMoonPosition()
 	{
 		return (skyParameters.physicallyCorrect) ? skyParameters.trueMoonPosition : skyParameters.moonPosition;
@@ -39,15 +35,14 @@ namespace RBX
 		return (skyParameters.physicallyCorrect) ? skyParameters.trueSunPosition : skyParameters.sunPosition;
 	}
 
-	void Lighting::replaceSky(Sky* sky)
+	void Lighting::replaceSky(Sky* newSky)
 	{
-		Sky* currentSky = findFirstChildOfType<Sky>();
-		while (currentSky)
+		while (Sky* currentSky = findFirstChildOfType<Sky>())
 		{
 			currentSky->setParent(NULL);
-			currentSky = findFirstChildOfType<Sky>();
 		}
-		sky->setParent(this);
+
+		newSky->setParent(this);
 	}
 
 	std::string Lighting::getTimeStr() const
@@ -55,86 +50,94 @@ namespace RBX
 		return boost::posix_time::to_simple_string(timeOfDay);
 	}
 
-	void Lighting::setTimeStr(const std::string &time)
+	void Lighting::setTimeStr(const std::string& value)
 	{
-		setTime(boost::posix_time::duration_from_string(time));
+		setTime(boost::posix_time::duration_from_string(value));
 	}
 
-	void Lighting::setClearColor(G3D::Color4 newClearColor)
+	void Lighting::setClearColor(G3D::Color4 value)
 	{
-		if (newClearColor != clearColor)
+		if (value != clearColor)
 		{
-			clearColor = newClearColor;
+			clearColor = value;
+
 			raisePropertyChanged(desc_ClearColor);
 			fireLightingChanged(false);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
 	}
 
-	void Lighting::setLightColor(G3D::Color3 newLightColor)
+	void Lighting::setLightColor(G3D::Color3 value)
 	{
-		if (newLightColor != skyParameters.lightColor)
+		if (value != skyParameters.lightColor)
 		{
-			skyParameters.lightColor = newLightColor;
+			skyParameters.lightColor = value;
+
 			raisePropertyChanged(desc_LightColor);
 			fireLightingChanged(false);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
 	}
 
-	void Lighting::setAmbientBottom(G3D::Color3 newAmbientBottom)
+	void Lighting::setAmbientBottom(G3D::Color3 value)
 	{
-		if (newAmbientBottom != ambientBottom)
+		if (value != ambientBottom)
 		{
-			ambientBottom = newAmbientBottom;
+			ambientBottom = value;
+
 			raisePropertyChanged(desc_AmbientBottom);
 			fireLightingChanged(false);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
 	}
 
-	void Lighting::setAmbientTop(G3D::Color3 newAmbientTop)
+	void Lighting::setAmbientTop(G3D::Color3 value)
 	{
-		if (newAmbientTop != ambientTop)
+		if (value != ambientTop)
 		{
-			ambientTop = newAmbientTop;
+			ambientTop = value;
+
 			raisePropertyChanged(desc_AmbientTop);
 			fireLightingChanged(false);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
 	}
 
-	void Lighting::setGeographicLatitude(float newGeographicLatitude)
+	void Lighting::setGeographicLatitude(float value)
 	{
-		if (newGeographicLatitude != skyParameters.geoLatitude)
+		if (value != skyParameters.geoLatitude)
 		{
-			skyParameters.geoLatitude = newGeographicLatitude;
+			skyParameters.geoLatitude = value;
+
 			raisePropertyChanged(prop_GeographicLatitude);
 			fireLightingChanged(false);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
 	}
 
-	//65.93% matching.
-	void Lighting::setTime(const boost::posix_time::time_duration& time)
+	void Lighting::setTime(const boost::posix_time::time_duration& value)
 	{
-		if (timeOfDay != time)
+		int totalSeconds = value.total_seconds();
+		totalSeconds -= (totalSeconds / 86400) * 86400;
+
+		if (timeOfDay.total_seconds() != totalSeconds)
 		{
-			timeOfDay = boost::posix_time::time_duration(0, 0, time.total_seconds());
+			timeOfDay = boost::posix_time::seconds(totalSeconds);
 			skyParameters.setTime(timeOfDay.total_seconds());
+
 			raisePropertyChanged(prop_Time);
 			fireLightingChanged(false);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
@@ -145,44 +148,47 @@ namespace RBX
 		return timeOfDay.total_milliseconds() / 60000.0;
 	}
 
-	void Lighting::setMinutesAfterMidnight(double seconds)
+	void Lighting::setMinutesAfterMidnight(double value)
 	{
-		setTime(boost::posix_time::time_duration(0, 0, seconds * 60));
+		setTime(boost::posix_time::seconds(value * 60.0));
 	}
 
-	void Lighting::onChildAdded(Instance* instance)
+	void Lighting::onChildAdded(Instance* child)
 	{
-		Sky* newSky = fastDynamicCast<Sky>(instance);
+		Sky* newSky = fastDynamicCast<Sky>(child);
 
 		if (newSky)
 		{
 			sky = shared_from(newSky);
+
 			fireLightingChanged(true);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
 	}
 
-	void Lighting::onChildRemoving(Instance* instance)
+	void Lighting::onChildRemoving(Instance* child)
 	{
-		if (sky.get() == instance)
+		if (sky.get() == child)
 		{
 			sky.reset();
+
 			fireLightingChanged(true);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}
 	}
 
-	void Lighting::onChildChanged(Instance* instance, const PropertyChanged& propEvent)
+	void Lighting::onChildChanged(Instance* instance, const PropertyChanged& event)
 	{
-		Instance::onChildChanged(instance, propEvent);
+		Instance::onChildChanged(instance, event);
 		if (sky.get() == instance)
 		{
 			fireLightingChanged(true);
-			RunService* runService = ServiceProvider::findServiceProvider(this)->find<RunService>();
+
+			RunService* runService = ServiceProvider::find<RunService>(this);
 			if (runService)
 				runService->invalidateRunViews();
 		}

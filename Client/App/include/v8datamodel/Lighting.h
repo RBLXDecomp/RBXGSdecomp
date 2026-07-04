@@ -25,71 +25,81 @@ namespace RBX
 		static Reflection::SignalDesc<Lighting, void(bool)> event_LightingChanged;
 
 	public:
-		//Lighting(const Lighting&);
 		Lighting();
 	public:
-		void replaceSky(Sky* sky);
+		void replaceSky(Sky* newSky);
 		bool isSkySuppressed() const;
 		void suppressSky(const bool);
+
 		const G3D::LightingParameters& getSkyParameters() const
 		{
 			return skyParameters;
 		}
+
 		G3D::Color4 getClearColor() const;
-		void setClearColor(G3D::Color4 newClearColor);
+		void setClearColor(G3D::Color4 value);
+
 		G3D::Color3 getLightColor() const
 		{
 			return skyParameters.lightColor;
 		}
-		void setLightColor(G3D::Color3 newLightColor);
+
+		void setLightColor(G3D::Color3 value);
+
 		G3D::Color3 getAmbientTop() const
 		{
 			return ambientTop;
 		}
-		void setAmbientTop(G3D::Color3 newAmbientTop);
+
+		void setAmbientTop(G3D::Color3 value);
+
 		G3D::Color3 getAmbientBottom() const
 		{
 			return ambientBottom;
 		}
-		void setAmbientBottom(G3D::Color3 newAmbientBottom);
+
+		void setAmbientBottom(G3D::Color3 value);
 		std::string getTimeStr() const;
-		void setTimeStr(const std::string& time);
-		void setTime(const boost::posix_time::time_duration& time);
+		void setTimeStr(const std::string& value);
+		void setTime(const boost::posix_time::time_duration& value);
 		double getGameTime() const;
 		double getMinutesAfterMidnight();
-		void setMinutesAfterMidnight(double seconds);
+		void setMinutesAfterMidnight(double value);
+
 		float getMoonPhase()
 		{
 			return skyParameters.moonPhase;
 		}
+
 		G3D::Vector3 getMoonPosition();
 		G3D::Vector3 getSunPosition();
+
 		float getGeographicLatitude() const
 		{
 			return skyParameters.geoLatitude;
 		}
-		void setGeographicLatitude(float newGeographicLatitude);
+
+		void setGeographicLatitude(float value);
+
 		G3D::Color3 getClearColor3() const
 		{
 			return G3D::Color3(clearColor.r, clearColor.g, clearColor.b);
 		}
-		void setClearColor3(G3D::Color3 color)
+
+		void setClearColor3(G3D::Color3 value)
 		{
-			setClearColor(G3D::Color4(color));
+			setClearColor(G3D::Color4(value));
 		}
+
 	protected:
-		virtual void onChildAdded(Instance* instance);
-		virtual void onChildRemoving(Instance* instance);
-		virtual void onChildChanged(Instance* instance, const PropertyChanged& propEvent);
+		virtual void onChildAdded(Instance* child);
+		virtual void onChildRemoving(Instance* child);
+		virtual void onChildChanged(Instance* instance, const PropertyChanged& event);
 		virtual bool askAddChild(const Instance* instance) const;
 	private:
 		void fireLightingChanged(bool value)
 		{
 			event_LightingChanged.fire(this, value);
 		}
-	public:
-		virtual ~Lighting();
-	public:
-		//Lighting& operator=(const Lighting&);
 	};
 }
