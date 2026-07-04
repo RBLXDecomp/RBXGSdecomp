@@ -180,6 +180,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Profiler.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\RenderScene.cpp"
 				>
 			</File>
@@ -223,6 +227,10 @@
 			</File>
 			<File
 				RelativePath=".\include\RenderLib\Mesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\RenderLib\Profiler.h"
 				>
 			</File>
 			<File

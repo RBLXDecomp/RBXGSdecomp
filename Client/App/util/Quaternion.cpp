@@ -2,50 +2,52 @@
 
 namespace RBX
 {
+	// see: https://web.archive.org/web/20041019044742/http://www.wild-magic.com:80/Source/Math/WmlQuaternion.inl
+
 	Quaternion::Quaternion(const G3D::Matrix3& rot)
 	{
-		float v2 = rot[0][0] + rot[1][1] + rot[2][2];
-		if (v2 > 0)
+		float fTrace = rot[0][0] + rot[1][1] + rot[2][2];
+		float fRoot;
+
+		if (fTrace > 0.0f)
 		{
-			float v3 = sqrt(v2 + 1);
-			this->w = v3 * 0.5;
-			float v4 = 0.5 / v3;
-			this->x = (rot[2][1] - rot[1][2]) * v4;
-			this->y = (rot[0][2] - rot[2][0]) * v4;
-			this->z = (rot[1][0] - rot[0][1]) * v4;
+			fRoot = sqrt(fTrace + 1);
+			this->w = 0.5f * fRoot;
+			fRoot = 0.5f / fRoot;
+			this->x = (rot[2][1] - rot[1][2]) * fRoot;
+			this->y = (rot[0][2] - rot[2][0]) * fRoot;
+			this->z = (rot[1][0] - rot[0][1]) * fRoot;
 		}
 		else
 		{
 			if (rot[0][0] > rot[1][1] && rot[0][0] > rot[2][2])
 			{
-				float v5 = -sqrt(rot[0][0] + 1.0 - rot[1][1] - rot[2][2]);
-				this->x = v5 * 0.5;
-				float v6 = 0.5 / v5;
-				this->y = (rot[1][0] + rot[0][1]) * v6;
-				this->z = (rot[2][0] + rot[0][2]) * v6;
-				this->w = v6 * (rot[2][1] - rot[1][2]);
+				fRoot = -sqrt(1.0f + rot[0][0] - rot[1][1] - rot[2][2]);
+				this->x = 0.5f * fRoot;
+				fRoot = 0.5f / fRoot;
+				this->y = (rot[1][0] + rot[0][1]) * fRoot;
+				this->z = (rot[2][0] + rot[0][2]) * fRoot;
+				this->w = (rot[2][1] - rot[1][2]) * fRoot;
 			}
 			else
 			{
 				if (rot[1][1] > rot[2][2])
 				{
-					float v7 = -sqrt(rot[1][1] + 1.0 - rot[0][0] - rot[2][2]);
-					this->y = v7 * 0.5;
-					float v8 = 0.5 / v7;
-					this->x = (rot[1][0] + rot[0][1]) * v8;
-					this->z = (rot[2][1] + rot[1][2]) * v8;
-					float v9 = rot[0][2] - rot[2][0];
-					this->w = v8 * v9;
+					fRoot = -sqrt(1.0f + rot[1][1] - rot[0][0] - rot[2][2]);
+					this->y = 0.5f * fRoot;
+					fRoot = 0.5f / fRoot;
+					this->x = (rot[1][0] + rot[0][1]) * fRoot;
+					this->z = (rot[2][1] + rot[1][2]) * fRoot;
+					this->w = (rot[0][2] - rot[2][0]) * fRoot;
 				}
 				else
 				{
-					float v10 = -sqrt(rot[2][2] + 1.0 - rot[0][0] - rot[1][1]);
-					this->z = v10 * 0.5;
-					float v8 = 0.5 / v10;
-					this->x = (rot[2][0] + rot[0][2]) * v8;
-					this->y = (rot[2][1] + rot[1][2]) * v8;
-					float v9 = rot[1][0] - rot[0][1];
-					this->w = v8 * v9;
+					fRoot = -sqrt(1.0f + rot[2][2] - rot[0][0] - rot[1][1]);
+					this->z = 0.5f * fRoot;
+					fRoot = 0.5f / fRoot;
+					this->x = (rot[2][0] + rot[0][2]) * fRoot;
+					this->y = (rot[2][1] + rot[1][2]) * fRoot;
+					this->w = (rot[1][0] - rot[0][1]) * fRoot;
 				}
 			}
 		}
@@ -89,31 +91,28 @@ namespace RBX
 
 	void Quaternion::toRotationMatrix(G3D::Matrix3& rot) const
 	{
-		Quaternion QuatMul = *this * 2.0f;
+		float fTx  = 2.0f * this->x;
+		float fTy  = 2.0f * this->y;
+		float fTz  = 2.0f * this->z;
+		float fTxx = fTx * this->x;
+		float fTxy = fTy * this->x;
+		float fTxz = fTz * this->x;
+		float fTwx = fTx * this->w;
+		float fTwy = fTy * this->w;
+		float fTwz = fTz * this->w;
+		float fTyy = fTy * this->y;
+		float fTyz = fTz * this->y;
+		float fTzz = fTz * this->z;
 
-		float v5 = x * QuatMul.x;
-		float v6 = x * QuatMul.y;
-		float v7 = x * QuatMul.z;
-
-		float v8 = w * QuatMul.x;
-		float v9 = w * QuatMul.y;
-		float zz = w * QuatMul.z;
-
-		float v10 = y * QuatMul.y;
-		float v15 = y * QuatMul.z;
-		float v12 = z * QuatMul.z;
-
-		rot[0][0] = 1.0 - (v12 + v10);
-		rot[0][1] = v6 - zz;
-		rot[0][2] = v9 + v7;
-
-		rot[1][0] = v6 + zz;
-		rot[1][1] = 1.0 - (v12 + v5);
-		rot[1][2] = v15 - v8;
-
-		rot[2][0] = v7 - v9;
-		rot[2][1] = v8 + v15;
-		rot[2][2] = 1.0 - (v5 + v10);
+		rot[0][0] = 1.0 - (fTyy + fTzz);
+		rot[0][1] = fTxy - fTwz;
+		rot[0][2] = fTxz + fTwy;
+		rot[1][0] = fTxy + fTwz;
+		rot[1][1] = 1.0 - (fTxx + fTzz);
+		rot[1][2] = fTyz - fTwx;
+		rot[2][0] = fTxz - fTwy;
+		rot[2][1] = fTyz + fTwx;
+		rot[2][2] = 1.0 - (fTxx + fTyy);
 	}
 
 	//needs to be moved to the header
