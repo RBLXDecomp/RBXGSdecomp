@@ -59,4 +59,4 @@ namespace RBX
 			raisePropertyChanged(prop_Shiny);
 		}
 	}
-};
+}

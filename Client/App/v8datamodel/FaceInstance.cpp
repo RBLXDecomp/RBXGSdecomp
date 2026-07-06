@@ -32,4 +32,4 @@ namespace RBX
 	{
 		return fastDynamicCast<const PartInstance>(instance) != NULL;
 	}
-};
+}
