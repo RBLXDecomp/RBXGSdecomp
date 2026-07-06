@@ -105,7 +105,7 @@ namespace RBX
 		return this->getMomentHollow(mass);
 	}
 
-	// 85% match
+	// 93.90% match
 	// TODO: remove noinline after Block::getMoment is moved into the header file
 	__declspec(noinline) G3D::Matrix3 Block::getMomentHollow(float mass) const
 	{
@@ -122,8 +122,7 @@ namespace RBX
 
 			float scaling = mass / (2 * area);
 
-			float temp = (Z*Z*Y)*X + (Y*Y*Y*Z)/3 + (Z*Z*Z*Y)/3;
-			temp += (Y*Y*Z)*X + (X*Y*Y*Y)/3 + (X*Z*Z*Z)/3;
+			float temp = (Z*Z*Y)*X + (Y*Y*Y*Z)/3 + (Z*Z*Z*Y)/3 + (Y*Y*Z)*X + (X*Y*Y*Y)/3 + (X*Z*Z*Z)/3;
 
 			I[i] = temp * scaling;
 		}
