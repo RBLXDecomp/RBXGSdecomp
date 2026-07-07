@@ -48,14 +48,11 @@ namespace RBX
 
 	ICameraOwner* Camera::getCameraOwner()
 	{
-		Instance* instance = getParent();
-		while (instance != NULL)
+		for (Instance* instance = getParent(); instance != NULL; instance = instance->getParent())
 		{
 			ICameraOwner* cameraOwner = fastDynamicCast<ICameraOwner>(instance);
 			if (cameraOwner)
 				return cameraOwner;
-
-			instance = getParent();
 		}
 
 		return NULL;
@@ -73,17 +70,21 @@ namespace RBX
 		distance = (cameraGoal.translation - cameraFocus.translation).magnitude();
 	}
 
-	//70.53% matching. 
 	bool Camera::setDistanceFromTarget(float newDistance)
 	{
 		G3D::Vector3 lookVector = cameraFocus.translation - cameraGoal.translation;
 		float currentDistance = lookVector.magnitude();
 
-		if (newDistance < 0.5 && currentDistance == 0.5 || newDistance > 1000.0 && currentDistance == 1000.0)
+		const float min = 0.5f;
+		const float max = 1000.0f;
+
+		if (newDistance < min && currentDistance == min)
+			return false;
+		
+		if (newDistance > max && currentDistance == max)
 			return false;
 
-		newDistance = (newDistance < 0.5) ? 0.5 : newDistance;
-		newDistance = (newDistance > 1000.0) ? 1000.0 : newDistance;
+		newDistance = G3D::min(max, G3D::max(min, newDistance));
 		
 		lookVector *= newDistance;
 		cameraGoal.translation = cameraFocus.translation - (lookVector / currentDistance);
@@ -107,7 +108,7 @@ namespace RBX
 		float currentDistance = lookVector.magnitude();
 		float newZoomDistance = getNewZoomDistance(currentDistance, in);
 
-		if (currentDistance == newZoomDistance)
+		if (newZoomDistance == currentDistance)
 			return false;
 
 		cameraGoal.translation -= lookVector * (newZoomDistance / currentDistance - 1.0f);
@@ -124,8 +125,7 @@ namespace RBX
 		Math::setHeadingElevation(cameraGoal, heading, elevation);
 		cameraFocus.rotation = cameraGoal.rotation;
 
-		G3D::Vector3 lookVector = cameraFocus.lookVector();
-		cameraGoal.translation = cameraFocus.translation - lookVector * distance;
+		cameraGoal.translation = cameraFocus.translation - cameraGoal.lookVector() * distance;
 		cameraExternallyAdjusted = true;
 	}
 
@@ -150,10 +150,16 @@ namespace RBX
 
 	void Camera::updateFocus()
 	{
-		cameraFocus = getCameraSubject()->getLocation();
+		Instance* instance = getCameraSubjectInstance();
+		if (instance)
+		{
+			ICameraSubject* subject = fastDynamicCast<ICameraSubject>(instance);
+			RBXASSERT(subject);
+			cameraFocus = subject->getLocation();
+		}
 	}
 
-	//87.80% matching.
+	//93.14% matching.
 	void Camera::updateGoal()
 	{
 		switch (cameraType)
@@ -166,15 +172,15 @@ namespace RBX
 			case ATTACH_CAMERA: 
 			{
 				G3D::Vector3 v1 = cameraGoal.translation - cameraFocus.translation;
-				double distance = v1.xz().length();
+				float distance = v1.xz().length();
 
 				updateFocus();
 
-				G3D::Vector2 direction = cameraFocus.lookVector().xz().direction();
+				G3D::Vector2 direction = -cameraFocus.lookVector().xz().direction();
 
-				cameraGoal.translation = G3D::Vector3(cameraFocus.translation.x - direction.x * distance,
+				cameraGoal.translation = G3D::Vector3(cameraFocus.translation.x + direction.x * distance,
 													  cameraFocus.translation.y + v1.y,
-													  cameraFocus.translation.z - direction.y * distance);
+													  cameraFocus.translation.z + direction.y * distance);
 				break;
 			}
 			case TRACK_CAMERA:
@@ -189,7 +195,7 @@ namespace RBX
 			case FOLLOW_CAMERA:
 			{
 				G3D::Vector3 v1 = cameraFocus.translation - cameraGoal.translation;
-				double distance = v1.xz().length();
+				float distance = v1.xz().length();
 
 				updateFocus();
 			
@@ -358,29 +364,29 @@ namespace RBX
 		}
 	}
 
-	//84.84% matching.
+	//84.29% matching.
 	void Camera::tryZoomExtents(float low, float current, float high, const RBX::Extents& extents, const G3D::Rect2D& viewPort)
 	{
 		RBXASSERT(current >= low);
 		RBXASSERT(current <= high);
 
-		if (high - low > 0.1)
-		{
-			setDistanceFromTarget(current);
-			updateGoal();
-			goalToCamera();
+		if (high - low < 0.1)
+			return;
 
-			bool isContained = extents.containedByFrustum(gCamera.frustum(viewPort));
+		setDistanceFromTarget(current);
+		updateGoal();
+		goalToCamera();
 
-			float newLow = (isContained) ? low : current;
-			float newHigh = (isContained) ? current : high;
-			float newCurrent = (newHigh + newLow) * 0.5;
+		bool isContained = extents.containedByFrustum(gCamera.frustum(viewPort));
 
-			tryZoomExtents(newLow, newCurrent, newHigh, extents, viewPort);
-		}
+		float newLow = (isContained) ? low : current;
+		float newHigh = (isContained) ? current : high;
+		float newCurrent = (newHigh + newLow) * 0.5;
+
+		tryZoomExtents(newLow, newCurrent, newHigh, extents, viewPort);
 	}
 
-	//87.82% matching.
+	//99.49% matching.
 	void Camera::zoomExtents(Extents extents, const G3D::Rect2D& viewPort, Camera::ZoomType zoomType)
 	{
 		G3D::CoordinateFrame currentCoord = gCamera.getCoordinateFrame();
@@ -388,8 +394,6 @@ namespace RBX
 
 		if (zoomType != ZOOM_CHAR_PART_DRAG || cameraType == CUSTOM_CAMERA)
 		{
-			double low = 0.5;
-
 			if (cameraType == FIXED_CAMERA)
 			{
 				G3D::Vector3 scaler = extents.center() - cameraFocus.translation;
@@ -398,10 +402,14 @@ namespace RBX
 				cameraGoal.translation += scaler;
 			}
 
+			float low;
+
 			if (zoomType == ZOOM_OUT_ONLY || zoomType == ZOOM_CHAR_PART_DRAG)
 				low = (cameraGoal.translation - cameraFocus.translation).magnitude();
+			else
+				low = 0.5f;
 
-			double current = (cameraGoal.translation - cameraFocus.translation).magnitude();
+			float current = (cameraGoal.translation - cameraFocus.translation).magnitude();
 
 			RBXASSERT(G3D::isFinite(current));
 

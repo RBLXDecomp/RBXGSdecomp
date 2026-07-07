@@ -66,7 +66,6 @@ namespace RBX
 		void getIgnorePrims(G3D::Array<const Primitive*>&);
 		virtual bool askSetParent(const Instance* instance) const;
 	public:
-		//Camera(const Camera&);
 		Camera();
 		virtual ~Camera();
 	public:
@@ -111,8 +110,6 @@ namespace RBX
 		bool tiltUnits(int);
 		void lookAt(const G3D::Vector3& point);
 		void setImageServerViewNoLerp(const G3D::CoordinateFrame&, const G3D::Rect2D&);
-	public:
-		//Camera& operator=(const Camera&);
 
 	public:
 		static float distanceDefault();
