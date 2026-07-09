@@ -158,18 +158,18 @@ namespace RBX
 		if (clip.x == 0)
 		{
 			normalID = NORM_X;
-			return &this->vertices[2 * (clip.y <= 0) + 4 + (clip.z <= 1)];
+			return &this->vertices[2 * (clip.y <= 0) + 4 + (clip.z <= 0)];
 		}
 		else if (clip.y == 0)
 		{
 			normalID = NORM_Y;
-			return &this->vertices[4 * (clip.x <= 0) + 2 + (clip.z <= 1)];
+			return &this->vertices[4 * (clip.x <= 0) + 2 + (clip.z <= 0)];
 		}
 		else
 		{
 			RBXASSERT(clip.z == 0);
 			normalID = NORM_Z;
-			return &this->vertices[4 * (clip.x <= 0) + 1 + 2 * (clip.y <= 1)];
+			return &this->vertices[4 * (clip.x <= 0) + 1 + 2 * (clip.y <= 0)];
 		}
 	}
 
