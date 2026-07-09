@@ -10,6 +10,12 @@
 #include "util/standardout.h"
 #include <g3d/system.h>
 
+static RBX::Reflection::BoundFuncDesc<RBX::Network::Replicator, boost::shared_ptr<RBX::Reflection::DescribedBase>(void), 0> func_SendMarker(&RBX::Network::Replicator::sendMarker, "SendMarker", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
+static RBX::Reflection::BoundFuncDesc<RBX::Network::Replicator, void(void), 0> func_requestCharacter(&RBX::Network::Replicator::requestCharacter, "RequestCharacter", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
+static RBX::Reflection::BoundFuncDesc<RBX::Network::Replicator, void(void), 0> func_closeConnection(&RBX::Network::Replicator::closeConnection, "CloseConnection", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
+
+static RBX::Reflection::BoundFuncDesc<RBX::Network::Replicator, boost::shared_ptr<RBX::Instance>(void), 0> prop_RemotePlayer(&RBX::Network::Replicator::getPlayer, "GetPlayer", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
+
 enum ValueType // NOTE: may not be intended for this file
 {
 	ValueType_nil,

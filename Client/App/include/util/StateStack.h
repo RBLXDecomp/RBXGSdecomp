@@ -21,8 +21,8 @@ namespace RBX
 		std::vector<StateEntry> stack;
 	public:
 		StateStack()
-			: currentState(-1)
 		{
+			currentState = -1; // see DataModel constructor
 		}
 
 		~StateStack();

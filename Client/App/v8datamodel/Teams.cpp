@@ -6,6 +6,9 @@ namespace RBX
 {
 	const char* sTeams = "Teams";
 
+	static Reflection::BoundFuncDesc<Teams, void(void), 0> teams_rebalanceTeamsFunction(&Teams::rebalanceTeams, "RebalanceTeams", Reflection::FunctionDescriptor::AnyCaller);
+	static Reflection::BoundFuncDesc<Teams, boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>>(void), 0> func_teams(&Teams::getTeams, "GetTeams", Reflection::FunctionDescriptor::AnyCaller);
+
 	Teams::Teams()
 	{
 		setName("Teams");

@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	Reflection::PropDescriptor<Message, std::string> desc_Text("Text", "Appearance", &Message::getText, &Message::setText, Reflection::PropertyDescriptor::STANDARD);
+	static Reflection::PropDescriptor<Message, std::string> desc_Text("Text", "Appearance", &Message::getText, &Message::setText, Reflection::PropertyDescriptor::STANDARD);
 
 	Message::Message() 
 		: Base("Message")
