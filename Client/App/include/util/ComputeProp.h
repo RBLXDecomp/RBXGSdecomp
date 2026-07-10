@@ -19,6 +19,7 @@ namespace RBX
 			  getFunc(getFunc)
 		{
 		}
+
 		T getValue() const
 		{
 			if (dirty)
@@ -28,12 +29,20 @@ namespace RBX
 			}
 			return val;
 		}
+
 		operator T() const
 		{
 			return getValue();
 		}
+
 		const T* getValuePointer() const;
-		const T& getValueRef() const;
+
+		const T& getValueRef() const
+		{
+			getValue();
+			return val;
+		}
+
 		bool setDirty() const
 		{
 			dirty = true;

@@ -145,11 +145,7 @@ namespace RBX
 		}
 
 		ControllerService* controllerService = ServiceProvider::create<ControllerService>(this);
-		G3D::ReferenceCountedPointer<Controller> controller;
-		if (controllerService)
-			controller = controllerService->getController(controllerType, this);
-
-		return controller;
+		return controllerService ? controllerService->getController(controllerType, this) : NULL;
 	}
 
 	void PVInstance::onChildAdded(Instance* instance)

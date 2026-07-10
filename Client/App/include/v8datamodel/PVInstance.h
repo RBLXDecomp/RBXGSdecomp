@@ -39,8 +39,6 @@ namespace RBX
 		bool computeIsTopFlag() const;
 		G3D::ReferenceCountedPointer<Controller> computeTopPVController() const;
 		void dirtyAll();
-	public:
-		//PVInstance(const PVInstance&);
 	protected:
 		PVInstance(const char* name);
 	public:
@@ -83,12 +81,11 @@ namespace RBX
 		virtual void onExtentsChanged() const;
 	public:
 		void moveToPoint(G3D::Vector3 point);
-		// TODO: does not match
 		Controller* getTopPVController() const
 		{
-			G3D::ReferenceCountedPointer<Controller> controller = TopPVController.getValue();
-			if (controller.notNull())
-				return controller.pointer();
+			Controller* controller = TopPVController.getValue().pointer();
+			if (controller)
+				return controller;
 			else
 				return NullController::getStaticNullController();
 		}
@@ -104,24 +101,13 @@ namespace RBX
 		void writeVelocityData(XmlState*);
 		const PVInstance* getTopLevelPVParent() const;
 		PVInstance* getTopLevelPVParent();
-		// TODO: does not match
 		bool isTopLevelPVInstance() const
 		{
-			if (fastDynamicCast<PVInstance>(getParent()))
-			{
-				RBXASSERT(fastDynamicCast<PVInstance>(getParent()) == getParent());
-				return getTypedRoot<PVInstance>() == getParent();
-			}
-			else
-			{
-				return true;
-			}
+			return !fastDynamicCast<PVInstance>(getParent()) || getTypedRoot<PVInstance>() == rbx_static_cast<PVInstance*>(getParent());
 		}
 		void setPVGridOffsetLegacy(const G3D::CoordinateFrame& _offset);
 		G3D::CoordinateFrame* getLegacyOffset();
 		void clearLegacyOffset();
 		virtual void legacyTraverseState(const G3D::CoordinateFrame& parentState) = 0;
-	public:
-		//PVInstance& operator=(const PVInstance&);
 	};
 }

@@ -53,10 +53,12 @@ namespace RBX
 
 	G3D::Vector3 RootInstance::computeIdeInsertPoint() const
 	{
-		float tempY = G3D::max(0.0f, insertPoint.y);
+		insertPoint.y = G3D::max(0.0f, insertPoint.y);
+		float tempY = insertPoint.y;
 
-		Extents worldExtents = getExtentsWorld();
-		insertPoint = insertPoint.clamp(worldExtents.min(), worldExtents.max());
+		G3D::Vector3 newInsertPoint = getExtentsWorld().clip(insertPoint);
+
+		insertPoint = newInsertPoint;
 		insertPoint.y = tempY;
 
 		insertPoint = Dragger::toGrid(insertPoint);
@@ -113,15 +115,15 @@ namespace RBX
 	{
 		if (this->contains(pv))
 		{
-			RBXASSERT(getPrimaryPart());
+			RBXASSERT(pv->getPrimaryPart());
 
 			std::vector<PVInstance*> pvInstances;
 			pvInstances.push_back(pv);
 
-			G3D::Vector3 v = Dragger::toGrid(point - getLocation().translation);
+			G3D::Vector3 move = Dragger::toGrid(point - pv->getLocation().translation);
 
-			MegaDragger megaDragger(getPrimaryPart(), pvInstances, this);
-			moveSafe(megaDragger, v, MOVE_NO_DROP);
+			MegaDragger megaDragger(pv->getPrimaryPart(), pvInstances, this);
+			moveSafe(megaDragger, move, MOVE_NO_DROP);
 		}
 	}
 
@@ -132,9 +134,8 @@ namespace RBX
 			Extents extents = DragUtilities::computeExtents(partArray);
 
 			G3D::Vector3 characterInsertPoint = computeCharacterInsertPoint(extents);
-			characterInsertPoint = characterInsertPoint - extents.center();
+			G3D::Vector3 moveToInsert = Dragger::toGrid(characterInsertPoint - extents.bottomCenter());
 
-			G3D::Vector3 moveToInsert = Dragger::toGrid(characterInsertPoint);
 			moveSafe(partArray, moveToInsert, MOVE_DROP);
 		}
 	}
@@ -146,9 +147,8 @@ namespace RBX
 			Extents extents = DragUtilities::computeExtents(partArray);
 
 			G3D::Vector3 insertPoint = computeIdeInsertPoint();
-			insertPoint = insertPoint - extents.center();
+			G3D::Vector3 moveToInsert = Dragger::toGrid(insertPoint - extents.bottomCenter());
 
-			G3D::Vector3 moveToInsert = Dragger::toGrid(insertPoint);
 			moveSafe(partArray, moveToInsert, MOVE_DROP);
 		}
 	}
@@ -280,7 +280,8 @@ namespace RBX
 			Instance* instance = instances[i].get();
 			if (Sky* sky = fastDynamicCast<Sky>(instance))
 			{
-				ServiceProvider::create<Lighting>(this)->replaceSky(sky);
+				Lighting* lighting = ServiceProvider::create<Lighting>(this);
+				lighting->replaceSky(sky);
 			}
 			else if (Team* team = fastDynamicCast<Team>(instance))
 			{
@@ -309,17 +310,11 @@ namespace RBX
 			switch (insertMode)
 			{
 			case INSERT_TO_3D_VIEW:
-				{
-					insert3dView(remaining, promptMode);
-				}
+				insert3dView(remaining, promptMode);
 				return;
-
 			case INSERT_TO_TREE:
-				{
-					insertToTree(remaining, requestedParent);
-				}
+				insertToTree(remaining, requestedParent);
 				return;
-
 			case INSERT_RAW:
 				{
 					std::vector<boost::weak_ptr<PartInstance>> partArray;

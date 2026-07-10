@@ -30,7 +30,6 @@ namespace RBX
 		joint->setJointOwner(this);
 	}
 
-	// NEEDS: ~Instance
 	JointInstance::~JointInstance()
 	{
 		RBXASSERT(getParent() == NULL);

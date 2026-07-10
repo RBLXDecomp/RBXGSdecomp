@@ -1,4 +1,12 @@
 #include "v8datamodel/PartInstance.h"
+#include "v8datamodel/Workspace.h"
+#include "v8world/Assembly.h"
+#include "v8world/Controller.h"
+#include "v8world/World.h"
+#include "AppDraw/Draw.h"
+#include "AppDraw/DrawAdorn.h"
+#include "AppDraw/HitTest.h"
+#include "tool/Dragger.h"
 #include <G3D/CoordinateFrame.h>
 #include "reflection/type.h"
 
@@ -91,6 +99,20 @@ namespace RBX
 		bool null = part.get() && part->myWorld;
 		RBXASSERT(!null || part->primitive->inPipeline());
 		return null;
+	}
+
+	void PartInstance::destroyJoints()
+	{
+		World* world = Workspace::getWorldIfInWorkspace(this);
+		if (world)
+			world->destroyJoints(primitive.get());
+	}
+
+	void PartInstance::join()
+	{
+		World* world = Workspace::getWorldIfInWorkspace(this);
+		if (world)
+			world->createJoints(primitive.get());
 	}
 
 	bool PartInstance::computeSurfacesNeedAdorn() const
@@ -223,6 +245,76 @@ namespace RBX
 		return primitive->getExtentsLocal();
 	}
 
+	G3D::CoordinateFrame PartInstance::worldSnapLocation() const
+	{
+		G3D::Vector3 halfSize = getPartSizeXml() * 0.5f;
+
+		G3D::Vector3 snapInPart;
+		snapInPart.y = -halfSize.y;
+		snapInPart.x = halfSize.x - G3D::iRound(floorf(halfSize.x));
+		snapInPart.z = halfSize.z - G3D::iRound(floorf(halfSize.z));
+
+		G3D::CoordinateFrame localSnapLocation(snapInPart);
+		return primitive->getCoordinateFrame() * localSnapLocation;
+	}
+
+	bool PartInstance::aligned() const
+	{
+		G3D::CoordinateFrame myCoord = worldSnapLocation();
+		G3D::CoordinateFrame myCoordSnapped = Math::snapToGrid(myCoord, Dragger::dragSnap());
+
+		return Math::fuzzyEq(myCoord, myCoordSnapped, 0.00001, 0.00001);
+	}
+
+
+	G3D::Vector3 PartInstance::uiToXmlSize(const G3D::Vector3& uiSize) const
+	{
+		G3D::Vector3 gridUiSize = Math::iRoundVector3(uiSize.max(G3D::Vector3(1.0f, 1.0f, 1.0f)));
+		G3D::Vector3 xmlSize = gridUiSize;
+		
+		switch (formFactor)
+		{
+		case BRICK:
+			xmlSize.y *= 1.2f;
+			break;
+		case PLATE:
+			xmlSize.y *= 0.4f;
+			break;
+		}
+
+		return xmlSize;
+	}
+
+	const Part& PartInstance::getPart() const
+	{
+		const Part& part = PersistentPart.getValueRef();
+		part.coordinateFrame = primitive->getCoordinateFrame();
+		return part;
+	}
+
+	Part PartInstance::computePersistentPart() const
+	{
+		const G3D::CoordinateFrame& cframe = primitive->getCoordinateFrame();
+		float transparency = 1.0f - getTransparencyUi();
+
+		return Part(partType, getPartSizeXml(), G3D::Color4(getColor3(), transparency), surfaces.surf6(), cframe);
+	}
+
+	const RBX::PartInstance* PartInstance::fromPrimitiveConst(const Primitive* p)
+	{
+		RBXASSERT(!p || dynamic_cast<PartInstance*>(p->getOwner()));
+
+		if (p)
+			return rbx_static_cast<PartInstance*>(p->getOwner());
+		else
+			return NULL;
+	}
+
+	PartInstance* PartInstance::fromPrimitive(Primitive* p)
+	{
+		return const_cast<PartInstance*>(fromPrimitiveConst(p));
+	}
+
 	bool PartInstance::shouldRender3dAdorn() const
 	{
 		return partType == Part::CYLINDER_PART ||
@@ -268,9 +360,207 @@ namespace RBX
 		shouldRenderSetDirty();
 	}
 
+	void PartInstance::onAncestorChanged(const AncestorChanged& event)
+	{
+		Instance::onAncestorChanged(event);
+		RBXASSERT(primitive.get());
+
+		World* world = Workspace::getWorldIfInWorkspace(this);
+		if (world != myWorld)
+		{
+			RBXASSERT(myWorld || !primitive->getClump());
+
+			if (myWorld)
+			{
+				setMovingManager(NULL);
+				myWorld->removePrimitive(primitive.get());
+			}
+
+			myWorld = world;
+
+			if (world)
+			{
+				world->insertPrimitive(primitive.get());
+				setMovingManager(Workspace::getMyWorkspaceFast(this));
+				primitive->setController(getTopPVController());
+			}
+		}
+	}
+
 	void PartInstance::onTouchThisStep(boost::shared_ptr<PartInstance> other)
 	{
 		event_Touched.fire(this, other);
+	}
+
+	void PartInstance::onChildAdded(Instance* child)
+	{
+		PVInstance::onChildAdded(child);
+	}
+
+	void PartInstance::onCameraNear(float distance)
+	{
+		if (distance < 3.0f)
+			setAlphaModifier(0.0f);
+		else if (distance < 6.0f)
+			setAlphaModifier(0.5f);
+		else
+			setAlphaModifier(1.0f);
+	}
+
+	void PartInstance::render3dSelect(Adorn* adorn, SelectState selectState)
+	{
+		Draw::selectionBox(getPart(), adorn, selectState);
+	}
+
+	//99.98% match
+	//SO CLOSE... different stack allocation
+	void PartInstance::render3dAdorn(Adorn* adorn)
+	{
+		if (partType == Part::CYLINDER_PART || SurfacesNeedAdorn)
+			Draw::partAdorn(getPart(), adorn, Controller::controllerTypeToColor(getTopPVController()->getControllerType()));
+
+		if (highlightSleepParts && primitive->getAssembly())
+		{
+			Sim::AssemblyState sleepStatus = primitive->getAssembly()->getRootClump()->getSleepStatus();
+
+			if (sleepStatus != Sim::ANCHORED && sleepStatus != Sim::AWAKE)
+			{
+				G3D::Color3 sleepColor;
+
+				switch (sleepStatus)
+				{
+				case Sim::RECURSIVE_WAKE_PENDING:
+				case Sim::WAKE_PENDING:
+					sleepColor = G3D::Color3::purple();
+					break;
+				case Sim::SLEEPING_CHECKING:
+					sleepColor = G3D::Color3::orange();
+					break;
+				case Sim::SLEEPING_DEEPLY:
+					sleepColor = G3D::Color3::yellow();
+					break;
+				default:
+					RBXASSERT(0);
+				}
+				
+				Draw::selectionBox(getPart(), adorn, sleepColor);
+			}
+		}
+
+		if (highlightAwakeParts && primitive->getAssembly())
+		{
+			Sim::AssemblyState sleepStatus = primitive->getAssembly()->getRootClump()->getSleepStatus();
+
+			if (sleepStatus != Sim::ANCHORED && sleepStatus != Sim::SLEEPING_DEEPLY)
+			{
+				G3D::Color3 wakeColor;
+
+				switch (sleepStatus)
+				{
+				case Sim::SLEEPING_CHECKING:
+					wakeColor = G3D::Color3::red();
+					break;
+				case Sim::AWAKE:
+					wakeColor = G3D::Color3::orange();
+					break;					
+				case Sim::RECURSIVE_WAKE_PENDING:
+				case Sim::WAKE_PENDING:
+					wakeColor = G3D::Color3::purple();
+					break;
+				default:
+					RBXASSERT(0);
+				}
+				
+				Draw::selectionBox(getPart(), adorn, wakeColor);
+			}
+		}
+
+		if (showPartCoord)
+			renderCoordinateFrame(adorn);
+
+		if (showAnchoredParts && primitive->getAnchor())
+		{
+			float transparency = 1.0f - getTransparencyUi();
+			G3D::Color4 color(G3D::Color3::gray(), transparency);
+			const G3D::CoordinateFrame& cframe = primitive->getCoordinateFrame();
+
+			DrawAdorn::partSurface(getPart(), Math::getClosestObjectNormalId(G3D::Vector3(0.0f, -1.0f, 0.0f), cframe.rotation), adorn, color);
+		}
+
+		if (showUnalignedParts && !aligned())
+			Draw::selectionBox(getPart(), adorn, G3D::Color3::yellow());
+
+		if (showSpanningTree)
+		{
+			setAlphaModifier(0.3f);
+
+			Assembly* assembly = primitive->getAssembly();
+			if (assembly && primitive.get() == assembly->getMainPrimitive())
+			{
+				adorn->setObjectToWorldMatrix(G3D::CoordinateFrame(primitive->getCoordinateFrame().translation));
+
+				if (primitive->getAnchor())
+				{
+					adorn->sphere(G3D::Sphere(G3D::Vector3::zero(), 0.5f), G3D::Color3::green(), G3D::Color4::clear());
+				}
+				else
+				{
+					G3D::Vector3 boxSize = G3D::Vector3::one() * 0.25f;
+					adorn->box(G3D::AABox(-boxSize, boxSize), G3D::Color3::green(), G3D::Color4::clear());
+				}
+			}
+		}
+	}
+
+	bool PartInstance::hitTest(const G3D::Ray& worldRay, G3D::Vector3& worldHitPoint)
+	{
+		const G3D::CoordinateFrame& cframe = primitive->getCoordinateFrame();
+		G3D::Ray rayInPartCoords = cframe.toObjectSpace(worldRay);
+		G3D::Vector3 hitPointInPartCoords;
+
+		if (HitTest::hitTest(getPart(), rayInPartCoords, hitPointInPartCoords, 1.0f))
+		{
+			const G3D::CoordinateFrame& cframe = primitive->getCoordinateFrame(); // roblox be like: lets do it again why not
+			worldHitPoint = cframe.pointToWorldSpace(hitPointInPartCoords);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	void PartInstance::safeMove()
+	{
+		RBXASSERT(primitive.get());
+
+		if (World* world = Workspace::getWorldIfInWorkspace(this))
+		{
+			G3D::Array<Primitive*> temp;
+			temp.append(primitive.get());
+			
+			Dragger::safeMoveNoDrop(temp, G3D::Vector3::zero(), world->getContactManager());
+		}
+	}
+
+	void PartInstance::primitivesToParts(const G3D::Array<Primitive*>& primitives, G3D::Array<boost::shared_ptr<PartInstance>>& parts)
+	{
+		for (int i = 0; i < primitives.size(); i++)
+		{
+			PartInstance* part = fromPrimitive(primitives[i]);
+			parts.push_back(shared_from(part));
+		}
+	}
+
+	void PartInstance::findParts(Instance* instance, std::vector<boost::weak_ptr<RBX::PartInstance>>& parts)
+	{
+		if (PartInstance* part = fastDynamicCast<PartInstance>(instance))
+			parts.push_back(shared_from(part));
+
+		for (size_t i = 0; i < instance->numChildren(); i++)
+		{
+			findParts(instance->getChild(i), parts);
+		}
 	}
 
 	void PartInstance::setCoordinateFrame(const G3D::CoordinateFrame& value)
@@ -308,6 +598,45 @@ namespace RBX
 			raisePropertyChanged(prop_SizeUi);
 			PersistentPart.setDirty();
 			onExtentsChanged();
+		}
+	}
+
+	//93.96% match
+	//not matching for the same reason as PartInstance::setFormFactorUi
+	void PartInstance::setPartSizeUi(const G3D::Vector3& uiSize)
+	{
+		destroyJoints();
+
+		G3D::Vector3 adjustedUiSize = uiSize;
+
+		switch (formFactor)
+		{
+		case BRICK:
+			adjustedUiSize.y = uiSize.y * 5.0f/6.0f;
+			break;
+		case PLATE:
+			adjustedUiSize.y = uiSize.y * 2.5f;
+			break;
+		}
+
+		setPartSizeXml(uiToXmlSize(adjustedUiSize));
+		safeMove();
+		join();
+	}
+
+	void PartInstance::setTranslationUi(const G3D::Vector3& set)
+	{
+		G3D::CoordinateFrame current = primitive->getCoordinateFrame();
+
+		if (current.translation != set)
+		{
+			current.translation = set;
+
+			destroyJoints();
+			
+			setCoordinateFrame(current);
+			safeMove();
+			join();
 		}
 	}
 
@@ -402,6 +731,29 @@ namespace RBX
 		}
 	}
 
+	//94.32% match
+	//there is a way to match it 100% but it is Not Clean. try to find a cleaner way.
+	void PartInstance::setFormFactorUi(FormFactor value)
+	{
+		if (partType != Part::BLOCK_PART)
+			value = SYMETRIC;
+
+		if (value != getFormFactor())
+		{
+			destroyJoints();
+
+			setFormFactorXml(value);
+
+			G3D::Vector3 uiSize = getPartSizeUi();
+			uiSize.y = G3D::max<float>(1.0, G3D::iRound(uiSize.y));
+
+			G3D::Vector3 xmlSize = uiToXmlSize(uiSize);
+			setPartSizeXml(xmlSize);
+			safeMove();
+			join();
+		}
+	}
+
 	void PartInstance::setFriction(float friction)
 	{
 		float newFriction = G3D::clamp(friction, 0.0f, 2.0f);
@@ -419,6 +771,70 @@ namespace RBX
 		{
 			primitive->setElasticity(newElasticity);
 			raisePropertyChanged(prop_Elasticity);
+		}
+	}
+
+	void PartInstance::setPartTypeXml(Part::PartType _type)
+	{
+		if (getPartType() != _type)
+		{
+			partType = _type;
+			primitive->setPrimitiveType(_type == Part::BLOCK_PART ? Geometry::GEOMETRY_BLOCK : Geometry::GEOMETRY_BALL);
+
+			if (partType != Part::BLOCK_PART)
+				setFormFactorXml(SYMETRIC);
+
+			raisePropertyChanged(prop_shapeXml);
+			raisePropertyChanged(prop_shapeUi);
+
+			PersistentPart.setDirty();
+			shouldRenderSetDirty();
+			onExtentsChanged();
+		}
+	}
+
+	void PartInstance::setPartTypeUi(Part::PartType _type)
+	{
+		if (partType != Part::BLOCK_PART)
+			RBXASSERT(formFactor == SYMETRIC);
+
+		if (getPartType() != _type)
+		{
+			destroyJoints();
+
+			setPartTypeXml(_type);
+
+			if (_type != Part::BLOCK_PART)
+			{
+				G3D::Vector3 xmlSize = uiToXmlSize(getPartSizeUi());
+				setPartSizeXml(xmlSize);
+				safeMove();
+			}
+
+			safeMove();
+			join();
+		}
+	}
+
+	void PartInstance::setLinearVelocity(const G3D::Vector3& set)
+	{
+		Velocity vel = getVelocity();
+		if (vel.linear != set)
+		{
+			vel.linear = set;
+			primitive->getBody()->setVelocity(vel);
+			raisePropertyChanged(prop_RotVelocity);
+		}
+	}
+
+	void PartInstance::setRotationalVelocity(const G3D::Vector3& set)
+	{
+		Velocity vel = getVelocity();
+		if (vel.rotational != set)
+		{
+			vel.rotational = set;
+			primitive->getBody()->setVelocity(vel);
+			raisePropertyChanged(prop_RotVelocity);
 		}
 	}
 
