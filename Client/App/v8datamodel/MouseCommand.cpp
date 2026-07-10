@@ -1,6 +1,7 @@
 #include "v8datamodel/MouseCommand.h"
 #include "v8datamodel/PartInstance.h"
 #include "v8datamodel/Workspace.h"
+#include "v8datamodel/Filters.h"
 #include "v8world/ContactManager.h"
 #include "v8world/Primitive.h"
 #include "humanoid/Humanoid.h"
@@ -104,5 +105,17 @@ namespace RBX
 			hitWorld = unitRay.origin + unitRay.direction * 10000.0f;
 
 		return part;
+	}
+
+	PartInstance* MouseCommand::getUnlockedPart(const UIEvent& uiEvent, G3D::Vector3& hitWorld)
+	{
+		Unlocked filter;
+		return getPart(uiEvent, &filter, hitWorld);
+	}
+
+	PartInstance* MouseCommand::getPartByLocalCharacter(const UIEvent& uiEvent, G3D::Vector3& hitWorld)
+	{
+		PartByLocalCharacter filter(workspace);
+		return getPart(uiEvent, &filter, hitWorld);
 	}
 }

@@ -34,7 +34,13 @@ namespace RBX
 		G3D::Vector3 getCorner(int i) const;
 		G3D::Vector3 size() const { return this->high - this->low; }
 		G3D::Vector3 center() const { return (this->high + this->low) * 0.5f; }
-		G3D::Vector3 bottomCenter() const;
+		G3D::Vector3 bottomCenter() const
+		{
+			G3D::Vector3 v = (this->low + this->high) * 0.5f;
+			v.y = low.y;
+
+			return v;
+		}
 		G3D::Vector3 topCenter() const
 		{
 			G3D::Vector3 v = (this->low + this->high) * 0.5f;
@@ -50,8 +56,11 @@ namespace RBX
 		G3D::Vector3 faceCenter(NormalId faceId) const;
 		void getFaceCorners(NormalId faceId, G3D::Vector3& v0, G3D::Vector3& v1, G3D::Vector3& v2, G3D::Vector3& v3) const;
 		G3D::Plane getPlane(NormalId normalId) const;
-		G3D::Vector3 clip(const G3D::Vector3&) const;
-		G3D::Vector3 clamp(const Extents&) const;
+		G3D::Vector3 clip(const G3D::Vector3& v) const
+		{
+			return v.clamp(this->low, this->high);
+		}
+		G3D::Vector3 clamp(const Extents& extents) const;
 		NormalId closestFace(const G3D::Vector3& point);
 		void unionWith(const Extents& other);
 		void shift(const G3D::Vector3&);

@@ -47,7 +47,6 @@ namespace RBX
 		{
 		}
 	public:
-		//ModelInstance(const ModelInstance&);
 		ModelInstance();
 		virtual ~ModelInstance();
 	public:
@@ -91,8 +90,6 @@ namespace RBX
 		float computeLargestMoment() const;
 	protected:
 		virtual void legacyTraverseState(const G3D::CoordinateFrame& parentState);
-	public:
-		//ModelInstance& operator=(const ModelInstance&);
 	};
 }
 

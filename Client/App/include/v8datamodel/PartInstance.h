@@ -18,7 +18,7 @@ namespace RBX
 		const bool canClump;
   
 	public:
-		//CanAggregateChanged(const CanAggregateChanged&);
+		CanAggregateChanged(const CanAggregateChanged&);
 		CanAggregateChanged(bool canAggregate)
 			: canClump(canAggregate)
 		{
@@ -82,7 +82,7 @@ namespace RBX
 	  
 	private:
 		G3D::Vector3 xmlToUiSize(const G3D::Vector3&) const;
-		G3D::Vector3 uiToXmlSize(const G3D::Vector3&) const;
+		G3D::Vector3 uiToXmlSize(const G3D::Vector3& uiSize) const;
 		Part computePersistentPart() const;
 		bool computeSurfacesNeedAdorn() const;
 		void safeMove();
@@ -98,14 +98,14 @@ namespace RBX
 		{
 			return primitive.get();
 		}
-		void setPartTypeUi(Part::PartType);
-		void setPartSizeUi(const G3D::Vector3&);
+		void setPartTypeUi(Part::PartType _type);
+		void setPartSizeUi(const G3D::Vector3& uiSize);
 		void setPartSizeUnjoined(const G3D::Vector3&);
 		G3D::Vector3 getPartSizeUi() const;
-		void setFormFactorUi(FormFactor);
-		void setTranslationUi(const G3D::Vector3&);
+		void setFormFactorUi(FormFactor value);
+		void setTranslationUi(const G3D::Vector3& set);
 		const G3D::Vector3& getTranslationUi() const;
-		void setPartTypeXml(Part::PartType);
+		void setPartTypeXml(Part::PartType _type);
 		Part::PartType getPartType() const
 		{
 			return partType;
@@ -125,9 +125,9 @@ namespace RBX
 		const G3D::CoordinateFrame& getCoordinateFrame() const;
 		float getMass();
 		const Velocity& getVelocity() const;
-		void setLinearVelocity(const G3D::Vector3&);
+		void setLinearVelocity(const G3D::Vector3& set);
 		const G3D::Vector3& getLinearVelocity() const;
-		void setRotationalVelocity(const G3D::Vector3&);
+		void setRotationalVelocity(const G3D::Vector3& set);
 		const G3D::Vector3& getRotationalVelocity() const;
 		void setFriction(float friction);
 		float getFriction() const;
@@ -194,22 +194,22 @@ namespace RBX
 		void onTouchThisStep(boost::shared_ptr<PartInstance> other);
 		virtual void onCanAggregateChanged(bool canAggregate);
 		virtual bool reportTouches() const;
-		virtual void onAncestorChanged(const AncestorChanged&);
+		virtual void onAncestorChanged(const AncestorChanged& event);
 		virtual bool askSetParent(const Instance*) const;
-		virtual void onChildAdded(Instance*);
+		virtual void onChildAdded(Instance* child);
 		virtual void onGuidChanged();
 		virtual const G3D::CoordinateFrame getLocation() const
 		{
 			return getCoordinateFrame();
 		}
-		virtual void onCameraNear(float);
+		virtual void onCameraNear(float distance);
 		virtual void getCameraIgnorePrimitives(std::vector<const Primitive*>& primitives)
 		{
 			primitives.push_back(primitive.get());
 		}
 		virtual bool shouldRender3dAdorn() const;
-		virtual void render3dAdorn(Adorn*);
-		virtual void render3dSelect(Adorn*, SelectState);
+		virtual void render3dAdorn(Adorn* adorn);
+		virtual void render3dSelect(Adorn* adorn, SelectState selectState);
 		virtual bool isControllable() const;
 		virtual PartInstance* getPrimaryPart()
 		{
@@ -225,7 +225,7 @@ namespace RBX
 		{
 			return primitive.get();
 		}
-		virtual bool hitTest(const G3D::Ray&, G3D::Vector3&);
+		virtual bool hitTest(const G3D::Ray& worldRay, G3D::Vector3& worldHitPoint);
 		virtual Extents getExtentsWorld() const;
 		virtual Extents getExtentsLocal() const;
 	private:
@@ -239,11 +239,11 @@ namespace RBX
 		static float cameraTransparentDistance();
 		static float cameraTranslucentDistance();
 		static bool nonNullInWorkspace(boost::shared_ptr<PartInstance> part);
-		static PartInstance* fromPrimitive(Primitive*);
-		static const RBX::PartInstance* fromPrimitiveConst(const Primitive*);
+		static PartInstance* fromPrimitive(Primitive* p);
+		static const RBX::PartInstance* fromPrimitiveConst(const Primitive* p);
 		static void primitivesToParts(const G3D::Array<Primitive*>&, std::vector<boost::weak_ptr<PartInstance>>&);
-		static void primitivesToParts(const G3D::Array<Primitive*>&, G3D::Array<boost::shared_ptr<PartInstance>>&);
-		static void findParts(Instance*, std::vector<boost::weak_ptr<RBX::PartInstance>>&);
+		static void primitivesToParts(const G3D::Array<Primitive*>& primitives, G3D::Array<boost::shared_ptr<PartInstance>>& parts);
+		static void findParts(Instance* instance, std::vector<boost::weak_ptr<RBX::PartInstance>>& parts);
 		static bool getLocked(Instance* instance);
 		static void setLocked(Instance*, bool);
 	private:

@@ -50,6 +50,6 @@ namespace RBX
 template <typename To, typename From>
 To rbx_static_cast(From u)
 {
-	RBXASSERT(dynamic_cast<To>(u) == static_cast<To>(u));
+	RBXASSERT(static_cast<From>(dynamic_cast<To>(u)) == u);
 	return static_cast<To>(u);
 }

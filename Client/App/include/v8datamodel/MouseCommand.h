@@ -29,8 +29,8 @@ namespace RBX
 		G3D::Ray getUnitMouseRay(const UIEvent& uiEvent) const;
 		G3D::Ray getSearchRay(const UIEvent& uiEvent) const;
 		PartInstance* getPart(const UIEvent& uiEvent, const HitTestFilter* filter, G3D::Vector3& hitWorld = ignoreVector3);
-		PartInstance* getUnlockedPart(const UIEvent&, G3D::Vector3&);
-		PartInstance* getPartByLocalCharacter(const UIEvent&, G3D::Vector3&);
+		PartInstance* getUnlockedPart(const UIEvent& uiEvent, G3D::Vector3& hitWorld);
+		PartInstance* getPartByLocalCharacter(const UIEvent& uiEvent, G3D::Vector3& hitWorld);
 		PartInstance* getUnlockedPartByLocalCharacter(const UIEvent&, G3D::Vector3&);
 		Surface* getSurface(const UIEvent&, PartInstance*&, int&);
 		Surface* getSurface(const UIEvent&);

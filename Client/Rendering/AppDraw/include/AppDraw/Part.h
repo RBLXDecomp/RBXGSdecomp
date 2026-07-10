@@ -22,7 +22,7 @@ namespace RBX
 		G3D::Vector3 gridSize;
 		G3D::Color4 color;
 		Vector6<SurfaceType> surfaceType;
-		G3D::CoordinateFrame coordinateFrame;
+		mutable G3D::CoordinateFrame coordinateFrame;
 
 	public:
 		Part(PartType type, const G3D::Vector3& gridSize, const G3D::Color4 color, const Vector6<SurfaceType>& surfaceType, const G3D::CoordinateFrame& c)

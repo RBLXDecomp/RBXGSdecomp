@@ -263,10 +263,7 @@ namespace RBX
 			answer.unionWith(childExtentsInMe);
 		}
 
-		if (primitives.empty())
-			answer = Extents::zero();
-
-		return answer;
+		return primitives.size() != 0 ? answer : Extents::zero();
 	}
 
 	Extents ModelInstance::computeWorldGridExtents() const
@@ -348,7 +345,7 @@ namespace RBX
 
 	void ModelInstance::onCameraNear(float distance)
 	{
-		for (size_t i = 0; i < getChildren()->size(); ++i)
+		for (size_t i = 0; i < numChildren(); ++i)
 		{
 			Instance* child = getChild(i);
 			ICameraSubject* cameraSubject = fastDynamicCast<ICameraSubject>(child);
