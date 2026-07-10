@@ -1,6 +1,9 @@
 #include "v8datamodel/Hopper.h"
 #include "v8datamodel/Backpack.h"
 #include "v8datamodel/Workspace.h"
+#include "v8datamodel/Mouse.h"
+#include "v8datamodel/DataModel.h"
+#include "v8datamodel/ScriptMouseCommand.h"
 
 namespace RBX
 {
@@ -146,6 +149,38 @@ namespace RBX
 			Workspace* workspace = ServiceProvider::find<Workspace>(this);
 			if (workspace)
 				workspace->setDefaultMouseCommand();
+		}
+	}
+
+	void HopperBin::onSelectScript()
+	{
+		Workspace* workspace = ServiceProvider::find<Workspace>(this);
+		if (workspace)
+		{
+			ScriptMouseCommand* command = new ScriptMouseCommand(workspace);
+			workspace->setMouseCommand(command);
+			desc_Selected.fire(this, command->getMouse());
+		}
+	}
+
+	void HopperBin::onSelectCommand()
+	{
+		RBXASSERT(binType != SCRIPT_BIN);
+
+		DataModel* root = rbx_static_cast<DataModel*>(getParent() ? getParent()->getRootAncestor() : this);
+
+		std::string command = Reflection::EnumDesc<BinType>::singleton().convertToString(binType) + "Tool";
+
+		Verb* verb = static_cast<DataModel*>(root)->getVerb(command);
+		RBXASSERT(verb);
+
+		if (verb->isEnabled())
+		{
+			Workspace* workspace = ServiceProvider::find<Workspace>(this);
+			if (workspace)
+				verb->doIt(&workspace->getDataState());
+			else
+				RBXASSERT(0);
 		}
 	}
 

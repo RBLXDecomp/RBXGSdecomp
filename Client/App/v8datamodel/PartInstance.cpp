@@ -412,8 +412,6 @@ namespace RBX
 		Draw::selectionBox(getPart(), adorn, selectState);
 	}
 
-	//99.98% match
-	//SO CLOSE... different stack allocation
 	void PartInstance::render3dAdorn(Adorn* adorn)
 	{
 		if (partType == Part::CYLINDER_PART || SurfacesNeedAdorn)
@@ -441,6 +439,8 @@ namespace RBX
 					break;
 				default:
 					RBXASSERT(0);
+					sleepColor = sleepColor;
+					break;
 				}
 				
 				Draw::selectionBox(getPart(), adorn, sleepColor);
@@ -469,6 +469,8 @@ namespace RBX
 					break;
 				default:
 					RBXASSERT(0);
+					wakeColor = wakeColor;
+					break;
 				}
 				
 				Draw::selectionBox(getPart(), adorn, wakeColor);

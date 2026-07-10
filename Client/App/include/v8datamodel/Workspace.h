@@ -85,7 +85,10 @@ namespace RBX
 		{
 			return world.get();
 		}
-		IDataState& getDataState() const;
+		IDataState& getDataState() const
+		{
+			return *dataState;
+		}
 		MouseCommand* getCurrentMouseCommand()
 		{
 			return currentCommand.get();
