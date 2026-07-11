@@ -119,9 +119,7 @@ namespace RBX
 			//RBXASSERT(property.getDescriptor().isMemberOf(property.getInstance()));
 		}
 	public:
-		//PropertyChanged(const PropertyChanged&);
-	public:
-		//PropertyChanged& operator=(const PropertyChanged&);
+		PropertyChanged(const PropertyChanged&);
 	};
 
 	extern const char* sInstance;
@@ -179,10 +177,20 @@ namespace RBX
 		}
 
 	protected:
-		virtual void onGuidChanged();
+		virtual void onGuidChanged()
+		{
+			return;
+		}
 
 	public:
-		void remove();
+		void remove()
+		{
+			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> r = children.read();
+			setParent(NULL);
+
+			if (r)
+				std::for_each(r->begin(), r->end(), boost::bind(&Instance::remove, _1));
+		}
 		const Association<Instance>& association() const
 		{
 			return assoc;
@@ -208,10 +216,36 @@ namespace RBX
 			return name;
 		}
 		virtual void setName(const std::string& value);
-		bool isAncestorOf(const Instance* descendent) const;
-		bool isAncestorOf2(boost::shared_ptr<Instance> descendent);
-		bool isDescendentOf2(boost::shared_ptr<Instance>);
-		bool isDescendentOf(const Instance* ancestor) const;
+		bool isAncestorOf(const Instance* descendent) const
+		{
+			if (!descendent)
+				return false;
+		
+			Instance* parent = descendent->parent;
+			if (parent == this)
+				return true;
+		
+			return isAncestorOf(parent);
+		}
+		bool isAncestorOf2(boost::shared_ptr<Instance> descendent)
+		{
+			return isAncestorOf(descendent.get());
+		}
+		bool isDescendentOf2(boost::shared_ptr<Instance> ancestor)
+		{
+			return isDescendentOf(ancestor.get());
+		}
+		bool isDescendentOf(const Instance* ancestor) const
+		{
+			Instance* thisParent = this->parent;
+			if (ancestor == thisParent)
+				return true;
+		
+			if (thisParent)
+				return thisParent->isDescendentOf(ancestor);
+			else
+				return false;
+		};
 		size_t numChildren() const
 		{
 			if (&(*children))
@@ -219,7 +253,7 @@ namespace RBX
 			else
 				return 0;
 		}
-		int findChildIndex(const Instance*) const;
+		int findChildIndex(const Instance* instance) const;
 		const Instance* getChild(size_t i) const
 		{
 			return (*children)[i].get();
@@ -228,9 +262,12 @@ namespace RBX
 		{
 			return (*children)[i].get();
 		}
-		Instance* findFirstChildByName(const std::string&) const;
-		Instance* findFirstChildByNameRecursive(const std::string&) const;
-		boost::shared_ptr<Instance> findFirstChildByName2(std::string, bool);
+		Instance* findFirstChildByName(const std::string& findName) const;
+		Instance* findFirstChildByNameRecursive(const std::string& findName) const;
+		boost::shared_ptr<Instance> findFirstChildByName2(std::string findName, bool recursive)
+		{
+			return recursive ? shared_from(findFirstChildByNameRecursive(findName)) : shared_from(findFirstChildByName(findName));
+		}
 		const CopyOnWrite<std::vector<boost::shared_ptr<Instance>>>& getChildren() const
 		{
 			return children;
@@ -240,47 +277,94 @@ namespace RBX
 			return children.read();
 		}
 		bool canAddChild(const boost::shared_ptr<Instance>& instance) const;
-		bool canAddChild(const Instance*) const;
-		bool canSetParent(const Instance*) const;
+		bool canAddChild(const Instance* instance) const
+		{
+			if (instance->contains(this))
+				return false;
+
+			if (instance->parent == this)
+				return false;
+
+			if (askAddChild(instance))
+				return true;
+
+			if (instance->askSetParent(this))
+				return true;
+
+			return false;
+		}
+		bool canSetParent(const Instance* instance) const
+		{
+			return !instance || instance->canAddChild(this);
+		}
 		Instance* getParent() const
 		{
 			return parent;
 		}
-		const Instance* getRootAncestor() const;
-		Instance* getRootAncestor();
-		bool contains(const Instance*) const;
+		const Instance* getRootAncestor() const
+		{
+			return parent ? parent->getRootAncestor() : this;
+		}
+		Instance* getRootAncestor()
+		{
+			return parent ? parent->getRootAncestor() : this;
+		}
+		bool contains(const Instance* child) const;
 	protected:
-		virtual bool askAddChild(const Instance*) const;
-		virtual bool askSetParent(const Instance*) const;
+		virtual bool askAddChild(const Instance* instance) const;
+		virtual bool askSetParent(const Instance* instance) const;
 		virtual void onAddListener(Listener<Instance, DescendentAdded>* listener) const;
 		virtual void onAddListener(Listener<Instance, ChildAdded>* listener) const;
 		virtual void onAncestorChanged(const AncestorChanged& event);
 		virtual void onDescendentAdded(Instance* instance);
 		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
-		virtual void onChildAdded(Instance* instance);
-		virtual void onChildRemoving(Instance* instance);
-		virtual void onChildRemoved(Instance*);
+		virtual void onChildAdded(Instance* child)
+		{
+			return;
+		}
+		virtual void onChildRemoving(Instance* child)
+		{
+			return;
+		}
+		virtual void onChildRemoved(Instance* child)
+		{
+			return;
+		}
 	private:
-		virtual void onLastChildRemoved();
+		virtual void onLastChildRemoved()
+		{
+			return;
+		}
 		void writeProperties(XmlElement*) const;
 	protected:
 		virtual void readProperty(const XmlElement* propertyElement, IReferenceBinder& binder);
 	public:
 		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		void readProperties(const XmlElement* container, IReferenceBinder& binder);
-		virtual boost::shared_ptr<Instance> createChild(const Name&);
+		virtual boost::shared_ptr<Instance> createChild(const Name& className);
 		virtual XmlElement* write();
-		void writeChildren(XmlElement*);
+		void writeChildren(XmlElement* container);
 		XmlElement* writeDelete();
 		void read(const XmlElement* element, IReferenceBinder& binder);
 		void readChildren(const XmlElement* element, IReferenceBinder& binder);
 		void readChild(const XmlElement* childElement, IReferenceBinder& binder);
-		void raisePropertyChanged(const Reflection::PropertyDescriptor& descriptor);
+		void raisePropertyChanged(const Reflection::PropertyDescriptor& descriptor)
+		{
+			PropertyChanged event(Reflection::Property(descriptor, this));
+			RBXASSERT(event.getDescriptor().isMemberOf(event.getProperty().getInstance()));
+
+			Notifier<Instance, PropertyChanged>::raise(event);
+
+			if (!event_propertyChanged.empty(this))
+				event_propertyChanged.fire(this, &descriptor);
+
+			Instance* p = this->parent;
+			if (p)
+				p->onChildChanged(this, event);
+		}
 	protected:
 		void raiseChanged(const Reflection::PropertyDescriptor&);
 		virtual void onChildChanged(Instance* instance, const PropertyChanged& event);
-	public:
-		//Instance& operator=(const Instance&);
 	public:
 		template<typename Function>
 		void for_eachChild(Function func) const

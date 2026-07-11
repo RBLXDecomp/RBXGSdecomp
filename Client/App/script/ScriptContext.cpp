@@ -32,16 +32,6 @@ static inline void _openLibInline(lua_State* L, lua_CFunction f, const char* nam
     lua_call(L, 1, 0);
 }
 
-static inline Instance* _findDataModelInline(ScriptContext* sc)
-{
-    Instance* parent = sc->getParent();
-
-    if (parent)
-        return parent->getRootAncestor();
-    else
-        return sc;
-}
-
 template<typename Class, typename Event>
 static inline void _addListenerInline(RunService* runService, Listener<Class, Event>* listener)
 {
@@ -135,7 +125,7 @@ void ScriptContext::openState()
         Lua::ThreadRef::Node::create(globalState);
 
         lua_pushstring(globalState, "game");
-        Lua::ObjectBridge::push(globalState, _findDataModelInline(this)->shared_from_this());
+        Lua::ObjectBridge::push(globalState, getRootAncestor()->shared_from_this());
         lua_settable(globalState, LUA_GLOBALSINDEX);
 
         lua_pushstring(globalState, "workspace");

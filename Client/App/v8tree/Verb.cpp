@@ -24,4 +24,20 @@ namespace RBX
 	{
 		return getVerb(Name::lookup(name));
 	}
+
+	Verb* VerbContainer::getVerb(const Name& name)
+	{
+		if (Name::getNullName() == name)
+			return NULL;
+
+		std::map<const Name*, Verb*>::iterator iter = verbs.find(&name);
+
+		if (iter != verbs.end())
+			return iter->second;
+
+		if (!parent)
+			return NULL;
+
+		return parent->getVerb(name);
+	}
 }

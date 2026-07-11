@@ -29,10 +29,7 @@ namespace RBX
 		if (newProvider)
 		{
 			boost::slot<boost::function<void(boost::shared_ptr<Instance>)>> slot(boost::bind(&IdManager::removeInstance, this, _1));
-
-			Instance* source = getParent() ? getParent()->getRootAncestor() : this;
-
-			removeInstanceConnection = event_descendentRemoving.connect(source, slot);
+			removeInstanceConnection = event_descendentRemoving.connect(getRootAncestor(), slot);
 		}
 	}
 }

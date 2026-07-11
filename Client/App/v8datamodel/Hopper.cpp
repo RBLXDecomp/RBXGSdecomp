@@ -167,7 +167,7 @@ namespace RBX
 	{
 		RBXASSERT(binType != SCRIPT_BIN);
 
-		DataModel* root = rbx_static_cast<DataModel*>(getParent() ? getParent()->getRootAncestor() : this);
+		DataModel* root = rbx_static_cast<DataModel*>(getRootAncestor());
 
 		std::string command = Reflection::EnumDesc<BinType>::singleton().convertToString(binType) + "Tool";
 

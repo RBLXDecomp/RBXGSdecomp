@@ -51,49 +51,14 @@ namespace RBX
 		RBXASSERT(!parent);
 	}
 
-	bool Instance::isAncestorOf(const Instance* descendent) const
+	bool Instance::askAddChild(const Instance* instance) const
 	{
-		const Instance* p = descendent;
-
-		while (p != NULL)
-		{
-			p = p->parent;
-			if (p == this)
-				return true;
-		}
-
 		return false;
 	}
 
-	bool Instance::isAncestorOf2(boost::shared_ptr<Instance> descendent)
+	bool Instance::askSetParent(const Instance* instance) const
 	{
-		bool result = false;
-
-		if (descendent.get())
-		{
-			Instance* p = descendent->parent;
-			result = p == this || isAncestorOf(p);
-		}
-
-		return result;
-	}
-
-	bool Instance::canAddChild(const Instance* instance) const
-	{
-		if (instance->contains(this) || instance->parent == this)
-			return false;
-
-		return askAddChild(instance) || askSetParent(instance);
-	}
-
-	Instance* Instance::getRootAncestor()
-	{
-		Instance* ancestor = this;
-		while (ancestor->parent != NULL)
-		{
-			ancestor = ancestor->parent;
-		}
-		return ancestor;
+		return false;
 	}
 
 	void Instance::setName(const std::string& value)
@@ -103,21 +68,6 @@ namespace RBX
 			name = value;
 			raisePropertyChanged(desc_Name);
 		}
-	}
-
-	void Instance::raisePropertyChanged(const Reflection::PropertyDescriptor& descriptor)
-	{
-		PropertyChanged event(Reflection::Property(descriptor, this));
-		RBXASSERT(event.getDescriptor().isMemberOf(event.getProperty().getInstance()));
-
-		Notifier<Instance, PropertyChanged>::raise(event);
-
-		if (!event_propertyChanged.empty(this))
-			event_propertyChanged.fire(this, &descriptor);
-
-		Instance* p = this->parent;
-		if (p)
-			p->onChildChanged(this, event);
 	}
 
 	void Instance::onDescendentAdded(Instance* instance)
@@ -193,30 +143,6 @@ namespace RBX
 	{
 		for (const XmlElement* i = container->firstChild(); i != NULL; i = i->nextSibling())
 			readProperty(i, binder);
-	}
-
-	bool Instance::isDescendentOf(const Instance* ancestor) const
-	{
-		Instance* current = parent;
-
-		while (true)
-		{
-			if (ancestor == current)
-				return true;
-			if (!current)
-				return false;
-			current = current->parent;
-		}
-	};
-
-	void Instance::remove()
-	{
-		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> r = children.read();
-
-		setParent(NULL);
-
-		if (r)
-			std::for_each(r->begin(), r->end(), boost::bind(&Instance::remove, _1));
 	}
 
 	void Instance::readChild(const XmlElement* childElement, IReferenceBinder& binder)
@@ -302,5 +228,84 @@ namespace RBX
 
 	void Instance::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 	{
+		return;
+	}
+
+	bool Instance::contains(const Instance* child) const
+	{
+		for (; child != NULL; child = child->parent)
+		{
+			if (child == this)
+				return true;
+		}
+
+		return false;
+	}
+
+	boost::shared_ptr<Instance> Instance::createChild(const Name& className)
+	{
+		return AbstractFactoryProduct::create(className);
+	}
+
+	int Instance::findChildIndex(const Instance* instance) const
+	{
+		RBXASSERT(&(*children));
+
+		const std::vector<boost::shared_ptr<Instance>>& c = *children;
+
+		std::vector<boost::shared_ptr<Instance>>::const_iterator found = std::find(c.begin(), c.end(), instance->shared_from_this());
+		return (int)std::distance(c.begin(), found);
+	}
+
+	void Instance::writeChildren(XmlElement* container)
+	{
+		if (&(*children))
+		{
+			const std::vector<boost::shared_ptr<Instance>>& c = *children;
+
+			for (std::vector<boost::shared_ptr<Instance>>::const_iterator it = c.begin(); it != c.end(); it++)
+			{
+				XmlElement* element = (*it)->write();
+				if (element)
+					container->pushBackChild(element);
+			}
+		}
+	}
+
+	Instance* Instance::findFirstChildByName(const std::string& findName) const
+	{
+		if (!&(*children))
+			return NULL;
+
+		const std::vector<boost::shared_ptr<Instance>>& c = *children;
+
+		for (size_t i = 0; i < c.size(); i++)
+		{
+			if (c[i]->name == findName)
+				return c[i].get();
+		}
+
+		return NULL;
+	}
+
+	Instance* Instance::findFirstChildByNameRecursive(const std::string& findName) const
+	{
+		Instance* foundChild = findFirstChildByName(findName);
+		if (foundChild)
+			return foundChild;
+
+		if (!&(*children))
+			return NULL;
+
+		const std::vector<boost::shared_ptr<Instance>>& c = *children;
+
+		for (size_t i = 0; i < c.size(); i++)
+		{
+			Instance* child = c[i]->findFirstChildByNameRecursive(findName);
+			if (child)
+				return child;
+		}
+
+		return NULL;
 	}
 }

@@ -110,14 +110,14 @@ namespace RBX
 	{
 		if (primaryPart == set)
 		{
-			RBXASSERT(!set || this == primaryPart->getParent() || (primaryPart->getParent() && primaryPart->getParent()->isDescendentOf(this)));
+			RBXASSERT(!set || primaryPart->isDescendentOf(this));
 		}
 		else if (set)
 		{
 			RBXASSERT(!set->getParent() || set->isDescendentOf(this));
 			if (primaryPart)
 			{
-				RBXASSERT(this == primaryPart->getParent() || (primaryPart->getParent() && primaryPart->getParent()->isDescendentOf(this)));
+				RBXASSERT(primaryPart->isDescendentOf(this));
 				G3D::Matrix3 oldMe = getLocation().rotation;
 				modelInPrimary = G3D::CoordinateFrame(primaryPart->getCoordinateFrame().rotation.transpose() * oldMe, G3D::Vector3::zero());
 				primaryPart = set;
@@ -137,7 +137,7 @@ namespace RBX
 
 	void ModelInstance::setPrimaryPart(PartInstance* set)
 	{
-		if (!set || this == primaryPart->getParent() || (primaryPart->getParent() && primaryPart->getParent()->isDescendentOf(this)))
+		if (!set || set->isDescendentOf(this))
 		{
 			candidatePrimaryPart.reset();
 			updatePrimaryPart(set);
@@ -202,7 +202,7 @@ namespace RBX
 
 		if (primaryPart)
 		{
-			RBXASSERT(this == primaryPart->getParent() || (primaryPart->getParent() && primaryPart->getParent()->isDescendentOf(this)));
+			RBXASSERT(primaryPart->isDescendentOf(this));
 			float primaryPartY = primaryPart->getExtentsWorld().max().y;
 			answer = (getExtentsWorld().max().y - primaryPartY) + 6.0f;
 		}
@@ -214,7 +214,7 @@ namespace RBX
 	{
 		if (primaryPart)
 		{
-			RBXASSERT(this == primaryPart->getParent() || (primaryPart->getParent() && primaryPart->getParent()->isDescendentOf(this)));
+			RBXASSERT(primaryPart->isDescendentOf(this));
 			return primaryPart;
 		}
 		else
