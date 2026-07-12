@@ -219,6 +219,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CrashReporter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IdManager.cpp"
 				>
 			</File>
@@ -502,6 +506,10 @@
 			</File>
 			<File
 				RelativePath=".\Client.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Network\CrashReporter.h"
 				>
 			</File>
 			<File
