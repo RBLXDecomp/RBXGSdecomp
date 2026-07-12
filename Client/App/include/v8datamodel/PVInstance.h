@@ -106,7 +106,10 @@ namespace RBX
 			return !fastDynamicCast<PVInstance>(getParent()) || getTypedRoot<PVInstance>() == rbx_static_cast<PVInstance*>(getParent());
 		}
 		void setPVGridOffsetLegacy(const G3D::CoordinateFrame& _offset);
-		G3D::CoordinateFrame* getLegacyOffset();
+		G3D::CoordinateFrame* getLegacyOffset()
+		{
+			return legacyOffset.get();
+		}
 		void clearLegacyOffset();
 		virtual void legacyTraverseState(const G3D::CoordinateFrame& parentState) = 0;
 	};

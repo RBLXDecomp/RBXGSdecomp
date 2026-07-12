@@ -118,4 +118,10 @@ namespace RBX
 		PartByLocalCharacter filter(workspace);
 		return getPart(uiEvent, &filter, hitWorld);
 	}
+
+	void MouseCommand::capture()
+	{
+		RBXASSERT(!workspace->getCurrentMouseCommand()->captured());
+		capturedMouse = true;
+	}
 }

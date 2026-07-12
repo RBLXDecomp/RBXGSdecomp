@@ -70,7 +70,6 @@ namespace RBX
 		void removeFromBreakable(Joint* j);
 		void doBreakJoints();
 	public:
-		//World(const World&);
 		World();
 		virtual ~World();
 	public:
@@ -83,7 +82,10 @@ namespace RBX
 			RBXASSERT(inStepCode);
 		}
 		void addedBodyForce();
-		void setCanThrottle(bool);
+		void setCanThrottle(bool value)
+		{
+			canThrottle = value;
+		}
 		ContactManager& getContactManager()
 		{
 			return *contactManager;
@@ -96,16 +98,26 @@ namespace RBX
 		SimJobStage& getSimJobStage();
 		const Kernel& getKernel() const;
 		Kernel& getKernel();
-		const G3D::Array<Primitive*>& getTouch() const;
-		const G3D::Array<Primitive*>& getTouchOther() const;
+		const G3D::Array<Primitive*>& getTouch() const
+		{
+			return touch;
+		}
+		const G3D::Array<Primitive*>& getTouchOther() const
+		{
+			return touchOther;
+		}
 		void computeFallen(G3D::Array<Primitive*>& fallen) const;
 		const G3D::Array<Primitive*>& getPrimitives() const 
 		{
 			return this->primitives.underlyingArray();
 		}
-		float step(float);
+		float step(float desiredInterval);
 		void update();
-		void reset();
+		void reset()
+		{
+			assertNotInStep();
+			worldStepId = 0;
+		}
 		int getWorldStepId();
 		void insertPrimitive(Primitive* p);
 		void removePrimitive(Primitive* p);
@@ -126,7 +138,10 @@ namespace RBX
 		int getNumJoints() const;
 		int getNumPrimitives() const;
 		const Profiling::CodeProfiler& getProfileWorldStep() const;
-		Profiling::CodeProfiler& getProfileWorldStep();
+		Profiling::CodeProfiler& getProfileWorldStep()
+		{
+			return *profilingWorldStep;
+		}
 		const Profiling::CodeProfiler& getProfileBroadphase() const;
 		const Profiling::CodeProfiler& getProfileUiStep() const;
 		void onPrimitiveAddedAnchor(Primitive* p);
@@ -143,6 +158,5 @@ namespace RBX
 		void onJointPrimitiveSet(Joint* j, Primitive* p);
 		void insertContact(Contact* c);
 		void destroyContact(Contact* c);
-		//World& operator=(const World&);
 	};
 }

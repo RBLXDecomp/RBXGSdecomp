@@ -1,5 +1,6 @@
 #pragma once
 #include "v8datamodel/RootInstance.h"
+#include "v8datamodel/Stats.h"
 #include "v8tree/Verb.h"
 #include "script/Script.h"
 #include "v8world/IMoving.h"
@@ -41,7 +42,7 @@ namespace RBX
 		std::auto_ptr<MouseCommand> currentCommand;
 		std::auto_ptr<MouseCommand> stickyCommand;
 		UIEvent idleMouseEvent;
-		boost::shared_ptr<Camera> currentCamera;
+		mutable boost::shared_ptr<Camera> currentCamera;
 		bool isSimulating;
 		std::set<Script*> pendingScripts;
 		ScriptContext* scriptContext;
@@ -58,27 +59,39 @@ namespace RBX
 		static bool showHashGrid;
 	  
 	private:
-		virtual bool askAddChild(const Instance*) const;
-		virtual void onChildChanged(Instance*, const PropertyChanged&);
-		virtual void onDescendentAdded(Instance*);
-		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>&);
+		virtual bool askAddChild(const Instance* instance) const;
+		virtual void onChildChanged(Instance* instance, const PropertyChanged& event);
+		virtual void onDescendentAdded(Instance* instance);
+		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
 		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
 	public:
 		void setCursor(Adorn*);
-		virtual void render2d(Adorn*);
+		virtual void render2d(Adorn* adorn);
 		virtual void render3dAdorn(Adorn*);
-		virtual void render3dSelect(Adorn*, SelectState);
+		virtual void render3dSelect(Adorn* adorn, SelectState selectState)
+		{
+			return;
+		}
 	private:
 		virtual IScriptOwner* scriptShouldRun(Script*);
-		virtual void runScript(Script*, ScriptContext*);
-		virtual void releaseScript(Script*);
-		virtual Extents computeCameraOwnerExtents();
-		virtual void cameraMoved();
-		virtual void onExtentsChanged() const;
+		virtual void runScript(Script* script, ScriptContext* context);
+		virtual void releaseScript(Script* script);
+		virtual Extents computeCameraOwnerExtents()
+		{
+			return getExtentsWorld();
+		}
+		virtual void cameraMoved()
+		{
+			raiseDrawChanged();
+		}
+		virtual void onExtentsChanged() const
+		{
+			ModelInstance::onExtentsChanged();
+			raiseDrawChanged();
+		}
 		virtual void onEvent(const RunService*, Heartbeat);
 	public:
-		//Workspace(Workspace&);
-		Workspace(IDataState*);
+		Workspace(IDataState* dataState);
 		virtual ~Workspace();
 	public:
 		World* getWorld() const
@@ -91,50 +104,55 @@ namespace RBX
 		}
 		MouseCommand* getCurrentMouseCommand()
 		{
+			RBXASSERT(currentCommand.get());
 			return currentCommand.get();
 		}
 		void cancelMouseCommand();
-		void setMouseCommand(MouseCommand*);
+		void setMouseCommand(MouseCommand* newMouseCommand);
 		void setDefaultMouseCommand();
 		void setNullMouseCommand();
 		bool getInMouselookMode();
 		void setInMouselookMode(bool);
 		virtual const G3D::GCamera& getGCamera() const;
 		virtual Camera* getCamera() const;
-		void setCamera(Camera*);
-		void setImageServerView(const G3D::Rect2D&);
+		void setCamera(Camera* value);
+		void setImageServerView(const G3D::Rect2D& viewPortRect);
 		void zoomToExtents();
 		void onWrapMouse(const G3D::Vector2&);
 		virtual GuiResponse process(const GuiEvent&);
 		void selectAll();
 	private:
-		void handleFallenParts(const G3D::Array<boost::shared_ptr<PartInstance>>&);
+		void handleFallenParts(const G3D::Array<boost::shared_ptr<PartInstance>>& fallenParts);
 	public:
 		void start();
 		void stop();
 		void reset();
-		float step(float);
-		void setThrottleEnabled(bool);
+		float step(float timeInterval);
+		void setThrottleEnabled(bool value);
 		void joinAllHack();
-		void insertItems(XmlElement*, std::vector<boost::shared_ptr<Instance>>&, InsertMode, PromptMode);
+		void insertItems(XmlElement* root, std::vector<boost::shared_ptr<Instance>>& instances, InsertMode insertMode, PromptMode promptMode);
 		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> insertContent(ContentId);
 		void insertContent(ContentId, std::vector<boost::shared_ptr<Instance>>&, InsertMode, PromptMode);
-		void makeJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>>);
-		void breakJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>>);
+		void makeJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> instances);
+		void breakJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> instances);
 		void raiseDrawChanged() const
 		{
 			Notifier<Workspace, DrawChanged>::raise(DrawChanged());
 		}
-	public:
-		//Workspace& operator=(Workspace&);
 
 	public:
 		static Instance* findTopInstance(Instance*);
-		static Workspace* findWorkspace(const Instance*);
-		static Workspace* getMyWorkspaceFast(const Instance*);
-		static World* getWorldIfInWorkspace(const Instance*);
-		static Workspace* getWorkspaceIfInWorkspace(const Instance*);
-		static bool contextInWorkspace(const Instance*);
-		static World* getMyWorldFast(const Instance*);
+		static Workspace* findWorkspace(const Instance* context);
+		static Workspace* getMyWorkspaceFast(const Instance* context);
+		static World* getWorldIfInWorkspace(const Instance* context);
+		static Workspace* getWorkspaceIfInWorkspace(const Instance* context);
+		static bool contextInWorkspace(const Instance* context);
+		static World* getMyWorldFast(const Instance* context);
+	};
+	
+	class WorkspaceStatsItem : public Stats::Item
+	{
+	public:
+		WorkspaceStatsItem(const Workspace*, const World*);
 	};
 }

@@ -24,7 +24,6 @@ namespace RBX
 		virtual G3D::Vector2 getCursorPosition() = 0;
 		virtual G3D::ReferenceCountedPointer<TextureProxyBase> getGameCursor(Adorn*);
 	public:
-		//UserInputBase(const UserInputBase&);
 		UserInputBase();
 	public:
 		void init(Adorn*);
@@ -41,7 +40,5 @@ namespace RBX
 		virtual void setKeyState(SDLKey, bool) = 0;
 		virtual void setCursorId(Adorn*, const TextureId&);
 		void renderGameCursor(Adorn*);
-	public:
-		//UserInputBase& operator=(const UserInputBase&);
 	};
 }

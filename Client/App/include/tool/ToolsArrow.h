@@ -15,12 +15,16 @@ namespace RBX
 		bool overInstance;
 
 	protected:
-		virtual void onMouseIdle(const UIEvent&);
-		virtual void onMouseHover(const UIEvent&);
-		virtual MouseCommand* onMouseDown(const UIEvent&);
+		virtual void onMouseIdle(const UIEvent& uiEvent);
+		virtual void onMouseHover(const UIEvent& uiEvent);
+		virtual MouseCommand* onMouseDown(const UIEvent& uiEvent);
 		virtual const std::string getCursorName() const;
 	public:
-		ArrowToolBase(Workspace*);
+		ArrowToolBase(Workspace* workspace)
+			: MouseCommand(workspace),
+			  overInstance(false)
+		{
+		}
 	};
 
 	extern const char* sArrowTool;
@@ -28,8 +32,15 @@ namespace RBX
 	class ArrowTool : public Named<ArrowToolBase, &sArrowTool>
 	{
 	public:
-		ArrowTool(Workspace*);
-		virtual MouseCommand* isSticky() const;
+		ArrowTool(Workspace* workspace)
+			: Base(workspace)
+		{
+		}
+
+		virtual MouseCommand* isSticky() const
+		{
+			return new ArrowTool(workspace);
+		}
 	};
 
 	extern const char* sBoxSelectCommand;
@@ -44,13 +55,13 @@ namespace RBX
 		std::set<Instance*> previousItemsInBox;
 
 	private:
-		void getMouseInstances(std::set<Instance*>&, const UIEvent&, G3D::Rect2D&);
+		void getMouseInstances(std::set<Instance*>& instances, const UIEvent& uiEvent, G3D::Rect2D& selectBox);
 		void selectAnd(const std::set<Instance*>&);
 		void selectReverse(const std::set<Instance*>&);
 	public:
-		virtual MouseCommand* onMouseDown(const UIEvent&);
-		virtual void onMouseMove(const UIEvent&);
-		virtual void render2d(Adorn*);
-		BoxSelectCommand(Workspace*);
+		virtual MouseCommand* onMouseDown(const UIEvent& uiEvent);
+		virtual void onMouseMove(const UIEvent& uiEvent);
+		virtual void render2d(Adorn* adorn);
+		BoxSelectCommand(Workspace* workspace);
 	};
 }

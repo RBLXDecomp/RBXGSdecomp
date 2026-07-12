@@ -1682,6 +1682,10 @@
 				RelativePath=".\v8datamodel\Visit.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\v8datamodel\Workspace.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="v8xml"
@@ -2188,6 +2192,10 @@
 			</File>
 			<File
 				RelativePath=".\tool\RunDragger.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tool\ToolsArrow.cpp"
 				>
 			</File>
 		</Filter>

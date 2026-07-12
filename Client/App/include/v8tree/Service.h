@@ -108,12 +108,25 @@ namespace RBX
 		boost::shared_ptr<Class> service;
 
 	public:
-		ServiceClient(Instance*);
+		ServiceClient(Instance* context)
+			: context(context)
+		{
+		}
+
 		bool isNull() const;
 		operator Class*();
 		operator const Class*() const;
-		Class* operator->();
-		const Class* operator->() const;
+
+		Class* operator->()
+		{
+			return createService(true);
+		}
+
+		const Class* operator->() const
+		{
+			return createService(true);
+		}
+
 	private:
 		Class* findService(bool) const;
 		Class* createService(bool) const;
