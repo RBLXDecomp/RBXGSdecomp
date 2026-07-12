@@ -20,24 +20,24 @@ LPTOP_LEVEL_EXCEPTION_FILTER WINAPI MyDummySetUnhandledExceptionFilter(
 #pragma warning (disable : 4311) // warning C4311: 'type cast' : pointer truncation from 'void *' to 'DWORD'
 
 BOOL PreventSetUnhandledExceptionFilter()
- {
-    HMODULE hKernel32 = LoadLibrary(_T("kernel32.dll"));
-    if (hKernel32 == NULL) return FALSE;
-    void *pOrgEntry = GetProcAddress(hKernel32, "SetUnhandledExceptionFilter");
-    if(pOrgEntry == NULL) return FALSE;
-    unsigned char newJump[ 100 ];
-    DWORD dwOrgEntryAddr = (DWORD) pOrgEntry;
-    dwOrgEntryAddr += 5; // add 5 for 5 op-codes for jmp far
-    void *pNewFunc = &MyDummySetUnhandledExceptionFilter;
-    DWORD dwNewEntryAddr = (DWORD) pNewFunc;
-    DWORD dwRelativeAddr = dwNewEntryAddr - dwOrgEntryAddr;
+{
+	HMODULE hKernel32 = LoadLibrary(_T("kernel32.dll"));
+	if (hKernel32 == NULL) return FALSE;
+	void *pOrgEntry = GetProcAddress(hKernel32, "SetUnhandledExceptionFilter");
+	if(pOrgEntry == NULL) return FALSE;
+	unsigned char newJump[ 100 ];
+	DWORD dwOrgEntryAddr = (DWORD) pOrgEntry;
+	dwOrgEntryAddr += 5; // add 5 for 5 op-codes for jmp far
+	void *pNewFunc = &MyDummySetUnhandledExceptionFilter;
+	DWORD dwNewEntryAddr = (DWORD) pNewFunc;
+	DWORD dwRelativeAddr = dwNewEntryAddr - dwOrgEntryAddr;
 
-    newJump[ 0 ] = 0xE9;  // JMP absolute
-    memcpy(&newJump[ 1 ], &dwRelativeAddr, sizeof(pNewFunc));
-    SIZE_T bytesWritten;
-    BOOL bRet = WriteProcessMemory(GetCurrentProcess(),
-      pOrgEntry, newJump, sizeof(pNewFunc) + 1, &bytesWritten);
-    return bRet;
+	newJump[ 0 ] = 0xE9;  // JMP absolute
+	memcpy(&newJump[ 1 ], &dwRelativeAddr, sizeof(pNewFunc));
+	SIZE_T bytesWritten;
+	BOOL bRet = WriteProcessMemory(GetCurrentProcess(),
+		pOrgEntry, newJump, sizeof(pNewFunc) + 1, &bytesWritten);
+	return bRet;
 }
 
 #pragma warning (pop)
