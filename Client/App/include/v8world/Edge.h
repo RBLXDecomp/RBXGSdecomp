@@ -35,9 +35,10 @@ namespace RBX
 		bool inEdgeList;
   
 	public:
-		//Edge(const Edge&);
 		Edge(Primitive* prim0, Primitive* prim1);
-		virtual ~Edge() {}
+		virtual ~Edge() 
+		{
+		}
 
 		bool getInEdgeList() const;
 		void setInEdgeList(bool);
@@ -51,7 +52,7 @@ namespace RBX
 		Primitive* otherPrimitive(int) const;
 		Primitive* otherPrimitive(const Primitive* p) const
 		{
-			return p != prim0 ? prim0 : prim1;
+			return p == prim0 ? prim1 : prim0;
 		}
 		int getPrimitiveId(const Primitive*) const;
 		Edge* getNext(const Primitive* p) const
@@ -71,6 +72,5 @@ namespace RBX
 			return p == prim0 || p == prim1;
 		}
 		virtual void setPrimitive(int i, Primitive* p);
-		//Edge& operator=(const Edge&);
 	};
 }

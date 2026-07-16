@@ -43,7 +43,7 @@ namespace RBX
 		}
 		bool operator>(const PrimitiveSort& other) const
 		{
-			return !isLess(*this, other);
+			return isLess(other, *this);
 		}
 	  
 	private:
@@ -64,7 +64,6 @@ namespace RBX
 		PrimitiveSort power;
 
 	public:
-		//PrimitiveEntry(const PrimitiveEntry&);
 		PrimitiveEntry(Primitive* primitive, PrimitiveSort power);
 	};
 
@@ -85,7 +84,6 @@ namespace RBX
 		PrimitiveSort power;
 
 	public:
-		//RigidEntry(const RigidEntry&);
 		RigidEntry(RigidJoint* rigidJoint, PrimitiveSort power);
 	};
 
@@ -228,7 +226,6 @@ namespace RBX
 
 		bool upToDate();
 	public:
-		//ClumpStage(const ClumpStage&);
 		ClumpStage(IStage* upstream, World* world);
 		virtual ~ClumpStage();
 	public:
@@ -250,7 +247,6 @@ namespace RBX
 		void onPrimitiveCanSleepChanged(Primitive* p);
 		void onPrimitiveCanCollideChanged(Primitive* p);
 		void onMotorAngleChanged(MotorJoint* m);
-		//ClumpStage& operator=(const ClumpStage&);
   
 	private:
 		static PrimitiveSort getRigidPower(RigidJoint* r);

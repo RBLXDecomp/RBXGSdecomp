@@ -565,16 +565,13 @@ namespace RBX
 		return true;
 	}
 
-	// 30% match if numClumps has __declspec(noinline)
-	// difficult to match as the std::set::erase inside of rigidZerosErase isnt inlining right
 	bool ClumpStage::processRigidOnes()
 	{
 		typedef std::set<RigidEntry, RigidSortCriterion>::const_iterator Iterator;
 
 		while (!rigidOnes.empty())
 		{
-			Iterator it = rigidOnes.end();
-			it--;
+			Iterator it = --rigidOnes.end();
 
 			RigidJoint* r = (*it).rigidJoint;
 			Clump* c0 = r->getPrimitive(0)->getClump();
@@ -582,69 +579,52 @@ namespace RBX
 
 			RBXASSERT(numClumps(r) == 1);
 
-			Clump* c;
-			if (c0)
-			{
-				c = c0;
-			}
-			else
-			{
-				c = c1;
-				c0 = c1;
-			}
+			Clump* c = c0 ? c0 : c1;
 
-			if (c0->getAssembly())
-				destroyAssembly(c0->getAssembly());
+			if (c->getAssembly())
+				destroyAssembly(c->getAssembly());
 
-			Primitive* p0 = r->getPrimitive(0);
-			Primitive* p1;
-			if (r->getPrimitive(0)->getClump() == c0)
+			Primitive* p = (r->getPrimitive(0)->getClump() == c) ? r->getPrimitive(1) : r->getPrimitive(0);
+			Primitive* base = r->otherPrimitive(p);
+
+			primitivesErase(p);
+
+
+			if (PrimitiveSort(p) > PrimitiveSort(c->getRootPrimitive()))
 			{
-				p1 = r->getPrimitive(1);
-			}
-			else
-			{
-				p1 = r->getPrimitive(0);
-			}
-
-			Primitive* base = (p1 == p0) ? r->getPrimitive(1) : r->getPrimitive(0);
-
-			primitivesErase(p1);
-
-			if (PrimitiveSort(c0->getRootPrimitive()) < PrimitiveSort(p1))
-			{
-				primitivesInsert(p1);
+				primitivesInsert(p);
 				destroyClump(c);
 				return false;
 			}
 
-			c->addPrimitive(p1, base, r);
-			RigidJoint* p1R = p1->getFirstRigid();
+			c->addPrimitive(p, base, r);
+			RigidJoint* pR = p->getFirstRigid();
 			bool ok = true;
-			while (p1R != NULL)
+			while (pR != NULL)
 			{
-				Primitive* other = p1R->otherPrimitive(p1);
+				Primitive* other = pR->otherPrimitive(p);
 				if (other == base)
 				{
-					rigidOnesErase(p1R);
-					RBXASSERT(p1R == r);
+					rigidOnesErase(pR);
+					RBXASSERT(pR == r);
 				}
 				else if (other->getClump() == NULL)
 				{
-					rigidZerosErase(p1R);
-					rigidOnesInsert(p1R);
+					rigidZerosErase(pR);
+					rigidOnesInsert(pR);
 				}
 				else if (other->getClump() == c)
 				{
-					rigidOnesErase(p1R);
+					rigidOnesErase(pR);
 				}
 				else
 				{
-					rigidOnesErase(p1R);
-					rigidTwosInsert(p1R);
+					rigidOnesErase(pR);
+					rigidTwosInsert(pR);
 					ok = false;
 				}
-				p1R = p1->getNextRigid(p1R);
+
+				pR = p->getNextRigid(pR);
 			}
 			if (!ok)
 				return false;
@@ -943,7 +923,6 @@ namespace RBX
 		RBXASSERT(e->inStage(this));
 	}
 
-	// 100% match if primitivesFind has __forceinline
 	void ClumpStage::removeAnchor(Anchor* a)
 	{
 		if (!anchorsFind(a))
@@ -1033,21 +1012,11 @@ namespace RBX
 		for (RigidIterator it = externalRs.begin(); it != externalRs.end(); it++)
 		{
 			RigidJoint* r = *it;
-
-			size_t removed = rigidTwos.erase(r);
-			if (removed == 0)
-			{
-				removed = rigidZeros.erase(r);
-				if (removed == 0)
-				{
-					if (rigidOnesFind(r))
-						rigidOnesErase(r);
-				}
-			}
+			removeFromBuffers(r);
 
 			RBXASSERT(numClumps(r) < 2);
-			int count = numClumps(r);
-			if (count != 1)
+
+			if (numClumps(r) == 1)
 				rigidOnesInsert(r);
 			else
 				rigidZerosInsert(r);
@@ -1111,7 +1080,6 @@ namespace RBX
 		delete a;
 	}
 
-	// 100% match if downstreamOfStage in RBXASSERT has __forceinline
 	void ClumpStage::removeExternalEdge(Edge* e)
 	{
 		Assembly* a0 = e->getPrimitive(0)->getAssembly();
@@ -1286,7 +1254,7 @@ namespace RBX
 
 		if (p0)
 		{
-			Primitive* p1 = (p0 == r->getPrimitive(0) ? r->getPrimitive(1) : r->getPrimitive(0)); // NOTE: not r->otherPrimitive()
+			Primitive* p1 = r->otherPrimitive(p0);
 			if (!p0->getClump()->spanningTreeAdjust(r))
 			{
 				removeSpanningTreeFast(p1, r);
@@ -1306,15 +1274,13 @@ namespace RBX
 
 		if (e)
 		{
-			for (; e != NULL; e = p->getNextEdge(e))
+			while (e != NULL)
 			{
-				SCOPED( // TODO: see ClumpStage::processPrimitives
 				if (MotorJoint::isMotorJoint(e))
 				{
 					destroyAssembly(p->getAssembly());
 					return;
 				}
-
 
 				if (!RigidJoint::isRigidJoint(e))
 				{
@@ -1323,7 +1289,8 @@ namespace RBX
 					else if (a->containsInternalEdge(e))
 						removeInternalEdge(e);
 				}
-				);
+
+				e = p->getNextEdge(e);
 			}
 		}
 	}
@@ -1395,15 +1362,19 @@ namespace RBX
 
 	bool ClumpStage::removeFromBuffers(RigidJoint* r)
 	{
-		if (rigidTwos.erase(r) != 0 || rigidZeros.erase(r) != 0)
-			return true;
-
-		if (rigidOnesFind(r))
+		if (rigidTwos.erase(r) == 0 && rigidZeros.erase(r) == 0)
 		{
-			rigidOnesErase(r);
-			return true;
+			if (rigidOnesFind(r))
+			{
+				rigidOnesErase(r);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
-		return false;
+		return true;
 	}
 }
