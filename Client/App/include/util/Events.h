@@ -1,5 +1,8 @@
-#pragma once
 #include <vector>
+#include "util/standardout.h"
+
+#ifndef EVENTS_H // unfortunately, this is a hack we have to do because of functions defined in headers
+#define EVENTS_H
 
 namespace RBX
 {
@@ -61,11 +64,20 @@ namespace RBX
 		{
 			return !listeners.empty();
 		}
-		// TODO: does not match
+
 		void raise(Event event, Listener<Class, Event>* listener) const
 		{
-			listener->onEvent((Class*)this, event);
+			try
+			{
+				listener->onEvent((Class*)this, event);
+			}
+			catch (std::exception& exp)
+			{
+				std::string what = exp.what();
+				StandardOut::singleton()->print(MESSAGE_WARNING, "Exception caught in onEvent. %s", what.c_str());
+			}
 		}
+
 		void raise(Event event) const
 		{
 			RaiseRange range = {0, listeners.size(), raiseRange};
@@ -79,14 +91,19 @@ namespace RBX
 
 			raiseRange = range.previous;
 		}
+
 		void raise() const;
+
 		virtual void onAddListener(Listener<Class, Event>*) const
 		{
 			return;
 		}
+
 		virtual void onRemoveListener(Listener<Class, Event>*) const
 		{
 			return;
 		}
 	};
 }
+
+#endif // EVENTS_H

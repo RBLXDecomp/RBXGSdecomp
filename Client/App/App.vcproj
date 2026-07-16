@@ -1639,6 +1639,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Seat.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Selection.cpp"
 				>
 			</File>

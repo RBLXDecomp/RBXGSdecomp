@@ -17,13 +17,13 @@ namespace RBX
 		double sleepTime;
 
 	private:
-		void onEvent_seatTouched(boost::shared_ptr<Instance>);
-		void onEvent_humanoidJumped(bool);
-		void seatCharacter(Humanoid*);
+		void onEvent_seatTouched(boost::shared_ptr<Instance> other);
+		void onEvent_humanoidJumped(bool active);
+		void seatCharacter(Humanoid* h);
 		void unseatCharacter();
 		bool charSeated();
 	public:
 		Seat();
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 	};
 }
