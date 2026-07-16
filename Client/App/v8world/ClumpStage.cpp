@@ -294,9 +294,7 @@ namespace RBX
 
 	bool lessClump(const Clump& c0, const Clump& c1)
 	{
-		PrimitiveSort s1(c1.getRootPrimitive());
-		PrimitiveSort s0(c0.getRootPrimitive());
-		return s0 < s1;
+		return PrimitiveSort(c0.getRootPrimitive()) < PrimitiveSort(c0.getRootPrimitive());
 	}
 
 	bool lessMotor(const MotorJoint* m0, const MotorJoint* m1)
@@ -609,11 +607,11 @@ namespace RBX
 				p1 = r->getPrimitive(0);
 			}
 
-			Primitive* base = r->getPrimitive(p1 == p0 ? 1 : 0);
-			PrimitiveSort power0(c0->getRootPrimitive());
-			PrimitiveSort power1(c0->getRootPrimitive());
-			// TODO: THIS IS NOT RIGHT. WHY ARE NONE OF PRIMITIVESORT THINGS RIGHT?
-			if (power0 < power1)
+			Primitive* base = (p1 == p0) ? r->getPrimitive(1) : r->getPrimitive(0);
+
+			primitivesErase(p1);
+
+			if (PrimitiveSort(c0->getRootPrimitive()) < PrimitiveSort(p1))
 			{
 				primitivesInsert(p1);
 				destroyClump(c);
@@ -621,9 +619,9 @@ namespace RBX
 			}
 
 			c->addPrimitive(p1, base, r);
-
+			RigidJoint* p1R = p1->getFirstRigid();
 			bool ok = true;
-			for (RigidJoint* p1R = p1->getFirstRigid(); p1R != NULL; p1R = p1->getNextRigid(p1R))
+			while (p1R != NULL)
 			{
 				Primitive* other = p1R->otherPrimitive(p1);
 				if (other == base)
@@ -631,28 +629,22 @@ namespace RBX
 					rigidOnesErase(p1R);
 					RBXASSERT(p1R == r);
 				}
+				else if (other->getClump() == NULL)
+				{
+					rigidZerosErase(p1R);
+					rigidOnesInsert(p1R);
+				}
+				else if (other->getClump() == c)
+				{
+					rigidOnesErase(p1R);
+				}
 				else
 				{
-					Clump* otherC = other->getClump();
-					if (otherC)
-					{
-						if (otherC == c)
-						{
-							rigidOnesErase(p1R);
-						}
-						else
-						{
-							rigidOnesErase(p1R);
-							rigidTwosInsert(p1R);
-							ok = false;
-						}
-					}
-					else
-					{
-						rigidZerosErase(p1R);
-						rigidOnesInsert(p1R);
-					}
+					rigidOnesErase(p1R);
+					rigidTwosInsert(p1R);
+					ok = false;
 				}
+				p1R = p1->getNextRigid(p1R);
 			}
 			if (!ok)
 				return false;
@@ -1336,15 +1328,15 @@ namespace RBX
 		}
 	}
 
-	// 100% match if rigidOnesFind have __forceinline
 	void ClumpStage::removeFromClumpFast(Primitive* p, RigidJoint* toParent)
 	{
 		if (p->getAssembly())
 			removeFromAssemblyFast(p);
 
 		Clump* c = p->getClump();
-
-		for (RigidJoint* r = p->getFirstRigid(); r != NULL; r = p->getNextRigid(r))
+		
+		RigidJoint* r = p->getFirstRigid();
+		while (r != NULL)
 		{
 			if (c->containsInconsistent(r))
 			{
@@ -1358,6 +1350,7 @@ namespace RBX
 			}
 
 			rigidTwosInsert(r);
+			r = p->getNextRigid(r);
 		}
 
 		primitivesInsert(p);
