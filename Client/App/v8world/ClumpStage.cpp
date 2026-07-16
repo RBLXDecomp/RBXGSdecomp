@@ -294,7 +294,7 @@ namespace RBX
 
 	bool lessClump(const Clump& c0, const Clump& c1)
 	{
-		return PrimitiveSort(c0.getRootPrimitive()) < PrimitiveSort(c0.getRootPrimitive());
+		return PrimitiveSort(c0.getRootPrimitive()) < PrimitiveSort(c1.getRootPrimitive());
 	}
 
 	bool lessMotor(const MotorJoint* m0, const MotorJoint* m1)
