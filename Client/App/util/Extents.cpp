@@ -96,7 +96,7 @@ namespace RBX
 			v0 = G3D::Vector3(this->low.x, this->low.y, this->low.z);
 			v1 = G3D::Vector3(this->low.x, this->low.y, this->high.z);
 			v2 = G3D::Vector3(this->low.x, this->high.y, this->high.z);
-			v3 = G3D::Vector3(this->high.x, this->high.y, this->low.z);
+			v3 = G3D::Vector3(this->low.x, this->high.y, this->low.z);
 			break;
 		case NORM_Y_NEG:
 			v0 = G3D::Vector3(this->low.x, this->low.y, this->low.z);
