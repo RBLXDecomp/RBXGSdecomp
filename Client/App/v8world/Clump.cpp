@@ -243,13 +243,17 @@ namespace RBX
 		RBXASSERT(primitives.size() > 0);
 		if (_set != sleepStatus)
 		{
-			if (_set == Sim::AWAKE)
+			switch (_set)
 			{
+			case Sim::AWAKE:
 				getRootBody()->resetAccumulators();
-			}
-			else if (_set == Sim::SLEEPING_CHECKING || _set == Sim::SLEEPING_DEEPLY)
-			{
+				break;
+			case Sim::SLEEPING_CHECKING:
 				getRootBody()->setVelocity(Velocity::zero());
+				break;
+			case Sim::SLEEPING_DEEPLY:
+				getRootBody()->setVelocity(Velocity::zero());
+				break;
 			}
 
 			sleepStatus = _set;
@@ -445,10 +449,12 @@ namespace RBX
 			{
 				if (r->getPrimitive(0)->getClump() == this && r->getPrimitive(1)->getClump() == this)
 				{
+					SCOPED(
 					if (internalRigids.insert(r).second)
 					{
 						deque.push_back(r->otherPrimitive(p));
 					}
+					);
 				}
 				else
 				{
