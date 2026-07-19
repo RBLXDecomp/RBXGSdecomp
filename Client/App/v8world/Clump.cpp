@@ -109,7 +109,6 @@ namespace RBX
 
 	SpanLink Clump::findBestOutsideLink(Primitive* treeRoot, Primitive* current)
 	{
-		SpanLink outsideTree;
 		SpanLink bestChildLink;
 
 		RigidJoint* r = current->getFirstRigid();
@@ -122,7 +121,7 @@ namespace RBX
 			{
 				if (prim == current)
 				{
-					outsideTree = findBestOutsideLink(treeRoot, other);
+					SpanLink outsideTree = findBestOutsideLink(treeRoot, other);
 					bestChildLink = SpanLink::bestSpanLink(bestChildLink, outsideTree);
 				}
 			}
@@ -132,7 +131,7 @@ namespace RBX
 				{
 					if (!inSpanTree(other, treeRoot))
 					{
-						outsideTree = SpanLink(other, r);
+						SpanLink outsideTree(other, r);
 						bestChildLink = SpanLink::bestSpanLink(bestChildLink, outsideTree);
 					}
 				}
