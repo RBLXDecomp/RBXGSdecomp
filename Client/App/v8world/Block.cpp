@@ -321,25 +321,38 @@ namespace RBX
 		}
 	}
 
+	// NOTE: switch cases were each on 1 line originally, according to the line info
 	G3D::Vector2 Block::getProjectedVertex(const G3D::Vector3& vertex, NormalId normalID)
 	{
+		G3D::Vector2 result;
 		switch (normalID)
 		{
 		case NORM_X:
-			return G3D::Vector2(vertex.y, vertex.z);
+			result.x = vertex.y;
+			result.y = vertex.z;
+			break;
 		case NORM_Y:
-			return G3D::Vector2(vertex.z, vertex.x);
+			result.x = vertex.z;
+			result.y = vertex.x;
+			break;
 		case NORM_Z:
-			return G3D::Vector2(vertex.x, vertex.y);
+			result.x = vertex.x;
+			result.y = vertex.y;
+			break;
 		case NORM_X_NEG:
-			return G3D::Vector2(vertex.z, vertex.y);
+			result.x = vertex.z;
+			result.y = vertex.y;
+			break;
 		case NORM_Y_NEG:
-			return G3D::Vector2(vertex.x, vertex.z);
+			result.x = vertex.x;
+			result.y = vertex.z;
+			break;
 		case NORM_Z_NEG:
-			return G3D::Vector2(vertex.y, vertex.x);
-		default:
-			return G3D::Vector2();
+			result.x = vertex.y;
+			result.y = vertex.x;
+			break;
 		}
+		return result;
 	}
 
 	int Block::getClosestEdge(const G3D::Matrix3& rotation, NormalId normalID, G3D::Vector3& crossAxis)
