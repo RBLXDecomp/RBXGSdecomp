@@ -6,6 +6,8 @@ namespace RBX
 	{
 		switch (controllerType)
 		{
+		case PLAYER_CONTROLLER:
+			return G3D::Color3::purple();
 		case PRIMARY_CONTROLLER:
 			return G3D::Color3::blue();
 		case SECONDARY_CONTROLLER:
@@ -14,8 +16,6 @@ namespace RBX
 			return G3D::Color3::black();
 		case AI_FLEE_CONTROLLER:
 			return G3D::Color3::yellow();
-		case PLAYER_CONTROLLER:
-			return G3D::Color3::purple();
 		default:
 			return G3D::Color3::gray();
 		}
