@@ -146,7 +146,10 @@ namespace RBX
 			TypedPropertyDescriptor(ClassDescriptor&, const Type&, const char*, const char*, std::auto_ptr<GetSet>, Functionality);
 
 		public:
-			virtual bool isReadOnly() const;
+			virtual bool isReadOnly() const
+			{
+				return getset->isReadOnly();
+			}
 			PropType getValue(const DescribedBase* object) const
 			{
 				return getset->getValue(object);
@@ -155,7 +158,11 @@ namespace RBX
 			{
 				getset->setValue(object, value);
 			}
-			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const;
+			virtual bool equalValues(const DescribedBase* a, const DescribedBase* b) const
+			{
+				return getValue(b) == getValue(a);
+			}
+
 			virtual bool hasStringValue() const;
 			virtual std::string getStringValue(const DescribedBase*) const;
 			virtual bool setStringValue(DescribedBase*, const std::string&) const;
@@ -176,7 +183,10 @@ namespace RBX
 				: PropertyDescriptor(classDescriptor, type, name, category, flags)
 			{
 			}
-			virtual bool hasStringValue() const;
+			virtual bool hasStringValue() const
+			{
+				return false;
+			}
 			virtual std::string getStringValue(const DescribedBase*) const;
 			virtual bool setStringValue(DescribedBase*, const std::string&) const;
 		};

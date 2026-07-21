@@ -93,10 +93,9 @@ namespace RBX
 			virtual ~EnumDesc() {}
 
 		private:
-			void addPair(Enum value, const char* name) // TODO: not 100% match
+			void addPair(Enum value, const char* name)
 			{
-				size_t index = enumCount;
-				Item* item = new Item(name, value, index);
+				Item* item = new Item(name, value, enumCount);
 				allItems.push_back(item);
 
 				RBXASSERT(value>=0);
@@ -104,7 +103,7 @@ namespace RBX
 
 				if (enumToIndex.size() <= (size_t)value)
 					enumToIndex.resize(value + 1, -1);
-				enumToIndex[value] = index;
+				enumToIndex[value] = enumCount;
 
 				indexToEnum.push_back(value);
 
@@ -113,7 +112,7 @@ namespace RBX
 				enumToName[value] = &item->name;
 
 				if (enumToString.size() <= (size_t)value)
-					enumToString.resize(value + 1, std::string());
+					enumToString.resize(value + 1);
 				enumToString[value] = name;
 
 				nameToEnum[&item->name] = value;
@@ -123,7 +122,7 @@ namespace RBX
 				enumCount++;
 
 				size_t newEnumCountMCB = -1;
-				for (size_t i = enumCount; i != 0; ++newEnumCountMCB)
+				for (size_t i = enumCount; i > 0; ++newEnumCountMCB)
 					i >>= 1;
 				enumCountMSB = newEnumCountMCB;
 			}
