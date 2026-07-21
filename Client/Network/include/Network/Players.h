@@ -21,7 +21,6 @@ namespace RBX
 
 		struct ChatMessage
 		{
-		public:
 			const std::string message;
 			const boost::shared_ptr<Player> source;
 			const boost::shared_ptr<Player> destination;
@@ -51,7 +50,6 @@ namespace RBX
 		private:
 			struct data
 			{
-			public:
 				std::queue<AbuseReport> queue;
 				boost::mutex requestSync;
 			};
@@ -91,7 +89,7 @@ namespace RBX
 			static Reflection::RefPropDescriptor<Players, Player> propLocalPlayer;
 		  
 		private:
-			virtual void onEvent(const Player*, CharacterAdded);
+			virtual void onEvent(const Player* source, CharacterAdded event);
 			virtual void onChildChanged(Instance*, const PropertyChanged&);
 		public:
 			Players();
@@ -119,7 +117,7 @@ namespace RBX
 			}
 			void chat(std::string message);
 			void reportAbuse(boost::shared_ptr<Instance> player, std::string comment);
-			void reportAbuse(Player*, std::string);
+			void reportAbuse(Player* player, std::string comment);
 			std::list<ChatMessage>::const_iterator chatHistory_begin();
 			std::list<ChatMessage>::const_iterator chatHistory_end();
 			bool canReportAbuse() const;
@@ -130,10 +128,10 @@ namespace RBX
 			boost::shared_ptr<Instance> getPlayerByID(int userID);
 		protected:
 			virtual bool askAddChild(const Instance* instance) const;
-			virtual void onChildAdded(Instance*);
-			virtual void onChildRemoving(Instance*);
+			virtual void onChildAdded(Instance* child);
+			virtual void onChildRemoving(Instance* child);
 		private:
-			void addChatMessage(const ChatMessage&);
+			void addChatMessage(const ChatMessage& message);
 		  
 		public:
 			static Player* getPlayerFromCharacter(Instance* character);
@@ -142,7 +140,7 @@ namespace RBX
 			static bool clientIsPresent(const Instance* context, bool testInDatamodel);
 			static bool serverIsPresent(const Instance*, bool);
 			static bool frontendProcessing(const Instance* context, bool testInDatamodel);
-			static bool backendProcessing(const Instance*, bool);
+			static bool backendProcessing(const Instance* context, bool testInDatamodel);
 		};
 	}
 }

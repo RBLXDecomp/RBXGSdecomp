@@ -1631,6 +1631,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\SafeChat.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\ScriptMouseCommand.cpp"
 				>
 			</File>

@@ -74,7 +74,19 @@ namespace RBX
 	  
 	public:
 		static Instance* create(Instance*, const Name&);
-		static const ServiceProvider* findServiceProvider(const Instance*);
+		// TODO: check if this function inlines everywhere correctly
+		static const ServiceProvider* findServiceProvider(const Instance* context)
+		{
+			while (context != NULL)
+			{
+				if (const ServiceProvider* s = fastDynamicCast<const ServiceProvider>(context))
+					return s;
+
+				context = context->getParent();
+			}
+
+			return NULL;
+		}
 
 	private:
 		static size_t newIndex();

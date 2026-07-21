@@ -1,8 +1,12 @@
 #include <RakPeer.h>
 #include <BitStream.h>
 #include "Client.h"
+#include "Server.h"
 #include "Players.h"
 #include "Streaming.h"
+#include "v8datamodel/GameSettings.h"
+#include "v8datamodel/Teams.h"
+#include "util/standardout.h"
 
 template<class Class>
 class PluginInterfaceAdapter : public PluginInterface
@@ -112,6 +116,35 @@ namespace RBX
 			reportAbuse(fastDynamicCast<Player>(player.get()), comment);
 		}
 
+		void Players::reportAbuse(Player* player, std::string comment)
+		{
+			if (abuseReporter)
+			{
+				StandardOut::singleton()->print(MESSAGE_INFO, "Submitting abuse report from %s", player ? player->getName().c_str() : "[[[anonymous]]]");
+				
+				AbuseReport r;
+				r.submitterID = localPlayer ? localPlayer->getUserID() : 0;
+				r.allegedAbuserID = player ? player->getUserID() : 0;
+				r.comment = comment;
+
+				abuseReporter->add(r, chatHistory);
+			}
+			else
+			{
+				StandardOut::singleton()->print(MESSAGE_INFO, "Sending abuse report to game server via Raknet");
+				if (!peer)
+					throw std::runtime_error("Can\'t report abuse: Not in a networked game");
+
+				RakNet::BitStream bitStream;
+				bitStream << 'Q';
+				bitStream << (localPlayer ? localPlayer->getUserID() : 0);
+				bitStream << (player ? player->getUserID() : 0);
+				bitStream << comment;
+
+				peer->Send(&bitStream, HIGH_PRIORITY, RELIABLE, 2, UNASSIGNED_SYSTEM_ADDRESS, true);
+			}
+		}
+
 		Player* Players::getPlayerFromCharacter(Instance* character)
 		{
 			Players* players = ServiceProvider::find<Players>(character);
@@ -155,6 +188,14 @@ namespace RBX
 			return sp && !Client::clientIsPresent(context, testInDatamodel);
 		}
 
+		bool Players::frontendProcessing(const Instance* context, bool testInDatamodel)
+		{
+			const ServiceProvider* sp = ServiceProvider::findServiceProvider(context);
+			RBXASSERT(!testInDatamodel || sp);
+
+			return sp && !Server::serverIsPresent(context, testInDatamodel);
+		}
+
 		boost::shared_ptr<Instance> Players::playerFromCharacter(boost::shared_ptr<Instance> character)
 		{
 			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> myPlayers = getPlayers();
@@ -183,6 +224,68 @@ namespace RBX
 			}
 
 			return boost::shared_ptr<Instance>();
+		}
+
+		void Players::onEvent(const Player* source, CharacterAdded event)
+		{
+			RBXASSERT(backendProcessing(this, true));
+			const_cast<Player*>(source)->rebuildBackpack();
+		}
+
+		void Players::addChatMessage(const ChatMessage& message)
+		{
+			chatHistory.push_front(message);
+
+			while (chatHistory.size() > (size_t)GameSettings::singleton().chatHistory)
+			{
+				chatHistory.pop_back();
+			}
+
+			Notifier<Players, ChatMessage>::raise(message);
+			Player::event_Chatted.fire(message.source.get(), message.message, message.destination);
+		}
+
+		void Players::onChildAdded(Instance* child)
+		{
+			Player* player = fastDynamicCast<Player>(child);
+			if (!player)
+				return;
+
+			if (player->getUserID() > 0)
+			{
+				boost::shared_ptr<Instance> otherPlayer = getPlayerByID(player->getUserID());
+				if (otherPlayer)
+					otherPlayer->setParent(NULL);
+			}
+
+			boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>& myPlayers = players.write();
+			myPlayers->push_back(shared_from(child));
+
+			if (backendProcessing(this, true))
+			{
+				player->Notifier<Player, CharacterAdded>::addListener(this);
+				player->rebuildBackpack();
+
+				if (Teams* teams = ServiceProvider::find<Teams>(this))
+					teams->assignNewPlayerToTeam(player);
+
+				event_PlayerAdded.fire(this, shared_from(player));
+			}
+		}
+		
+		void Players::onChildRemoving(Instance* child)
+		{
+			Player* player = fastDynamicCast<Player>(child);
+			if (!player)
+				return;
+
+			boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>& myPlayers = players.write();
+			myPlayers->erase(std::find(myPlayers->begin(), myPlayers->end(), shared_from(child)));
+
+			if (backendProcessing(this, false))
+				event_PlayerRemoving.fire(this, shared_from(player));
+
+			player->Notifier<Player, CharacterAdded>::removeListener(this);
 		}
 
 		void AbuseReport::addMessage(const ChatMessage& cm)
