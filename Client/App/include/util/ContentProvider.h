@@ -9,6 +9,7 @@ namespace RBX
 {
 	class ContentId;
 	bool operator!=(const ContentId&, const ContentId&);
+	bool operator==(const ContentId&, const ContentId&);
 
 	class ContentId
 	{
