@@ -31,7 +31,7 @@ XmlParser::XmlParser(std::streambuf* buffer)
 
 void TextXmlParser::skipWhitespace()
 {
-	while (whitespaces.data[buffer->sgetc()])
+	while (whitespaces.data[(char)buffer->sgetc()])
 		buffer->sbumpc();
 }
 
@@ -39,7 +39,7 @@ std::string TextXmlParser::readTag()
 {
 	skipWhitespace();
 
-	if (buffer->sbumpc() != '<')
+	if ((char)buffer->sbumpc() != '<')
 		throw std::runtime_error("tag expected");
 
 	std::string tag;
@@ -73,10 +73,10 @@ std::string TextXmlParser::readFirstTag()
 		s += c;
 		if (c != '<')
 		{
-			for (int i = 0; i < 50; i++)
+			for (int i = 0; i != 50; i++)
 			{
 				if (buffer->sgetc() == -1)
-					break;
+					continue;
 				s += buffer->sbumpc();
 			}
 
@@ -101,7 +101,7 @@ std::string TextXmlParser::readFirstTag()
 }
 
 // does not match
-static std::string decodeString(std::string source)
+std::string decodeString(std::string source)
 {
 	std::string result;
 
@@ -133,7 +133,7 @@ static std::string decodeString(std::string source)
 			else if (entity[0] == '#')
 				result += atoi(entity.substr(1).c_str());
 			else
-				RBXASSERT(false);
+				RBXASSERT(0);
 		}
 		else
 		{
@@ -149,7 +149,7 @@ std::string TextXmlParser::readText(bool decode)
 	skipWhitespace();
 
 	std::string text;
-	while (buffer->sgetc() != '<')
+	while ((char)buffer->sgetc() != '<')
 		text += buffer->sgetc();
 
 	if (decode)
@@ -221,13 +221,13 @@ XmlElement* TextXmlParser::parseAttributes(const std::string& currentTag)
 	XmlElement* element = new XmlElement(RBX::Name::lookup(tagName));
 
 	std::string attribute = findNextToken(tagGuts, index);
-	while (!attribute.empty())
+	while (attribute.size() > 0)
 	{
 		size_t equalsSignIndex = attribute.find("=", 0, 1);
 		std::string attributeName = attribute.substr(0, equalsSignIndex);
 
-		size_t startQuoteMarkIndex = attribute.find("\"", 0, 1);
-		size_t endQuoteMarkIndex = attribute.rfind("\"", std::string::npos, 1);
+		size_t startQuoteMarkIndex = attribute.find('\"');
+		size_t endQuoteMarkIndex = attribute.rfind('\"');
 		std::string text = decodeString(attribute.substr(startQuoteMarkIndex + 1, endQuoteMarkIndex - startQuoteMarkIndex - 1));
 
 		element->addAttribute(RBX::Name::lookup(attributeName), text);
@@ -364,6 +364,11 @@ std::auto_ptr<XmlElement> TextXmlParser::parse()
 	}
 }
 
+XmlWriter::XmlWriter(std::ostream& stream)
+	: stream(stream)
+{
+}
+
 int XmlWriter::getHandleIndex(RBX::InstanceHandle h)
 {
 	std::map<RBX::InstanceHandle, int>::iterator iter = handles.find(h);
@@ -478,9 +483,9 @@ static unsigned char toUpper(unsigned char c)
 void TextXmlWriter::encodedWrite(std::ostream& stream, const char* text)
 {
 	size_t len = strlen(text);
-	for (size_t i = 0; i < len; ++i)
+	for (size_t i = 0; i != len; ++i)
 	{
-		unsigned char c = text[i];
+		unsigned char c = *text++;
 		if (c == '<')
 		{
 			stream << "&lt;";
