@@ -280,14 +280,14 @@ namespace RBX
 	}
 
 	// TODO: check if this matches
-	bool lessMotorHash(MotorJoint* m0, MotorJoint* m1)
+	bool lessMotorHash(const MotorJoint* m0, const MotorJoint* m1)
 	{
 		return m0->hashCode() < m1->hashCode();
 	}
 
 	const MotorJoint* Assembly::getMotorConst(unsigned int motorId) const
 	{
-		if (motors.empty())
+		if (motorId >= motors.size())
 			return NULL;
 
 		std::sort(motors.begin(), motors.end(), lessMotorHash);
@@ -303,12 +303,8 @@ namespace RBX
 	{
 		insertClump(c);
 
-		//Primitive* other = m->getPrimitive(0)->getClump() != c ? m->getPrimitive(0) : m->getPrimitive(1);
-		Primitive* other;
-		if (m->getPrimitive(0)->getClump() != c)
-			other = m->getPrimitive(0);
-		else
-			other = m->getPrimitive(1);
+		Primitive* p = (m->getPrimitive(0)->getClump() == c) ? m->getPrimitive(0) : m->getPrimitive(1);
+		Primitive* other = m->otherPrimitive(p);
 
 		RBXASSERT(clumps.find(other->getClump()) != clumps.end());
 
