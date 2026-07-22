@@ -51,18 +51,18 @@ public:
 	virtual std::auto_ptr<XmlElement> parse();
 };
 
-class XmlWriter : public boost::noncopyable
+class __declspec(novtable) XmlWriter : public boost::noncopyable
 {
 protected:
 	std::map<RBX::InstanceHandle, int> handles;
 	std::ostream& stream;
 
 protected:
-	XmlWriter(std::ostream&);
+	XmlWriter(std::ostream& stream);
 
 public:
 	virtual void serialize(const XmlElement*) = 0;
-	int getHandleIndex(RBX::InstanceHandle);
+	int getHandleIndex(RBX::InstanceHandle h);
 };
 
 class TextXmlWriter : public XmlWriter
@@ -92,7 +92,10 @@ private:
 	std::set<RBX::ContentId> embeddedContent;
   
 public:
-	TextXmlWriterWithEmbeddedContent(std::ostream&);
+	TextXmlWriterWithEmbeddedContent(std::ostream& stream)
+			: TextXmlWriter(stream)
+	{
+	}
 
 protected:
 	virtual void serializeNode(const XmlElement*, int);
