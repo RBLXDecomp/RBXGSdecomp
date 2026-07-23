@@ -465,12 +465,11 @@ namespace RBX
 		}
 	}
 
-	// TODO: match this better... this function sucks
 	bool ClumpStage::processRigidTwos()
 	{
 		while (!rigidTwos.empty())
 		{
-			RBXASSERT(!anchors.empty());
+			RBXASSERT(anchors.empty());
 			RigidJoint* r = *rigidTwos.begin();
 
 			Clump* c0 = r->getPrimitive(0)->getClump();
@@ -487,79 +486,60 @@ namespace RBX
 			RBXASSERT(!c0 || !c0->containsInconsistent(r));
 			RBXASSERT(!c1 || !c1->containsInconsistent(r));
 
-			if (c0 || c1)
-			{
-				if ((c0 && !c1) || (!c0 && c1))
-				{
-					rigidOnesInsert(r);
-					rigidTwosErase(r);
-					//RBXASSERT(!anchors.empty());
-				}
-				else if (c0 == c1)
-				{
-					rigidTwosErase(r);	
-					//RBXASSERT(!anchors.empty());
-				}
-				else
-				{
-					Clump* bc;
-					if (c0->getAnchored())
-						bc = c1;
-					else if (c1->getAnchored())
-						bc = c0;
-					else if (lessClump(*c0, *c1))
-						bc = c0;
-					else
-						bc = c1;
-
-					if (!bc->getAnchored())
-					{
-						destroyClump(bc);
-						RBXASSERT(!anchors.empty());
-					}
-					else
-					{
-						RBXASSERT(!c0->containsInconsistent(r));
-						RBXASSERT(!c1->containsInconsistent(r));
-
-						PrimitiveSort power0(c0->getRootPrimitive());
-						PrimitiveSort power1(c1->getRootPrimitive());
-
-						if (power0 == power1)
-						{
-							rigidTwosErase(r);
-							c0->addInconsistent(r);
-							c1->addInconsistent(r);
-						}
-						else
-						{
-							bool bruh = power0 < power1;
-							Clump* bruhClump = bruh ? c0 : c1;
-
-							if (bruhClump->size() > 1)
-							{
-								destroyClump(bruhClump);
-								RBXASSERT(!rigidOnesFind(r));
-
-								return false;
-							}
-							else
-							{
-								rigidTwosErase(r);
-								c0->addInconsistent(r);
-								c1->addInconsistent(r);
-							}
-						}
-					}
-				}
-
-				RBXASSERT(!anchors.empty());
-			}
-			else
+			if (!c0 && !c1)
 			{
 				rigidZerosInsert(r);
 				rigidTwosErase(r);
 			}
+			else if (!c0 || !c1)
+			{
+				rigidOnesInsert(r);
+				rigidTwosErase(r);
+			}
+			else if (c0 == c1)
+			{
+				rigidTwosErase(r);	
+			}
+			else if (c0->getAnchored() && c1->getAnchored())
+			{
+				RBXASSERT(!c0->containsInconsistent(r));
+				RBXASSERT(!c1->containsInconsistent(r));
+
+				PrimitiveSort power0(c0->getRootPrimitive());
+				PrimitiveSort power1(c1->getRootPrimitive());
+
+				if (power0 != power1)
+				{
+					Clump* bruhClump = (power0 < power1) ? c0 : c1;
+
+					if (bruhClump->size() > 1)
+					{
+						destroyClump(bruhClump);
+						RBXASSERT(rigidOnesFind(r));
+
+						return false;
+					}
+				}
+
+				rigidTwosErase(r);
+				c0->addInconsistent(r);
+				c1->addInconsistent(r);
+			}
+			else
+			{
+				if (!c0->getAnchored() && !c1->getAnchored())
+				{
+					Clump* c = lessClump(*c0, *c1) ? c0 : c1;
+					destroyClump(c);
+				}
+				else
+				{
+					Clump* c = c0->getAnchored() ? c1 : c0;
+					destroyClump(c);
+				}
+			}
+
+			RBXASSERT(anchors.empty());
 		}
 
 		return true;
