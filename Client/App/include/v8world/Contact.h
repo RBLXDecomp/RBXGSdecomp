@@ -8,7 +8,7 @@
 
 namespace RBX
 {
-	class Contact : public Edge
+	class __declspec(novtable) Contact : public Edge
 	{
 	private:
 		int lastContactStep;
