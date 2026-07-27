@@ -45,8 +45,9 @@ namespace RBX
 
 		bool setDirty() const
 		{
+			bool old = dirty;
 			dirty = true;
-			return true; // TODO: this is a placeholder return. figure out the true value.
+			return old; // TODO: this is a placeholder return. figure out the true value.
 		}
 	};
 }
