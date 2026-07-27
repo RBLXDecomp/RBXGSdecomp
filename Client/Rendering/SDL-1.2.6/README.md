@@ -1,1 +1,0 @@
-Extract everything from [SDL-1.2.6.zip](https://www.libsdl.org/release/SDL-1.2.6.zip) here.
