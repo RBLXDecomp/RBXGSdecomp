@@ -219,6 +219,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ClientPhysics.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CrashReporter.cpp"
 				>
 			</File>
@@ -506,6 +510,10 @@
 			</File>
 			<File
 				RelativePath=".\Client.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ClientPhysics.h"
 				>
 			</File>
 			<File
