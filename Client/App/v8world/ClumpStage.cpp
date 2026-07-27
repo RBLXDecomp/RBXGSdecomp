@@ -305,13 +305,7 @@ namespace RBX
 		PrimitiveSort power0 = ClumpStage::getMotorPower(m0);
 		PrimitiveSort power1 = ClumpStage::getMotorPower(m1);
 
-		if (power0.anchored != power1.anchored)
-			return power1.anchored;
-
-		if (power0.surfaceAreaJoints == power1.surfaceAreaJoints)
-			return m0 < m1;
-
-		return power0.surfaceAreaJoints < power1.surfaceAreaJoints;
+		return (power0 == power1) ? m0 < m1 : power0 < power1;
 	}
 
 	PrimitiveSort ClumpStage::getMotorPower(const MotorJoint* m)
