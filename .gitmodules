@@ -10,3 +10,6 @@
 [submodule "Client/Rendering/SDL-1.2.6"]
 	path = Client/Rendering/SDL-1.2.6
 	url = https://github.com/RBLXDecomp/sdl.git
+[submodule "Client/Rendering/Mesa-6.5"]
+	path = Client/Rendering/Mesa-6.5
+	url = https://github.com/RBLXDecomp/mesa.git
