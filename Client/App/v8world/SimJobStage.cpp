@@ -114,16 +114,11 @@ namespace RBX
 		Mechanism* m1 = a1->getMechanism();
 		if (m0 != m1)
 		{
-			if (m0->getAssemblies().size() > m1->getAssemblies().size())
-			{
-				m0->absorb(m1);
-				destroyMechanism(m1);
-			}
-			else
-			{
-				m1->absorb(m0);
-				destroyMechanism(m0);
-			}
+			Mechanism* m = (m0->getAssemblies().size() > m1->getAssemblies().size()) ? m0 : m1;
+			Mechanism* other = (m == m1) ? m0 : m1;
+
+			m->absorb(other);
+			destroyMechanism(other);
 		}
 	}
 
