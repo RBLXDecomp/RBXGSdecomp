@@ -379,14 +379,14 @@ namespace RBX
 
 			Sim::AssemblyState state = shouldWakeOrSleepDeeply(assembly);
 
-			if (state != Sim::AWAKE)
+			switch (state)
 			{
-				if (state == Sim::SLEEPING_DEEPLY)
-					tempToDeep.append(assembly);
-			}
-			else
-			{
+			case Sim::AWAKE:
 				tempToWake.append(assembly);
+				break;
+			case Sim::SLEEPING_DEEPLY:
+				tempToDeep.append(assembly);
+				break;
 			}
 		}
 
