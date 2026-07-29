@@ -17,7 +17,7 @@ namespace RBX
 		};
 	}
 
-	class Edge : public IPipelined
+	class __declspec(novtable) Edge : public IPipelined
 	{
 	public:
 		enum EdgeType
