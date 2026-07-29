@@ -19,7 +19,7 @@ namespace RBX
 			//void setBody(RBX::Body* _body){ body = _body;}
 		public:
 			Link();
-			//~Link();
+			~Link();
 			const G3D::CoordinateFrame& getChildInParent() const;
 			Body* getBody() const;
 			void reset(const G3D::CoordinateFrame&, const G3D::CoordinateFrame&);
