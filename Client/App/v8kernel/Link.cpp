@@ -5,6 +5,10 @@ using namespace RBX;
 
 Link::Link():body(NULL) {stateIndex = Body::getNextStateIndex();}
 
+Link::~Link()
+{
+}
+
 void Link::dirty()
 {
 	if (body)
