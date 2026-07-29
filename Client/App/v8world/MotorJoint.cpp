@@ -19,8 +19,7 @@ namespace RBX
 
 	MotorJoint::~MotorJoint()
 	{
-		if (link)
-			delete link;
+		delete link;
 	}
 
 	G3D::CoordinateFrame MotorJoint::getMeInOther(Primitive* me)
