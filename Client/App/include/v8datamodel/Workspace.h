@@ -111,7 +111,10 @@ namespace RBX
 		void setMouseCommand(MouseCommand* newMouseCommand);
 		void setDefaultMouseCommand();
 		void setNullMouseCommand();
-		bool getInMouselookMode();
+		bool getInMouselookMode()
+		{
+			return inMouselookMode;
+		}
 		void setInMouselookMode(bool);
 		virtual const G3D::GCamera& getGCamera() const;
 		virtual Camera* getCamera() const;
@@ -131,8 +134,8 @@ namespace RBX
 		void setThrottleEnabled(bool value);
 		void joinAllHack();
 		void insertItems(XmlElement* root, std::vector<boost::shared_ptr<Instance>>& instances, InsertMode insertMode, PromptMode promptMode);
-		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> insertContent(ContentId);
-		void insertContent(ContentId, std::vector<boost::shared_ptr<Instance>>&, InsertMode, PromptMode);
+		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> insertContent(ContentId contentId);
+		void insertContent(ContentId contentId, std::vector<boost::shared_ptr<Instance>>& items, InsertMode insertMode, PromptMode promptMode);
 		void makeJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> instances);
 		void breakJoints(boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> instances);
 		void raiseDrawChanged() const

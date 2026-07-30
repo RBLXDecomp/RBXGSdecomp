@@ -4,13 +4,16 @@ namespace RBX
 {
 	void BrickColor::BrickMap::insert(Number number, unsigned char r, unsigned char g, unsigned char b, std::string name)
 	{
-		G3D::Color4uint8 color4uint8 = G3D::Color4uint8(r, g, b, 0);
+		G3D::Color4uint8 c;
+		c.r = r;
+		c.g = g;
+		c.b = b;
 
 		allColors.push_back(BrickColor(number));
 
-		map1.insert(std::pair<Number, G3D::Color4uint8>(number, color4uint8));
+		map1.insert(std::pair<Number, G3D::Color4uint8>(number, c));
 
-		G3D::Color4 color4 = G3D::Color4(color4uint8);
+		G3D::Color4 color4 = G3D::Color4(c);
 		map2.insert(std::pair<Number, G3D::Color4>(number, color4));
 
 		map3.insert(std::pair<Number, std::string>(number, name));
@@ -256,7 +259,12 @@ namespace RBX
 
 	BrickColor BrickColor::closest(G3D::Color3 color)
 	{
-		return closest(G3D::Color4(color));
+		G3D::Color4 c4;
+		c4.r = color.r;
+		c4.g = color.g;
+		c4.b = color.b;
+
+		return closest(c4);
 	}
 
 	BrickColor BrickColor::closest(G3D::Color4 color)

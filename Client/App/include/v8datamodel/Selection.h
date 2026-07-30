@@ -124,7 +124,7 @@ namespace RBX
 		void toggleSelection(Instance* instance);
 		void removeFromSelection(const Instance* instance);
 		bool isSelected(const Instance*) const;
-		virtual void onEvent(const Instance*, AncestorChanged);
+		virtual void onEvent(const Instance* source, AncestorChanged event);
 		void addFilteredSelection(ISelectionBase* fs);
 		void removeFilteredSelection(ISelectionBase* fs);
 	private:

@@ -1,5 +1,9 @@
 #include "v8datamodel/ICharacterSubject.h"
 #include "v8datamodel/Camera.h"
+#include "v8datamodel/UserController.h"
+#include "v8datamodel/Workspace.h"
+#include "v8world/ContactManager.h"
+#include "v8world/Primitive.h"
 
 namespace RBX
 {
@@ -46,5 +50,104 @@ namespace RBX
 		cameraGoal.translation = focusToGoal.direction() * newDistance + cameraFocus.translation;
 
 		return true;
+	}
+
+	//98.58% match
+	bool ICharacterSubject::testOcclusion(const G3D::CoordinateFrame& cameraFocus, const G3D::CoordinateFrame& cameraGoal, float& distance)
+	{
+		ContactManager* contactManager = getContactManager();
+		if (contactManager)
+		{
+			std::vector<const Primitive*> ignorePrims;
+			getIgnorePrims(ignorePrims);
+
+			G3D::CoordinateFrame manLookCamera = getFocusLookingAtGoal(cameraFocus, cameraGoal);
+			G3D::Vector3 pointOnMan = manLookCamera.leftVector();
+
+			int hits = 0;
+			float originalDistance = (cameraGoal.translation - cameraFocus.translation).magnitude();
+			distance = originalDistance;
+
+			for (int x = -2; x <= 2; x += 2)
+			{
+				G3D::Vector3 r = manLookCamera.translation + pointOnMan * (float)x;
+				G3D::Ray manToCamera = G3D::Ray::fromOriginAndDirection(r, cameraGoal.translation - r);
+
+				G3D::Vector3 hitPoint;
+				if (contactManager->getHit(manToCamera, &ignorePrims, NULL, hitPoint))
+				{
+					hits++;
+					float thisDistance = (hitPoint - r).magnitude();
+					distance = G3D::min(distance, thisDistance);
+				}
+			}
+
+			if (hits > 1)
+			{
+				distance -= 1.0f;
+				distance = G3D::max(distance, 0.5f);
+				distance = G3D::min(distance, 1000.0f);
+				return true;
+			}
+			else
+			{
+				distance = originalDistance;
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+	void ICharacterSubject::onHeartBeat(G3D::CoordinateFrame& cameraGoal, G3D::CoordinateFrame& cameraFocus)
+	{
+		if ((cameraGoal.translation - cameraFocus.translation).magnitude() < 2.75f)
+		{
+			Instance* thisInstance = dynamic_cast<Instance*>(this);
+			if (ControllerService* controllerService = ServiceProvider::find<ControllerService>(thisInstance))
+			{
+				if (Workspace* workspace = ServiceProvider::find<Workspace>(thisInstance))
+				{
+					UserInputBase* device = controllerService->getHardwareDevice();
+					if (device)
+					{
+						device->centerCursor();
+						device->setWrapMode(UserInputBase::WRAP_CENTER);
+						cursorLocked = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			Instance* thisInstance = dynamic_cast<Instance*>(this);
+			if (ControllerService* controllerService = ServiceProvider::find<ControllerService>(thisInstance))
+			{
+				if (Workspace* workspace = ServiceProvider::find<Workspace>(thisInstance))
+				{
+					UserInputBase* device = controllerService->getHardwareDevice();
+					if (device && cursorLocked)
+					{
+						if (!workspace->getInMouselookMode())
+							device->setWrapMode(UserInputBase::WRAP_AUTO);
+
+						cursorLocked = false;
+					}
+				}
+			}
+		}
+
+		float angle = 0.0f;
+
+		if (cursorLocked)
+		{
+			G3D::Vector3 v = cameraFocus.translation - cameraGoal.translation;
+			v.y = 0.0f;
+			v = v.direction();
+
+			angle = Math::angleToE0(G3D::Vector2(v.z, v.x));
+		}
+
+		cameraSetWalkOrientation(angle, !cursorLocked);
 	}
 }

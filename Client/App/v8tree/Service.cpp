@@ -31,7 +31,7 @@ namespace RBX
 
 	void ServiceProvider::onChildRemoving(Instance* instance)
 	{
-		std::map<const Name*, boost::shared_ptr<Instance>>::const_iterator it = serviceMap.find(&instance->getClassName());
+		std::map<const Name*, boost::shared_ptr<Instance>>::iterator it = serviceMap.find(&instance->getClassName());
 		if (it != serviceMap.end())
 			Notifier<ServiceProvider, ServiceRemoving>::raise(ServiceRemoving(instance));
 	}
@@ -50,15 +50,17 @@ namespace RBX
 
 	void ServiceProvider::onAddListener(Listener<ServiceProvider, ServiceAdded>* listener) const
 	{
-		typedef std::vector<boost::shared_ptr<Instance>>::const_iterator Iterator;
-
-		Iterator iter = serviceArray.begin();
-		Iterator end = serviceArray.end();
-		for (; iter != end; iter++)
+		if (&(*getChildren()))
 		{
-			if (fastDynamicCast<Service>((*iter).get()))
+			std::vector<boost::shared_ptr<Instance>>::const_iterator end = getChildren()->end();
+			std::vector<boost::shared_ptr<Instance>>::const_iterator iter = getChildren()->begin();
+
+			for (; iter != end; iter++)
 			{
-				Notifier<ServiceProvider, ServiceAdded>::raise(ServiceAdded((*iter).get()), listener);
+				if (fastDynamicCast<Service>(iter->get()))
+				{
+					Notifier<ServiceProvider, ServiceAdded>::raise(ServiceAdded(iter->get()), listener);
+				}
 			}
 		}
 	}

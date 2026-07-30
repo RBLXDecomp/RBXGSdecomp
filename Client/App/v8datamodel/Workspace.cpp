@@ -428,4 +428,30 @@ namespace RBX
 
 		imageServerViewHack = (imageServerViewHack <= 0);
 	}
+
+	static void append(const boost::shared_ptr<Instance>& item, std::vector<boost::shared_ptr<Instance>>* values)
+	{
+		values->push_back(item);
+	}
+
+	boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> Workspace::insertContent(ContentId contentId)
+	{
+		std::vector<boost::shared_ptr<Instance>> items;
+		insertContent(contentId, items, INSERT_TO_TREE, SUPPRESS_PROMPTS);
+
+		boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>> values(new std::vector<boost::shared_ptr<Instance>>);
+		std::for_each(items.begin(), items.end(), boost::bind(&append, _1, values.get()));
+
+		return values;
+	}
+
+	void Workspace::insertContent(ContentId contentId, std::vector<boost::shared_ptr<Instance>>& items, InsertMode insertMode, PromptMode promptMode)
+	{
+		std::auto_ptr<std::istream> stream = ContentProvider::singleton().getContent(contentId);
+
+		TextXmlParser machine(stream->rdbuf());
+		std::auto_ptr<XmlElement> root = machine.parse();
+
+		insertItems(root.get(), items, insertMode, promptMode);
+	}
 }

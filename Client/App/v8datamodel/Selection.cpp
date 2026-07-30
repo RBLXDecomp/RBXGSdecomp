@@ -150,4 +150,10 @@ namespace RBX
 			raiseAdded(inst);
 		}
 	}
+
+	void Selection::onEvent(const Instance* source, AncestorChanged event)
+	{
+		if (source->getRootAncestor() != this->getRootAncestor())
+			removeFromSelection(source);
+	}
 }
