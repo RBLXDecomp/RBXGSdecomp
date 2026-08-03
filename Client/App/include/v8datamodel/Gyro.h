@@ -101,7 +101,7 @@ namespace RBX
 	private:
 		G3D::Vector3 force;
 	public:
-		static Reflection::BoundProp<G3D::Vector3, 1> prop_force;
+		static Reflection::BoundProp<G3D::Vector3, 1> prop_Force;
 
 	protected:
 		virtual bool preventBodySleep() const { return force != G3D::Vector3::zero(); }
