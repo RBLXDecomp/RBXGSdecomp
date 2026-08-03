@@ -17,12 +17,12 @@ namespace RBX
 		BodyMover(const char*);
 	public:
 		virtual ~BodyMover();
-		virtual bool askSetParent(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const;
 	protected:
-		virtual bool preventBodySleep() const;
-		virtual void onAncestorChanged(const AncestorChanged&);
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-		virtual void onEvent(const RunService*, Stepped);
+		virtual bool preventBodySleep() const { return true; }
+		virtual void onAncestorChanged(const AncestorChanged& event);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
+		virtual void onEvent(const RunService* source, Stepped event);
 	private:
 		void updateWorld();
 	};
@@ -43,11 +43,11 @@ namespace RBX
 		static Reflection::BoundProp<G3D::CoordinateFrame, 1> prop_cframe;
 
 	private:
-		void computeBalance(Body*);
-		void computeOrientation(Body*);
+		void computeBalance(Body* body);
+		void computeOrientation(Body* body);
 	public:
 		BodyGyro();
-		virtual void computeForce(const float, bool);
+		virtual void computeForce(const float dt, bool throttling);
 	};
 
 	extern const char* sBodyPosition;
@@ -68,8 +68,8 @@ namespace RBX
 
 	public:
 		BodyPosition();
-		G3D::Vector3 getLastForce();
-		virtual void computeForce(const float, bool);
+		G3D::Vector3 getLastForce() { return lastForce; }
+		virtual void computeForce(const float dt, bool throttling);
 	};
 
 	extern const char* sBodyVelocity;
@@ -79,19 +79,35 @@ namespace RBX
 	private:
 		float kP;
 		G3D::Vector3 maxForce;
-		G3D::Vector3 position;
+		G3D::Vector3 velocity;
 		G3D::Vector3 lastForce;
 	public:
 		static Reflection::BoundProp<float, 1> prop_kP;
 		static Reflection::BoundProp<G3D::Vector3, 1> prop_maxForce;
-		static Reflection::BoundProp<G3D::Vector3, 1> prop_position;
+		static Reflection::BoundProp<G3D::Vector3, 1> prop_velocity;
 
 	protected:
-		virtual bool preventBodySleep() const;
+		virtual bool preventBodySleep() const { return velocity != G3D::Vector3::zero(); }
 	public:
 		BodyVelocity();
 		G3D::Vector3 getLastForce();
-		virtual void computeForce(const float, bool);
+		virtual void computeForce(const float dt, bool throttling);
+	};
+
+	extern const char* sBodyForce;
+
+	class BodyForce : public DescribedCreatable<BodyForce, BodyMover, &sBodyForce>
+	{
+	private:
+		G3D::Vector3 force;
+	public:
+		static Reflection::BoundProp<G3D::Vector3, 1> prop_force;
+
+	protected:
+		virtual bool preventBodySleep() const { return force != G3D::Vector3::zero(); }
+	public:
+		BodyThrust();
+		virtual void computeForce(const float dt, bool throttling);
 	};
 
 	extern const char* sBodyThrust;
@@ -106,10 +122,10 @@ namespace RBX
 		static Reflection::BoundProp<G3D::Vector3, 1> prop_location;
 
 	protected:
-		virtual bool preventBodySleep() const;
+		virtual bool preventBodySleep() const { return force != G3D::Vector3::zero(); }
 	public:
 		BodyThrust();
-		virtual void computeForce(const float, bool);
+		virtual void computeForce(const float dt, bool throttling);
 	};
 
 	extern const char* sRocket;
@@ -150,14 +166,17 @@ namespace RBX
 		Rocket();
 		void fire();
 		void abort();
-		virtual void computeForce(const float, bool);
+		virtual void computeForce(const float dt, bool throttling);
 	protected:
-		virtual void onEvent(const RunService*, Stepped);
+		virtual void onEvent(const RunService* source, Stepped event);
 	private:
-		G3D::Vector3 turn(Body*, const G3D::Vector3&);
-		PartInstance* getTarget() const;
-		void setTarget(PartInstance*);
-		void onGoalChanged(const Reflection::PropertyDescriptor&);
+		G3D::Vector3 turn(Body* body, const G3D::Vector3& targetDir);
+		PartInstance* getTarget() const { return target.get(); }
+		void setTarget(PartInstance* value);
+		void onGoalChanged(const Reflection::PropertyDescriptor&)
+		{
+			firedEvent = false;
+		}
 	};
 
 	void registerBodyMovers();
