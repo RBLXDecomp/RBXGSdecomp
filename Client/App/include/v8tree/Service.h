@@ -103,6 +103,22 @@ namespace RBX
 
 		template<typename Class>
 		static Class* create(const Instance* context);
+
+		template<typename Class>
+		static Class* find(const ServiceProvider* serviceProvider)
+		{
+			if (serviceProvider)
+				return serviceProvider->find<Class>();
+			return NULL;
+		}
+
+		template<typename Class>
+		static Class* create(const ServiceProvider* serviceProvider)
+		{
+			if (serviceProvider)
+				return serviceProvider->create<Class>();
+			return NULL;
+		}
 	
 	private:
 		template<typename Class>
