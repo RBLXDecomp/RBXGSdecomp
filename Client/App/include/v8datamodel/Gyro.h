@@ -90,7 +90,7 @@ namespace RBX
 		virtual bool preventBodySleep() const { return velocity != G3D::Vector3::zero(); }
 	public:
 		BodyVelocity();
-		G3D::Vector3 getLastForce();
+		G3D::Vector3 getLastForce() { return lastForce; }
 		virtual void computeForce(const float dt, bool throttling);
 	};
 
