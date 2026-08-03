@@ -30,7 +30,7 @@ namespace RBX
 			return NULL;
 		}
 
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* oldProvider);
 		virtual void onEvent(const World* source, AutoDestroy event);
 		virtual void onEvent(const World* source, AutoJoin event);
 	public:
