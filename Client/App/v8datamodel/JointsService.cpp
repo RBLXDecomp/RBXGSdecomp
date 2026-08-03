@@ -46,4 +46,18 @@ namespace RBX
 
 		ji->setParent(this);
 	}
+
+	void JointsService::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+	{
+		Notifier<World,AutoJoin>::disconnect<World*>(world, this);
+		Notifier<World,AutoDestroy>::disconnect<World*>(world, this);
+
+		world = NULL;
+		Instance::onServiceProvider(oldProvider, newProvider);
+		if (Workspace* workspace = ServiceProvider::find<Workspace>(newProvider))
+			world = workspace->getWorld();
+
+		Notifier<World,AutoJoin>::connect<World*>(world, this);
+		Notifier<World,AutoDestroy>::connect<World*>(world, this);
+	}
 }
