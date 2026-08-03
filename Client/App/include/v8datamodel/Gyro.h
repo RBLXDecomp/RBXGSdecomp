@@ -106,7 +106,7 @@ namespace RBX
 	protected:
 		virtual bool preventBodySleep() const { return force != G3D::Vector3::zero(); }
 	public:
-		BodyThrust();
+		BodyForce();
 		virtual void computeForce(const float dt, bool throttling);
 	};
 
