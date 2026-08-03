@@ -1,4 +1,5 @@
 #include "v8datamodel/JointsService.h"
+#include "v8datamodel/Workspace.h"
 
 namespace RBX
 {
