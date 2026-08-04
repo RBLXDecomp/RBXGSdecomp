@@ -19,7 +19,10 @@ namespace RBX
 	class DragUtilities
 	{
 	private:
-		static const G3D::Array<const Primitive*>* toConstPrimitives(const G3D::Array<Primitive*>*);
+		static const G3D::Array<const Primitive*>* toConstPrimitives(const G3D::Array<Primitive*>* primArray)
+		{
+			return (G3D::Array<const Primitive*>*)primArray;
+		}
 	public:
 		static bool notJoined(const std::vector<boost::weak_ptr<PartInstance>>& parts);
 		static bool notJoinedToOutsiders(const std::vector<boost::weak_ptr<PartInstance>>&);
@@ -38,7 +41,7 @@ namespace RBX
 		static void instancesToParts(const std::vector<Instance*>& instances, std::vector<boost::weak_ptr<PartInstance>>& parts);
 		static World* partsToPrimitives(const std::vector<boost::weak_ptr<PartInstance>>& parts, G3D::Array<Primitive*>& primitives);
 		static Extents computeExtents(const std::vector<boost::weak_ptr<PartInstance>>& parts);
-		static bool hitObjectOrPlane(const ContactManager&, const G3D::Ray&, const G3D::Array<Primitive*>*, G3D::Vector3&);
+		static bool hitObjectOrPlane(const ContactManager& contactManager, const G3D::Ray& unitSearchRay, const G3D::Array<Primitive*>* ignorePrims, G3D::Vector3& hit);
 		static bool anyPartAlive(const std::vector<boost::weak_ptr<PartInstance>>& parts);
 		static void getPrimitives2(boost::shared_ptr<Instance>, std::vector<Primitive*>&);
 		static void getPrimitives(const Instance*, std::vector<Primitive*>&);

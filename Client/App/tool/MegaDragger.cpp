@@ -4,6 +4,7 @@
 #include "v8world/ContactManager.h"
 #include "v8datamodel/PartInstance.h"
 #include "v8datamodel/RootInstance.h"
+#include "v8datamodel/MouseCommand.h"
 
 namespace RBX
 {
@@ -63,6 +64,15 @@ namespace RBX
 			rootInstance->setInsertPoint(DragUtilities::computeExtents(dragParts).topCenter());
 		}
 		joined = true;
+	}
+
+	G3D::Vector3 MegaDragger::hitObjectOrPlane(const UIEvent& uiEvent)
+	{
+		G3D::Vector3 result;
+		G3D::Array<Primitive*> primitives;
+		DragUtilities::partsToPrimitives(dragParts, primitives);
+		DragUtilities::hitObjectOrPlane(contactManager, MouseCommand::getUnitMouseRay(uiEvent, rootInstance), &primitives, result);
+		return result;
 	}
 
 	void MegaDragger::alignAndCleanParts()

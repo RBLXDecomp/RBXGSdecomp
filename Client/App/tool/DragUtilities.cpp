@@ -2,6 +2,8 @@
 #include "tool/Dragger.h"
 #include "v8datamodel/Workspace.h"
 #include "v8datamodel/PartInstance.h"
+#include "v8datamodel/MouseCommand.h"
+#include "v8world/ContactManager.h"
 
 namespace RBX
 {
@@ -199,5 +201,24 @@ namespace RBX
 
 		if (world)
 			world->destroyJointsToWorld(primitives);
+	}
+
+	bool DragUtilities::hitObjectOrPlane(const ContactManager& contactManager, const G3D::Ray& unitSearchRay, const G3D::Array<Primitive*>* ignorePrims, G3D::Vector3& hit)
+	{
+		RBXASSERT(unitSearchRay.direction.isUnit());
+		G3D::Ray ray = MouseCommand::getSearchRay(unitSearchRay);
+
+		if (!contactManager.getHit(ray, toConstPrimitives(ignorePrims), NULL, hit))
+		{
+			if (!Math::intersectRayPlane(ray, G3D::Plane(G3D::Vector3::unitY(), G3D::Vector3::zero()), hit))
+			{
+				hit = G3D::Vector3::zero();
+				return false;
+			}
+		}
+
+		hit = Dragger::toGrid(hit);
+
+		return true;
 	}
 }
