@@ -45,14 +45,14 @@ namespace RBX
 			if (worldIfInWorkspace)
 			{
 				worldIfInWorkspace->getKernel().insertConnector2ndPass(this);
-				Notifier<RunService,Stepped>::connect<RunService*>(ServiceProvider::create<RunService>(this), this);
+				Notifier<RunService,Stepped>::connect(ServiceProvider::create<RunService>(this), this);
 			}
 		}
 	}
 
 	void BodyMover::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 	{
-		Notifier<RunService,Stepped>::disconnect<RunService*>(ServiceProvider::create<RunService>(oldProvider), this);
+		Notifier<RunService,Stepped>::disconnect(ServiceProvider::create<RunService>(oldProvider), this);
 
 		Instance::onServiceProvider(oldProvider, newProvider);
 
