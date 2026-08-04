@@ -206,11 +206,10 @@ namespace RBX
 
 	G3D::Vector3 Rocket::turn(Body* body, const G3D::Vector3& targetDir)
 	{
-		G3D::Vector3 idk = body->getCoordinateFrame().vectorToObjectSpace(targetDir);
+		G3D::Vector3 targetObjectSpace = body->getCoordinateFrame().vectorToObjectSpace(targetDir);
 
 		Body* root = body->getRoot();
 		G3D::Vector3 oldTorqueWorld = root->getBranchTorque();
-
 
 		float desiredTorqueX = idk.y * root->getBranchIBodyV3().x * kTurnP;
 		float desiredTorqueY = -(idk.x * root->getBranchIBodyV3().y * kTurnP);
@@ -227,16 +226,14 @@ namespace RBX
 		else
 			torqueBody.y += desiredTorqueY;
 
-
 		G3D::Vector3 angVelBody = body->getCoordinateFrame().vectorToObjectSpace(body->getVelocity().rotational);
 		torqueBody.x -= (root->getBranchIBodyV3().x * angVelBody.x) * kTurnD;
 		torqueBody.y -= (root->getBranchIBodyV3().y * angVelBody.y) * kTurnD;
 
 		G3D::Vector3 addedTorque = body->getCoordinateFrame().vectorToWorldSpace(torqueBody) - oldTorqueWorld;
-
 		root->accumulateTorque(addedTorque);
 
-		return idk;
+		return targetObjectSpace;
 	}
 
 
@@ -301,11 +298,8 @@ namespace RBX
 			return;
 
 		Body* root = body->getRoot();
-		
 		G3D::Vector3 oldTorqueWorld = root->getBranchTorque();
-
 		G3D::Vector3 localYAxis = body->getCoordinateFrame().vectorToObjectSpace(cframe.upVector());
-
 		float desiredTorqueX = root->getBranchIBodyV3().x * localYAxis.z * kP;
 		float desiredTorqueZ = -(root->getBranchIBodyV3().z * localYAxis.x * kP);
 
@@ -356,10 +350,7 @@ namespace RBX
 		RBXASSERT(part->getPrimitive()->getBody() != NULL);
 		Body* body = part->getPrimitive()->getBody();
 		
-		
 		G3D::Vector3 pAccel = (position - body->getCoordinateFrame().translation) * kP;
-		
-		
 		pAccel = pAccel + (body->getVelocity().linear * -kD);
 		//Body* root = body->getRoot();
 		lastForce = pAccel * body->getRoot()->getBranchMass();
