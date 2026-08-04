@@ -211,8 +211,8 @@ namespace RBX
 		Body* root = body->getRoot();
 		G3D::Vector3 oldTorqueWorld = root->getBranchTorque();
 
-		float desiredTorqueX = idk.y * root->getBranchIBodyV3().x * kTurnP;
-		float desiredTorqueY = -(idk.x * root->getBranchIBodyV3().y * kTurnP);
+		float desiredTorqueX = targetObjectSpace.y * root->getBranchIBodyV3().x * kTurnP;
+		float desiredTorqueY = -(targetObjectSpace.x * root->getBranchIBodyV3().y * kTurnP);
 
 		G3D::Vector3 torqueBody = body->getCoordinateFrame().vectorToObjectSpace(oldTorqueWorld);
 		
