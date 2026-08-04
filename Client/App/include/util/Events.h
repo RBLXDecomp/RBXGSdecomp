@@ -103,6 +103,20 @@ namespace RBX
 		{
 			return;
 		}
+	public:
+		template<typename T>
+		static void connect(const T& notifier, Listener<Class, Event>* listener)
+		{
+			if (notifier)
+				notifier->Notifier<Class, Event>::addListener(listener);
+		}
+
+		template<typename T>
+		static void disconnect(const T& notifier, Listener<Class, Event>* listener)
+		{
+			if (notifier)
+				notifier->Notifier<Class, Event>::removeListener(listener);
+		}
 	};
 }
 

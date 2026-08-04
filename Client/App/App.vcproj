@@ -1571,6 +1571,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Gyro.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Hopper.cpp"
 				>
 			</File>

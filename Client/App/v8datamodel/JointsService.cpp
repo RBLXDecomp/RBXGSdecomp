@@ -1,4 +1,5 @@
 #include "v8datamodel/JointsService.h"
+#include "v8datamodel/Workspace.h"
 
 namespace RBX
 {
@@ -45,5 +46,19 @@ namespace RBX
 		}
 
 		ji->setParent(this);
+	}
+
+	void JointsService::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+	{
+		Notifier<World,AutoJoin>::disconnect(world, this);
+		Notifier<World,AutoDestroy>::disconnect(world, this);
+
+		world = NULL;
+		Instance::onServiceProvider(oldProvider, newProvider);
+		if (Workspace* workspace = ServiceProvider::find<Workspace>(newProvider))
+			world = workspace->getWorld();
+
+		Notifier<World,AutoJoin>::connect(world, this);
+		Notifier<World,AutoDestroy>::connect(world, this);
 	}
 }
