@@ -50,15 +50,15 @@ namespace RBX
 
 	void JointsService::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 	{
-		Notifier<World,AutoJoin>::disconnect<World*>(world, this);
-		Notifier<World,AutoDestroy>::disconnect<World*>(world, this);
+		Notifier<World,AutoJoin>::disconnect(world, this);
+		Notifier<World,AutoDestroy>::disconnect(world, this);
 
 		world = NULL;
 		Instance::onServiceProvider(oldProvider, newProvider);
 		if (Workspace* workspace = ServiceProvider::find<Workspace>(newProvider))
 			world = workspace->getWorld();
 
-		Notifier<World,AutoJoin>::connect<World*>(world, this);
-		Notifier<World,AutoDestroy>::connect<World*>(world, this);
+		Notifier<World,AutoJoin>::connect(world, this);
+		Notifier<World,AutoDestroy>::connect(world, this);
 	}
 }
