@@ -4,13 +4,13 @@
 
 namespace RBX
 {
-
 	const char* sBodyPosition = "BodyPosition";
 	const char* sBodyVelocity = "BodyVelocity";
 	const char* sBodyGyro = "BodyGyro";
 	const char* sBodyForce = "BodyForce";
 	const char* sBodyThrust = "BodyThrust";
 	const char* sRocket = "Rocket";
+
 	void registerBodyMovers()
 	{
 		BodyGyro::classDescriptor();
@@ -99,7 +99,8 @@ namespace RBX
 	Reflection::SignalDesc<Rocket, void(void)> Rocket::event_ReachedTarget("ReachedTarget");
 
 	Rocket::Rocket()
-		: active(false),
+		: Base("Rocket"),
+		  active(false),
 		  targetOffset(),
 		  target(),
 		  firedEvent(false),
@@ -243,7 +244,8 @@ namespace RBX
 	Reflection::BoundProp<G3D::CoordinateFrame, 1> BodyGyro::prop_cframe("cframe", "Goals", &BodyGyro::cframe, Reflection::PropertyDescriptor::STANDARD);
 
 	BodyGyro::BodyGyro()
-		: kP(3000.0f),
+		: Base("BodyGyro"),
+		  kP(3000.0f),
 		  kD(500.0f),
 		  maxTorque(G3D::Vector3(400000.0f, 0.0f, 400000.0f)),
 		  cframe()
@@ -335,7 +337,8 @@ namespace RBX
 	static Reflection::BoundFuncDesc<BodyPosition, G3D::Vector3(void), 0> func_getLastForce(&BodyPosition::getLastForce, "GetLastForce", Reflection::FunctionDescriptor::AnyCaller);
 
 	BodyPosition::BodyPosition()
-		: kP(10000.0f),
+		: Base("BodyPosition"),
+		  kP(10000.0f),
 		  kD(1250.0f),
 		  maxForce(G3D::Vector3(4000.0f, 4000.0f, 4000.0f)),
 		  position(G3D::Vector3(0.0f, 50.0f, 0.0f)),
@@ -369,7 +372,8 @@ namespace RBX
 	static Reflection::BoundFuncDesc<BodyVelocity, G3D::Vector3(void), 0> func_getLastForceV(&BodyVelocity::getLastForce, "GetLastForce", Reflection::FunctionDescriptor::AnyCaller);
 
 	BodyVelocity::BodyVelocity()
-		: kP(1250.0f),
+		: Base("BodyVelocity"),
+		  kP(1250.0f),
 		  maxForce(G3D::Vector3(4000.0f, 4000.0f, 4000.0f)),
 		  velocity(G3D::Vector3(0.0f, 2.0f, 0.0f)),
 		  lastForce()
@@ -397,7 +401,8 @@ namespace RBX
 
 
 	BodyForce::BodyForce()
-		: force(G3D::Vector3::unitY())
+		: Base("BodyForce"),
+		  force(G3D::Vector3::unitY())
 	{
 	}
 
@@ -414,7 +419,8 @@ namespace RBX
 
 
 	BodyThrust::BodyThrust()
-		: force(G3D::Vector3::unitY()),
+		: Base("BodyThrust"),
+		  force(G3D::Vector3::unitY()),
 		  location(G3D::Vector3::zero())
 	{
 	}
