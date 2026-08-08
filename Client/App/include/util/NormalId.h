@@ -22,6 +22,9 @@ namespace RBX
 	NormalId Matrix3ToNormalId(const G3D::Matrix3& m);
 	NormalId intToNormalId(int num);
 
+	NormalId normalIdToU(NormalId id);
+	NormalId normalIdToV(NormalId id);
+
 	const G3D::Vector3& normalIdToVector3(NormalId normalId);
 	const G3D::Matrix3& normalIdToMatrix3(NormalId normalId);
 
@@ -34,6 +37,4 @@ namespace RBX
 
 	G3D::Vector3 objectToUvw(const G3D::Vector3& objectPt, NormalId faceId);
 	G3D::Vector3 mapToUvw_Legacy(const G3D::Vector3& ptInObject, NormalId faceId);
-
-
 }

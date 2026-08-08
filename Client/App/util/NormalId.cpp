@@ -84,7 +84,7 @@ namespace RBX
 		return Vector3ToNormalId(m.getColumn(2));
 	}
 
-	NormalId inlinedFunction1(NormalId id)
+	NormalId normalIdToU(NormalId id)
 	{
 		switch (id)
 		{
@@ -106,22 +106,22 @@ namespace RBX
 		}
 	}
 
-	NormalId inlinedFunction2(NormalId id)
+	NormalId normalIdToV(NormalId id)
 	{
 		switch (id)
 		{
 		case NORM_X:
-			return NORM_Z;
+			return NORM_Y;
 		case NORM_Y:
-			return NORM_Y;
+			return NORM_Z;
 		case NORM_Z:
-			return NORM_Z;
-		case NORM_X_NEG:
-			return NORM_Z;
-		case NORM_Y_NEG:
 			return NORM_Y;
-		case NORM_Z_NEG:
+		case NORM_X_NEG:
+			return NORM_Y;
+		case NORM_Y_NEG:
 			return NORM_Z;
+		case NORM_Z_NEG:
+			return NORM_Y;
 		default:
 			RBXASSERT(0);
 			return NORM_Y;
@@ -180,8 +180,8 @@ namespace RBX
 		RBXASSERT(vInObject == uvwToObject(objectToUvw(vInObject, normalId), normalId));
 		RBXASSERT(wInObject == uvwToObject(objectToUvw(wInObject, normalId), normalId));
 
-		RBXASSERT(uInObject == normalIdToVector3(inlinedFunction1(normalId)));
-		RBXASSERT(vInObject == normalIdToVector3(inlinedFunction2(normalId)));
+		RBXASSERT(uInObject == normalIdToVector3(normalIdToU(normalId)));
+		RBXASSERT(vInObject == normalIdToVector3(normalIdToV(normalId)));
 		RBXASSERT(wInObject == normalIdToVector3(normalId));
 
 		return G3D::Matrix3(
