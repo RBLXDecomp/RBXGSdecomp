@@ -454,4 +454,27 @@ namespace RBX
 
 		insertItems(root.get(), items, insertMode, promptMode);
 	}
+
+	void Workspace::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+	{
+		Notifier<RunService, Heartbeat>::disconnect(ServiceProvider::find<RunService>(oldProvider), this);
+
+		if (statsItem)
+		{
+			statsItem->setParent(NULL);
+			statsItem.reset();
+		}
+
+		Instance::onServiceProvider(oldProvider, newProvider);
+
+		scriptContext = ServiceProvider::create<ScriptContext>(newProvider);
+
+		if (Stats::Item* item = ServiceProvider::create<Stats::Item>(newProvider))
+		{
+			statsItem = Creatable::create<WorkspaceStatsItem>(this, world.get());
+			statsItem->setParent(item);
+		}
+
+		Notifier<RunService, Heartbeat>::connect(ServiceProvider::find<RunService>(newProvider), this);
+	}
 }

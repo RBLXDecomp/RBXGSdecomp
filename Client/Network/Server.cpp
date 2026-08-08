@@ -62,7 +62,7 @@ namespace RBX
 
 		int Server::getClientCount()
 		{
-			if (&(*getChildren()))
+			if (getChildren())
 			{
 				return std::count_if(getChildren()->begin(), getChildren()->end(), &isReplicator);
 			}

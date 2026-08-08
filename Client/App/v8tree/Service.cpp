@@ -50,7 +50,7 @@ namespace RBX
 
 	void ServiceProvider::onAddListener(Listener<ServiceProvider, ServiceAdded>* listener) const
 	{
-		if (&(*getChildren()))
+		if (getChildren())
 		{
 			std::vector<boost::shared_ptr<Instance>>::const_iterator end = getChildren()->end();
 			std::vector<boost::shared_ptr<Instance>>::const_iterator iter = getChildren()->begin();

@@ -516,7 +516,6 @@ namespace RBX
 		}
 	}
 
-
 	void Humanoid::setTorso(PartInstance* value)
 	{
 		if (torso.get() != value)
@@ -524,5 +523,17 @@ namespace RBX
 			torso = shared_from(value);
 			raisePropertyChanged(propTorso);
 		}
+	}
+
+	void Humanoid::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+	{
+		Notifier<RunService, Stepped>::disconnect(ServiceProvider::create<RunService>(oldProvider), this);
+		
+		Instance::onServiceProvider(oldProvider, newProvider);
+
+		Notifier<RunService, Stepped>::connect(ServiceProvider::create<RunService>(newProvider), this);
+
+		if (newProvider && !oldProvider)
+			onLocalHumanoidEnteringWorkspace();
 	}
 }

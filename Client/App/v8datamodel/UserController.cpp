@@ -82,14 +82,12 @@ namespace RBX
 		: runService(shared_from(ServiceProvider::create<RunService>(_controlledInstance))),
 		  controlledInstance(shared_from(_controlledInstance))
 	{
-		if (runService)
-			runService->Notifier<RunService, Heartbeat>::addListener(this);
+		runService->Notifier<RunService, Heartbeat>::connect(runService, this);
 	}
 
 	SteppingController::~SteppingController()
 	{
-		if (runService)
-			runService->Notifier<RunService, Heartbeat>::removeListener(this);
+		runService->Notifier<RunService, Heartbeat>::disconnect(runService, this);
 	}
 
 	PlayerController::PlayerController(ControllerService* _controllerService, const PVInstance* _controlledInstance)

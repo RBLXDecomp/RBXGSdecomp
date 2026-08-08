@@ -63,7 +63,7 @@ namespace RBX
 		virtual void onChildChanged(Instance* instance, const PropertyChanged& event);
 		virtual void onDescendentAdded(Instance* instance);
 		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 	public:
 		void setCursor(Adorn*);
 		virtual void render2d(Adorn* adorn);

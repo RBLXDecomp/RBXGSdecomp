@@ -58,16 +58,16 @@ namespace RBX
 		{
 			return true;
 		}
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		virtual void onEvent(const Network::Player* source, Network::CharacterRemoving event);
 		virtual void onEvent(const Network::Player* source, Network::CharacterAdded event);
 		virtual void onEvent(const Instance* source, DescendentRemoving event);
 		virtual void onEvent(const Instance* source, DescendentAdded event);
 		virtual void onEvent(const Instance* source, ChildRemoved event);
 		virtual void onEvent(const Instance* source, ChildAdded event);
-		void onLocalCharacterAdded(Instance*);
-		void onLocalPlayerAdded(Network::Player*);
-		void onLocalBackpackAdded(Backpack*);
+		void onLocalCharacterAdded(Instance* added);
+		void onLocalPlayerAdded(Network::Player* added);
+		void onLocalBackpackAdded(Backpack* added);
 		void clearAll();
 		void clearLocalCharacter();
 		void clearLocalPlayer();

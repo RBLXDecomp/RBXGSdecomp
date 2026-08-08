@@ -34,8 +34,7 @@ namespace RBX
 		{
 			if (PartInstance* handle = getHandle())
 			{
-				boost::slot<boost::function<void(boost::shared_ptr<Instance>)>> slot(boost::bind(&Flag::onEvent_flagTouched, this, _1));
-				flagTouched = PartInstance::event_Touched.connect(handle, slot);
+				flagTouched = PartInstance::event_Touched.connect(handle, boost::bind(&Flag::onEvent_flagTouched, this, _1));
 			}
 		}
 	}

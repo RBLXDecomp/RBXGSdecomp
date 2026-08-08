@@ -275,7 +275,7 @@ namespace RBX
 	{
 		RBXASSERT(legacyOffset);
 
-		if (&(*getChildren()))
+		if (getChildren())
 		{
 			int count = (int)getChildren()->size();
 			if (count > 0)

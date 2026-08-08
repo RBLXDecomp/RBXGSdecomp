@@ -64,8 +64,7 @@ namespace RBX
 
 		if (!oldProvider)
 		{
-			boost::slot<boost::function<void(boost::shared_ptr<Instance>)>> slot(boost::bind(&Seat::onEvent_seatTouched, this, _1));
-			seatTouched = PartInstance::event_Touched.connect(this, slot);
+			seatTouched = PartInstance::event_Touched.connect(this, boost::bind(&Seat::onEvent_seatTouched, this, _1));
 		}
 
 		if (!newProvider)
