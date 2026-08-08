@@ -56,17 +56,11 @@ namespace RBX
 
 		void Client::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 		{
-			Listener<ServiceProvider, Closing>* oldListener = this;
-
-			if (oldProvider)
-			{
-				oldProvider->Notifier<ServiceProvider, Closing>::removeListener(oldListener);
-			}
+			Notifier<ServiceProvider, Closing>::disconnect(oldProvider, this);
 
 			if (oldProvider)
 			{
 				RunService* runService = oldProvider->find<RunService>();
-
 				if (runService)
 					runService->runDisabled = false;
 
@@ -84,17 +78,11 @@ namespace RBX
 				p->setConnection(rakPeer.get());
 
 				RunService* runService = newProvider->find<RunService>();
-
 				if (runService)
 					runService->runDisabled = true;
 			}
 
-			Listener<ServiceProvider, Closing>* newListener = this;
-
-			if (newProvider)
-			{
-				newProvider->Notifier<ServiceProvider, Closing>::addListener(newListener);
-			}
+			Notifier<ServiceProvider, Closing>::connect(newProvider, this);
 		}
 	}
 }

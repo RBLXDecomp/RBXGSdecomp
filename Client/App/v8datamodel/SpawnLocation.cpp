@@ -23,21 +23,15 @@ namespace RBX
 		raisePropertyChanged(prop_TeamColor);
 	}
 
-	//99.81% match
-	//somehow stack usage in the DLL is less optimized
 	void SpawnLocation::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 	{
 		Instance::onServiceProvider(oldProvider, newProvider);
-
-		if (!oldProvider)
-		{
-			boost::slot<boost::function<void(boost::shared_ptr<Instance>)>> slot(boost::bind(&SpawnLocation::onEvent_spawnerTouched, this, _1));
-			spawnerTouched = PartInstance::event_Touched.connect(this, slot);
-		}
 		
 		if (!oldProvider)
 		{
-			SpawnerService* spawnerService = newProvider ? newProvider->create<SpawnerService>() : NULL;
+			spawnerTouched = PartInstance::event_Touched.connect(this, boost::bind(&SpawnLocation::onEvent_spawnerTouched, this, _1));
+
+			SpawnerService* spawnerService = ServiceProvider::create<SpawnerService>(newProvider);
 			RBXASSERT(spawnerService != NULL);
 
 			spawnerService->RegisterSpawner(this);
@@ -47,7 +41,7 @@ namespace RBX
 		{
 			spawnerTouched.disconnect();
 
-			SpawnerService* spawnerService = oldProvider ? oldProvider->create<SpawnerService>() : NULL;
+			SpawnerService* spawnerService = ServiceProvider::create<SpawnerService>(oldProvider);
 			RBXASSERT(spawnerService != NULL);
 
 			spawnerService->UnregisterSpawner(this);

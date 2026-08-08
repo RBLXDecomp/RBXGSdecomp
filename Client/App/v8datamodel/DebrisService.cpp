@@ -69,6 +69,6 @@ namespace RBX
 
 		Instance::onServiceProvider(oldProvider, newProvider);
 
-		timer = newProvider ? newProvider->create<TimerService>() : NULL;
+		timer = ServiceProvider::create<TimerService>(newProvider);
 	}
 }

@@ -285,7 +285,7 @@ namespace RBX
 			if (backendProcessing(this, false))
 				event_PlayerRemoving.fire(this, shared_from(player));
 
-			player->Notifier<Player, CharacterAdded>::removeListener(this);
+			Notifier<Player, CharacterAdded>::disconnect(player, this);
 		}
 
 		void AbuseReport::addMessage(const ChatMessage& cm)

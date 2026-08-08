@@ -198,7 +198,7 @@ namespace RBX
 		void setState(State*);
 		void checkForJointDeath();
 		bool hasWalkToPoint(G3D::Vector3& worldPosition) const;
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		virtual void onAncestorChanged(const AncestorChanged& event);
 		virtual bool askSetParent(const Instance*) const;
 		virtual bool shouldRender2d() const;

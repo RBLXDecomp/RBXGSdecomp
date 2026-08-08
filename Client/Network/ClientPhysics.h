@@ -19,7 +19,7 @@ namespace RBX
 
 		public:
 			ClientPhysics(PartInstance* part);
-			void update(const boost::shared_ptr<RunService>&);
+			void update(const boost::shared_ptr<RunService>& runService);
 			void sleep();
 			virtual ~ClientPhysics();
 		protected:

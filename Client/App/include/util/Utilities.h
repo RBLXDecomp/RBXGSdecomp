@@ -20,8 +20,9 @@ namespace RBX
 		{
 		}
 	public:
-		// TODO: is this definition right?
-		operator boost::shared_ptr<const T>() const
+		// this allows functions to easily check if object is NULL
+		// VERY hacky...
+		operator typename boost::shared_ptr<T>::unspecified_bool_type() const
 		{
 			return object;
 		}

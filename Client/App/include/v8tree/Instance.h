@@ -248,7 +248,7 @@ namespace RBX
 		};
 		size_t numChildren() const
 		{
-			if (&(*children))
+			if (children)
 				return children->size();
 			else
 				return 0;
@@ -369,7 +369,7 @@ namespace RBX
 		template<typename Function>
 		void for_eachChild(Function func) const
 		{
-			if (&(*children))
+			if (children)
 			{
 				boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> c = children.read();
 				for (std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin(); iter != c->end(); iter++)

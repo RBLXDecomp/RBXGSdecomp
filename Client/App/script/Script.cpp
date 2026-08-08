@@ -101,15 +101,12 @@ void Script::onAncestorChanged(const AncestorChanged& event)
 
 void Script::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 {
-    if (oldProvider)
-    {
-        ScriptContext* sc = oldProvider->find<ScriptContext>();
+	if (ScriptContext* sc = ServiceProvider::find<ScriptContext>(oldProvider))
+	{
+		sc->removeScript(this);
+	}
 
-        if (sc)
-            sc->removeScript(this);
-    }
-
-    Instance::onServiceProvider(oldProvider, newProvider);
+	Instance::onServiceProvider(oldProvider, newProvider);
 }
 
 boost::shared_ptr<const std::string> Script::requestCode()

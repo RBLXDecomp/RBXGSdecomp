@@ -44,9 +44,7 @@ namespace RBX
 
 	DataModel::~DataModel()
 	{
-		if (runService)
-			runService->Notifier<RunService, RunTransition>::removeListener(this);
-
+		Notifier<RunService, RunTransition>::disconnect(runService, this);
 		StandardOut::singleton()->print(MESSAGE_INFO, "~DataModel");
 	}
 

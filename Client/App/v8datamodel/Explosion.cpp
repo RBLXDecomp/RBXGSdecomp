@@ -109,22 +109,10 @@ namespace RBX
 
 	void Explosion::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 	{
-		Listener<RunService, Stepped>* oldListener = this;
-
-		if (oldProvider)
-		{
-			if (RunService* runService = oldProvider->find<RunService>())
-				runService->Notifier<RunService, Stepped>::removeListener(oldListener);
-		}
+		Notifier<RunService, Stepped>::disconnect(ServiceProvider::find<RunService>(oldProvider), this);
 
 		Instance::onServiceProvider(oldProvider, newProvider);
 
-		Listener<RunService, Stepped>* newListener = this;
-
-		if (newProvider)
-		{
-			if (RunService* runService = newProvider->find<RunService>())
-				runService->Notifier<RunService, Stepped>::addListener(newListener);
-		}
+		Notifier<RunService, Stepped>::connect(ServiceProvider::find<RunService>(newProvider), this);
 	}
 }

@@ -113,7 +113,7 @@ namespace RBX
 
 	void Instance::onAddListener(Listener<Instance, ChildAdded>* listener) const
 	{
-		if (&(*children))
+		if (children)
 		{
 			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> c = children.read();
 			for (std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin(); iter != c->end(); iter++)
@@ -125,7 +125,7 @@ namespace RBX
 
 	void Instance::removeAllChildren()
 	{
-		while (&(*children))
+		while (children)
 		{
 			children->back()->setParent(NULL);
 		}
@@ -212,7 +212,7 @@ namespace RBX
 	{
 		typedef std::vector<boost::shared_ptr<Instance>>::const_iterator Iterator;
 
-		if (&(*children))
+		if (children)
 		{
 			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> r = children.read();
 
@@ -222,7 +222,7 @@ namespace RBX
 			}
 		}
 
-		event_ancestryChanged.fire(this, shared_from(event.oldParent));
+		event_ancestryChanged.fire(this, shared_from(event.child));
 		Notifier<Instance, AncestorChanged>::raise(event);
 	}
 
@@ -249,7 +249,7 @@ namespace RBX
 
 	int Instance::findChildIndex(const Instance* instance) const
 	{
-		RBXASSERT(&(*children));
+		RBXASSERT(children);
 
 		const std::vector<boost::shared_ptr<Instance>>& c = *children;
 
@@ -259,7 +259,7 @@ namespace RBX
 
 	void Instance::writeChildren(XmlElement* container)
 	{
-		if (&(*children))
+		if (children)
 		{
 			const std::vector<boost::shared_ptr<Instance>>& c = *children;
 
@@ -274,7 +274,7 @@ namespace RBX
 
 	Instance* Instance::findFirstChildByName(const std::string& findName) const
 	{
-		if (!&(*children))
+		if (!children)
 			return NULL;
 
 		const std::vector<boost::shared_ptr<Instance>>& c = *children;
@@ -294,7 +294,7 @@ namespace RBX
 		if (foundChild)
 			return foundChild;
 
-		if (!&(*children))
+		if (!children)
 			return NULL;
 
 		const std::vector<boost::shared_ptr<Instance>>& c = *children;

@@ -25,6 +25,7 @@ using namespace RBX;
 using namespace boost::posix_time;
 
 // unidentified inlines
+
 static inline void _openLibInline(lua_State* L, lua_CFunction f, const char* name)
 {
     lua_pushcfunction(L, f);
@@ -32,25 +33,6 @@ static inline void _openLibInline(lua_State* L, lua_CFunction f, const char* nam
     lua_call(L, 1, 0);
 }
 
-template<typename Class, typename Event>
-static inline void _addListenerInline(RunService* runService, Listener<Class, Event>* listener)
-{
-    if (runService)
-        runService->Notifier<Class, Event>::addListener(listener);
-}
-
-template<typename Class, typename Event>
-static inline void _removeListenerInline(RunService* runService, Listener<Class, Event>* listener)
-{
-    if (runService)
-        runService->Notifier<Class, Event>::removeListener(listener);
-        }
-
-static inline void _removeListenersInline(boost::shared_ptr<RunService>& runService, ScriptContext* scriptContext)
-{
-    _removeListenerInline<RunService, RunTransition>(runService.get(), scriptContext);
-    _removeListenerInline<RunService, Heartbeat>(runService.get(), scriptContext);
-}
 // end unidentified inlines
 
 Reflection::BoundProp<bool, true> ScriptContext::propScriptsDisabled("ScriptsDisabled", "State", &ScriptContext::scriptsDisabled, &ScriptContext::onChangedScriptEnabled, Reflection::PropertyDescriptor::LEGACY); 
@@ -559,7 +541,8 @@ void ScriptContext::onEvent(const RunService* source, RunTransition event)
 
 void ScriptContext::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 {
-    _removeListenersInline(runService, this);
+	Notifier<RunService, RunTransition>::disconnect(runService, this);
+    Notifier<RunService, Heartbeat>::disconnect(runService, this);
 
     if (oldProvider && !newProvider)
         closeState();
@@ -593,8 +576,8 @@ void ScriptContext::onServiceProvider(const ServiceProvider* oldProvider, const 
     }
 
     runService = shared_from(newRunService);
-    _addListenerInline<RunService, RunTransition>(runService.get(), this);
-    _addListenerInline<RunService, Heartbeat>(runService.get(), this);
+    Notifier<RunService, RunTransition>::connect(runService, this);
+    Notifier<RunService, Heartbeat>::connect(runService, this);
 }
 
 void ScriptContext::onChangedScriptEnabled(const Reflection::PropertyDescriptor&)
