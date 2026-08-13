@@ -1,6 +1,10 @@
+#include "v8datamodel/Lighting.h"
 #include "v8datamodel/DataModel.h"
 #include "v8datamodel/TimeState.h"
 #include "v8datamodel/Workspace.h"
+#include "v8datamodel/Hopper.h"
+#include "v8datamodel/Teams.h"
+#include "script/ScriptContext.h"
 #include "gui/GUI.h"
 #include "util/standardout.h"
 #include "util/Http.h"
@@ -159,6 +163,30 @@ namespace RBX
 			boost::thread(background_function(g, "rbx_httpPost"));
 
 			return "";
+		}
+	}
+
+	void DataModel::clearContents()
+	{
+		workspace->setMouseCommand(NULL);
+		workspace->removeAllChildren();
+		workspace->setCamera(NULL);
+		
+		starterPackService->removeAllChildren();
+
+		Teams* teams = ServiceProvider::find<Teams>(this);
+		if (teams)
+			teams->removeAllChildren();
+
+		Lighting* lighting = ServiceProvider::find<Lighting>(this);
+		if (lighting)
+			lighting->removeAllChildren();
+
+		ScriptContext* script = ServiceProvider::find<ScriptContext>(this);
+		if (script)
+		{
+			script->closeState();
+			ScriptContext::propScriptsDisabled.setValue(script, false);
 		}
 	}
 

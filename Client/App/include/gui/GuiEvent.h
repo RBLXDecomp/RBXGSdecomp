@@ -49,7 +49,10 @@ namespace RBX
 		{
 			return response == NOT_USED;
 		}
-		bool wasFinished();
+		bool wasFinished()
+		{
+			return response == USED_AND_FINISHED;
+		}
 		GuiTarget* getTarget()
 		{
 			return target;
@@ -60,7 +63,10 @@ namespace RBX
 		{
 			return GuiResponse(NOT_USED);
 		}
-		static GuiResponse used(GuiTarget*);
+		static GuiResponse used(GuiTarget* target)
+		{
+			return GuiResponse(USED, target);
+		}
 		static GuiResponse used()
 		{
 			return GuiResponse(USED);
@@ -74,17 +80,9 @@ namespace RBX
 	class GuiTarget
 	{
 	public:
-		// TODO: check match
 		virtual GuiResponse process(const GuiEvent& guiEvent)
 		{
 			return GuiResponse::notUsed();
 		}
-	public:
-		//GuiTarget(const GuiTarget&);
-		GuiTarget()
-		{
-		}
-	public:
-		//GuiTarget& operator=(const GuiTarget&);
 	};
 }
