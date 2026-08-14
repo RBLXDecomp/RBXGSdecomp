@@ -51,24 +51,6 @@ namespace RBX
 		Notifier<RunService, RunTransition>::raise(transition);
 	}
 
-	void RunService::pause()
-	{
-		if (runState == RS_RUNNING)
-			setRunState(RS_PAUSED);
-	}
-
-	void RunService::reset()
-	{
-		if (runState != RS_NORMAL)
-			setRunState(RS_NORMAL);
-	}
-
-	void RunService::run()
-	{
-		if (!runDisabled && (runState == RS_NORMAL || runState == RS_PAUSED) && runState != RS_RUNNING)
-			setRunState(RS_RUNNING);
-	}
-
 	void RunService::raiseStepped(float time, float step)
 	{
 		Notifier<RunService, Stepped>::raise(Stepped(time, step));
