@@ -1675,6 +1675,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\TimerService.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\TimeState.cpp"
 				>
 			</File>
