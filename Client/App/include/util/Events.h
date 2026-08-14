@@ -92,7 +92,10 @@ namespace RBX
 			raiseRange = range.previous;
 		}
 
-		void raise() const;
+		void raise() const
+		{
+			raise(Event());
+		}
 
 		virtual void onAddListener(Listener<Class, Event>*) const
 		{
