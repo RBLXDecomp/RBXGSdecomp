@@ -106,8 +106,6 @@ namespace RBX
 		GuiItem* getGuiParent();
 		const GuiItem* getGuiItem(int) const;
 		GuiItem* getGuiItem(int);
-	public:
-		//GuiItem& operator=(const GuiItem&);
 
 	public:
 		static const G3D::Color4& enabledFill();
@@ -134,7 +132,6 @@ namespace RBX
 	protected:
 		virtual G3D::Vector2 getChildPosition(const GuiItem* child) const;
 	public:
-		//TopMenuBar(const TopMenuBar&);
 		TopMenuBar(const std::string&, Layout::Style, G3D::Color4);
 		TopMenuBar(const std::string&, Layout::Style, bool);
 		TopMenuBar()
@@ -150,10 +147,6 @@ namespace RBX
 			return visible;
 		}
 		void setVisible(bool);
-	public:
-		virtual ~TopMenuBar();
-	public:
-		//TopMenuBar& operator=(const TopMenuBar&);
 	};
 
 	class RelativePanel : public TopMenuBar
@@ -166,7 +159,6 @@ namespace RBX
 	protected:
 		void init(const Layout& layout);
 	public:
-		//RelativePanel(const RelativePanel&);
 		RelativePanel(const Layout&);
 		RelativePanel()
 		{
@@ -174,10 +166,6 @@ namespace RBX
 		}
 	public:
 		virtual G3D::Vector2 getPosition() const;
-	public:
-		virtual ~RelativePanel();
-	public:
-		//RelativePanel& operator=(const RelativePanel&);
 	};
 
 	class GuiRoot : public GuiItem

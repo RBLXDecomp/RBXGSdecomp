@@ -19,7 +19,7 @@ namespace RBX
 		void onEvent_standTouched(boost::shared_ptr<Instance>);
 	public:
 		FlagStand();
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		void AffixFlag(Flag* flag);
 		bool HasFlag();
 		Flag* GetFlag();
@@ -39,7 +39,7 @@ namespace RBX
 		virtual ~FlagStandService();
 		FlagStand* FindClosestEmptyStandForFlag(Flag*);
 		FlagStand* FindStandWithFlag(Flag* f);
-		void RegisterFlagStand(FlagStand*);
-		void UnregisterFlagStand(FlagStand*);
+		void RegisterFlagStand(FlagStand* s);
+		void UnregisterFlagStand(FlagStand* s);
 	};
 }

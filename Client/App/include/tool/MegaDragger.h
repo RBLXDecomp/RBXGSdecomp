@@ -23,7 +23,6 @@ namespace RBX
 		ContactManager& contactManager;
 
 	public:
-		//MegaDragger(const MegaDragger&);
 		MegaDragger(PartInstance* mousePartPtr, const std::vector<boost::weak_ptr<PartInstance>>& partArray, RootInstance* rootInstance);
 		MegaDragger(PartInstance* mousePartPtr, const std::vector<PVInstance*>& pvInstances, RootInstance* rootInstance);
 		~MegaDragger();

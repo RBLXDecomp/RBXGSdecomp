@@ -21,7 +21,6 @@ namespace RBX
 		G3D::Color4 backdropColor;
 
 	public:
-		//Layout(const Layout&);
 		Layout() // TODO: this constructor is a guess based on another function that uses Layout class (RelativePanel ctor). is this correct?
 			: backdropColor(G3D::Color4::clear()),
 			  layoutStyle(HORIZONTAL),
@@ -29,7 +28,5 @@ namespace RBX
 			  yLocation(Rect::TOP)
 		{
 		}
-	public:
-		//Layout& operator=(const Layout&);
 	};
 }
