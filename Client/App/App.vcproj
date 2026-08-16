@@ -1291,6 +1291,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util\Rect.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\util\RunningAverage.cpp"
 				>
 			</File>
