@@ -54,37 +54,27 @@ namespace RBX
         Draw::selectionBox(part, adorn, (selectState == SELECT_NORMAL) ? Draw::selectColor() : G3D::Color3(0.2f, 0.7f, 1.0f));
     }
 
-    // TODO: 97.59% match
 	void Draw::adornSurfaces(const Part& part, Adorn* adorn, const G3D::Color3& controllerColor)
     {
         for (int i = 0; i < 6; i++)
         {
-            // wtf? logically this does the same thing but what
-            // even with this rbxgs does 'add eax, -0x6' but i can only get it to do 'sub eax, 0x6'
-            // if (part.surfaceType[i] <= NUM_SURF_TYPES-1)
-            if ((unsigned int)(part.surfaceType[i] - 6) <= 2)
+			SurfaceType type = part.surfaceType[i];
+            if (type >= ROTATE && type <= ROTATE_P) // ROTATE, ROTATE_V, ROTATE_P
             {
                 Draw::constraint(part, adorn, i, controllerColor);
             }
         }
     }
 
-    // TODO: 85.04% match -- it's pretty difficult
-    // the main trouble seems to be with where to place Math::getAxisRotationMatrix
-    // it has to come before relativeTranslation yet somehow not get put on the stack
+    // TODO: 94.56% match
+	// classic case of MSVC optimizer being really inconsistent
 	void Draw::constraint(const Part& part, Adorn* adorn, int face, const G3D::Color3& controllerColor)
     {
-        // (000938)  S_BPREL32: [FFFFFF8C], Type:             0x175D, halfSize
-        // (000950)  S_BPREL32: [FFFFFF80], Type:             0x175D, relativeTranslation
-        // (000970)  S_BPREL32: [FFFFFF9C], Type:             0x18E5, translation
-        // (000988)  S_BPREL32: [FFFFFF7C], Type:     T_REAL32(0040), posNeg
-        // (00099C)  S_BPREL32: [FFFFFFCC], Type:             0x18E5, newObject;
-
-        int surfaceType = part.surfaceType[face];
+		SurfaceType surfaceType = part.surfaceType[face];
 
         G3D::Vector3 halfSize = part.gridSize * 0.5f;
 
-        G3D::Matrix3 rot = Math::getAxisRotationMatrix(face);
+        const G3D::Matrix3& rot = Math::getAxisRotationMatrix(face);
 
         G3D::Vector3 relativeTranslation;
 
