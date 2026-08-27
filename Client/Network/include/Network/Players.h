@@ -90,13 +90,13 @@ namespace RBX
 		  
 		private:
 			virtual void onEvent(const Player* source, CharacterAdded event);
-			virtual void onChildChanged(Instance*, const PropertyChanged&);
+			virtual void onChildChanged(Instance* instance, const PropertyChanged& event);
 		public:
 			Players();
 			virtual ~Players();
 		public:
 			bool superSafeOn() const;
-			boost::shared_ptr<Instance> createLocalPlayer(int);
+			boost::shared_ptr<Instance> createLocalPlayer(int userId);
 			Player* getLocalPlayer() const
 			{
 				return localPlayer.get();
