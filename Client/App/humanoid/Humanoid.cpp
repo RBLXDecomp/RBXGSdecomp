@@ -136,10 +136,7 @@ namespace RBX
 			world = worldInWorkspace;
 			if (world)
 			{
-				Humanoid::State* running = new Running(this);
-				if (running != currentState.get())
-					currentState.reset(running);
-
+				setState(new Running(this));
 				world->getKernel().insertConnector2ndPass(this);
 			}
 		}
@@ -302,10 +299,9 @@ namespace RBX
 			if (getParent())
 			{
 				State* prevState = currentState.get();
-				State* newState = prevState->onStep(event.step, *static_cast<PVInstance*>(getParent())->getTopPVController());
+				PVInstance* parent = static_cast<PVInstance*>(getParent());
 
-				if (newState != currentState.get())
-					currentState.reset(newState);
+				setState(prevState->onStep(event.step, *parent->getTopPVController()));
 			}
 
 			if (getTorsoPrimitive())
@@ -397,16 +393,19 @@ namespace RBX
 		if (health == 0.0f && !imDead)
 		{
 			imDead = true;
-
-			FallingDown* fallingDown = new FallingDown(this, Math::inf());
-			if (fallingDown != currentState.get())
-				currentState.reset(fallingDown);
+			setState(new FallingDown(this, Math::inf()));
 
 			if (getParent())
 				getParent()->for_eachChild(breakJoints);
 
 			event_Died.fire(this);
 		}
+	}
+
+	void Humanoid::setState(State* value)
+	{
+		if (value != currentState.get())
+			currentState.reset(value);
 	}
 
 	void Humanoid::moveTo(const G3D::Vector3& worldPosition, PartInstance* part)

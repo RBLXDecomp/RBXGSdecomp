@@ -195,7 +195,7 @@ namespace RBX
 		}
 	private:
 		void onChangedHealth(const Reflection::PropertyDescriptor&);
-		void setState(State*);
+		void setState(State* value);
 		void checkForJointDeath();
 		bool hasWalkToPoint(G3D::Vector3& worldPosition) const;
 		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
