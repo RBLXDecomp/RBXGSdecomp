@@ -208,6 +208,73 @@ namespace RBX
 		}
 	}
 
+	bool Tool::characterCanUnequipTool(ModelInstance* character)
+	{
+		if (character && Humanoid::modelIsCharacter(character))
+		{
+			Tool* tool = character->findFirstChildOfType<Tool>();
+			if (tool)
+				return tool->canUnequip();
+		}
+
+		return true;
+	}
+
+	void Tool::onEvent_HandleTouched(boost::shared_ptr<Instance> other)
+	{
+		RBXASSERT(Network::Players::backendProcessing(this, true));
+
+		if (backendToolState == IN_WORKSPACE)
+		{
+			Instance* otherParent = other->getParent();
+			if (computeDesiredState(otherParent) == EQUIPPED && characterCanUnequipTool(fastDynamicCast<ModelInstance>(otherParent)))
+			{
+				Network::Player* player = Network::Players::getPlayerFromCharacter(otherParent);
+				if (player && canBePickedUpByPlayer(player))
+				{
+					moveAllToolsToBackpack(player);
+					setParent(otherParent);
+					RBXASSERT(backendToolState == EQUIPPED);
+				}
+			}
+		}
+	}
+
+	void Tool::onLocalClicked()
+	{
+		RBXASSERT(Network::Players::frontendProcessing(this, true));
+
+		Network::Player* localPlayer = Network::Players::findLocalPlayer(this);
+		if (localPlayer && characterCanUnequipTool(localPlayer->getCharacter()))
+		{
+			if (getParent() == localPlayer->getPlayerBackpack())
+			{
+				moveAllToolsToBackpack(localPlayer);
+				setParent(localPlayer->getCharacter());
+			}
+			else
+			{
+				setParent(localPlayer->getPlayerBackpack());
+			}
+		}
+
+		RBXASSERT(getNumToolsInCharacter() < 2);
+	}
+
+	void Tool::onLocalOtherClicked()
+	{
+		RBXASSERT(Network::Players::frontendProcessing(this, true));
+
+		Network::Player* localPlayer = Network::Players::findLocalPlayer(this);
+		if (localPlayer && characterCanUnequipTool(localPlayer->getCharacter()))
+		{
+			if (getParent() != localPlayer->getPlayerBackpack())
+			{
+				setParent(localPlayer->getPlayerBackpack());
+			}
+		}
+	}
+
 	void Tool::upTo_Equipped()
 	{
 		handleTouched.disconnect();
@@ -238,6 +305,79 @@ namespace RBX
 		{
 			handleTouched.disconnect();
 		}
+	}
+
+	void Tool::upTo_InCharacter()
+	{
+		RBXASSERT(Humanoid::modelIsCharacter(getParent()));
+
+		characterChildAdded = Instance::event_childAdded.connect(getParent(), boost::bind(&Tool::onEvent_AddedBackend, this, _1));
+		characterChildRemoved = Instance::event_childRemoved.connect(getParent(), boost::bind(&Tool::onEvent_RemovedBackend, this, _1));
+	}
+
+	void Tool::upTo_HasTorso()
+	{
+		Humanoid* humanoid = Humanoid::modelIsCharacter(getParent());
+		RBXASSERT(humanoid);
+		
+		PartInstance* torso = humanoid->getTorso();
+		RBXASSERT(torso);
+
+		torsoChildAdded = Instance::event_childAdded.connect(torso, boost::bind(&Tool::onEvent_AddedBackend, this, _1));
+		torsoChildRemoved = Instance::event_childRemoved.connect(torso, boost::bind(&Tool::onEvent_RemovedBackend, this, _1));
+	}
+
+	void Tool::onEquipping()
+	{
+		Instance* parent = getParent();
+		if (parent && parent == Network::Players::findLocalCharacter(this))
+		{
+			RBXASSERT(Network::Players::frontendProcessing(this, true));
+
+			workspace = ServiceProvider::find<Workspace>(this);
+			toolMouseCommand = new ToolMouseCommand(workspace, this);
+
+			workspace->setMouseCommand(toolMouseCommand);
+		}
+	}
+
+	void Tool::setBackendToolStateNoReplicate(int value)
+	{
+		ToolState state = (ToolState)value;
+
+		if (backendToolState < EQUIPPED && state >= EQUIPPED)
+		{
+			PartInstance* handle = getHandle();
+			if (handle)
+				handle->setCanCollide(false);
+
+			onEquipping();
+			event_Equipped.fire(this, getMouse());
+		}
+
+		if (state == ACTIVATED)
+			event_Activated.fire(this);
+
+		if (backendToolState == ACTIVATED)
+			event_Deactivated.fire(this);
+
+		if (backendToolState >= EQUIPPED && state < EQUIPPED)
+		{
+			PartInstance* handle = getHandle();
+			if (handle)
+				handle->setCanCollide(true);
+
+			event_Unequipped.fire(this);
+
+			if (toolMouseCommand)
+			{
+				toolMouseCommand = NULL;
+				workspace->setDefaultMouseCommand();
+				workspace = NULL;
+			}
+		}
+
+		backendToolState = state;
 	}
 
 	void Tool::setBackendToolState(int value)

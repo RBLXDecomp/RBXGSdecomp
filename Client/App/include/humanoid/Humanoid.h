@@ -230,7 +230,7 @@ namespace RBX
 		static Humanoid* modelIsCharacter(const Instance* testModel);
 		static Humanoid* getLocalHumanoidFromContext(const Instance* context);
 		static PartInstance* getLocalHeadFromContext(const Instance* context);
-		static ModelInstance* getCharacterFromHumanoid(Humanoid*);
+		static ModelInstance* getCharacterFromHumanoid(Humanoid* humanoid);
 		static PartInstance* getHeadFromCharacter(const ModelInstance* character);
 		static Weld* getGrip(const Instance*);
 		static const float walkSpeed();
