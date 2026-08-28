@@ -11,11 +11,6 @@ namespace RBX
 	{
 	public:
 		virtual Log* provideLog() = 0;
-	public:
-		//ILogProvider(const ILogProvider&);
-		ILogProvider();
-	public:
-		//ILogProvider& operator=(const ILogProvider&);
 	};
 
 	class Log
@@ -39,19 +34,16 @@ namespace RBX
 		static ILogProvider* provider;
 
 	public:
-		void writeEntry(Severity, const char*);
+		void writeEntry(Severity severity, const char* message);
 		void timeStamp(bool);
 	public:
-		//Log(const Log&);
-		Log(const char*, const char*);
+		Log(const char* logFile, const char* name);
 		virtual ~Log();
-	public:
-		//Log& operator=(const Log&);
 
 	public:
-		static std::string formatMem(unsigned);
-		static std::string formatTime(double);
-		static void setLogProvider(ILogProvider*);
+		static std::string formatMem(unsigned bytes);
+		static std::string formatTime(double time);
+		static void setLogProvider(ILogProvider* provider);
 		static Log* current()
 		{
 			return provider ? provider->provideLog() : NULL;
