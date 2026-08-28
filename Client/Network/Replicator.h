@@ -42,7 +42,17 @@ namespace RBX
 			{
 			}
 		public:
-			long id() const;
+
+#pragma warning (push)
+#pragma warning (disable : 4311) // warning C4311: 'reinterpret_cast' : pointer truncation from 'const RBX::Network::Marker *const ' to 'long'
+
+			long id() const
+			{
+				return reinterpret_cast<long>(this);
+			}
+
+#pragma warning (pop)
+
 			void fireReturned();
 
 		public:
@@ -263,7 +273,7 @@ namespace RBX
 			void connectPropertyChanged(boost::shared_ptr<Instance> instance);
 			void disconnectPropertyChanged(boost::shared_ptr<Instance> instance);
 			virtual bool wantReplicate(const Instance* source) const;
-			virtual void onSentMarker(int);
+			virtual void onSentMarker(long);
 		private:
 			void disconnectAllPropertyChangedConnections();
 			void connectToReplicationContainers();

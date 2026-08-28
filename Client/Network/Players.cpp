@@ -145,7 +145,7 @@ namespace RBX
 					throw std::runtime_error("Can\'t report abuse: Not in a networked game");
 
 				RakNet::BitStream bitStream;
-				bitStream << 'Q';
+				bitStream << (unsigned char)'Q';
 				bitStream << (localPlayer ? localPlayer->getUserID() : 0);
 				bitStream << (player ? player->getUserID() : 0);
 				bitStream << comment;
@@ -174,7 +174,7 @@ namespace RBX
 				throw std::runtime_error("No local Player to chat from");
 
 			RakNet::BitStream bitStream;
-			bitStream << 'P';
+			bitStream << (unsigned char)'P';
 
 			Guid::Data data;
 			localPlayer->getGuid().extract(data);

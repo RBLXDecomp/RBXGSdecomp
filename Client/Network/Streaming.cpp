@@ -1,6 +1,9 @@
 #include <BitStream.h>
 #include <StringCompressor.h>
 #include "Streaming.h"
+#include "IdManager.h"
+#include "v8tree/Service.h"
+#include <G3D/vectorMath.h>
 #include <algorithm>
 
 namespace RBX
@@ -143,7 +146,113 @@ namespace RBX
 			return a == b || fabs(a - b) <= 0.0005f;
 		}
 
-		static bool isBrickLocation(G3D::Vector3& value, short& x, unsigned short& y, short& z); // TODO: implement
+		static bool isBrickLocation(const G3D::Vector3& v, short& x, unsigned short& y, short& z)
+		{
+			if (v.x >= 512.0f)
+				return false;
+
+			if (v.x <= -512.0f)
+				return false;
+
+			if (v.z >= 512.0f)
+				return false;
+
+			if (v.z <= -512.0f)
+				return false;
+			
+			if (v.y >= 204.8)
+				return false;
+
+			if (v.y < 0.0f)
+				return false;
+
+			float dx = v.x * 2.0f;
+			x = (short)dx;
+
+			if ((float)x != dx)
+				return false;
+
+			float dz = v.z * 2.0f;
+			z = (short)dz;
+
+			if ((float)z != dz)
+				return false;
+
+			float dy = v.y * 10.0f;
+			y = (unsigned short)dy;
+
+			if (!brickEq((float)y, dy))
+				return false;
+
+			return true;
+		}
+
+		void writeBrickVector(RakNet::BitStream& stream, const G3D::Vector3& value)
+		{
+			short x;
+			unsigned short y;
+			short z;
+
+			if (isBrickLocation(value, x, y, z))
+			{
+				stream.Write(true);
+				stream.WriteBits((unsigned char*)&x, 11);
+				stream.WriteBits((unsigned char*)&y, 11);
+				stream.WriteBits((unsigned char*)&z, 11);
+			}
+			else
+			{
+				stream.Write(false);
+				stream.Write(value.x);
+				stream.Write(value.y);
+				stream.Write(value.z);
+			}
+		}
+
+		void readBrickVector(RakNet::BitStream& stream, G3D::Vector3& value)
+		{
+			bool isBrickLocation;
+			stream.Read(isBrickLocation);
+
+			if (isBrickLocation)
+			{
+				short x = 0;
+				unsigned short y = 0;
+				short z = 0;
+
+				stream.ReadBits((unsigned char*)&x, 11);
+				stream.ReadBits((unsigned char*)&y, 11);
+				stream.ReadBits((unsigned char*)&z, 11);
+
+				if (x & 0x400) // sign extend x and z
+					x |= 0xfc00;
+
+				if (z & 0x400)
+					z |= 0xfc00;
+
+				value.x = (float)(x * 0.5);
+				value.y = (float)(y / 10.0);
+				value.z = (float)(z * 0.5);
+			}
+			else
+			{
+				stream.Read(value.x);
+				stream.Read(value.y);
+				stream.Read(value.z);
+			}
+		}
+
+		void rationalize(G3D::CoordinateFrame& value)
+		{
+			if (!value.translation.isFinite())
+			{
+				value.translation = G3D::Vector3(0.0f, -1e+6f, 0.0f);
+			}
+			else
+			{
+				value.translation = G3D::clamp(G3D::Vector3(-1e+6f, -1e+6f, -1e+6f), value.translation, G3D::Vector3(1e+6f, 1e+6f, 1e+6f));
+			}
+		}
 
 		void deserializeEnum(Reflection::Property& property, RakNet::BitStream& bitStream)
 		{
@@ -216,6 +325,54 @@ namespace RBX
 
 			std::string value = desc.getStringValue(instance);
 			send(bitStream, value);
+		}
+
+		void StringSender::send(RakNet::BitStream& stream, const std::string& value)
+		{
+			if (value == "")
+			{
+				stream << (unsigned char)0;
+			}
+			else
+			{
+				std::pair<std::map<std::string, unsigned char>::iterator, bool> pair = dictionary.insert(std::pair<const std::string, unsigned char>(value, 0));
+
+				if (!pair.second)
+				{
+					stream << pair.first->second;
+				}
+				else
+				{
+					lastIndex = lastIndex % 127 + 1;
+					dictionary.erase(strings[lastIndex]);
+					pair.first->second = lastIndex;
+					strings[lastIndex] = value;
+
+					stream << (unsigned char)(lastIndex | 0x80);
+					stream << value;
+				}
+			}
+		}
+
+		bool StringSender::trySend(RakNet::BitStream& stream, const std::string& value)
+		{
+			if (value == "")
+			{
+				stream << (unsigned char)0;
+				return true;
+			}
+
+			std::map<std::string, unsigned char>::const_iterator iter = dictionary.find(value);
+
+			if (iter == dictionary.end())
+			{
+				return false;
+			}
+			else
+			{
+				stream << iter->second;
+				return true;
+			}
 		}
 
 		void IdSerializer::serializeId(RakNet::BitStream& stream, const Instance* instance)
