@@ -212,7 +212,7 @@ namespace RBX
 		virtual const G3D::CoordinateFrame getLocation() const;
 		virtual ContactManager* getContactManager();
 		virtual void tellCameraNear(float distance);
-		G3D::Vector3 getIntendedMovementVector(bool);
+		G3D::Vector3 getIntendedMovementVector(bool setWalkMode);
 		virtual G3D::Vector3 getIntendedMovementVector();
 		virtual float getIntendedRotationAboutYAxis();
 
@@ -221,10 +221,10 @@ namespace RBX
 			getIgnorePrims(primitives);
 		}
 
-		virtual void cameraSetWalkOrientation(float, bool);
+		virtual void cameraSetWalkOrientation(float rad, bool noAdjust);
 		void onLocalHumanoidEnteringWorkspace();
 	public:
-		virtual void getIgnorePrims(std::vector<const Primitive*>&);
+		virtual void getIgnorePrims(std::vector<const Primitive*>& ignore);
 	  
 	public:
 		static Humanoid* modelIsCharacter(const Instance* testModel);
