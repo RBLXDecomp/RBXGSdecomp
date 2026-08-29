@@ -337,7 +337,7 @@ namespace RBX
 
 		void AbuseReporter::add(AbuseReport& r, const std::list<ChatMessage>& chatHistory)
 		{
-			std::for_each(chatHistory.begin(), chatHistory.end(), boost::bind(&AbuseReport::addMessage, &r, _1));
+			std::for_each(chatHistory.begin(), chatHistory.end(), boost::bind(&AbuseReport::addMessage, boost::ref(r), _1));
 
 			{
 				boost::mutex::scoped_lock lock(_data->requestSync);
