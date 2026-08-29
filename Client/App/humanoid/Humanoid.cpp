@@ -1,6 +1,7 @@
 #include "humanoid/Humanoid.h"
 #include "humanoid/Running.h"
 #include "humanoid/FallingDown.h"
+#include "v8datamodel/Tool.h"
 #include "v8datamodel/PartInstance.h"
 #include "v8datamodel/JointInstance.h"
 #include "v8datamodel/ModelInstance.h"
@@ -535,5 +536,130 @@ namespace RBX
 
 		if (newProvider && !oldProvider)
 			onLocalHumanoidEnteringWorkspace();
+	}
+
+	G3D::Vector3 Humanoid::getIntendedMovementVector(bool setWalkMode)
+	{
+		G3D::Vector3 result = G3D::Vector3::zero();
+
+		if (walkMode == DIRECTION_MOVE)
+		{
+			result = walkDirection;
+		}
+		else if (walkMode == CLICK_TO_MOVE)
+		{
+			PartInstance* torso = getTorso();
+			G3D::Vector3 worldPosition;
+
+			if (torso && hasWalkToPoint(worldPosition))
+			{
+				const G3D::CoordinateFrame& torsoCoord = torso->getCoordinateFrame();
+				const G3D::Vector3& torsoPosition = torsoCoord.translation;
+
+				G3D::Vector3 delta;
+				delta.x = worldPosition.x - torsoPosition.x;
+				delta.z = worldPosition.z - torsoPosition.z;
+				delta.y = 0.0f;
+
+				if (delta.magnitude() < 2.0f)
+				{
+					if (setWalkMode)
+						walkMode = DIRECTION_MOVE;
+
+					result = G3D::Vector3::zero();
+				}
+				else
+				{
+					result = delta.direction();
+				}
+			}
+		}
+
+		return result;
+	}
+
+	void collectAllDescendantCharacterPrims(boost::shared_ptr<Instance> descendent, std::vector<Primitive*>& primitives)
+	{
+		if (PartInstance* part = dynamic_cast<PartInstance*>(descendent.get()))
+		{
+			primitives.push_back(part->getPrimitive());
+		}
+	}
+
+	void Humanoid::getIgnorePrims(std::vector<const Primitive*>& ignore)
+	{
+		Humanoid* humanoid = this;
+		if (humanoid)
+		{
+			if (ModelInstance* model = fastDynamicCast<ModelInstance>(humanoid->getParent()))
+			{
+				model->visitDescendents(boost::bind(&collectAllDescendantCharacterPrims, _1, boost::ref((std::vector<Primitive*>&)ignore)));
+			}
+		}
+	}
+
+	void Humanoid::tellCameraNear(float distance)
+	{
+		std::vector<Primitive*> primitives;
+		Humanoid* humanoid = this;
+		if (humanoid)
+		{
+			if (ModelInstance* model = fastDynamicCast<ModelInstance>(humanoid->getParent()))
+			{
+				model->visitDescendents(boost::bind(&collectAllDescendantCharacterPrims, _1, boost::ref(primitives)));
+			}
+		}
+
+		float alphaModifier = 1.0f;
+		if (distance < 3.0f)
+		{
+			alphaModifier = 0.0f;
+		}
+		else if (distance < 6.0f)
+		{
+			alphaModifier = 0.5f;
+		}
+
+		for (size_t i = 0; i < primitives.size(); i++)
+		{
+			PartInstance* part = PartInstance::fromPrimitive(primitives[i]);
+
+			if (!fastDynamicCast<Tool>(part->getParent()))
+			{
+				part->setAlphaModifier(alphaModifier);
+			}
+		}
+	}
+
+	void Humanoid::cameraSetWalkOrientation(float rad, bool noAdjust)
+	{
+		if (noAdjust)
+		{
+			setWalkRotationalVelocity(0.0f);
+		}
+		else
+		{
+			PartInstance* torso = getTorso();
+			Body* body = (torso) ? torso->getPrimitive()->getBody() : NULL;
+
+			if (body)
+			{
+				if (Body* root = body->getRoot())
+				{
+					G3D::Vector3 look = root->getPV().position.lookVector();
+					look.y = 0.0f;
+
+					look.unitize();
+
+					float lookAng = Math::radWrap(Math::angleToE0(G3D::Vector2(look.z, look.x)));
+					float value = Math::radWrap(Math::radWrap(rad) - lookAng);
+
+					if (fabs(value) < 0.1f)
+						value = 0.0f;
+
+					setWalkRotationalVelocity(value);
+				}
+			}
+		}
 	}
 }

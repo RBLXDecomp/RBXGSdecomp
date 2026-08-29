@@ -190,7 +190,10 @@ namespace RBX {
 			void setPv(const PV& _pv);
 			void setCoordinateFrame(const G3D::CoordinateFrame& worldCord);
 			void setVelocity(const RBX::Velocity& worldVelocity);
-			void setCanThrottle(bool);
+			void setCanThrottle(bool value)
+			{
+				canThrottle = value;
+			}
 			float kineticEnergy() const;
 			float potentialEnergy() const;
 			static int getNextStateIndex();

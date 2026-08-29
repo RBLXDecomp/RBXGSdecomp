@@ -387,6 +387,20 @@ namespace RBX
 
 		template<typename Type>
 		Type* findFirstChildOfType() const;
+
+		template<typename Function>
+		void visitDescendents(Function func) const
+		{
+			if (children)
+			{
+				boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> c = children.read();
+				for (std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin(); iter != c->end(); iter++)
+				{
+					func(*iter);
+					(*iter)->visitDescendents(func);
+				}
+			}
+		}
 	  
 	private:
 		static void predelete(Instance* instance);
