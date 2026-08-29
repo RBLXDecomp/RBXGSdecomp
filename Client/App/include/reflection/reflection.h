@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/type_traits.hpp>
 #include "reflection/object.h"
 
 class ArchiveBinder;
@@ -331,10 +332,10 @@ namespace RBX
 		class BoundFuncDesc<Class, Function, 0> : public FuncDesc<Class>
 		{
 		private:
-			typedef FunctionTraits<Function> Traits;
+			typedef typename boost::function_traits<Function>::result_type result_type;
 
 		public:
-			typedef typename Traits::ReturnType(Class::*FunctionSig)();
+			typedef typename result_type (Class::*FunctionSig)();
 
 		private:
 			typename FunctionSig function;
@@ -342,7 +343,7 @@ namespace RBX
 		private:
 			void declareSignature()
 			{
-				signature.resultType = &Type::singleton<typename Traits::ReturnType>();
+				signature.resultType = &Type::singleton<typename result_type>();
 			}
 
 		public:
@@ -363,7 +364,7 @@ namespace RBX
 				if (!o)
 					throw std::bad_cast();
 
-				call<typename Traits::ReturnType>(o, arguments.returnValue);
+				call<typename result_type>(o, arguments.returnValue);
 			}
 
 		private:
@@ -385,10 +386,11 @@ namespace RBX
 		class BoundFuncDesc<Class, Function, 1> : public FuncDesc<Class>
 		{
 		private:
-			typedef FunctionTraits<Function> Traits;
+			typedef typename boost::function_traits<Function>::result_type result_type;
+			typedef typename boost::function_traits<Function>::arg1_type Arg1;
 
 		public:
-			typedef typename Traits::ReturnType(Class::*FunctionSig)(typename Traits::Arg1Type);
+			typedef typename result_type (Class::*FunctionSig)(typename Arg1);
 
 		private:
 			typename FunctionSig function;
@@ -397,8 +399,8 @@ namespace RBX
 		private:
 			void declareSignature(const char* arg1Name)
 			{
-				signature.resultType = &Type::singleton<typename Traits::ReturnType>();
-				signature.addArgument(Name::declare(arg1Name, -1), Type::singleton<typename Traits::Arg1Type>(), default1);
+				signature.resultType = &Type::singleton<typename result_type>();
+				signature.addArgument(Name::declare(arg1Name, -1), Type::singleton<typename Arg1>(), default1);
 			}
 
 		public:
@@ -418,7 +420,7 @@ namespace RBX
 				typename FunctionSig function,
 				const char* name,
 				const char* arg1Name,
-				typename Traits::Arg1Type default1,
+				typename Arg1 default1,
 				Security security);
 		
 		public:
@@ -431,20 +433,20 @@ namespace RBX
 				if (!o)
 					throw std::bad_cast();
 
-				call<typename Traits::ReturnType>(o, arguments.returnValue, arg1);
+				call<typename result_type>(o, arguments.returnValue, arg1);
 			}
 
 		private:
 			template<typename ReturnType>
 			void call(Class* o, Value& returnValue, Value& arg1) const
 			{
-				returnValue.set<ReturnType>((o->*function)(arg1.convert<typename Traits::Arg1Type>()));
+				returnValue.set<ReturnType>((o->*function)(arg1.convert<typename Arg1>()));
 			}
 
 			template<>
 			void call<void>(Class* o, Value& returnValue, Value& arg1) const
 			{
-				(o->*function)(arg1.convert<typename Traits::Arg1Type>());
+				(o->*function)(arg1.convert<typename Arg1>());
 			}
 		};
 
@@ -453,10 +455,12 @@ namespace RBX
 		class BoundFuncDesc<Class, Function, 2> : public FuncDesc<Class>
 		{
 		private:
-			typedef FunctionTraits<Function> Traits;
+			typedef typename boost::function_traits<Function>::result_type result_type;
+			typedef typename boost::function_traits<Function>::arg1_type Arg1;
+			typedef typename boost::function_traits<Function>::arg2_type Arg2;
 
 		public:
-			typedef typename Traits::ReturnType(Class::*FunctionSig)(typename Traits::Arg1Type, typename Traits::Arg2Type);
+			typedef typename result_type (Class::*FunctionSig)(typename Arg1, typename Arg2);
 
 		private:
 			typename FunctionSig function;
@@ -466,9 +470,9 @@ namespace RBX
 		private:
 			void declareSignature(const char* arg1Name, const char* arg2Name)
 			{
-				signature.resultType = &Type::singleton<typename Traits::ReturnType>();
-				signature.addArgument(Name::declare(arg1Name, -1), Type::singleton<typename Traits::Arg1Type>(), default1);
-				signature.addArgument(Name::declare(arg2Name, -1), Type::singleton<typename Traits::Arg2Type>(), default2);
+				signature.resultType = &Type::singleton<typename result_type>();
+				signature.addArgument(Name::declare(arg1Name, -1), Type::singleton<typename Arg1>(), default1);
+				signature.addArgument(Name::declare(arg2Name, -1), Type::singleton<typename Arg2>(), default2);
 			}
 
 		public:
@@ -484,7 +488,7 @@ namespace RBX
 				const char* name,
 				const char* arg1Name,
 				const char* arg2Name,
-				typename Traits::Arg2Type default2,
+				typename Arg2 default2,
 				Security security)
 				: FuncDesc(name, security),
 				  function(function),
@@ -498,9 +502,9 @@ namespace RBX
 				typename FunctionSig function,
 				const char* name,
 				const char* arg1Name,
-				typename Traits::Arg1Type default1,
+				typename Arg1 default1,
 				const char* arg2Name,
-				typename Traits::Arg2Type default2,
+				typename Arg2 default2,
 				Security security);
 		
 		public:
@@ -515,20 +519,20 @@ namespace RBX
 				if (!o)
 					throw std::bad_cast();
 
-				call<typename Traits::ReturnType>(o, arguments.returnValue, arg1, arg2);
+				call<typename result_type>(o, arguments.returnValue, arg1, arg2);
 			}
 		
 		private:
 			template<typename ReturnType>
 			void call(Class* o, Value& returnValue, Value& arg1, Value& arg2) const
 			{
-				returnValue.set<ReturnType>((o->*function)(arg1.convert<typename Traits::Arg1Type>(), arg2.convert<typename Traits::Arg2Type>()));
+				returnValue.set<ReturnType>((o->*function)(arg1.convert<typename Arg1>(), arg2.convert<typename Arg2>()));
 			}
 
 			template<>
 			void call<void>(Class* o, Value& returnValue, Value& arg1, Value& arg2) const
 			{
-				(o->*function)(arg1.convert<typename Traits::Arg1Type>(), arg2.convert<typename Traits::Arg2Type>());
+				(o->*function)(arg1.convert<typename Arg1>(), arg2.convert<typename Arg2>());
 			}
 		};
 
@@ -537,10 +541,13 @@ namespace RBX
 		class BoundFuncDesc<Class, Function, 3> : public FuncDesc<Class>
 		{
 		private:
-			typedef FunctionTraits<Function> Traits;
+			typedef typename boost::function_traits<Function>::result_type result_type;
+			typedef typename boost::function_traits<Function>::arg1_type Arg1;
+			typedef typename boost::function_traits<Function>::arg2_type Arg2;
+			typedef typename boost::function_traits<Function>::arg3_type Arg3;
 
 		public:
-			typedef typename Traits::ReturnType(Class::*FunctionSig)(typename Traits::Arg1Type, typename Traits::Arg2Type, typename Traits::Arg3Type);
+			typedef typename result_type (Class::*FunctionSig)(typename Arg1, typename Arg2, typename Arg3);
 
 		private:
 			typename FunctionSig function;
@@ -566,7 +573,7 @@ namespace RBX
 				const char* arg1Name,
 				const char* arg2Name,
 				const char* arg3Name,
-				typename Traits::Arg3Type default3,
+				typename Arg3 default3,
 				Security security);
 
 			BoundFuncDesc(
@@ -574,20 +581,20 @@ namespace RBX
 				const char* name,
 				const char* arg1Name,
 				const char* arg2Name,
-				typename Traits::Arg2Type default2,
+				typename Arg2 default2,
 				const char* arg3Name,
-				typename Traits::Arg3Type default3,
+				typename Arg3 default3,
 				Security security);
 
 			BoundFuncDesc(
 				typename FunctionSig function,
 				const char* name,
 				const char* arg1Name,
-				typename Traits::Arg1Type default1,
+				typename Arg1 default1,
 				const char* arg2Name,
-				typename Traits::Arg2Type default2,
+				typename Arg2 default2,
 				const char* arg3Name,
-				typename Traits::Arg3Type default3,
+				typename Arg3 default3,
 				Security security);
 		
 		public:
@@ -599,10 +606,14 @@ namespace RBX
 		class BoundFuncDesc<Class, Function, 4> : public FuncDesc<Class>
 		{
 		private:
-			typedef FunctionTraits<Function> Traits;
+			typedef typename boost::function_traits<Function>::result_type result_type;
+			typedef typename boost::function_traits<Function>::arg1_type Arg1;
+			typedef typename boost::function_traits<Function>::arg2_type Arg2;
+			typedef typename boost::function_traits<Function>::arg3_type Arg3;
+			typedef typename boost::function_traits<Function>::arg4_type Arg4;
 
 		public:
-			typedef typename Traits::ReturnType(Class::*FunctionSig)(typename Traits::Arg1Type, typename Traits::Arg2Type, typename Traits::Arg3Type, typename Traits::Arg4Type);
+			typedef typename result_type (Class::*FunctionSig)(typename Arg1, typename Arg2, typename Arg3, typename Arg4);
 
 		private:
 			typename FunctionSig function;
@@ -632,7 +643,7 @@ namespace RBX
 				const char* arg2Name,
 				const char* arg3Name,
 				const char* arg4Name,
-				typename Traits::Arg4Type default4,
+				typename Arg4 default4,
 				Security security);
 
 			BoundFuncDesc(
@@ -641,9 +652,9 @@ namespace RBX
 				const char* arg1Name,
 				const char* arg2Name,
 				const char* arg3Name,
-				typename Traits::Arg3Type default3,
+				typename Arg3 default3,
 				const char* arg4Name,
-				typename Traits::Arg4Type default4,
+				typename Arg4 default4,
 				Security security);
 
 			BoundFuncDesc(
@@ -651,24 +662,24 @@ namespace RBX
 				const char* name,
 				const char* arg1Name,
 				const char* arg2Name,
-				typename Traits::Arg2Type default2,
+				typename Arg2 default2,
 				const char* arg3Name,
-				typename Traits::Arg3Type default3,
+				typename Arg3 default3,
 				const char* arg4Name,
-				typename Traits::Arg4Type default4,
+				typename Arg4 default4,
 				Security security);
 
 			BoundFuncDesc(
 				typename FunctionSig function,
 				const char* name,
 				const char* arg1Name,
-				typename Traits::Arg1Type default1,
+				typename Arg1 default1,
 				const char* arg2Name,
-				typename Traits::Arg2Type default2,
+				typename Arg2 default2,
 				const char* arg3Name,
-				typename Traits::Arg3Type default3,
+				typename Arg3 default3,
 				const char* arg4Name,
-				typename Traits::Arg4Type default4,
+				typename Arg4 default4,
 				Security security);
 		
 		public:
