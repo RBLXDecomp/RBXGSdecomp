@@ -61,4 +61,22 @@ namespace RBX
 		Notifier<World,AutoJoin>::connect(world, this);
 		Notifier<World,AutoDestroy>::connect(world, this);
 	}
+
+	void JointsService::onDescendentAdded(Instance* instance)
+	{
+		Instance::onDescendentAdded(instance);
+
+		IRenderable* renderable = fastDynamicCast<IRenderable>(instance);
+		if (renderable)
+			onAdded(renderable);
+	}
+
+	void JointsService::onDescendentRemoving(const boost::shared_ptr<Instance>& instance)
+	{
+		IRenderable* renderable = fastDynamicCast<IRenderable>(instance.get());
+		if (renderable)
+			onRemoving(renderable);
+
+		Instance::onDescendentRemoving(instance);
+	}
 }
