@@ -4,6 +4,7 @@
 #include "v8datamodel/Flag.h"
 #include "v8datamodel/Camera.h"
 #include "v8datamodel/Hopper.h"
+#include "v8datamodel/Selection.h"
 #include "humanoid/Humanoid.h"
 #include "v8world/World.h"
 #include "tool/NullTool.h"
@@ -476,5 +477,38 @@ namespace RBX
 		}
 
 		Notifier<RunService, Heartbeat>::connect(ServiceProvider::find<RunService>(newProvider), this);
+	}
+
+	void DrawAdorn(boost::shared_ptr<Instance> wsi, Adorn* adorn, SelectState selectState, Workspace* workspace)
+	{
+		if (IRenderable* ir = dynamic_cast<IRenderable*>(wsi.get()))
+		{
+			if (workspace->contains(wsi.get()))
+			{
+				ir->render3dSelect(adorn, selectState);
+			}
+		}
+	}
+
+	void Workspace::render3dAdorn(Adorn* adorn)
+	{
+		viewPort = adorn->getViewport();
+		ServiceClient<Selection> sel(this);
+
+		if (sel)
+			std::for_each(sel->getSelection()->begin(), sel->getSelection()->end(), boost::bind(&DrawAdorn, _1, adorn, SELECT_NORMAL, this));
+
+		render3dAdornItems(adorn);
+		if (showWorldCoord)
+		{
+			adorn->setObjectToWorldMatrix(G3D::CoordinateFrame());
+			adorn->axes(G3D::Color3::red(), G3D::Color3::green(), G3D::Color3::blue(), 50.0f);
+		}
+
+		if (showHashGrid)
+		{
+			adorn->setObjectToWorldMatrix(G3D::CoordinateFrame());
+			adorn->box(G3D::AABox(G3D::Vector3(28, 4, 12), G3D::Vector3(32, 8, 16)), G3D::Color4(1.0, 0.2, 0.2, 0.5), G3D::Color4::clear());
+		}
 	}
 }

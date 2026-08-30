@@ -133,7 +133,7 @@ namespace RBX
 	{
 	private:
 		Instance* context;
-		boost::shared_ptr<Class> service;
+		mutable boost::shared_ptr<Class> service;
 
 	public:
 		ServiceClient(Instance* context)
@@ -142,8 +142,14 @@ namespace RBX
 		}
 
 		bool isNull() const;
-		operator Class*();
-		operator const Class*() const;
+		operator Class*()
+		{
+			return createService(true);
+		}
+		operator const Class*() const
+		{
+			return createService(true);
+		}
 
 		Class* operator->()
 		{
@@ -157,6 +163,12 @@ namespace RBX
 
 	private:
 		Class* findService(bool) const;
-		Class* createService(bool) const;
+		Class* createService(bool createIfNotFound) const
+		{
+			if (service == NULL)
+				service = shared_from<Class>(ServiceProvider::create<Class>(context));
+
+			return service.get();
+		}
 	};
 }

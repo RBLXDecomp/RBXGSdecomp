@@ -88,7 +88,10 @@ namespace RBX
 		boost::shared_ptr<Instance> back() const;
 		std::vector<boost::shared_ptr<Instance>>::const_iterator begin() const;
 		std::vector<boost::shared_ptr<Instance>>::const_iterator end() const;
-		const CopyOnWrite<std::vector<boost::shared_ptr<Instance>>> getSelection() const;
+		const CopyOnWrite<std::vector<boost::shared_ptr<Instance>>>& getSelection() const
+		{
+			return selection;
+		}
 
 		template<class Iterator>
 		void setSelection(Iterator _First, Iterator _Last)
