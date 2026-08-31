@@ -67,7 +67,7 @@ namespace RBX
 	public:
 		void setCursor(Adorn*);
 		virtual void render2d(Adorn* adorn);
-		virtual void render3dAdorn(Adorn*);
+		virtual void render3dAdorn(Adorn* adorn);
 		virtual void render3dSelect(Adorn* adorn, SelectState selectState)
 		{
 			return;
