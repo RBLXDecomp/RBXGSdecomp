@@ -394,7 +394,10 @@ namespace RBX
 			if (children)
 			{
 				boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> c = children.read();
-				for (std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin(); iter != c->end(); iter++)
+				std::vector<boost::shared_ptr<Instance>>::const_iterator end = c->end();
+				std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin();
+
+				for (; iter != end; iter++)
 				{
 					func(*iter);
 					(*iter)->visitDescendents(func);
