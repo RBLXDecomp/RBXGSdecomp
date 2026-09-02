@@ -414,7 +414,7 @@ namespace RBX
 		static const Instance* getRootAncestor(const Instance*);
 	private:
 		static void signalDescendentAdded(Instance* instance, Instance* beginParent, Instance* oldParent);
-		static void signalDescendentRemoving(const boost::shared_ptr<Instance>&, Instance*, Instance*);
+		static void signalDescendentRemoving(const boost::shared_ptr<Instance>& instance, Instance* beginParent, Instance* newParent);
 	public:
 		// NOTE: This is entirely inlined. See assertions in later client builds.
 		template<typename To>
