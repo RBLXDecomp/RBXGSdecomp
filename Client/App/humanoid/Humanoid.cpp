@@ -672,6 +672,7 @@ namespace RBX
 				}
 			}
 		}
+	}
     
 	boost::shared_ptr<AutoJoint> newJoint(bool animated)
 	{
