@@ -97,9 +97,25 @@ namespace RBX
 		RunService();
 		virtual ~RunService();
 		void setRunState(RunState newState);
-		void run();
-		void pause();
-		void reset();
+
+		void run()
+		{
+			if (!runDisabled && (runState == RS_NORMAL || runState == RS_PAUSED) && runState != RS_RUNNING)
+				setRunState(RS_RUNNING);
+		}
+
+		void pause()
+		{
+			if (runState == RS_RUNNING)
+				setRunState(RS_PAUSED);
+		}
+
+		void reset()
+		{
+			if (runState != RS_NORMAL)
+				setRunState(RS_NORMAL);
+		}
+
 		void endRunThread(bool join);
 		void raiseHeartbeat(float time, float step);
 		void raiseStepped(float time, float step);

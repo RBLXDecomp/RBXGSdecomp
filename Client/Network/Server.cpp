@@ -118,7 +118,7 @@ namespace RBX
 		{
 			RakNet::BitStream bitStream;
 
-			bitStream << 'K';
+			bitStream << (unsigned char)'K';
 
 			std::vector<Instance*>::iterator end = replicationContainers.end();
 

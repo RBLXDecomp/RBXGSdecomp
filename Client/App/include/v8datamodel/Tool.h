@@ -57,7 +57,7 @@ namespace RBX
 		ToolState computeDesiredState(Instance* testParent);
 		ToolState computeDesiredState();
 		void setDesiredState(ToolState, const ServiceProvider*);
-		void setBackendToolStateNoReplicate(int);
+		void setBackendToolStateNoReplicate(int value);
 		void rebuildBackendState();
 		void connectTouchEvent();
 		void upTo_Activated();
@@ -149,7 +149,7 @@ namespace RBX
 	private:
 		static void moveAllToolsToBackpack(Network::Player* player);
 		static ToolState characterCanPickUpTool(Instance*);
-		static bool characterCanUnequipTool(ModelInstance*);
+		static bool characterCanUnequipTool(ModelInstance* character);
 	public:
 		static void dropAll(ModelInstance*);
 	};

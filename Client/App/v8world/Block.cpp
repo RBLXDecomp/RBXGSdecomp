@@ -4,6 +4,7 @@
 #include <map>
 #include <G3D/AABox.h>
 #include <G3D/CollisionDetection.h>
+#include <G3D/vectorMath.h>
 
 namespace RBX
 {
@@ -423,13 +424,10 @@ namespace RBX
 		}
 		else
 		{
-			G3D::Vector3 startValue = rotation * vertices[0];
-			G3D::Vector3 maxValue(fabs(startValue.x), fabs(startValue.y), fabs(startValue.z)); // might be Math::vector3Abs however it doesnt inline here
+			G3D::Vector3 maxValue = G3D::abs(rotation * vertices[0]);
 			for (int i = 1; i <= 3; i++)
 			{
-				G3D::Vector3 newValue = rotation * vertices[i];
-				G3D::Vector3 absValue(fabs(newValue.x), fabs(newValue.y), fabs(newValue.z));
-				maxValue = maxValue.max(absValue);
+				maxValue = maxValue.max(G3D::abs(rotation * vertices[i]));
 			}
 			return maxValue;
 		}

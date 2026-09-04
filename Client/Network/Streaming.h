@@ -48,7 +48,7 @@ namespace RBX
 		template<typename T>
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, T& value); // TODO: check match
 
-		void writeBrickVector(RakNet::BitStream&, const G3D::Vector3&);
+		void writeBrickVector(RakNet::BitStream& stream, const G3D::Vector3& value);
 		void readBrickVector(RakNet::BitStream& stream, G3D::Vector3& value);
 		void rationalize(G3D::CoordinateFrame& value);
 
@@ -78,11 +78,11 @@ namespace RBX
 
 			void send(RakNet::BitStream&, const char*);
 			void send(RakNet::BitStream&, const Name&);
-			void send(RakNet::BitStream&, const std::string&);
+			void send(RakNet::BitStream& stream, const std::string& value);
 
 			bool trySend(RakNet::BitStream&, const char*);
 			bool trySend(RakNet::BitStream&, const Name&);
-			bool trySend(RakNet::BitStream&, const std::string&);
+			bool trySend(RakNet::BitStream& stream, const std::string& value);
 		};
 
 		class SharedStringDictionary : public StringSender, public StringReceiver, private boost::noncopyable
@@ -93,7 +93,6 @@ namespace RBX
 		{
 			struct WaitItem
 			{
-			public:
 				const Reflection::RefPropertyDescriptor* desc;
 				boost::shared_ptr<Instance> instance;
 			};

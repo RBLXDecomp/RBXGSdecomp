@@ -61,12 +61,12 @@ namespace RBX
 		boost::shared_ptr<boost::recursive_mutex> getMutex() const;
 		DataModel();
 		virtual ~DataModel();
-		void loadContent(ContentId);
-		void save(ContentId);
+		void loadContent(ContentId contentId);
+		void save(ContentId contentId);
 		std::string httpGet(std::string url, bool synchronous);
 		std::string httpPost(std::string url, std::string data, bool synchronous);
 		void close();
-		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> get(ContentId);
+		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> get(ContentId contentId);
 		void raiseClose();
 		int numChatOptions();
 		void buildGui(Adorn*);
@@ -136,7 +136,7 @@ namespace RBX
 	public:
 		static boost::shared_ptr<boost::recursive_mutex> getMutex(Instance*);
 		static boost::shared_ptr<DataModel> createDataModel();
-		static void closeDataModel(boost::shared_ptr<DataModel>, bool);
+		static void closeDataModel(boost::shared_ptr<DataModel> dataModel, bool joinRunThread);
 	private:
 		static std::string doHttpGet(std::string url);
 		static std::string doHttpPost(std::string url, std::string data);

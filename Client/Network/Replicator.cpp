@@ -252,7 +252,7 @@ namespace RBX
 		{
 			RakNet::BitStream bitStream;
 
-			bitStream << 'L';
+			bitStream << (unsigned char)'L';
 
 			Player* player = findTargetPlayer();
 			if (!player)
@@ -314,15 +314,15 @@ namespace RBX
 
 		void Replicator::readMarker(RakNet::BitStream& inBitstream)
 		{
-			intptr_t marker;
-			inBitstream >> marker;
+			long markerId;
+			inBitstream >> markerId;
 
 			if (NetworkSettings::singleton().printInstances)
 			{
-				StandardOut::singleton()->print(MESSAGE_INFO, "Received marker %d from %s", (intptr_t)marker, remotePlayerId.ToString());
+				StandardOut::singleton()->print(MESSAGE_INFO, "Received marker %d from %s", (int)markerId, remotePlayerId.ToString());
 			}
 
-			RBXASSERT(reinterpret_cast<Marker*>(marker) == incomingMarkers.front().get());
+			RBXASSERT(reinterpret_cast<Marker*>(markerId) == incomingMarkers.front().get());
 
 			Marker::event_Returned.fire(incomingMarkers.front().get());
 			incomingMarkers.pop();
@@ -333,12 +333,12 @@ namespace RBX
 			boost::shared_ptr<Marker> marker = Marker::newMarker();
 
 			RakNet::BitStream bitStream;
-			bitStream << 'N';
-			bitStream << (intptr_t)marker.get();
+			bitStream << (unsigned char)'N';
+			bitStream << (int)marker->id();
 
 			if (NetworkSettings::singleton().printInstances)
 			{
-				StandardOut::singleton()->print(MESSAGE_INFO, "Replicator: Requesting Marker %d of %s", (intptr_t)marker.get(), remotePlayerId.ToString());
+				StandardOut::singleton()->print(MESSAGE_INFO, "Replicator: Requesting Marker %d of %s", (int)marker->id(), remotePlayerId.ToString());
 			}
 
 			incomingMarkers.push(marker);
@@ -661,7 +661,7 @@ namespace RBX
 			{
 				if (bitStream.GetNumberOfBitsUsed() == 0)
 				{
-					bitStream << 'M';
+					bitStream << (unsigned char)'M';
 				}
 
 				item.write(bitStream);
@@ -717,9 +717,9 @@ namespace RBX
 			{
 				bitStream.Reset();
 
-				bitStream << (char)0x18;
+				bitStream << (unsigned char)0x18;
 				bitStream << RakNet::GetTime();
-				bitStream << 'O';
+				bitStream << (unsigned char)'O';
 
 				hasOpenPacket = true;
 				sentPacket = true;

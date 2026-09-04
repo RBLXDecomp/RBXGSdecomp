@@ -72,6 +72,18 @@ namespace RBX
 		return getHeadFromCharacter(Network::Players::findLocalCharacter(context));
 	}
 
+	ModelInstance* Humanoid::getCharacterFromHumanoid(Humanoid* humanoid)
+	{
+		if (humanoid)
+		{
+			if (ModelInstance* character = fastDynamicCast<ModelInstance>(humanoid->getParent()))
+				return character;
+		}
+
+		return NULL;
+	}
+
+
 	bool Humanoid::hasWalkToPoint(G3D::Vector3& worldPosition) const
 	{
 		if (walkToPart && Workspace::findWorkspace(this) && Workspace::contextInWorkspace(walkToPart.get()))
@@ -125,10 +137,7 @@ namespace RBX
 			world = worldInWorkspace;
 			if (world)
 			{
-				Humanoid::State* running = new Running(this);
-				if (running != currentState.get())
-					currentState.reset(running);
-
+				setState(new Running(this));
 				world->getKernel().insertConnector2ndPass(this);
 			}
 		}
@@ -291,10 +300,9 @@ namespace RBX
 			if (getParent())
 			{
 				State* prevState = currentState.get();
-				State* newState = prevState->onStep(event.step, *static_cast<PVInstance*>(getParent())->getTopPVController());
+				PVInstance* parent = static_cast<PVInstance*>(getParent());
 
-				if (newState != currentState.get())
-					currentState.reset(newState);
+				setState(prevState->onStep(event.step, *parent->getTopPVController()));
 			}
 
 			if (getTorsoPrimitive())
@@ -386,16 +394,19 @@ namespace RBX
 		if (health == 0.0f && !imDead)
 		{
 			imDead = true;
-
-			FallingDown* fallingDown = new FallingDown(this, Math::inf());
-			if (fallingDown != currentState.get())
-				currentState.reset(fallingDown);
+			setState(new FallingDown(this, Math::inf()));
 
 			if (getParent())
 				getParent()->for_eachChild(breakJoints);
 
 			event_Died.fire(this);
 		}
+	}
+
+	void Humanoid::setState(State* value)
+	{
+		if (value != currentState.get())
+			currentState.reset(value);
 	}
 
 	void Humanoid::moveTo(const G3D::Vector3& worldPosition, PartInstance* part)
@@ -661,5 +672,105 @@ namespace RBX
 				}
 			}
 		}
+    
+	boost::shared_ptr<AutoJoint> newJoint(bool animated)
+	{
+		if (animated)
+		{
+			boost::shared_ptr<Motor> m = Creatable<Instance>::create<Motor>();
+			m->setMaxVelocity(0.1f);
+			return m;
+		}
+		else
+		{
+			boost::shared_ptr<Snap> s = Creatable<Instance>::create<Snap>();
+			return s;
+		}
+	}
+
+	void Humanoid::buildJoints()
+	{
+		ModelInstance* character = getCharacterFromHumanoid(this);
+		RBXASSERT(character);
+
+		if (!character)
+			return;
+
+		PartInstance* head = getHead();
+		PartInstance* torso = getTorso();
+		PartInstance* rightArm = getRightArm();
+		PartInstance* leftArm = getLeftArm();
+		PartInstance* rightLeg = getRightLeg();
+		PartInstance* leftLeg = getLeftLeg();
+
+		RBXASSERT(head && torso && rightArm && leftArm && rightLeg && leftLeg);
+
+		if (!torso)
+			return;
+
+		head->getPrimitive()->getBody()->setCanThrottle(false);
+		torso->getPrimitive()->getBody()->setCanThrottle(false);
+		rightArm->getPrimitive()->getBody()->setCanThrottle(false);
+		leftArm->getPrimitive()->getBody()->setCanThrottle(false);
+		rightLeg->getPrimitive()->getBody()->setCanThrottle(false);
+		leftLeg->getPrimitive()->getBody()->setCanThrottle(false);
+
+		boost::shared_ptr<AutoJoint> rightShoulder = newJoint(true);
+		boost::shared_ptr<AutoJoint> leftShoulder = newJoint(true);
+		boost::shared_ptr<AutoJoint> rightHip = newJoint(true);
+		boost::shared_ptr<AutoJoint> leftHip = newJoint(true);
+		boost::shared_ptr<AutoJoint> neck = newJoint(false);
+
+		rightShoulder->setName("Right Shoulder");
+		leftShoulder->setName("Left Shoulder");
+		rightHip->setName("Right Hip");
+		leftHip->setName("Left Hip");
+		neck->setName("Neck");
+
+		rightShoulder->setPart0(torso);
+		leftShoulder->setPart0(torso);
+		rightHip->setPart0(torso);
+		leftHip->setPart0(torso);
+		neck->setPart0(torso);
+
+		rightShoulder->setPart1(rightArm);
+		leftShoulder->setPart1(leftArm);
+		rightHip->setPart1(rightLeg);
+		leftHip->setPart1(leftLeg);
+		neck->setPart1(head);
+
+		G3D::Matrix3 xPos = normalIdToMatrix3(NORM_X);
+		G3D::Matrix3 xNeg = normalIdToMatrix3(NORM_X_NEG);
+		G3D::Matrix3 yPos = normalIdToMatrix3(NORM_Y);
+
+		G3D::CoordinateFrame rightShoulderP(xPos, G3D::Vector3(1.0f, 0.5f, 0.0f));
+		G3D::CoordinateFrame leftShoulderP(xNeg, G3D::Vector3(-1.0f, 0.5f, 0.0f));
+		G3D::CoordinateFrame rightHipP(xPos, G3D::Vector3(1.0f, -1.0f, 0.0f));
+		G3D::CoordinateFrame leftHipP(xNeg, G3D::Vector3(-1.0f, -1.0f, 0.0f));
+		G3D::CoordinateFrame neckP(yPos, G3D::Vector3(0.0f, 1.0f, 0.0f));
+
+		G3D::CoordinateFrame rightArmP(xPos, G3D::Vector3(-0.5f, 0.5f, 0.0f));
+		G3D::CoordinateFrame leftArmP(xNeg, G3D::Vector3(0.5f, 0.5f, 0.0f));
+		G3D::CoordinateFrame rightLegP(xPos, G3D::Vector3(0.5f, 1.0f, 0.0f));
+		G3D::CoordinateFrame leftLegP(xNeg, G3D::Vector3(-0.5f, 1.0f, 0.0f));
+		G3D::CoordinateFrame headP(yPos, G3D::Vector3(0.0f, -0.5f, 0.0f));
+
+		rightShoulder->setC0(rightShoulderP);
+		leftShoulder->setC0(leftShoulderP);
+		rightHip->setC0(rightHipP);
+		leftHip->setC0(leftHipP);
+		neck->setC0(neckP);
+
+		rightShoulder->setC1(rightArmP);
+		leftShoulder->setC1(leftArmP);
+		rightHip->setC1(rightLegP);
+		leftHip->setC1(leftLegP);
+		neck->setC1(headP);
+
+		rightShoulder->setParent(torso);
+		leftShoulder->setParent(torso);
+		rightHip->setParent(torso);
+		leftHip->setParent(torso);
+		neck->setParent(torso);
 	}
 }

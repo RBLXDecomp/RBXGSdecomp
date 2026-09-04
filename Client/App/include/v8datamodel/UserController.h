@@ -148,7 +148,7 @@ namespace RBX
 		virtual ~AIController();
 		void updateTarget(Controller::ControllerType, float);
 		G3D::Vector3 getLocalTargetPosition() const;
-		void chaseTarget(const G3D::Vector3&);
+		void chaseTarget(const G3D::Vector3& localChasePoint);
 
 		virtual bool hasIntelligence() const
 		{

@@ -66,10 +66,6 @@ namespace RBX
 		}
 
 	public:
-		//Widget(const Widget&);
 		Widget();
-		virtual ~Widget();
-	public:
-		//Widget& operator=(const Widget&);
 	};
 }

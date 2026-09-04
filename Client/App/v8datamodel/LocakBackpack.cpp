@@ -95,6 +95,23 @@ namespace RBX
 			removeBackpackItem(backpackItem);
 	}
 
+	void LocalBackpack::onEvent(const Network::Player* source, Network::CharacterRemoving event)
+	{
+		RBXASSERT(source == localPlayer.get());
+		
+		if (localCharacter)
+		{
+			RBXASSERT(event.character == localCharacter);
+			clearLocalCharacter();
+		}
+	}
+
+	void LocalBackpack::onEvent(const Network::Player* source, Network::CharacterAdded event)
+	{
+		RBXASSERT(source == localPlayer.get());
+		onLocalCharacterAdded(event.character.get());
+	}
+
 	void LocalBackpack::onClick(LocalBackpackItem* clickedItem)
 	{
 		pendingClick = shared_from(clickedItem->getItem());
@@ -201,6 +218,71 @@ namespace RBX
 
 			Notifier<Instance, ChildAdded>::connect(players, this);
 			Notifier<Instance, ChildRemoved>::connect(players, this);
+		}
+	}
+
+	void LocalBackpack::insertBackpackItem(BackpackItem* item)
+	{
+		RBXASSERT(localBackpack);
+
+		boost::shared_ptr<LocalBackpackItem> localItem = Creatable::create<LocalBackpackItem>();
+		localItem->setParent(this);
+
+		int maxId = (int)numChildren() - 1;
+		int minId = lastRemovedIndex >= 0 ? G3D::min(lastRemovedIndex, maxId) : maxId;
+
+		for (int i = maxId; i > minId; i--)
+		{
+			LocalBackpackItem* aItem = rbx_static_cast<LocalBackpackItem*>(getChild(i - 1));
+			LocalBackpackItem* bItem = rbx_static_cast<LocalBackpackItem*>(getChild(i));
+
+			bItem->setItem(aItem->getItem());
+		}
+
+		LocalBackpackItem* freeItem = rbx_static_cast<LocalBackpackItem*>(getChild(minId));
+		freeItem->setItem(item);
+		lastRemovedIndex = -1;
+	}
+
+	void LocalBackpack::removeBackpackItem(BackpackItem* item)
+	{
+		for (size_t i = 0; i < numChildren(); i++)
+		{
+			LocalBackpackItem* current = rbx_static_cast<LocalBackpackItem*>(getChild(i));
+			if (current->getItem() == item)
+			{
+				lastRemovedIndex = (int)i;
+				current->setParent(NULL);
+
+				if (item == pendingClick.get())
+					pendingClick.reset();
+
+				return;
+			}
+		}
+
+		RBXASSERT(lastRemovedIndex == -1);
+	}
+
+	void LocalBackpack::onHeartbeat()
+	{
+		BackpackItem* prevPendingClick = pendingClick.get();
+		if (prevPendingClick)
+		{
+			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> c = getChildren().read();
+			if (c)
+			{
+				for (std::vector<boost::shared_ptr<Instance>>::const_iterator it = c->begin(); it != c->end(); it++)
+				{
+					LocalBackpackItem* current = rbx_static_cast<LocalBackpackItem*>(it->get());
+					if (current->getItem() != pendingClick.get())
+						current->getItem()->onLocalOtherClicked();
+				}
+			}
+
+			RBXASSERT(prevPendingClick == pendingClick.get());
+			pendingClick->onLocalClicked();
+			pendingClick.reset();
 		}
 	}
 }

@@ -35,7 +35,11 @@ namespace RBX
 			return getValue();
 		}
 
-		const T* getValuePointer() const;
+		const T* getValuePointer() const
+		{
+			getValue();
+			return &val;
+		}
 
 		const T& getValueRef() const
 		{
@@ -45,9 +49,9 @@ namespace RBX
 
 		bool setDirty() const
 		{
-			bool old = dirty;
+			bool old = !dirty;
 			dirty = true;
-			return old; // TODO: this is a placeholder return. figure out the true value.
+			return old;
 		}
 	};
 }

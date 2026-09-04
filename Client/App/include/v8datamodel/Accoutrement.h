@@ -39,8 +39,8 @@ namespace RBX
 
 	protected:
 		void onEvent_AddedBackend(boost::shared_ptr<Instance> child);
-		void onEvent_RemovedBackend(boost::shared_ptr<Instance>);
-		void onEvent_HandleTouched(boost::shared_ptr<Instance>);
+		void onEvent_RemovedBackend(boost::shared_ptr<Instance> child);
+		void onEvent_HandleTouched(boost::shared_ptr<Instance> other);
 		AccoutrementState computeDesiredState(Instance* testParent);
 		AccoutrementState computeDesiredState();
 		void setDesiredState(AccoutrementState, const ServiceProvider*);

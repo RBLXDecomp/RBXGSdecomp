@@ -19,7 +19,6 @@ namespace RBX
 		void draw(Adorn*, G3D::ReferenceCountedPointer<TextureProxyBase>, const Rect&, const G3D::Color4&, const G3D::Color4&);
 		void setImageFromName(Adorn*, const std::string&);
 	public:
-		//GuiDrawImage(const GuiDrawImage&);
 		GuiDrawImage(Adorn*, const std::string&);
 		GuiDrawImage();
 	public:
@@ -27,9 +26,5 @@ namespace RBX
 		void setImageSize(const G3D::Vector2&);
 		G3D::Vector2 getImageSize() const;
 		bool setImage(Adorn*, const TextureId&);
-	public:
-		~GuiDrawImage();
-	public:
-		//GuiDrawImage& operator=(const GuiDrawImage&);
 	};
 }

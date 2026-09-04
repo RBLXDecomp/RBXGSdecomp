@@ -52,6 +52,15 @@ namespace RBX
 			{
 			}
 		};
+		
+		Players::Players()
+			: players(std::vector<boost::shared_ptr<Instance>>()),
+			  peer(NULL),
+			  maxPlayers(12)
+		{
+			setName("Players");
+			plugin.reset(new Plugin(this));
+		}
 
 		Players::~Players()
 		{
@@ -136,7 +145,7 @@ namespace RBX
 					throw std::runtime_error("Can\'t report abuse: Not in a networked game");
 
 				RakNet::BitStream bitStream;
-				bitStream << 'Q';
+				bitStream << (unsigned char)'Q';
 				bitStream << (localPlayer ? localPlayer->getUserID() : 0);
 				bitStream << (player ? player->getUserID() : 0);
 				bitStream << comment;
@@ -165,7 +174,7 @@ namespace RBX
 				throw std::runtime_error("No local Player to chat from");
 
 			RakNet::BitStream bitStream;
-			bitStream << 'P';
+			bitStream << (unsigned char)'P';
 
 			Guid::Data data;
 			localPlayer->getGuid().extract(data);
@@ -288,6 +297,31 @@ namespace RBX
 			Notifier<Player, CharacterAdded>::disconnect(player, this);
 		}
 
+		void Players::onChildChanged(Instance* instance, const PropertyChanged& event)
+		{
+			if (instance == localPlayer.get() && &event.getProperty().getDescriptor() == &Player::prop_SuperSafeChat)
+			{
+				bool s = localPlayer ? Player::prop_SuperSafeChat.getValue(localPlayer.get()) : false;
+				Notifier<Players, SuperSafeChanged>::raise(SuperSafeChanged(s));
+			}
+		}
+
+		boost::shared_ptr<Instance> Players::createLocalPlayer(int userId)
+		{
+			if (localPlayer)
+				throw std::runtime_error("Local player already exists");
+
+			localPlayer = Creatable::create<Player>();
+			Player::prop_userId.setValue(localPlayer.get(), userId);
+			localPlayer->setParent(this);
+			raisePropertyChanged(propLocalPlayer);
+
+			bool s = localPlayer ? Player::prop_SuperSafeChat.getValue(localPlayer.get()) : false;
+			Notifier<Players, SuperSafeChanged>::raise(s);
+
+			return localPlayer;
+		}
+
 		void AbuseReport::addMessage(const ChatMessage& cm)
 		{
 			int userId = cm.source ? Player::prop_userId.getValue(cm.source.get()) : 0;
@@ -303,7 +337,7 @@ namespace RBX
 
 		void AbuseReporter::add(AbuseReport& r, const std::list<ChatMessage>& chatHistory)
 		{
-			std::for_each(chatHistory.begin(), chatHistory.end(), boost::bind(&AbuseReport::addMessage, &r, _1));
+			std::for_each(chatHistory.begin(), chatHistory.end(), boost::bind(&AbuseReport::addMessage, boost::ref(r), _1));
 
 			{
 				boost::mutex::scoped_lock lock(_data->requestSync);

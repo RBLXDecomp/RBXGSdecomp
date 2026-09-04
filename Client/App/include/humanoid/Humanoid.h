@@ -195,7 +195,7 @@ namespace RBX
 		}
 	private:
 		void onChangedHealth(const Reflection::PropertyDescriptor&);
-		void setState(State*);
+		void setState(State* value);
 		void checkForJointDeath();
 		bool hasWalkToPoint(G3D::Vector3& worldPosition) const;
 		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
@@ -230,7 +230,7 @@ namespace RBX
 		static Humanoid* modelIsCharacter(const Instance* testModel);
 		static Humanoid* getLocalHumanoidFromContext(const Instance* context);
 		static PartInstance* getLocalHeadFromContext(const Instance* context);
-		static ModelInstance* getCharacterFromHumanoid(Humanoid*);
+		static ModelInstance* getCharacterFromHumanoid(Humanoid* humanoid);
 		static PartInstance* getHeadFromCharacter(const ModelInstance* character);
 		static Weld* getGrip(const Instance*);
 		static const float walkSpeed();

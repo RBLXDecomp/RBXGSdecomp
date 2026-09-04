@@ -48,7 +48,8 @@ namespace RBX
 		char buffer[64];
 		if (time == 0.0)
 			sprintf(buffer, "0s");
-		else if (time < 0.0)
+
+		if (time < 0.0)
 			sprintf(buffer, "%.3gs", time);
 		else if (time >= 0.1)
 			sprintf(buffer, "%.3gs", time);
@@ -74,15 +75,12 @@ namespace RBX
 
 		switch (severity)
 		{
-		case Warning:
-			currentStream() << warning;
-			break;
 		case Error:
 			currentStream() << error;
-			break;
-		default:
+		case Warning:
+			currentStream() << warning;
+		case Information:
 			currentStream() << information;
-			break;
 		}
 
 		currentStream() << message;

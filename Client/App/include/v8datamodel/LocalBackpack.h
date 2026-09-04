@@ -72,8 +72,8 @@ namespace RBX
 		void clearLocalCharacter();
 		void clearLocalPlayer();
 		void clearLocalBackpack();
-		void insertBackpackItem(BackpackItem*);
-		void removeBackpackItem(BackpackItem*);
+		void insertBackpackItem(BackpackItem* item);
+		void removeBackpackItem(BackpackItem* item);
 	public:
 		LocalBackpack();
 		virtual ~LocalBackpack();

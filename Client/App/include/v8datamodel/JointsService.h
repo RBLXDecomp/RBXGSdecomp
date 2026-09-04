@@ -18,7 +18,7 @@ namespace RBX
 
 	private:
 		virtual void onDescendentAdded(Instance* instance);
-		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>&);
+		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
 
 		virtual bool askAddChild(const Instance* instance) const
 		{

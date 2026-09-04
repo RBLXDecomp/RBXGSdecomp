@@ -3,6 +3,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/signals.hpp>
+#include <boost/type_traits.hpp>
 #include <boost/any.hpp>
 #include <map>
 #include <vector>
@@ -235,7 +236,7 @@ namespace RBX
 				GenericSlotAdapter(GenericSlotWrapper*);
 
 			public:
-				void operator()(typename FunctionTraits<CallbackSignature>::Arg1Type arg1)
+				void operator()(typename boost::function_traits<CallbackSignature>::arg1_type arg1)
 				{
 					std::vector<boost::any> args(1);
 					args[0] = boost::any(arg1);
@@ -251,7 +252,7 @@ namespace RBX
 			}
 
 		public:
-			void fire(SignalSource* source, typename const FunctionTraits<CallbackSignature>::Arg1Type arg1)
+			void fire(SignalSource* source, typename const boost::function_traits<CallbackSignature>::arg1_type arg1)
 			{
 				TSignalInstance* instance = findSig(source);
 				if (instance)
@@ -275,7 +276,7 @@ namespace RBX
 				GenericSlotAdapter(GenericSlotWrapper*);
 
 			public:
-				void operator()(typename FunctionTraits<CallbackSignature>::Arg1Type arg1, typename FunctionTraits<CallbackSignature>::Arg2Type arg2);
+				void operator()(typename boost::function_traits<CallbackSignature>::arg1_type arg1, typename boost::function_traits<CallbackSignature>::arg2_type arg2);
 			};
 
 		protected:
@@ -285,7 +286,7 @@ namespace RBX
 			}
 
 		public:
-			void fire(SignalSource* source, typename FunctionTraits<CallbackSignature>::Arg1Type arg1, typename FunctionTraits<CallbackSignature>::Arg2Type arg2)
+			void fire(SignalSource* source, typename boost::function_traits<CallbackSignature>::arg1_type arg1, typename boost::function_traits<CallbackSignature>::arg2_type arg2)
 			{
 				TSignalInstance* instance = findSig(source);
 				if (instance)
@@ -297,22 +298,22 @@ namespace RBX
 		};
 
 		template<typename Class, typename CallbackSignature>
-		class SignalDesc : public SignalDescImpl<FunctionTraits<CallbackSignature>::ArgCount, CallbackSignature>
+		class SignalDesc : public SignalDescImpl<boost::function_traits<CallbackSignature>::arity, CallbackSignature>
 		{
 		public:
 			SignalDesc(const char* name, const char* arg1name, const char* arg2name)
 				: SignalDescImpl(Class::classDescriptor(), name)
 			{
-				SignatureDescriptor::Item arg1 = {&Name::declare(arg1name, -1), &Type::singleton<FunctionTraits<typename CallbackSignature>::Arg1Type>()};
+				SignatureDescriptor::Item arg1 = {&Name::declare(arg1name, -1), &Type::singleton<boost::function_traits<typename CallbackSignature>::arg1_type>()};
 				signature.arguments.push_back(arg1);
 
-				SignatureDescriptor::Item arg2 = {&Name::declare(arg2name, -1), &Type::singleton<FunctionTraits<typename CallbackSignature>::Arg2Type>()};
+				SignatureDescriptor::Item arg2 = {&Name::declare(arg2name, -1), &Type::singleton<boost::function_traits<typename CallbackSignature>::arg2_type>()};
 				signature.arguments.push_back(arg2);
 			}
 			SignalDesc(const char* name, const char* arg1name)
 				: SignalDescImpl(Class::classDescriptor(), name)
 			{
-				SignatureDescriptor::Item arg1 = {&Name::declare(arg1name, -1), &Type::singleton<FunctionTraits<typename CallbackSignature>::Arg1Type>()};
+				SignatureDescriptor::Item arg1 = {&Name::declare(arg1name, -1), &Type::singleton<boost::function_traits<typename CallbackSignature>::arg1_type>()};
 				signature.arguments.push_back(arg1);
 			}
 			SignalDesc(const char* name)

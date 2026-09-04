@@ -19,9 +19,9 @@ namespace RBX
 		std::list<Item> items;
 	public:
 		TimerService();
-		void delay(boost::function0<void>, double);
+		void delay(boost::function0<void> func, double seconds);
 	protected:
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-		virtual void onEvent(const RunService*, Heartbeat);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
+		virtual void onEvent(const RunService* source, Heartbeat event);
 	};
 }

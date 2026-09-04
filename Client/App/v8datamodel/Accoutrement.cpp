@@ -164,6 +164,22 @@ namespace RBX
 		}
 	}
 
+	void Accoutrement::onEvent_HandleTouched(boost::shared_ptr<Instance> other)
+	{
+		RBXASSERT(Network::Players::backendProcessing(this, true));
+
+		if (backendAccoutrementState == IN_WORKSPACE)
+		{
+			Instance* otherParent = other->getParent();
+			Humanoid* humanoid = Humanoid::modelIsCharacter(otherParent);
+
+			if (humanoid && humanoid->getTorso() && !otherParent->findFirstChildOfType<Accoutrement>())
+			{
+				setParent(otherParent);
+			}
+		}
+	}
+
 	XmlElement* Accoutrement::write()
 	{
 		if (!writeUnlocked)
@@ -190,6 +206,14 @@ namespace RBX
 		RBXASSERT(handle);
 
 		buildWeld(head, handle, humanoid->getTopOfHead(), attachmentPoint, "HeadWeld");
+	}
+
+	void Accoutrement::upTo_InCharacter()
+	{
+		RBXASSERT(Humanoid::modelIsCharacter(getParent()));
+
+		characterChildAdded = Instance::event_childAdded.connect(getParent(), boost::bind(&Accoutrement::onEvent_AddedBackend, this, _1));
+		characterChildRemoved = Instance::event_childRemoved.connect(getParent(), boost::bind(&Accoutrement::onEvent_RemovedBackend, this, _1));
 	}
 
 	void Accoutrement::connectTouchEvent()
@@ -261,6 +285,12 @@ namespace RBX
 	const PartInstance* Accoutrement::getHandleConst() const
 	{
 		return dynamic_cast<PartInstance*>(findFirstChildByName("Handle"));
+	}
+
+	void Accoutrement::upTo_InWorkspace()
+	{
+		RBXASSERT(ServiceProvider::findServiceProvider(this));
+		RBXASSERT(Network::Players::backendProcessing(this, true));
 	}
 
 	Hat::Hat()
