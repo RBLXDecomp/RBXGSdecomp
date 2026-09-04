@@ -311,7 +311,7 @@ namespace RBX
 
 	void Instance::signalDescendentAdded(Instance* instance, Instance* beginParent, Instance* oldParent)
 	{
-		for (Instance* parent = beginParent; parent; parent = parent->getParent())
+		for (Instance* parent = beginParent; parent != NULL; parent = parent->getParent())
 		{
 			if (parent == oldParent || parent->isAncestorOf(oldParent))
 				break;
@@ -332,7 +332,7 @@ namespace RBX
 
 	void Instance::signalDescendentRemoving(const boost::shared_ptr<Instance>& instance, Instance* beginParent, Instance* newParent)
 	{
-		for (Instance* parent = beginParent; parent; parent = parent->getParent())
+		for (Instance* parent = beginParent; parent != NULL; parent = parent->getParent())
 		{
 			if (parent == newParent || parent->isAncestorOf(newParent))
 				break;

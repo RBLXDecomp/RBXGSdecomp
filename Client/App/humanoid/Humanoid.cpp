@@ -578,7 +578,7 @@ namespace RBX
 		return result;
 	}
 
-	void collectAllDescendantCharacterPrims(boost::shared_ptr<Instance> descendent, std::vector<Primitive*>& primitives)
+	static void collectAllDescendantCharacterPrims(boost::shared_ptr<Instance> descendent, std::vector<Primitive*>& primitives)
 	{
 		if (PartInstance* part = dynamic_cast<PartInstance*>(descendent.get()))
 		{

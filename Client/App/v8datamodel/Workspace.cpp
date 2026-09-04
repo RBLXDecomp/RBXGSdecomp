@@ -479,7 +479,7 @@ namespace RBX
 		Notifier<RunService, Heartbeat>::connect(ServiceProvider::find<RunService>(newProvider), this);
 	}
 
-	void DrawAdorn(boost::shared_ptr<Instance> wsi, Adorn* adorn, SelectState selectState, Workspace* workspace)
+	static void DrawAdorn(boost::shared_ptr<Instance> wsi, Adorn* adorn, SelectState selectState, Workspace* workspace)
 	{
 		if (IRenderable* ir = dynamic_cast<IRenderable*>(wsi.get()))
 		{
