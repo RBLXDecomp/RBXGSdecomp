@@ -599,27 +599,15 @@ namespace RBX
 
 	void Humanoid::getIgnorePrims(std::vector<const Primitive*>& ignore)
 	{
-		Humanoid* humanoid = this;
-		if (humanoid)
-		{
-			if (ModelInstance* model = fastDynamicCast<ModelInstance>(humanoid->getParent()))
-			{
-				model->visitDescendents(boost::bind(&collectAllDescendantCharacterPrims, _1, boost::ref((std::vector<Primitive*>&)ignore)));
-			}
-		}
+		if (ModelInstance* character = getCharacterFromHumanoid(this))
+			character->visitDescendents(boost::bind(&collectAllDescendantCharacterPrims, _1, boost::ref((std::vector<Primitive*>&)ignore)));
 	}
 
 	void Humanoid::tellCameraNear(float distance)
 	{
 		std::vector<Primitive*> primitives;
-		Humanoid* humanoid = this;
-		if (humanoid)
-		{
-			if (ModelInstance* model = fastDynamicCast<ModelInstance>(humanoid->getParent()))
-			{
-				model->visitDescendents(boost::bind(&collectAllDescendantCharacterPrims, _1, boost::ref(primitives)));
-			}
-		}
+		if (ModelInstance* character = getCharacterFromHumanoid(this))
+			character->visitDescendents(boost::bind(&collectAllDescendantCharacterPrims, _1, boost::ref(primitives)));
 
 		float alphaModifier = 1.0f;
 		if (distance < 3.0f)
