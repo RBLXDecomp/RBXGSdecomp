@@ -48,7 +48,7 @@ namespace RBX
 		{
 			for (int i = 0; i < 2; i++)
 			{
-				Flag* flag = fastDynamicCast<Flag>(PartInstance::fromPrimitive(current->getPrimitive(i))->getParent());
+				Flag* flag = dynamic_cast<Flag*>(PartInstance::fromPrimitive(current->getPrimitive(i))->getParent());
 				if (flag)
 					return flag;
 			}

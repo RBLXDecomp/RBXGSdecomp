@@ -112,7 +112,7 @@ namespace RBX
 	{
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			if (ICameraSubject* subject = fastDynamicCast<ICameraSubject>(getChild(i)))
+			if (ICameraSubject* subject = queryTypedChild<ICameraSubject>((int)i))
 				subject->onCameraNear(distance);
 		}
 	}
@@ -121,7 +121,7 @@ namespace RBX
 	{
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			if (IRenderable* renderable = fastDynamicCast<IRenderable>(getChild(i)))
+			if (IRenderable* renderable = queryTypedChild<IRenderable>((int)i))
 				renderable->render3dSelect(adorn, selectState);
 		}
 	}

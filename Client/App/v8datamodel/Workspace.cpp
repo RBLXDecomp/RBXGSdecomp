@@ -46,7 +46,7 @@ namespace RBX
 
 	bool Workspace::askAddChild(const Instance* instance) const
 	{
-		return fastDynamicCast<const IRenderable>(instance) != NULL;
+		return dynamic_cast<const IRenderable*>(instance) != NULL;
 	}
 
 	const G3D::GCamera& Workspace::getGCamera() const
@@ -137,11 +137,11 @@ namespace RBX
 		RootInstance::onDescendentAdded(instance);
 		raiseDrawChanged();
 
-		IRenderable* renderable = fastDynamicCast<IRenderable>(instance);
+		IRenderable* renderable = dynamic_cast<IRenderable*>(instance);
 		if (renderable)
 			onAdded(renderable);
 
-		PVInstance* pvInstance = fastDynamicCast<PVInstance>(instance);
+		PVInstance* pvInstance = dynamic_cast<PVInstance*>(instance);
 		if (pvInstance && pvInstance->getLegacyOffset())
 		{
 			RBXASSERT(instance->getParent() == this);
@@ -155,7 +155,7 @@ namespace RBX
 
 	void Workspace::onDescendentRemoving(const boost::shared_ptr<Instance>& instance)
 	{
-		IRenderable* renderable = fastDynamicCast<IRenderable>(instance.get());
+		IRenderable* renderable = dynamic_cast<IRenderable*>(instance.get());
 		if (renderable)
 			onRemoving(renderable);
 
@@ -166,7 +166,7 @@ namespace RBX
 	template<bool isJoin>
 	static void wrapper(Instance* instance)
 	{
-		PartInstance* part = Instance::fastDynamicCast<PartInstance>(instance);
+		PartInstance* part = dynamic_cast<PartInstance*>(instance);
 		if (part)
 		{
 			if (isJoin)
@@ -200,7 +200,7 @@ namespace RBX
 	{
 		if (test.get() != parent)
 		{
-			ModelInstance* model = Instance::fastDynamicCast<ModelInstance>(test.get());
+			ModelInstance* model = dynamic_cast<ModelInstance*>(test.get());
 			if (model && !Humanoid::modelIsCharacter(model) && !model->findFirstChildOfType<PartInstance>() && !model->findFirstChildOfType<ModelInstance>())
 			{
 				boost::shared_ptr<Instance> oldParent = shared_from(model->getParent());
@@ -208,7 +208,7 @@ namespace RBX
 				clearEmptiedModels(oldParent, parent);
 			}
 
-			Flag* flag = Instance::fastDynamicCast<Flag>(test.get());
+			Flag* flag = dynamic_cast<Flag*>(test.get());
 			if (flag && !flag->findFirstChildOfType<PartInstance>())
 			{
 				boost::shared_ptr<Instance> oldParent = shared_from(flag->getParent());
@@ -407,9 +407,9 @@ namespace RBX
 
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			HopperBin* hopperBin = fastDynamicCast<HopperBin>(getChild(i));
-			ILocation* location = fastDynamicCast<ILocation>(getChild(i));
-			IRenderable* renderable = fastDynamicCast<IRenderable>(getChild(i));
+			HopperBin* hopperBin = queryTypedChild<HopperBin>((int)i);
+			ILocation* location = queryTypedChild<ILocation>((int)i);
+			IRenderable* renderable = queryTypedChild<IRenderable>((int)i);
 
 			if (location && renderable)
 			{

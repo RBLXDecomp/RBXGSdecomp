@@ -86,7 +86,7 @@ namespace RBX
 	{
 		RBXASSERT(!runThread);
 
-		boost::shared_ptr<DataModel> dataModel = shared_from(fastDynamicCast<DataModel>(getParent()));
+		boost::shared_ptr<DataModel> dataModel = shared_from(dynamic_cast<DataModel*>(getParent()));
 		runThread.reset(new boost::thread(background_function(boost::bind(&RunService::runProc, shared_from(this), dataModel), "rbx_runProc")));
 	}
 }

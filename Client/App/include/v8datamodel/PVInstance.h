@@ -103,7 +103,7 @@ namespace RBX
 		PVInstance* getTopLevelPVParent();
 		bool isTopLevelPVInstance() const
 		{
-			return !fastDynamicCast<PVInstance>(getParent()) || getTypedRoot<PVInstance>() == rbx_static_cast<PVInstance*>(getParent());
+			return !queryTypedParent<PVInstance>() || getTypedRoot<PVInstance>() == getTypedParent<PVInstance>();
 		}
 		void setPVGridOffsetLegacy(const G3D::CoordinateFrame& _offset);
 		G3D::CoordinateFrame* getLegacyOffset()

@@ -37,8 +37,7 @@ namespace RBX
 
 		for (size_t i = 0; i < numChildren(); ++i)
 		{
-			Instance* child = getChild(i);
-			PVInstance* pvChild = fastDynamicCast<PVInstance>(child);
+			PVInstance* pvChild = queryTypedChild<PVInstance>((int)i);
 			if (pvChild)
 				pvChild->clearLegacyOffset();
 		}
@@ -76,7 +75,7 @@ namespace RBX
 	{
 		dirtyAll();
 
-		PVInstance* pvParent = fastDynamicCast<PVInstance>(getParent());
+		PVInstance* pvParent = queryTypedParent<PVInstance>();
 		if (pvParent)
 			pvParent->onChildControllerChanged();
 	}
@@ -87,8 +86,7 @@ namespace RBX
 
 		for (size_t i = 0; i < numChildren(); ++i)
 		{
-			Instance* child = getChild(i);
-			PVInstance* pvChild = fastDynamicCast<PVInstance>(child);
+			PVInstance* pvChild = queryTypedChild<PVInstance>((int)i);
 			if (pvChild)
 				pvChild->onParentControllerChanged();
 		}
@@ -119,8 +117,7 @@ namespace RBX
 	{
 		for (size_t i = 0; i < numChildren(); ++i)
 		{
-			const Instance* child = getChild(i);
-			const IControllable* controllableChild = fastDynamicCast<const IControllable>(child);
+			const IControllable* controllableChild = queryTypedChild<IControllable>((int)i);
 			if (controllableChild)
 			{
 				if (controllableChild->isControllable())
@@ -135,7 +132,7 @@ namespace RBX
 	{
 		if (!isTopLevelPVInstance())
 		{
-			G3D::ReferenceCountedPointer<RBX::Controller> controller = rbx_static_cast<PVInstance*>(getParent())->TopPVController;
+			G3D::ReferenceCountedPointer<RBX::Controller> controller = getTypedParent<PVInstance>()->TopPVController;
 
 			if (controller.notNull())
 			{
@@ -150,7 +147,7 @@ namespace RBX
 
 	void PVInstance::onChildAdded(Instance* instance)
 	{
-		PVInstance* pvInstance = fastDynamicCast<PVInstance>(instance);
+		PVInstance* pvInstance = dynamic_cast<PVInstance*>(instance);
 		if (pvInstance)
 		{
 			pvInstance->onChildControllerChanged();
@@ -160,7 +157,7 @@ namespace RBX
 
 	void PVInstance::onChildRemoving(Instance* instance)
 	{
-		PVInstance* pvInstance = fastDynamicCast<PVInstance>(instance);
+		PVInstance* pvInstance = dynamic_cast<PVInstance*>(instance);
 		if (pvInstance)
 		{
 			pvInstance->onChildControllerChanged();
@@ -198,7 +195,7 @@ namespace RBX
 
 	void PVInstance::onExtentsChanged() const
 	{
-		PVInstance* pvParent = fastDynamicCast<PVInstance>(getParent());
+		const PVInstance* pvParent = queryTypedParent<PVInstance>();
 		if (pvParent)
 			pvParent->onExtentsChanged();
 	}

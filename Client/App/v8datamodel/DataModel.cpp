@@ -57,7 +57,7 @@ namespace RBX
 
 	bool DataModel::askAddChild(const Instance* instance) const
 	{
-		return fastDynamicCast<const Service>(instance) != NULL;
+		return dynamic_cast<const Service*>(instance) != NULL;
 	}
 
 	boost::shared_ptr<DataModel> DataModel::createDataModel()

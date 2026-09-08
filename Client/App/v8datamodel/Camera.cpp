@@ -43,14 +43,14 @@ namespace RBX
 
 	bool Camera::askSetParent(const Instance* instance) const
 	{
-		return fastDynamicCast<const Workspace>(instance) != NULL;
+		return dynamic_cast<const Workspace*>(instance) != NULL;
 	}
 
 	ICameraOwner* Camera::getCameraOwner()
 	{
 		for (Instance* instance = getParent(); instance != NULL; instance = instance->getParent())
 		{
-			ICameraOwner* cameraOwner = fastDynamicCast<ICameraOwner>(instance);
+			ICameraOwner* cameraOwner = dynamic_cast<ICameraOwner*>(instance);
 			if (cameraOwner)
 				return cameraOwner;
 		}
@@ -153,7 +153,7 @@ namespace RBX
 		Instance* instance = getCameraSubjectInstance();
 		if (instance)
 		{
-			ICameraSubject* subject = fastDynamicCast<ICameraSubject>(instance);
+			ICameraSubject* subject = dynamic_cast<ICameraSubject*>(instance);
 			RBXASSERT(subject);
 			cameraFocus = subject->getLocation();
 		}
@@ -282,7 +282,7 @@ namespace RBX
 		Instance* instance = getCameraSubjectInstance();
 		if (instance)
 		{
-			ICameraSubject* subject = fastDynamicCast<ICameraSubject>(instance);
+			ICameraSubject* subject = dynamic_cast<ICameraSubject*>(instance);
 			RBXASSERT(subject);
 			return subject;
 		}
@@ -318,7 +318,7 @@ namespace RBX
 	{
 		if (newSubject != getCameraSubjectInstance())
 		{
-			if (fastDynamicCast<ICameraSubject>(newSubject))
+			if (dynamic_cast<ICameraSubject*>(newSubject))
 			{
 				cameraSubject = shared_from((ModelInstance*) newSubject);
 				raisePropertyChanged(cameraSubjectProp);

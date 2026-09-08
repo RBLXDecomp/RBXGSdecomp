@@ -64,7 +64,7 @@ namespace RBX
 
 	void DragUtilities::getPrimitivesConst(const Instance* instance, std::vector<const Primitive*>& primitives)
 	{
-		const PartInstance* partInstance = Instance::fastDynamicCast<const PartInstance>(instance);
+		const PartInstance* partInstance = dynamic_cast<const PartInstance*>(instance);
 
 		if (partInstance)
 			primitives.push_back(partInstance->getPrimitive());

@@ -22,7 +22,7 @@ namespace RBX
 		virtual void onDescendentRemoving(const boost::shared_ptr<Instance>& instance);
 		virtual bool askAddChild(const Instance* instance) const
 		{
-			return fastDynamicCast<const GuiItem>(instance) != NULL;
+			return dynamic_cast<const GuiItem*>(instance) != NULL;
 		}
 		virtual const Name& getClassName() const
 		{
@@ -104,8 +104,8 @@ namespace RBX
 		const G3D::Vector2& getGuiSize() const;
 		__declspec(noinline) const GuiItem* getGuiParent() const;
 		GuiItem* getGuiParent();
-		const GuiItem* getGuiItem(int) const;
-		GuiItem* getGuiItem(int);
+		const GuiItem* getGuiItem(int index) const;
+		GuiItem* getGuiItem(int index);
 
 	public:
 		static const G3D::Color4& enabledFill();

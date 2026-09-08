@@ -72,13 +72,13 @@ namespace RBX
 		Instance::onAncestorChanged(event);
 
 		if (event.child == this)
-			part = fastDynamicCast<PartInstance>(event.newParent);
+			part = dynamic_cast<PartInstance*>(event.newParent);
 		updateWorld();
 	}
 
 	bool BodyMover::askSetParent(const Instance* instance) const
 	{
-		return fastDynamicCast<const PartInstance>(instance) != NULL;
+		return dynamic_cast<const PartInstance*>(instance) != NULL;
 	}
 
 	Reflection::RefPropDescriptor<Rocket, PartInstance> Rocket::prop_Target("Target", "Goals", &Rocket::getTarget, &Rocket::setTarget, Reflection::PropertyDescriptor::STANDARD);

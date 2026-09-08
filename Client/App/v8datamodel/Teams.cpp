@@ -28,7 +28,7 @@ namespace RBX
 
 		for (size_t i = 0; i < players->numChildren(); i++)
 		{
-			Network::Player* player = fastDynamicCast<Network::Player>(players->getChild(i));
+			Network::Player* player = dynamic_cast<Network::Player*>(players->getChild(i));
 			if (player)
 			{
 				if (!player->getNeutral() && player->getTeamColor() == brickColor)
@@ -48,7 +48,7 @@ namespace RBX
 	{
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			Team* team = fastDynamicCast<Team>(getChild(i));
+			Team* team = dynamic_cast<Team*>(getChild(i));
 			if (team && team->getTeamColor() == brickColor)
 				return team;
 		}
@@ -63,7 +63,7 @@ namespace RBX
 
 		for (size_t i = 0; i < players->numChildren(); i++)
 		{
-			Network::Player* player = fastDynamicCast<Network::Player>(players->getChild(i));
+			Network::Player* player = dynamic_cast<Network::Player*>(players->getChild(i));
 			if (player)
 			{
 				if (!player->getNeutral() && player->getCharacter())
@@ -88,7 +88,7 @@ namespace RBX
 
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			Team* team = fastDynamicCast<Team>(getChild(i));
+			Team* team = dynamic_cast<Team*>(getChild(i));
 			if (team && team->getAutoAssignable() == true)
 			{
 				int count = getNumPlayersInTeam(team->getTeamColor());
@@ -111,7 +111,7 @@ namespace RBX
 
 	void Teams::onChildAdded(Instance* child)
 	{
-		if (fastDynamicCast<Team>(child))
+		if (dynamic_cast<Team*>(child))
 		{
 			boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>& myTeams = teams.write();
 			myTeams->push_back(shared_from(child));
@@ -120,7 +120,7 @@ namespace RBX
 
 	void Teams::onChildRemoving(Instance* child)
 	{
-		if (fastDynamicCast<Team>(child))
+		if (dynamic_cast<Team*>(child))
 		{
 			boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>>& myTeams = teams.write();
 			myTeams->erase(std::find(myTeams->begin(), myTeams->end(), shared_from(child)));

@@ -329,7 +329,7 @@ namespace RBX
 
 	bool PartInstance::getLocked(Instance* instance)
 	{
-		PartInstance* thisPart = fastDynamicCast<PartInstance>(instance);
+		PartInstance* thisPart = dynamic_cast<PartInstance*>(instance);
 
 		if (thisPart)
 		{
@@ -556,7 +556,7 @@ namespace RBX
 
 	void PartInstance::findParts(Instance* instance, std::vector<boost::weak_ptr<RBX::PartInstance>>& parts)
 	{
-		if (PartInstance* part = fastDynamicCast<PartInstance>(instance))
+		if (PartInstance* part = dynamic_cast<PartInstance*>(instance))
 			parts.push_back(shared_from(part));
 
 		for (size_t i = 0; i < instance->numChildren(); i++)

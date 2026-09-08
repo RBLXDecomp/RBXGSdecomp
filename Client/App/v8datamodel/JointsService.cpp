@@ -66,14 +66,14 @@ namespace RBX
 	{
 		Instance::onDescendentAdded(instance);
 
-		IRenderable* renderable = fastDynamicCast<IRenderable>(instance);
+		IRenderable* renderable = dynamic_cast<IRenderable*>(instance);
 		if (renderable)
 			onAdded(renderable);
 	}
 
 	void JointsService::onDescendentRemoving(const boost::shared_ptr<Instance>& instance)
 	{
-		IRenderable* renderable = fastDynamicCast<IRenderable>(instance.get());
+		IRenderable* renderable = dynamic_cast<IRenderable*>(instance.get());
 		if (renderable)
 			onRemoving(renderable);
 

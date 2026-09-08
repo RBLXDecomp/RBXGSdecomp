@@ -77,7 +77,7 @@ namespace RBX
 
 		bool Players::askAddChild(const Instance* instance) const
 		{
-			return fastDynamicCast<const Player>(instance) != NULL;
+			return dynamic_cast<const Player*>(instance) != NULL;
 		}
 
 		void Players::setConnection(RakPeerInterface* peer)
@@ -122,7 +122,7 @@ namespace RBX
 
 		void Players::reportAbuse(boost::shared_ptr<Instance> player, std::string comment)
 		{
-			reportAbuse(fastDynamicCast<Player>(player.get()), comment);
+			reportAbuse(dynamic_cast<Player*>(player.get()), comment);
 		}
 
 		void Players::reportAbuse(Player* player, std::string comment)
@@ -256,7 +256,7 @@ namespace RBX
 
 		void Players::onChildAdded(Instance* child)
 		{
-			Player* player = fastDynamicCast<Player>(child);
+			Player* player = dynamic_cast<Player*>(child);
 			if (!player)
 				return;
 
@@ -284,7 +284,7 @@ namespace RBX
 		
 		void Players::onChildRemoving(Instance* child)
 		{
-			Player* player = fastDynamicCast<Player>(child);
+			Player* player = dynamic_cast<Player*>(child);
 			if (!player)
 				return;
 

@@ -318,7 +318,7 @@ namespace RBX
 			virtual ~Peer();
 			virtual bool askAddChild(const Instance* instance) const
 			{
-				return fastDynamicCast<const Replicator>(instance) != NULL;
+				return dynamic_cast<const Replicator*>(instance) != NULL;
 			}
 			RakPeerInterface* peerInterface();
 			void updateLogger();

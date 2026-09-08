@@ -12,7 +12,7 @@ static RBX::Reflection::BoundFuncDesc<RBX::Network::Server, void(std::string, st
 
 static bool isReplicator(boost::shared_ptr<RBX::Instance> instance)
 {
-	return RBX::Instance::fastDynamicCast<const RBX::Network::Replicator>(instance.get()) != NULL;
+	return dynamic_cast<const RBX::Network::Replicator*>(instance.get()) != NULL;
 }
 
 namespace RBX

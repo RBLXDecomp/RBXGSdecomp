@@ -30,11 +30,11 @@ static void addChild(const boost::shared_ptr<RBX::ModelInstance>& parent, const 
 
 static void setAppearanceParent(boost::shared_ptr<RBX::Instance> parent, boost::shared_ptr<RBX::Instance> instance)
 {
-	if (RBX::Instance::fastDynamicCast<RBX::CharacterAppearance>(instance.get()))
+	if (dynamic_cast<RBX::CharacterAppearance*>(instance.get()))
 	{
 		instance->setParent(parent.get());
 	}
-	else if (RBX::Instance::fastDynamicCast<RBX::Accoutrement>(instance.get()))
+	else if (dynamic_cast<RBX::Accoutrement*>(instance.get()))
 	{
 		instance->setParent(parent.get());
 	}
@@ -46,7 +46,7 @@ static void setAppearanceParent(boost::shared_ptr<RBX::Instance> parent, boost::
 
 static void setAppearanceParentNull(RBX::Instance* instance)
 {
-	if (RBX::Instance::fastDynamicCast<RBX::CharacterAppearance>(instance))
+	if (dynamic_cast<RBX::CharacterAppearance*>(instance))
 		instance->setParent(NULL);
 }
 

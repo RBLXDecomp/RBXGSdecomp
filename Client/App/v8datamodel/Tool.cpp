@@ -134,7 +134,7 @@ namespace RBX
 	{
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			if (IRenderable* renderable = fastDynamicCast<IRenderable>(getChild(i)))
+			if (IRenderable* renderable = queryTypedChild<IRenderable>((int)i))
 				renderable->render3dSelect(adorn, selectState);
 		}
 	}
@@ -186,7 +186,7 @@ namespace RBX
 
 			for (size_t i = 0; i < parent->numChildren(); i++)
 			{
-				if (fastDynamicCast<Tool>(parent->getChild(i)))
+				if (dynamic_cast<Tool*>(parent->getChild(i)))
 					total++;
 			}
 		}
@@ -227,7 +227,7 @@ namespace RBX
 		if (backendToolState == IN_WORKSPACE)
 		{
 			Instance* otherParent = other->getParent();
-			if (computeDesiredState(otherParent) == EQUIPPED && characterCanUnequipTool(fastDynamicCast<ModelInstance>(otherParent)))
+			if (computeDesiredState(otherParent) == EQUIPPED && characterCanUnequipTool(dynamic_cast<ModelInstance*>(otherParent)))
 			{
 				Network::Player* player = Network::Players::getPlayerFromCharacter(otherParent);
 				if (player && canBePickedUpByPlayer(player))

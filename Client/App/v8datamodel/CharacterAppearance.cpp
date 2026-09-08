@@ -16,7 +16,7 @@ namespace RBX
 
 	bool CharacterAppearance::askSetParent(const Instance* instance) const
 	{
-		return fastDynamicCast<const ModelInstance>(instance) != NULL;
+		return dynamic_cast<const ModelInstance*>(instance) != NULL;
 	}
 
 	ShirtGraphic::ShirtGraphic()

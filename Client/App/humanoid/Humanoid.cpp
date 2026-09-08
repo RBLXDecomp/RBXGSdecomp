@@ -76,7 +76,7 @@ namespace RBX
 	{
 		if (humanoid)
 		{
-			if (ModelInstance* character = fastDynamicCast<ModelInstance>(humanoid->getParent()))
+			if (ModelInstance* character = dynamic_cast<ModelInstance*>(humanoid->getParent()))
 				return character;
 		}
 
@@ -380,7 +380,7 @@ namespace RBX
 
 	static void breakJoints(Instance* instance)
 	{
-		PartInstance* part = Instance::fastDynamicCast<PartInstance>(instance);
+		PartInstance* part = dynamic_cast<PartInstance*>(instance);
 		if (!part)
 			instance->for_eachChild(&breakJoints);
 		else
@@ -425,7 +425,7 @@ namespace RBX
 
 	void Humanoid::moveTo2(G3D::Vector3 worldPosition, boost::shared_ptr<Instance> part)
 	{
-		PartInstance* p = fastDynamicCast<PartInstance>(part.get());
+		PartInstance* p = dynamic_cast<PartInstance*>(part.get());
 		if (!p)
 			throw std::runtime_error("Argument error: A Part is required");
 
@@ -623,7 +623,7 @@ namespace RBX
 		{
 			PartInstance* part = PartInstance::fromPrimitive(primitives[i]);
 
-			if (!fastDynamicCast<Tool>(part->getParent()))
+			if (!dynamic_cast<Tool*>(part->getParent()))
 			{
 				part->setAlphaModifier(alphaModifier);
 			}

@@ -30,6 +30,6 @@ namespace RBX
 
 	bool FaceInstance::askSetParent(const Instance* instance) const 
 	{
-		return fastDynamicCast<const PartInstance>(instance) != NULL;
+		return dynamic_cast<const PartInstance*>(instance) != NULL;
 	}
 }

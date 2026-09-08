@@ -161,7 +161,7 @@ namespace RBX
 
 	void Lighting::onChildAdded(Instance* child)
 	{
-		Sky* newSky = fastDynamicCast<Sky>(child);
+		Sky* newSky = dynamic_cast<Sky*>(child);
 
 		if (newSky)
 		{
@@ -202,6 +202,6 @@ namespace RBX
 
 	bool Lighting::askAddChild(const Instance* instance) const
 	{
-		return fastDynamicCast<const Sky>(instance) != NULL;
+		return dynamic_cast<const Sky*>(instance) != NULL;
 	}
 }

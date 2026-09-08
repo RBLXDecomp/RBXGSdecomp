@@ -563,14 +563,14 @@ namespace RBX
 
 	void EdgeList::removeEdge(Primitive* p, Edge* e, EdgeList& list)
 	{
+		Edge* currentEdge = list.first;
+
 		if (list.first == e)
 		{
 			list.first = e->getNext(p);
 		}
 		else
 		{
-			Edge* currentEdge = list.first;
-
 			while (currentEdge->getNext(p) != e)
 			{
 				currentEdge = currentEdge->getNext(p);

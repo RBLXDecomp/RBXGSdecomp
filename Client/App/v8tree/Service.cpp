@@ -16,9 +16,9 @@ namespace RBX
 
 	void ServiceProvider::onChildAdded(Instance* instance)
 	{
-		RBXASSERT(Instance::fastDynamicCast<ServiceProvider>(instance)==NULL);
+		RBXASSERT(dynamic_cast<ServiceProvider*>(instance)==NULL);
 
-		if (Instance::fastDynamicCast<Service>(instance))
+		if (dynamic_cast<Service*>(instance))
 		{
 			if (!instance->getClassName().empty())
 			{
@@ -57,7 +57,7 @@ namespace RBX
 
 			for (; iter != end; iter++)
 			{
-				if (fastDynamicCast<Service>(iter->get()))
+				if (dynamic_cast<Service*>(iter->get()))
 				{
 					Notifier<ServiceProvider, ServiceAdded>::raise(ServiceAdded(iter->get()), listener);
 				}
@@ -124,6 +124,6 @@ namespace RBX
 	// TODO: check match
 	bool ServiceProvider::askAddChild(const Instance* instance) const
 	{
-		return fastDynamicCast<const Service>(instance) != NULL;
+		return dynamic_cast<const Service*>(instance) != NULL;
 	}
 }

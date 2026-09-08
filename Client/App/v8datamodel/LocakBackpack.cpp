@@ -32,7 +32,7 @@ namespace RBX
 	{
 		Instance* child = event.child.get();
 
-		if (Network::Player* player = fastDynamicCast<Network::Player>(child))
+		if (Network::Player* player = dynamic_cast<Network::Player*>(child))
 		{
 			if (player == Network::Players::findLocalPlayer(this))
 			{
@@ -41,11 +41,11 @@ namespace RBX
 		}
 		else
 		{
-			if (Backpack* backpack = fastDynamicCast<Backpack>(child))
+			if (Backpack* backpack = dynamic_cast<Backpack*>(child))
 			{
 				onLocalBackpackAdded(backpack);
 			}
-			else if (BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(child))
+			else if (BackpackItem* backpackItem = dynamic_cast<BackpackItem*>(child))
 			{
 				insertBackpackItem(backpackItem);
 			}
@@ -56,7 +56,7 @@ namespace RBX
 	{
 		Instance* child = event.child.get();
 
-		if (Network::Player* player = fastDynamicCast<Network::Player>(child))
+		if (Network::Player* player = dynamic_cast<Network::Player*>(child))
 		{
 			if (player == localPlayer.get())
 			{
@@ -65,12 +65,12 @@ namespace RBX
 		}
 		else
 		{
-			if (Backpack* backpack = fastDynamicCast<Backpack>(child))
+			if (Backpack* backpack = dynamic_cast<Backpack*>(child))
 			{
 				RBXASSERT(localBackpack);
 				clearLocalBackpack();
 			}
-			else if (BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(child))
+			else if (BackpackItem* backpackItem = dynamic_cast<BackpackItem*>(child))
 			{
 				removeBackpackItem(backpackItem);
 			}
@@ -81,7 +81,7 @@ namespace RBX
 	{
 		RBXASSERT(source == localCharacter.get());
 
-		BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(event.instance.get());
+		BackpackItem* backpackItem = dynamic_cast<BackpackItem*>(event.instance.get());
 		if (backpackItem)
 			insertBackpackItem(backpackItem);
 	}
@@ -90,7 +90,7 @@ namespace RBX
 	{
 		RBXASSERT(source == localCharacter.get());
 
-		BackpackItem* backpackItem = fastDynamicCast<BackpackItem>(event.instance.get());
+		BackpackItem* backpackItem = dynamic_cast<BackpackItem*>(event.instance.get());
 		if (backpackItem)
 			removeBackpackItem(backpackItem);
 	}
@@ -233,13 +233,13 @@ namespace RBX
 
 		for (int i = maxId; i > minId; i--)
 		{
-			LocalBackpackItem* aItem = rbx_static_cast<LocalBackpackItem*>(getChild(i - 1));
-			LocalBackpackItem* bItem = rbx_static_cast<LocalBackpackItem*>(getChild(i));
+			LocalBackpackItem* aItem = getTypedChild<LocalBackpackItem>(i - 1);
+			LocalBackpackItem* bItem = getTypedChild<LocalBackpackItem>(i);
 
 			bItem->setItem(aItem->getItem());
 		}
 
-		LocalBackpackItem* freeItem = rbx_static_cast<LocalBackpackItem*>(getChild(minId));
+		LocalBackpackItem* freeItem = getTypedChild<LocalBackpackItem>(minId);
 		freeItem->setItem(item);
 		lastRemovedIndex = -1;
 	}
@@ -248,7 +248,7 @@ namespace RBX
 	{
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			LocalBackpackItem* current = rbx_static_cast<LocalBackpackItem*>(getChild(i));
+			LocalBackpackItem* current = getTypedChild<LocalBackpackItem>((int)i);
 			if (current->getItem() == item)
 			{
 				lastRemovedIndex = (int)i;

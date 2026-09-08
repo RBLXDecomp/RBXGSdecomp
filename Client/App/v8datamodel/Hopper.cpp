@@ -23,7 +23,7 @@ namespace RBX
 
 	bool Hopper::askAddChild(const Instance* instance) const
 	{
-		return fastDynamicCast<const BackpackItem>(instance) != NULL;
+		return dynamic_cast<const BackpackItem*>(instance) != NULL;
 	}
 
 	bool Hopper::askSetParent(const Instance* instance) const
@@ -48,7 +48,7 @@ namespace RBX
 
 	bool BackpackItem::isEnabled()
 	{
-		return getParent() && fastDynamicCast<Backpack>(getParent()) != NULL;
+		return getParent() && dynamic_cast<Backpack*>(getParent()) != NULL;
 	}
 
 	void BackpackItem::setTextureId(const TextureId& value)

@@ -58,7 +58,7 @@ namespace RBX
 	// TODO: 98.92% match
 	bool Feature::getRenderCoord(G3D::CoordinateFrame& c) const
 	{
-		PartInstance* part = fastDynamicCast<PartInstance>(getParent());
+		PartInstance* part = dynamic_cast<PartInstance*>(getParent());
 
 		if (part)
 		{
@@ -86,7 +86,7 @@ namespace RBX
 	// TODO: 98.55% match
 	G3D::CoordinateFrame Feature::computeLocalCoordinateFrame() const
 	{
-		PartInstance* part = fastDynamicCast<PartInstance>(getParent());
+		PartInstance* part = dynamic_cast<PartInstance*>(getParent());
 
 		if (!part)
 			return G3D::CoordinateFrame();
@@ -227,7 +227,7 @@ namespace RBX
 	{
 		if (instance)
 		{
-			PartInstance* part = Instance::fastDynamicCast<PartInstance>(instance->getParent());
+			PartInstance* part = dynamic_cast<PartInstance*>(instance->getParent());
 
 			if (part)
 				return part->getPrimitive();
@@ -255,7 +255,7 @@ namespace RBX
 	{
 		Instance::onAncestorChanged(event);
 
-		setPart(0, fastDynamicCast<Feature>(this->getParent()));
+		setPart(0, dynamic_cast<Feature*>(this->getParent()));
 
 		World* oldWorld = motorJoint()->getWorld();
 		World* wsWorld = Workspace::getWorldIfInWorkspace(this);

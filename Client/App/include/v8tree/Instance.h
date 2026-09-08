@@ -380,10 +380,63 @@ namespace RBX
 		}
 
 		template<typename Type>
-		const Type* getTypedParent() const;
+		const Type* getTypedParent() const
+		{
+			return rbx_static_cast<const Type*>(parent);
+		}
 
 		template<typename Type>
-		const Type* getTypedRoot() const;
+		Type* getTypedParent()
+		{
+			return rbx_static_cast<Type*>(parent);
+		}
+
+		template<typename Type>
+		const Type* getTypedChild(int index) const
+		{
+			return rbx_static_cast<const Type*>((*children)[index].get());
+		}
+
+		template<typename Type>
+		Type* getTypedChild(int index)
+		{
+			return rbx_static_cast<Type*>((*children)[index].get());
+		}
+
+		template<typename Type>
+		const Type* getTypedRoot() const
+		{
+			RBXASSERT(dynamic_cast<const Type*>(this));
+			const Type* typedParent = dynamic_cast<const Type*>(parent);
+			if (typedParent)
+				return typedParent->getTypedRoot<Type>();
+			else
+				return static_cast<const Type*>(this);
+		}
+
+		template<typename Type>
+		const Type* queryTypedParent() const
+		{
+			return dynamic_cast<Type*>(parent);
+		}
+
+		template<typename Type>
+		Type* queryTypedParent()
+		{
+			return dynamic_cast<Type*>(parent);
+		}
+
+		template<typename Type>
+		const Type* queryTypedChild(int index) const
+		{
+			return dynamic_cast<const Type*>((*children)[index].get());
+		}
+
+		template<typename Type>
+		Type* queryTypedChild(int index)
+		{
+			return dynamic_cast<Type*>((*children)[index].get());
+		}
 
 		template<typename Type>
 		Type* findFirstChildOfType() const;
@@ -416,18 +469,6 @@ namespace RBX
 		static void signalDescendentAdded(Instance* instance, Instance* beginParent, Instance* oldParent);
 		static void signalDescendentRemoving(const boost::shared_ptr<Instance>& instance, Instance* beginParent, Instance* newParent);
 	public:
-		// NOTE: This is entirely inlined. See assertions in later client builds.
-		template<typename To>
-		static To* fastDynamicCast(Instance* instance)
-		{
-			return dynamic_cast<To*>(instance);
-		}
-
-		template<typename To>
-		static To* fastDynamicCast(const Instance* instance)
-		{
-			return dynamic_cast<To*>(instance);
-		}
 
 		// TODO: remove the __forceinline
 		template<typename Class>
@@ -436,7 +477,7 @@ namespace RBX
 			Instance* p = instance;
 			while (p != NULL)
 			{
-				Class* castedInstance = fastDynamicCast<Class>(p);
+				Class* castedInstance = dynamic_cast<Class*>(p);
 				if (castedInstance)
 					return castedInstance;
 

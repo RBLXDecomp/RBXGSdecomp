@@ -44,7 +44,7 @@ public:
 
 static void checkDisconnect(RBX::Instance* instance)
 {
-	RBX::Network::Replicator* repl = RBX::Instance::fastDynamicCast<RBX::Network::Replicator>(instance);
+	RBX::Network::Replicator* repl = dynamic_cast<RBX::Network::Replicator*>(instance);
 
 	if (repl && repl->disconnected)
 	{
@@ -200,7 +200,7 @@ namespace RBX
 
 		bool Replicator::wantReplicate(const Instance* source) const
 		{
-			return fastDynamicCast<const Camera>(source) == NULL ? true : false;
+			return dynamic_cast<const Camera*>(source) == NULL ? true : false;
 		}
 
 		bool Replicator::canSendItems()

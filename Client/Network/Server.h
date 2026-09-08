@@ -63,7 +63,7 @@ namespace RBX
 			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 			virtual bool askAddChild(const Instance* instance) const
 			{
-				return fastDynamicCast<const ClientProxy>(instance) != NULL;
+				return dynamic_cast<const ClientProxy*>(instance) != NULL;
 			}
 			
 		private:

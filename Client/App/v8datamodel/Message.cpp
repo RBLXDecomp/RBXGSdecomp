@@ -24,7 +24,7 @@ namespace RBX
 	{
 		if (text.size() > 0)
 		{
-			if (!fastDynamicCast<Network::Player>(getParent()))
+			if (!dynamic_cast<Network::Player*>(getParent()))
 			{
 				renderFullScreen(adorn);
 			}

@@ -23,11 +23,21 @@ namespace RBX
 		setName("Unnamed GuiItem");
 	}
 
+	const GuiItem* GuiItem::getGuiItem(int index) const
+	{
+		return dynamic_cast<const GuiItem*>(getChild(index));
+	}
+
+	GuiItem* GuiItem::getGuiItem(int index)
+	{
+		return dynamic_cast<GuiItem*>(getChild(index));
+	}
+
 	GuiResponse GuiItem::processNonFocus(const GuiEvent& event)
 	{
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			GuiItem* current = fastDynamicCast<GuiItem>(getChild(i));
+			GuiItem* current = getGuiItem((int)i);
 
 			if (current && current != focus.get())
 			{
@@ -63,7 +73,7 @@ namespace RBX
 
 	const GuiItem* GuiItem::getGuiParent() const
 	{
-		return fastDynamicCast<const GuiItem>(getParent());
+		return dynamic_cast<const GuiItem*>(getParent());
 	}
 	
 	GuiResponse GuiItem::process(const GuiEvent& event)
@@ -104,7 +114,7 @@ namespace RBX
 
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			const GuiItem* current = fastDynamicCast<const GuiItem>(getChild(i));
+			const GuiItem* current = getGuiItem((int)i);
 
 			if (current)
 			{
@@ -137,7 +147,7 @@ namespace RBX
 
 			for (size_t i = 0; i < numChildren(); i++)
 			{
-				GuiItem* current = fastDynamicCast<GuiItem>(getChild(i));
+				GuiItem* current = getGuiItem((int)i);
 				if (current)
 					current->render2d(adorn);
 			}
@@ -193,7 +203,7 @@ namespace RBX
 
 		for (size_t i = 0; i < numChildren(); i++)
 		{
-			GuiItem* current = fastDynamicCast<GuiItem>(getChild(i));
+			GuiItem* current = getGuiItem((int)i);
 			if (current)
 				current->render2d(adorn);
 		}

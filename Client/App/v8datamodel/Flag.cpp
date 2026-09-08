@@ -30,7 +30,7 @@ namespace RBX
 
 	void Flag::onChildAdded(Instance* instance)
 	{
-		if (fastDynamicCast<PartInstance>(instance))
+		if (dynamic_cast<PartInstance*>(instance))
 		{
 			if (PartInstance* handle = getHandle())
 			{

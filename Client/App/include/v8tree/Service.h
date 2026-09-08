@@ -79,7 +79,7 @@ namespace RBX
 		{
 			while (context != NULL)
 			{
-				if (const ServiceProvider* s = fastDynamicCast<const ServiceProvider>(context))
+				if (const ServiceProvider* s = dynamic_cast<const ServiceProvider*>(context))
 					return s;
 
 				context = context->getParent();

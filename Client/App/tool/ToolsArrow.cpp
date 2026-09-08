@@ -70,8 +70,8 @@ namespace RBX
 
 		for (size_t i = 0; i < workspace->numChildren(); i++)
 		{
-			ILocation* location = Instance::fastDynamicCast<ILocation>(workspace->getChild(i));
-			ISelectable3d* selectable3d = Instance::fastDynamicCast<ISelectable3d>(workspace->getChild(i));
+			ILocation* location = workspace->queryTypedChild<ILocation>((int)i);
+			ISelectable3d* selectable3d = workspace->queryTypedChild<ISelectable3d>((int)i);
 
 			if (location && selectable3d)
 			{

@@ -56,7 +56,7 @@ namespace RBX
 
 	bool ModelInstance::askSetParent(const Instance* instance) const
 	{
-		return fastDynamicCast<const ModelInstance>(instance) != NULL;
+		return dynamic_cast<const ModelInstance*>(instance) != NULL;
 	}
 
 	void ModelInstance::onExtentsChanged() const
@@ -158,14 +158,14 @@ namespace RBX
 
 	static void makeJ(Instance* instance)
 	{
-		PartInstance* partInstance = Instance::fastDynamicCast<PartInstance>(instance);
+		PartInstance* partInstance = dynamic_cast<PartInstance*>(instance);
 		if (partInstance)
 		{
 			partInstance->join();
 		}
 		else
 		{
-			ModelInstance* modelInstance = Instance::fastDynamicCast<ModelInstance>(instance);
+			ModelInstance* modelInstance = dynamic_cast<ModelInstance*>(instance);
 			if (modelInstance)
 				modelInstance->for_eachChild(makeJ);
 		}
@@ -178,14 +178,14 @@ namespace RBX
 
 	static void breakJ(Instance* instance)
 	{
-		PartInstance* partInstance = Instance::fastDynamicCast<PartInstance>(instance);
+		PartInstance* partInstance = dynamic_cast<PartInstance*>(instance);
 		if (partInstance)
 		{
 			partInstance->destroyJoints();
 		}
 		else
 		{
-			ModelInstance* modelInstance = Instance::fastDynamicCast<ModelInstance>(instance);
+			ModelInstance* modelInstance = dynamic_cast<ModelInstance*>(instance);
 			if (modelInstance)
 				modelInstance->for_eachChild(breakJ);
 		}
@@ -224,7 +224,7 @@ namespace RBX
 			for (size_t i = 0; i < numChildren(); ++i)
 			{
 				const Instance* child = getChild(i);
-				const PVInstance* pvChild = fastDynamicCast<const PVInstance>(child);
+				const PVInstance* pvChild = dynamic_cast<const PVInstance*>(child);
 				if (pvChild)
 				{
 					const Primitive* primitive = pvChild->getBiggestPrimitive();
@@ -284,7 +284,7 @@ namespace RBX
 				for (int i = 0; i < count; ++i)
 				{
 					Instance* child = getChild(i);
-					PVInstance* pvChild = fastDynamicCast<PVInstance>(child);
+					PVInstance* pvChild = dynamic_cast<PVInstance*>(child);
 					if (pvChild)
 						pvChild->legacyTraverseState(myState);
 				}
@@ -308,7 +308,7 @@ namespace RBX
 		for (size_t i = 0; i < numChildren(); ++i)
 		{
 			Instance* child = getChild(i);
-			PVInstance* pvChild = fastDynamicCast<PVInstance>(child);
+			PVInstance* pvChild = dynamic_cast<PVInstance*>(child);
 			if (pvChild)
 			{
 				if (pvChild->hitTest(worldRay, worldHitPoint))
@@ -348,7 +348,7 @@ namespace RBX
 		for (size_t i = 0; i < numChildren(); ++i)
 		{
 			Instance* child = getChild(i);
-			ICameraSubject* cameraSubject = fastDynamicCast<ICameraSubject>(child);
+			ICameraSubject* cameraSubject = dynamic_cast<ICameraSubject*>(child);
 			if (cameraSubject)
 				cameraSubject->onCameraNear(distance);
 		}

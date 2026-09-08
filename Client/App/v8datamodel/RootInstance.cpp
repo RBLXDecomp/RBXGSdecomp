@@ -180,7 +180,7 @@ namespace RBX
 
 		if (instances.size() == 1)
 		{
-			HopperBin* hopperBin = fastDynamicCast<HopperBin>(instances[0].get());
+			HopperBin* hopperBin = dynamic_cast<HopperBin*>(instances[0].get());
 			if (hopperBin)
 			{
 				Network::Player* localPlayer = Network::Players::findLocalPlayer(this);
@@ -203,12 +203,12 @@ namespace RBX
 		if (instances.size() == 1)
 		{
 			Instance* instance = instances[0].get();
-			if (fastDynamicCast<HopperBin>(instance))
+			if (dynamic_cast<HopperBin*>(instance))
 			{
 				instance->setParent(ServiceProvider::create<StarterPackService>(this));
 				return;
 			}
-			else if (fastDynamicCast<Tool>(instance))
+			else if (dynamic_cast<Tool*>(instance))
 			{
 				if (promptMode == ALLOW_PROMPTS && MessageBoxA(NULL, "Put this tool into the starter pack (otherwise drop into the 3d view)?", "Inserting Tool", MB_YESNO) == IDYES)
 				{
@@ -278,20 +278,20 @@ namespace RBX
 		for (size_t i = 0; i < instances.size(); ++i)
 		{
 			Instance* instance = instances[i].get();
-			if (Sky* sky = fastDynamicCast<Sky>(instance))
+			if (Sky* sky = dynamic_cast<Sky*>(instance))
 			{
 				Lighting* lighting = ServiceProvider::create<Lighting>(this);
 				lighting->replaceSky(sky);
 			}
-			else if (Team* team = fastDynamicCast<Team>(instance))
+			else if (Team* team = dynamic_cast<Team*>(instance))
 			{
 				instance->setParent(ServiceProvider::create<Teams>(this));
 			}
-			else if (HopperBin* hopperBin = fastDynamicCast<HopperBin>(instance))
+			else if (HopperBin* hopperBin = dynamic_cast<HopperBin*>(instance))
 			{
 				insertHopperBin(hopperBin);
 			}
-			else if (SpawnLocation* spawnLocation = fastDynamicCast<SpawnLocation>(instance))	
+			else if (SpawnLocation* spawnLocation = dynamic_cast<SpawnLocation*>(instance))	
 			{
 				insertSpawnLocation(spawnLocation);
 				remaining.push_back(instances[i]);
@@ -331,7 +331,7 @@ namespace RBX
 
 		for (size_t i = 0; i < numChildren(); ++i)
 		{
-			const PVInstance* pvChild = fastDynamicCast<const PVInstance>(getChild(i));
+			const PVInstance* pvChild = queryTypedChild<PVInstance>(i);
 			if (pvChild)
 			{
 				if (pvChild->isControllable())

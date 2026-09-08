@@ -22,7 +22,7 @@ namespace RBX
 
 		virtual bool askAddChild(const Instance* instance) const
 		{
-			return fastDynamicCast<const JointInstance>(instance) != NULL;
+			return dynamic_cast<const JointInstance*>(instance) != NULL;
 		}
 
 		virtual XmlElement* write()

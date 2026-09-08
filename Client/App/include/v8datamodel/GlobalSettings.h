@@ -18,7 +18,7 @@ namespace RBX
 		protected:
 			virtual bool askAddChild(const Instance* instance) const
 			{
-				return fastDynamicCast<const GlobalSettings::Item>(instance) != NULL;
+				return dynamic_cast<const GlobalSettings::Item*>(instance) != NULL;
 			}
 		};
 
