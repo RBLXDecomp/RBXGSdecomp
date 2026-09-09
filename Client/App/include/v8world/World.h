@@ -133,9 +133,18 @@ namespace RBX
 		int getNumConstraints() const;
 		int getNumHashNodes() const;
 		int getMaxBucketSize() const;
-		int getNumLinkCalls() const;
-		int getNumContacts() const;
-		int getNumJoints() const;
+		int getNumLinkCalls() const
+		{
+			return numLinkCalls;
+		}
+		int getNumContacts() const
+		{
+			return numContacts;
+		}
+		int getNumJoints() const
+		{
+			return numJoints;
+		}
 		int getNumPrimitives() const;
 		const Profiling::CodeProfiler& getProfileWorldStep() const;
 		Profiling::CodeProfiler& getProfileWorldStep()
