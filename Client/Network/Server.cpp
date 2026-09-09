@@ -132,7 +132,7 @@ namespace RBX
 				}
 				catch (std::exception& e)
 				{
-					StandardOut::singleton()->print(MESSAGE_ERROR, "Client::OnReceive packet %d: %s", packet->data[0], e.what());
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Server::OnReceive packet %d: %s", packet->data[0], e.what());
 				}
 			}
 
