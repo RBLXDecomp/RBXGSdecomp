@@ -255,8 +255,15 @@ public:
 	}
 
 public:
-	XmlElement* addChild(const RBX::Name&);
-	XmlElement* addChild(XmlElement*);
+	XmlElement* addChild(const RBX::Name& _tag)
+	{
+		return addChild(new XmlElement(_tag));
+	}
+	XmlElement* addChild(XmlElement* element)
+	{
+		pushBackChild(element);
+		return element;
+	}
 	const XmlElement* findFirstChildByTag(const RBX::Name&) const;
 	const XmlElement* findNextChildWithSameTag(const XmlElement*) const;
 };

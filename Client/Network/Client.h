@@ -5,14 +5,6 @@
 #include <boost/shared_ptr.hpp>
 #include <string>
 
-class Exposer : protected PacketLogger
-{
-public:
-	Exposer() : PacketLogger() {}
-
-	static const char* IDTOString(int id);
-};
-
 class XmlElement;
 
 namespace RBX
@@ -35,7 +27,7 @@ namespace RBX
 			virtual ~Client();
 			void connect(std::string, int, int, int);
 			void disconnect(int blockDuration);
-			virtual PluginReceiveResult OnReceive(RakPeerInterface*, Packet*);
+			virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
 			virtual XmlElement* write()
 			{
 				return NULL;

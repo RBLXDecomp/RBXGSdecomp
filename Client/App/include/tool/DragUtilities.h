@@ -32,10 +32,10 @@ namespace RBX
 		static void join(const std::vector<boost::weak_ptr<PartInstance>>& parts);
 		static void unJoinAndSetDragging(const std::vector<boost::weak_ptr<PartInstance>>& parts);
 		static void joinAndStopDragging(const std::vector<boost::weak_ptr<PartInstance>>& parts);
-		static void clean(PartInstance*);
+		static void clean(PartInstance* part);
 		static void clean(const std::vector<boost::weak_ptr<PartInstance>>& parts);
 		static void move(const std::vector<boost::weak_ptr<PartInstance>>& parts, G3D::CoordinateFrame from, G3D::CoordinateFrame to);
-		static void alignToGrid(PartInstance*);
+		static void alignToGrid(PartInstance* part);
 		static void moveAndClean(PartInstance* part, const G3D::Vector3& pos);
 		static void pvsToParts(const std::vector<PVInstance*>& pvInstances, std::vector<boost::weak_ptr<PartInstance>>& parts);
 		static void instancesToParts(const std::vector<Instance*>& instances, std::vector<boost::weak_ptr<PartInstance>>& parts);

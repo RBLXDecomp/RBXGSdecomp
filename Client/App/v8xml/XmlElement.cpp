@@ -409,14 +409,3 @@ bool XmlElement::isXsiNil() const
 	const XmlAttribute* attribute = findAttribute(name_xsinil);
 	return attribute && attribute->getValue(isXsiNil) && isXsiNil;
 }
-
-XmlElement* XmlElement::addChild(const RBX::Name& _tag)
-{
-	return addChild(new XmlElement(_tag));
-}
-
-XmlElement* XmlElement::addChild(XmlElement* element)
-{
-	pushBackChild(element);
-	return element;
-}
