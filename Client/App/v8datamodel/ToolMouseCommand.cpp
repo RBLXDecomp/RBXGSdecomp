@@ -38,4 +38,22 @@ namespace RBX
 		tool->deactivate();
 		return ScriptMouseCommand::onMouseUp(uiEvent);
 	}
+
+	void ToolMouseCommand::updateTargetPoint(const UIEvent& uiEvent)
+	{
+		G3D::Vector3 hitWorld;
+		
+		Humanoid* humanoid = Humanoid::getLocalHumanoidFromContext(tool.get());
+		if (!humanoid)
+			return;
+
+		if (!getPartByLocalCharacter(uiEvent, hitWorld))
+		{
+			G3D::Ray ray = getSearchRay(uiEvent);
+			hitWorld = humanoid->getHead() ? humanoid->getHead()->getCoordinateFrame().translation : ray.origin;
+			hitWorld += ray.direction;
+		}
+
+		humanoid->setTargetPoint(hitWorld);
+	}
 }
