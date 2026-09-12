@@ -474,12 +474,6 @@ void TextXmlWriter::encodedWrite(std::ostream& stream, const std::string& text)
 	encodedWrite(stream, text.c_str());
 }
 
-// does a function like this already exist?
-static unsigned char toUpper(unsigned char c)
-{
-	return c - 32;
-}
-
 void TextXmlWriter::encodedWrite(std::ostream& stream, const char* text)
 {
 	size_t len = strlen(text);
@@ -506,7 +500,7 @@ void TextXmlWriter::encodedWrite(std::ostream& stream, const char* text)
 		{
 			stream << "&apos";
 		}
-		else if (toUpper(c) <= '^')
+		else if (c >= ' ' && c <= '~') // every other printable character
 		{
 			stream << c;
 		}

@@ -2,7 +2,7 @@
 #include "util/Name.h"
 #include "util/boost.hpp"
 #include <string>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time.hpp>
 #include <boost/scoped_ptr.hpp>
 
 namespace RBX
@@ -72,7 +72,7 @@ namespace RBX
 	public:
 		static ContentId fromUrl(const std::string&);
 		static ContentId fromFile(const std::string&);
-		static ContentId fromAssets(const std::string&);
+		static ContentId fromAssets(const std::string& filePath);
 		static ContentId fromMD5Hash(const std::string&);
 	};
 
@@ -89,16 +89,8 @@ namespace RBX
 
 		struct CachedContent
 		{
-		public:
 			boost::shared_ptr<const std::string> data;
 			boost::shared_ptr<const std::string> filename;
-		  
-		public:
-			//CachedContent(const CachedContent&);
-			CachedContent();
-			~CachedContent();
-		public:
-			//CachedContent& operator=(const CachedContent&);
 		};
 
 		struct FailedUrl
@@ -108,14 +100,8 @@ namespace RBX
 			boost::posix_time::ptime expiration;
 		  
 		public:
-			//FailedUrl(const FailedUrl&);
-			FailedUrl(const char*);
-		public:
+			FailedUrl(const char* url);
 			bool expired() const;
-		public:
-			~FailedUrl();
-		public:
-			//FailedUrl& operator=(const FailedUrl&);
 		};
 
 	private:
@@ -127,8 +113,6 @@ namespace RBX
 		std::string assetFolderPath;
 		boost::scoped_ptr<worker_thread> requestProcessor;
 	  
-	public:
-		//ContentProvider(const ContentProvider&);
 	private:
 		ContentProvider();
 		~ContentProvider();
@@ -137,11 +121,11 @@ namespace RBX
 		ContentId registerContent(std::istream& content, const Name& mimeType);
 		ContentId registerContent(const char*, const Name&);
 		void clearFileCache();
-		bool isUrlBad(const char*);
-		void load(ContentId, std::vector<boost::shared_ptr<Instance>>&);
+		bool isUrlBad(const char* url);
+		void load(ContentId id, std::vector<boost::shared_ptr<Instance>>& instances);
 		void clearContentCache();
 		bool isRequestQueueEmpty();
-		bool hasContent(ContentId);
+		bool hasContent(ContentId id);
 		boost::shared_ptr<const std::string> requestContentString(ContentId);
 		bool requestContentFile(ContentId, std::string&);
 		boost::shared_ptr<const std::string> getContentString(ContentId);
@@ -152,17 +136,20 @@ namespace RBX
 		std::string assetFolder() const;
 		ContentId readContent(const char*, std::istream&, unsigned);
 	private:
-		RBX::ContentProvider::CachedContent* loadContent(ContentId, HttpRequestType);
+		CachedContent* loadContent(ContentId, HttpRequestType);
 		worker_thread::work_result processRequests();
 		std::string findFile(ContentId);
 		std::string findAsset(ContentId);
 		std::string findHashFile(ContentId);
 		bool registerFile(CachedContent*);
-	public:
-		//ContentProvider& operator=(const ContentProvider&);
 	  
 	public:
-		static ContentProvider& singleton();
+		static ContentProvider& singleton()
+		{
+			static ContentProvider sing;
+			return sing;
+		}
+
 		static bool isUrl(const std::string&);
 		static bool isHttpUrl(const std::string&);
 	};
@@ -176,14 +163,6 @@ namespace RBX
 		
 		virtual std::string toString() = 0;
 		virtual const char* c_str() = 0;
-
-	public:
-		//MD5Hasher(const MD5Hasher&);
-		MD5Hasher()
-		{
-		}
-	public:
-		//MD5Hasher& operator=(const MD5Hasher&);
 
 	public:
 		static MD5Hasher* create();
