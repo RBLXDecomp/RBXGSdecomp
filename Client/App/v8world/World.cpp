@@ -51,25 +51,8 @@ namespace RBX
 		delete contactManager;
 	}
 
-	int World::getNumContacts() const
-	{
-		return numContacts;
-	}
-
-	int World::getNumLinkCalls() const
-	{
-		return numLinkCalls;
-	}
-
-	void World::addedBodyForce() { }
-
-	int World::getNumJoints() const {
-		return numJoints;
-	}
-
-	int World::getNumPrimitives() const
-	{
-		return primitives.size();
+	void World::addedBodyForce() 
+	{ 
 	}
 
 	Kernel& World::getKernel()

@@ -1,7 +1,10 @@
 #include <RakPeer.h>
+#include <MessageIdentifiers.h>
 #include "Server.h"
 #include "IdManager.h"
+#include "NetworkSettings.h"
 #include "API.h"
+#include "util/Http.h"
 #include "util/standardout.h"
 
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Server, void(int, int), 2> server_startFunction(&RBX::Network::Server::start, "Start", "port", "threadSleepTime", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
@@ -99,6 +102,85 @@ namespace RBX
 		void Server::setServerManagerPing(std::string pingUrl, std::string publicIP, int thumbnailId)
 		{
 			pingThread.reset(new worker_thread(boost::bind(&Server::ping, boost::weak_ptr<Server>(shared_from(this)), publicIP, thumbnailId, pingUrl), "rbx_serverping"));
+		}
+
+		bool Server::serverIsPresent(const Instance* context, bool testInDatamodel)
+		{
+			const ServiceProvider* sp = ServiceProvider::findServiceProvider(context);
+			RBXASSERT(!testInDatamodel || sp);
+
+			return ServiceProvider::find<Server>(sp) != NULL;
+		}
+
+		PluginReceiveResult Server::OnReceive(RakPeerInterface* peer, Packet* packet)
+		{
+			PluginReceiveResult result = PluginInterface::OnReceive(peer, packet);
+			if (result != RR_CONTINUE_PROCESSING)
+				return result;
+
+			if (packet->data[0] == ID_NEW_INCOMING_CONNECTION)
+			{
+				try
+				{
+					StandardOut::singleton()->print(MESSAGE_INFO, "New connection from %s\n", packet->systemAddress.ToString());
+
+					boost::shared_ptr<ClientProxy> proxy = Creatable::create<ClientProxy>(packet->systemAddress, this);
+					proxy->setParent(this);
+					proxy->sendTop();
+
+					event_IncommingConnection.fire(this, packet->systemAddress.ToString(), proxy);
+				}
+				catch (std::exception& e)
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Server::OnReceive packet %d: %s", packet->data[0], e.what());
+				}
+			}
+
+			return RR_CONTINUE_PROCESSING;
+		}
+
+		worker_thread::work_result Server::ping(boost::weak_ptr<Server> server, std::string publicIP, int thumbnailId, std::string pingUrl)
+		{
+			try
+			{
+				std::stringstream nameStream;
+
+				{
+					TextXmlWriter writer(nameStream);
+
+					XmlElement root(Name::declare("root", -1));
+
+					boost::shared_ptr<Server> s = server.lock();
+					if (!s)
+						return worker_thread::done;
+
+					root.addChild(new XmlElement(Name::declare("server", -1), publicIP));
+					root.addChild(new XmlElement(Name::declare("port", -1), s->outgoingPort));
+					root.addChild(new XmlElement(Name::declare("numPlayers", -1), s->players->numPlayers()));
+					root.addChild(new XmlElement(Name::declare("maxPlayers", -1), s->players->getMaxPlayers()));
+					root.addChild(new XmlElement(Name::declare("thumbnailId", -1), thumbnailId));
+
+					writer.serialize(&root);
+
+					nameStream.flush();
+				}
+
+				std::string response;
+				Http(pingUrl).post(nameStream, false, response);
+			}
+			catch (std::exception& exp)
+			{
+				StandardOut::singleton()->print(MESSAGE_ERROR, exp);
+			}
+
+			boost::xtime xt;
+			boost::xtime_get(&xt, boost::TIME_UTC);
+
+			xt.sec += 10;
+
+			boost::thread::sleep(xt);
+
+			return worker_thread::more;
 		}
 
 		Server::ClientProxy::ClientProxy(SystemAddress systemAddress, Server* server)

@@ -20,7 +20,7 @@ namespace RBX
 				ClientProxy(SystemAddress systemAddress, Server* server);
 				virtual ~ClientProxy();
 				void sendTop();
-				virtual PluginReceiveResult OnReceive(RakPeerInterface*, Packet*);
+				virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
 			protected:
 				virtual Player* findTargetPlayer()
 				{
@@ -57,7 +57,7 @@ namespace RBX
 			void stop(int blockDuration);
 			int getClientCount();
 			virtual XmlElement* write();
-			virtual PluginReceiveResult OnReceive(RakPeerInterface*, Packet*);
+			virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
 			void setServerManagerPing(std::string pingUrl, std::string publicIP, int thumbnailId);
 		protected:
 			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
@@ -67,7 +67,7 @@ namespace RBX
 			}
 			
 		private:
-			static worker_thread::work_result ping(boost::weak_ptr<Server>, std::string, int, std::string);
+			static worker_thread::work_result ping(boost::weak_ptr<Server> server, std::string publicIP, int thumbnailId, std::string pingUrl);
 		public:
 			static bool serverIsPresent(const Instance* context, bool testInDatamodel);
 		};

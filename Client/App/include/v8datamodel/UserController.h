@@ -146,7 +146,7 @@ namespace RBX
 	protected:
 		AIController(const PVInstance* controlledInstance);
 		virtual ~AIController();
-		void updateTarget(Controller::ControllerType, float);
+		void updateTarget(Controller::ControllerType excludeType, float time);
 		G3D::Vector3 getLocalTargetPosition() const;
 		void chaseTarget(const G3D::Vector3& localChasePoint);
 

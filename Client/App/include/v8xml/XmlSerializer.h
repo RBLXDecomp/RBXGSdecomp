@@ -68,7 +68,10 @@ public:
 class TextXmlWriter : public XmlWriter
 {
 public:
-	TextXmlWriter(std::ostream&);
+	TextXmlWriter(std::ostream& stream)
+		: XmlWriter(stream)
+	{
+	}
 
 protected:
 	void serialize(const XmlElement*, int);

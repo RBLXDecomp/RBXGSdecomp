@@ -89,7 +89,7 @@ namespace RBX
 		float step(float);
 		float getSimTime() const;
 		TimeState* getTimeState();
-		virtual std::string evaluate(const std::string&) const;
+		virtual std::string evaluate(const std::string& valueName) const;
 		void renderPass2d(Adorn*, IMetric*);
 		void renderPass3dAdorn(Adorn*);
 

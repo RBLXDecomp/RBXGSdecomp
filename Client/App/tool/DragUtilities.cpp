@@ -18,23 +18,28 @@ namespace RBX
 		return false;
 	}
 
+	void DragUtilities::clean(PartInstance* part)
+	{
+		if (part->aligned())
+			alignToGrid(part);
+	}
+
+	void DragUtilities::alignToGrid(PartInstance* part)
+	{
+		const G3D::CoordinateFrame& partCoord = part->getCoordinateFrame();
+		G3D::CoordinateFrame snapToGrid = Math::snapToGrid(partCoord, 0.1f);
+
+		if (snapToGrid != partCoord)
+			part->setCoordinateFrame(snapToGrid);
+	}
+
 	void DragUtilities::clean(const std::vector<boost::weak_ptr<PartInstance>>& parts)
 	{
 		for (size_t i = 0; i < parts.size(); i++)
 		{
 			boost::shared_ptr<PartInstance> part = parts[i].lock();
-
 			if (part)
-			{
-				if (part->aligned())
-				{
-					const G3D::CoordinateFrame& partCoord = part->getCoordinateFrame();
-					G3D::CoordinateFrame snapToGrid = Math::snapToGrid(partCoord, 0.1f);
-
-					if (snapToGrid != partCoord)
-						part->setCoordinateFrame(snapToGrid);
-				}
-			}
+				clean(part.get());
 		}
 	}
 

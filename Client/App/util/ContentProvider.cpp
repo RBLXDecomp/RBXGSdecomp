@@ -1,6 +1,7 @@
 #include "util/ContentProvider.h"
 #include "util/standardout.h"
 #include "util/Http.h"
+#include "v8xml/SerializerV2.h"
 #include <atlutil.h>
 #include <boost/shared_ptr.hpp>
 
@@ -17,18 +18,18 @@ namespace RBX
 		return a.toString() != b.toString();
 	}
 
-	ContentProvider& ContentProvider::singleton()
+	ContentId ContentId::fromAssets(const std::string& filePath)
 	{
-		static ContentProvider sing;
-		return sing;
+		std::string header = "rbxasset://";
+		return ContentId(header + filePath);
 	}
 
 	bool ContentProvider::isHttpUrl(const std::string& s)
 	{
-		if (s.find("http://", 0, 7) == 0)
+		if (s.find("http://") == 0)
 			return true;
 
-		if (s.find("https://", 0, 8) == 0)
+		if (s.find("https://") == 0)
 			return true;
 
 		return false;
@@ -45,6 +46,56 @@ namespace RBX
 		return requestQueue.empty();
 	}
 
+	bool ContentProvider::isUrlBad(const char* url)
+	{
+		boost::mutex::scoped_lock lock(requestSync);
+
+		std::list<FailedUrl>::iterator iter = failedUrls.begin();
+		std::list<FailedUrl>::iterator end = failedUrls.end();
+
+		for (; iter != end; iter++)
+		{
+			if (boost::posix_time::second_clock::local_time() >= iter->expiration)
+			{
+				failedUrls.erase(iter, end);
+				return false;
+			}
+			else if (iter->url == url)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void ContentProvider::clearContentCache()
+	{
+		boost::mutex::scoped_lock lock(contentCacheMutex);
+		contentCache.clear();
+	}
+
+	void ContentProvider::load(ContentId id, std::vector<boost::shared_ptr<Instance>>& instances)
+	{
+		boost::scoped_ptr<std::istream> stream(getContent(id));
+		
+		TextXmlParser machine(stream->rdbuf());
+		boost::scoped_ptr<XmlElement> root(machine.parse());
+
+		SerializerV2().loadInstances(root.get(), instances);
+	}
+
+	bool ContentProvider::hasContent(ContentId id)
+	{
+		return loadContent(id, NoHttpRequest) != NULL;
+	}
+
+	ContentProvider::FailedUrl::FailedUrl(const char* url)
+		: url(url),
+		  expiration(boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(5))
+	{
+	}
+
 	class MD5HasherImpl : public MD5Hasher
 	{
 	private:
@@ -53,7 +104,6 @@ namespace RBX
 		std::string result;
 
 	public:
-		//MD5HasherImpl(const MD5HasherImpl&);
 		MD5HasherImpl()
 			: hProv(NULL),
 			  hHash(NULL),
@@ -135,8 +185,6 @@ namespace RBX
 
 			return result.c_str();
 		}
-	public:
-		//MD5HasherImpl& operator=(const MD5HasherImpl&);
 	};
 
 	MD5Hasher* MD5Hasher::create()
