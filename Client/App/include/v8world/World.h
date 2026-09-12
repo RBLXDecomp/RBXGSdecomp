@@ -145,7 +145,10 @@ namespace RBX
 		{
 			return numJoints;
 		}
-		int getNumPrimitives() const;
+		int getNumPrimitives() const
+		{
+			return primitives.size();
+		}
 		const Profiling::CodeProfiler& getProfileWorldStep() const;
 		Profiling::CodeProfiler& getProfileWorldStep()
 		{

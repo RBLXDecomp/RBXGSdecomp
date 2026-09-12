@@ -10,6 +10,7 @@ namespace RBX
 	class ContentId;
 	bool operator!=(const ContentId&, const ContentId&);
 	bool operator==(const ContentId&, const ContentId&);
+	bool operator<(const ContentId&, const ContentId&);
 
 	class ContentId
 	{
@@ -167,6 +168,4 @@ namespace RBX
 	public:
 		static MD5Hasher* create();
 	};
-
-	bool operator!=(const ContentId&, const ContentId&);
 }

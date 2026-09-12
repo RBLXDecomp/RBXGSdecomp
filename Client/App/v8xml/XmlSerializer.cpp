@@ -100,7 +100,6 @@ std::string TextXmlParser::readFirstTag()
 	return tag;
 }
 
-// does not match
 std::string decodeString(std::string source)
 {
 	std::string result;
@@ -114,10 +113,10 @@ std::string decodeString(std::string source)
 			std::string entity;
 			while (i < source.size())
 			{
-				char eChar = source[i++];
-				if (eChar == ';')
+				c = source[i++];
+				if (c == ';')
 					break;
-				entity += eChar;
+				entity += c;
 			}
 
 			if (entity == "lt")
@@ -510,16 +509,6 @@ void TextXmlWriter::encodedWrite(std::ostream& stream, const char* text)
 			sprintf(buffer, "&#%d;", c);
 			stream << buffer;
 		}
-	}
-}
-
-namespace std
-{
-	// TODO: is this right? signature says its in the RBX namespace but thats impossible
-	// im pretty sure this is also meant to be in the ContentProvider.cpp file, but it will error if its not here
-	bool operator<(const RBX::ContentId& a, const RBX::ContentId& b)
-	{
-		return a.toString() < b.toString();
 	}
 }
 
