@@ -440,13 +440,10 @@ int ScriptContext::loadfile(lua_State* L)
     return n;
 }
 
-// TODO: 99.04%
-// swapped registers
 int ScriptContext::stats(lua_State* L)
 {
     Security::Context::current().requirePermission(Security::Administrator, "Stats");
-    Stats::StatsService* statsService = ServiceProvider::create<Stats::StatsService>(&getContext(L));
-    Lua::ObjectBridge::push(L, shared_from(statsService));
+    Lua::ObjectBridge::push(L, shared_from(ServiceProvider::create<Stats::StatsService>(&getContext(L))));
     return 1;
 }
 
@@ -514,7 +511,7 @@ void ScriptContext::onEvent(const RunService* source, Heartbeat event)
     if (t >= nextPendingScripts)
     {
         startPendingScripts();
-        nextPendingScripts = second_clock::local_time() + seconds(100);
+        nextPendingScripts = second_clock::local_time() + seconds(1);
     }
 
     if (yieldEvent)

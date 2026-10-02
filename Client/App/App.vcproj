@@ -366,6 +366,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\FileSystem.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\Guid.h"
 					>
 				</File>
@@ -1300,6 +1304,10 @@
 			</File>
 			<File
 				RelativePath=".\util\Face.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\FileSystem.cpp"
 				>
 			</File>
 			<File

@@ -127,8 +127,8 @@ namespace RBX
 		void clearContentCache();
 		bool isRequestQueueEmpty();
 		bool hasContent(ContentId id);
-		boost::shared_ptr<const std::string> requestContentString(ContentId);
-		bool requestContentFile(ContentId, std::string&);
+		boost::shared_ptr<const std::string> requestContentString(ContentId id);
+		bool requestContentFile(ContentId id, std::string& filename);
 		boost::shared_ptr<const std::string> getContentString(ContentId);
 		std::auto_ptr<std::istream> getContent(ContentId);
 		std::string getFile(ContentId ticket);

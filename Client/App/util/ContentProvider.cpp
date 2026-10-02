@@ -1,11 +1,12 @@
 #include "util/ContentProvider.h"
 #include "util/standardout.h"
 #include "util/Http.h"
+#include "util/FileSystem.h"
 #include "v8xml/SerializerV2.h"
-#include <shlobj.h>
 #include <atlutil.h>
 #include <G3D/format.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/iostreams/copy.hpp>
 
 namespace RBX
 {
@@ -126,6 +127,40 @@ namespace RBX
 		}
 
 		throw std::runtime_error(G3D::format("Unable to load %s", ticket.c_str()));
+	}
+
+	bool ContentProvider::requestContentFile(ContentId id, std::string& filename)
+	{
+		CachedContent* content = loadContent(id, AsyncHttpRequest);
+		if (!content)
+			return false;
+
+		if (!registerFile(content))
+			return false;
+
+		filename = *content->filename;
+		return true;
+	}
+
+	boost::shared_ptr<const std::string> ContentProvider::requestContentString(ContentId id)
+	{
+		CachedContent* content = loadContent(id, AsyncHttpRequest);
+		if (!content)
+			return boost::shared_ptr<const std::string>();
+
+		boost::mutex::scoped_lock lock(contentCacheMutex);
+
+		if (!content->data)
+		{
+			std::ifstream stream(content->filename->c_str(), std::ios::binary | std::ios::in);
+			std::ostringstream data;
+
+			boost::iostreams::copy(stream, data);
+
+			content->data.reset(new std::string(data.str()));
+		}
+
+		return content->data;
 	}
 
 	ContentProvider::FailedUrl::FailedUrl(const char* url)
