@@ -10,8 +10,10 @@ namespace RBX
 			SID_AND_ATTRIBUTES Label;
 		} TOKEN_MANDATORY_LABEL, *PTOKEN_MANDATORY_LABEL;
 
+		typedef HRESULT (WINAPI *GetKnownFolderPathPtr)(REFKNOWNFOLDERID, DWORD, HANDLE, PWSTR*);
+
 	private:
-		HRESULT (WINAPI *getKnownFolderPath)(REFKNOWNFOLDERID, DWORD, HANDLE, PWSTR*);
+		GetKnownFolderPathPtr getKnownFolderPath;
 		HINSTANCE gShell32DLLInst;
 
 	public:
