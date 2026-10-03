@@ -135,14 +135,14 @@ namespace RBX
 		std::string getAssetFile(const std::string& filePath);
 		void setAssetFolder(const char* sPath);
 		std::string assetFolder() const;
-		ContentId readContent(const char*, std::istream&, unsigned);
+		ContentId readContent(const char* id, std::istream& stream, unsigned long dataLength);
 	private:
 		CachedContent* loadContent(ContentId, HttpRequestType);
 		worker_thread::work_result processRequests();
 		std::string findFile(ContentId contentId);
 		std::string findAsset(ContentId contentId);
 		std::string findHashFile(ContentId contentId);
-		bool registerFile(CachedContent*);
+		bool registerFile(CachedContent* item);
 	  
 	public:
 		static ContentProvider& singleton()
@@ -158,9 +158,9 @@ namespace RBX
 	class MD5Hasher
 	{
 	public:
-		virtual void addData(const char* data, size_t nBytes) = 0;
-		virtual void addData(const std::string& data) = 0;
 		virtual void addData(std::istream& data) = 0;
+		virtual void addData(const std::string& data) = 0;
+		virtual void addData(const char* data, size_t nBytes) = 0;
 		
 		virtual std::string toString() = 0;
 		virtual const char* c_str() = 0;
