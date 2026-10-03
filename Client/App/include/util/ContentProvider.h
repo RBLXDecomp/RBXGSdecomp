@@ -133,15 +133,15 @@ namespace RBX
 		std::auto_ptr<std::istream> getContent(ContentId);
 		std::string getFile(ContentId ticket);
 		std::string getAssetFile(const std::string& filePath);
-		void setAssetFolder(const char*);
+		void setAssetFolder(const char* sPath);
 		std::string assetFolder() const;
 		ContentId readContent(const char*, std::istream&, unsigned);
 	private:
 		CachedContent* loadContent(ContentId, HttpRequestType);
 		worker_thread::work_result processRequests();
-		std::string findFile(ContentId);
-		std::string findAsset(ContentId);
-		std::string findHashFile(ContentId);
+		std::string findFile(ContentId contentId);
+		std::string findAsset(ContentId contentId);
+		std::string findHashFile(ContentId contentId);
 		bool registerFile(CachedContent*);
 	  
 	public:
