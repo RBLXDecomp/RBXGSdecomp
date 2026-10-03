@@ -447,7 +447,24 @@ namespace RBX
 		}
 
 		template<typename Type>
-		Type* findFirstChildOfType() const;
+		Type* findFirstChildOfType() const
+		{
+			if (children)
+			{
+				std::vector<boost::shared_ptr<Instance>>::const_iterator end = children->end();
+				std::vector<boost::shared_ptr<Instance>>::const_iterator iter = children->begin();
+
+				for (; iter != end; iter++)
+				{
+					if (Type* result = dynamic_cast<Type*>((*iter).get()))
+					{
+						return result;
+					}
+				}
+			}
+
+			return NULL;
+		}
 
 		template<typename Function>
 		void visitChildren(Function func) const;

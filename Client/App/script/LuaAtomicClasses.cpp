@@ -540,6 +540,26 @@ int CoordinateFrameBridge::on_pointToWorldSpace(lua_State* L)
     return count;
 }
 
+int CoordinateFrameBridge::on_pointToObjectSpace(lua_State *L)
+{
+	G3D::CoordinateFrame& a = getObject(L, 1);
+    int count = lua_gettop(L)-1;
+
+    if (count == 0)
+    {
+		Vector3Bridge::pushVector3(L, a.pointToObjectSpace(G3D::Vector3::zero()));
+        return 1;
+    }
+
+    for (int i = 0; i < count; i++)
+    {
+        G3D::Vector3& b = Vector3Bridge::getObject(L, 2+i);
+		Vector3Bridge::pushVector3(L, a.pointToObjectSpace(b));
+    }   
+
+    return count;
+}
+
 int CoordinateFrameBridge::on_vectorToWorldSpace(lua_State* L)
 {
     G3D::CoordinateFrame& a = getObject(L, 1);

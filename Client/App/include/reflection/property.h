@@ -89,7 +89,10 @@ namespace RBX
 			ConstProperty& operator=(const ConstProperty&);
 			const Name& getName() const;
 			bool hasStringValue() const;
-			std::string getStringValue() const;
+			std::string getStringValue() const
+			{
+				return descriptor->getStringValue(instance);
+			}
 			XmlElement* write() const;
 
 		public:
@@ -115,7 +118,10 @@ namespace RBX
 				return const_cast<DescribedBase*>(instance); // might not be right
 			}
 			bool setStringValue(const std::string&);
-			void read(const XmlElement*, IReferenceBinder&);
+			void read(const XmlElement* propertyElement, IReferenceBinder& binder)
+			{
+				descriptor->read(getInstance(), propertyElement, binder);
+			}
 
 		public:
 			template<typename T>
@@ -163,13 +169,16 @@ namespace RBX
 				return getValue(b) == getValue(a);
 			}
 
-			virtual bool hasStringValue() const;
-			virtual std::string getStringValue(const DescribedBase*) const;
-			virtual bool setStringValue(DescribedBase*, const std::string&) const;
+			virtual bool hasStringValue() const
+			{
+				return true;
+			}
+			virtual std::string getStringValue(const DescribedBase* instance) const;
+			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const;
 
 		private:
-			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
-			virtual void writeValue(const DescribedBase*, XmlElement*) const;
+			virtual void readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const;
+			virtual void writeValue(const DescribedBase* instance, XmlElement* element) const;
 		};
 
 		class RefPropertyDescriptor : public PropertyDescriptor
@@ -203,7 +212,11 @@ namespace RBX
 			virtual bool setEnumValue(DescribedBase*, int) const = 0;
 
 		protected:
-			EnumPropertyDescriptor(ClassDescriptor&, const EnumDescriptor&, const char*, const char*, Functionality);
+			EnumPropertyDescriptor(ClassDescriptor& classDescriptor, const EnumDescriptor& enumDesc, const char* name, const char* category, Functionality flags)
+				: PropertyDescriptor(classDescriptor, enumDesc, name, category, flags),
+				  enumDescriptor(enumDesc)
+			{
+			}
 		};
 	}
 }

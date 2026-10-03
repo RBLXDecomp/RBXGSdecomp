@@ -53,12 +53,15 @@ namespace RBX
 		ICameraOwner* getCameraOwner();
 		void updateFocus();
 		void updateGoal();
-		bool characterZoom(float);
+		bool characterZoom(float in);
 		bool nonCharacterZoom(float in);
 		void tryZoomExtents(float low, float current, float high, const RBX::Extents& extents, const G3D::Rect2D& viewPort);
 		ContactManager& getContactManager();
-		float goalToFocusDistance() const;
-		void setGCameraCoordinateFrame(const G3D::CoordinateFrame&);
+		float goalToFocusDistance() const
+		{
+			return (cameraGoal.translation - cameraFocus.translation).magnitude();
+		}
+		void setGCameraCoordinateFrame(const G3D::CoordinateFrame& coord);
 		G3D::CoordinateFrame computeLineOfSiteGoal();
 		void getHeadingElevationDistance(float& heading, float& elevation, float& distance);
 		void setHeadingElevationDistance(float, float, float);
@@ -106,17 +109,26 @@ namespace RBX
 		bool zoomExtents(const G3D::Rect2D& viewPort);
 		void panRadians(float angle);
 		void panUnits(int);
-		bool tiltRadians(float);
+		bool tiltRadians(float angle);
 		bool tiltUnits(int);
 		void lookAt(const G3D::Vector3& point);
-		void setImageServerViewNoLerp(const G3D::CoordinateFrame&, const G3D::Rect2D&);
+		void setImageServerViewNoLerp(const G3D::CoordinateFrame& modelCoord, const G3D::Rect2D& viewPort);
 
 	public:
 		static float distanceDefault();
-		static float distanceMin();
-		static float distanceMax();
-		static float distanceMaxCharacter();
+		static float distanceMin()
+		{
+			return 0.5f;
+		}
+		static float distanceMax()
+		{
+			return 1000.0f;
+		}
+		static float distanceMaxCharacter()
+		{
+			return 400.0f;
+		}
 		static float distanceMinOcclude();
-		static float getNewZoomDistance(float, float);
+		static float getNewZoomDistance(float currentDistance, float in);
 	};
 }

@@ -46,7 +46,7 @@ namespace RBX
 		Instance::readProperty(propertyElement, binder);
 	}
 
-	void Accoutrement::downFrom_InCharacter()
+	__declspec(noinline) void Accoutrement::downFrom_InCharacter()
 	{
 		characterChildAdded.disconnect();
 		characterChildRemoved.disconnect();
@@ -291,6 +291,65 @@ namespace RBX
 	{
 		RBXASSERT(ServiceProvider::findServiceProvider(this));
 		RBXASSERT(Network::Players::backendProcessing(this, true));
+	}
+
+	void Accoutrement::downFrom_HasHandle()
+	{
+		handleTouched.disconnect();
+	}
+
+	void Accoutrement::setDesiredState(AccoutrementState desiredState, const ServiceProvider* serviceProvider)
+	{
+		do
+		{
+			RBXASSERT(Network::Players::backendProcessing(serviceProvider, true));
+
+			if (backendAccoutrementState < desiredState)
+			{
+				switch (backendAccoutrementState)
+				{
+				case IN_CHARACTER:
+					upTo_Equipped();
+					break;
+				case IN_WORKSPACE:
+					upTo_InCharacter();
+					break;
+				case HAS_HANDLE:
+					upTo_InWorkspace();
+					break;
+				case NOTHING:
+					connectTouchEvent();
+					break;
+				default:
+					RBXASSERT(false);
+					break;
+				}
+
+				setBackendAccoutrementState(backendAccoutrementState + HAS_HANDLE);
+			}
+			else if (desiredState < backendAccoutrementState)
+			{
+				switch (backendAccoutrementState)
+				{
+				case EQUIPPED:
+					downFrom_Equipped();
+					break;
+				case IN_CHARACTER:
+					downFrom_InCharacter();
+					break;
+				case IN_WORKSPACE:
+					break;
+				case HAS_HANDLE:
+					downFrom_HasHandle();
+					break;
+				default:
+					RBXASSERT(false);
+					break;
+				}
+
+				setBackendAccoutrementState(backendAccoutrementState - HAS_HANDLE);
+			} 
+		} while (desiredState != backendAccoutrementState);
 	}
 
 	Hat::Hat()

@@ -37,7 +37,7 @@ namespace RBX
 	class __declspec(novtable) Notifier
 	{
 	private:
-		std::vector<Listener<Class, Event>*> listeners;
+		mutable std::vector<Listener<Class, Event>*> listeners;
 		mutable RaiseRange* raiseRange;
 
 	protected:
@@ -56,8 +56,28 @@ namespace RBX
 		}
 
 	public:
-		void addListener(Listener<Class, Event>*) const;
-		void removeListener(Listener<Class, Event>*) const;
+		void addListener(Listener<Class, Event>* listener) const
+		{
+			if (std::find(listeners.begin(), listeners.end(), listener) == listeners.end())
+			{
+				listeners.push_back(listener);
+				onAddListener(listener);
+			}
+		}
+		void removeListener(Listener<Class, Event>* listener) const
+		{
+			std::vector<Listener<Class, Event>*>::iterator iter = std::find(listeners.begin(), listeners.end(), listener);
+
+			if (iter != listeners.end())
+			{
+				onRemoveListener(listener);
+				if (raiseRange)
+				{
+					raiseRange->removeIndex(std::distance(listeners.begin(), iter));
+				}
+				listeners.erase(iter);
+			}
+		}
 
 	protected:
 		bool hasListeners() const

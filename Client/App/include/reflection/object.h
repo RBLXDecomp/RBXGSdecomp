@@ -51,8 +51,14 @@ namespace RBX
 			bool isBaseOf(const ClassDescriptor& base) const;
 			bool isA(const char*) const;
 			bool isA(const ClassDescriptor&) const;
-			std::vector<ClassDescriptor*>::const_iterator derivedClasses_begin() const;
-			std::vector<ClassDescriptor*>::const_iterator derivedClasses_end() const;
+			std::vector<ClassDescriptor*>::const_iterator derivedClasses_begin() const
+			{
+				return derivedClasses.begin();
+			}
+			std::vector<ClassDescriptor*>::const_iterator derivedClasses_end() const
+			{
+				return derivedClasses.end();
+			}
 			bool operator==(const ClassDescriptor& other) const;
 			bool operator!=(const ClassDescriptor& other) const;
 		  

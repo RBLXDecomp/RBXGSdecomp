@@ -162,6 +162,18 @@ WaitScriptSlot::WaitScriptSlot(lua_State* thread)
 {
 }
 
+void WaitScriptSlot::operator()(const Arguments& arguments)
+{
+	Slot::cnction->disconnect();
+	
+	if (lua_State* state = waitThread.thread())
+	{
+		int top = lua_gettop(state);
+		ScriptContext::getContext(state).resume(state, pushArgs(state, arguments));
+		lua_settop(state, top);
+	}
+}
+
 int SignalBridge::connect(lua_State* L)
 {
     boost::shared_ptr<Reflection::SignalInstance> si = getObject(L, 1);

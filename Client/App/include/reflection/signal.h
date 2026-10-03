@@ -9,6 +9,7 @@
 #include <vector>
 #include "reflection/function.h"
 #include "util/Utilities.h"
+#include "util/standardout.h"
 
 namespace RBX
 {
@@ -24,20 +25,38 @@ namespace RBX
 
 		public:
 			template<typename T>
-			static GenericSlotWrapper* create(T);
+			static GenericSlotWrapper* create(T slot)
+			{
+				return new TGenericSlotWrapper<T>(slot);
+			}
 		};
 
 		template<typename T>
 		class TGenericSlotWrapper : public GenericSlotWrapper
 		{
+			friend class GenericSlotWrapper;
+
 		private:
 			T slot;
 		
 		private:
-		  	TGenericSlotWrapper(const T&);
+		  	TGenericSlotWrapper(const T& s)
+				: slot(s)
+			{
+			}
 
 		public:
-			virtual void execute(const Arguments&);
+			virtual void execute(const Arguments& arguments)
+			{
+				try
+				{
+					slot(arguments);
+				}
+				catch (std::exception& e)
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Exception caught in TGenericSlotWrapper. %s", e.what());
+				}
+			}
 		};
 
 		class SignalSource;
@@ -67,7 +86,10 @@ namespace RBX
 
 		public:
 			template<typename T>
-			boost::signals::connection connectGeneric(T slot, boost::signals::connect_position pos);
+			boost::signals::connection connectGeneric(T slot, boost::signals::connect_position pos)
+			{
+				return descriptor.connectGeneric(this, GenericSlotWrapper::create<T>(slot), pos);
+			}
 		};
 
 		class __declspec(novtable) SignalSource
@@ -86,6 +108,8 @@ namespace RBX
 		class Signal;
 		class __declspec(novtable) SignalDescriptor : public MemberDescriptor
 		{
+			friend class SignalInstance;
+
 		public:
 			typedef Signal Describing;
 

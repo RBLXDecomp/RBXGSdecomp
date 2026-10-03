@@ -43,7 +43,7 @@ namespace RBX
 		void onEvent_HandleTouched(boost::shared_ptr<Instance> other);
 		AccoutrementState computeDesiredState(Instance* testParent);
 		AccoutrementState computeDesiredState();
-		void setDesiredState(AccoutrementState, const ServiceProvider*);
+		void setDesiredState(AccoutrementState desiredState, const ServiceProvider* serviceProvider);
 		void setBackendAccoutrementStateNoReplicate(int);
 		void rebuildBackendState();
 		void connectTouchEvent();

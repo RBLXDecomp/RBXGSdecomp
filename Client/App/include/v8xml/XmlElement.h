@@ -172,10 +172,30 @@ public:
 		valueType = HANDLE;
 	}
 	void setValue(const RBX::Name*);
-	void setValue(float);
-	void setValue(bool);
-	void setValue(unsigned);
-	void setValue(int);
+	void setValue(float value)
+	{
+		clearValue();
+		floatValue = value;
+		valueType = FLOAT;
+	}
+	void setValue(bool value)
+	{
+		clearValue();
+		boolValue = value;
+		valueType = BOOL;
+	}
+	void setValue(unsigned value)
+	{
+		clearValue();
+		uintValue = value;
+		valueType = UINT;
+	}
+	void setValue(int value)
+	{
+		clearValue();
+		intValue = value;
+		valueType = INT;
+	}
 	void setValue(const char*);
 	void setValue(RBX::ContentId contentId)
 	{

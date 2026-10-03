@@ -1,5 +1,6 @@
 #include "v8tree/Instance.h"
 #include "reflection/function.h"
+#include "reflection/property.h"
 #include <algorithm>
 
 namespace RBX
@@ -351,6 +352,45 @@ namespace RBX
 		}
 	}
 
+	//96.19% matching.
+	void Instance::readProperty(const XmlElement* propertyElement, IReferenceBinder& binder)
+	{
+		const Name* value = NULL;
+
+		if (const XmlAttribute* attribute = propertyElement->findAttribute(name_name))
+		{
+			if (attribute->getValue(value))
+			{
+				Reflection::PropertyIterator iter = findProperty(*value);
+
+				if (iter != properties_end())
+				{
+					(*iter).read(propertyElement, binder);
+				}
+			}
+		}
+	}
+
+	XmlElement* Instance::write()
+	{
+		if (archivable)
+		{
+			if (getClassName() != Name::getNullName())
+			{
+				XmlElement* element = new XmlElement(tag_Item);
+				element->addAttribute(tag_class, &getClassName());
+				element->addAttribute(name_referent, InstanceHandle(this));
+
+				writeProperties(element->addChild(tag_Properties));
+				writeChildren(element);
+
+				return element;
+			}
+		}
+
+		return new XmlElement(tag_External, InstanceHandle(this));
+	}
+  
 	void Instance::setParent(Instance* newParent)
 	{
 		if (newParent == parent)

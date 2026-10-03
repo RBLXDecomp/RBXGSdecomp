@@ -304,22 +304,125 @@ namespace RBX
 		  
 		public:
 			template<typename GetFunction, typename SetFunction>
-			EnumPropDescriptor(char const* name, char const* category, typename GetFunction get, typename SetFunction set, Functionality flags);
+			EnumPropDescriptor(char const* name, char const* category, typename GetFunction get, typename SetFunction set, Functionality flags)
+				: EnumPropertyDescriptor(Class::classDescriptor(), EnumDesc<Enum>::singleton(), name, category, flags),
+				  getset(PropDescriptor<Class, Enum>::getset<GetFunction, SetFunction>(get, set))
+			{
+			}
 		public:
-			virtual bool isReadOnly() const;
-			Enum getValue(const DescribedBase*) const;
-			void setValue(DescribedBase*, Enum) const;
-			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const;
-			virtual int getEnumValue(const DescribedBase*) const;
-			virtual bool setEnumValue(DescribedBase*, int) const;
-			virtual unsigned getIndexValue(const DescribedBase*) const;
-			virtual bool setIndexValue(DescribedBase*, unsigned) const;
+			virtual bool isReadOnly() const
+			{
+				return getset->isReadOnly();
+			}
+			Enum getValue(const DescribedBase* object) const
+			{
+				return getset->getValue(object);
+			}
+			void setValue(DescribedBase* object, Enum value) const
+			{
+				getset->setValue(object, value);
+			}
+			virtual bool equalValues(const DescribedBase* a, const DescribedBase* b) const
+			{
+				return getValue(a) == getValue(b);
+			}
+			virtual int getEnumValue(const DescribedBase* instance) const
+			{
+				return getValue(instance);
+			}
+			virtual bool setEnumValue(DescribedBase* instance, int intValue) const
+			{
+				if (EnumDesc<Enum>::singleton().isValue(intValue))
+				{
+					setValue(instance, (Enum) intValue);
+					return true;
+				}
+
+				return false;
+			}
+			virtual size_t getIndexValue(const DescribedBase* instance) const
+			{
+				return EnumDesc<Enum>::singleton().convertToIndex(getValue(instance));
+			}
+			virtual bool setIndexValue(DescribedBase* instance, unsigned index) const
+			{
+				Enum val;
+				if (EnumDesc<Enum>::singleton().convertToValue(index, val))
+				{
+					setValue(instance, val);
+					return true;
+				}
+				
+				return false;
+			}
 			virtual bool hasStringValue() const;
-			virtual std::string getStringValue(const DescribedBase*) const;
-			virtual bool setStringValue(DescribedBase*, const Name&) const;
-			virtual bool setStringValue(DescribedBase*, const std::string&) const;
-			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
-			virtual void writeValue(const DescribedBase*, XmlElement*) const;
+			virtual std::string getStringValue(const DescribedBase* instance) const
+			{
+				return EnumDesc<Enum>::singleton().convertToString(getValue(instance));
+			}
+			virtual bool setStringValue(DescribedBase* instance, const Name& name) const
+			{
+				Enum val;
+				if (EnumDesc<Enum>::singleton().convertToValue(name, val))
+				{
+					setValue(instance, val);
+					return true;
+				}
+
+				return false;
+			}
+			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const
+			{
+				Enum val;
+				if (EnumDesc<Enum>::singleton().convertToValue(text, val))
+				{
+					setValue(instance, val);
+					return true;
+				}
+
+				return false;
+			}
+			virtual void readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
+			{
+				if (!element->isXsiNil())
+				{
+					if (element->isValueType<std::string>())
+					{
+						std::string text;
+						if (element->getValue(text))
+						{
+							Enum val;
+							if (EnumDesc<Enum>::singleton().convertToValue(text, val))
+							{
+								setValue(instance, val);
+								return;
+							}
+
+							if (text.size() == 0)
+							{
+								if (setIndexValue(instance, 0))
+								{
+									return;
+								}
+							}
+						}
+					}
+
+					int value;
+					if (element->getValue(value))
+					{
+						setValue(instance, (Enum) value);
+					}
+					else
+					{
+						RBXASSERT(false);
+					}
+				}
+			}
+			virtual void writeValue(const DescribedBase* instance, XmlElement* element) const
+			{
+				element->setValue(getValue(instance));
+			}
 		};
 
 		// BoundFuncDesc

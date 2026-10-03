@@ -53,7 +53,7 @@ private:
   
 public:
     FunctionScriptSlot(lua_State* thread, int functionIndex);
-    void operator()(const RBX::Reflection::Arguments&);
+    void operator()(const RBX::Reflection::Arguments& arguments);
 };
 
 class WaitScriptSlot : public RBX::Script::Slot
@@ -63,5 +63,5 @@ private:
   
 public:
     WaitScriptSlot(lua_State* thread);
-    void operator()(const RBX::Reflection::Arguments&);
+    void operator()(const RBX::Reflection::Arguments& arguments);
 };

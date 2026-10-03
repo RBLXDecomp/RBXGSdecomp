@@ -145,7 +145,16 @@ namespace RBX
 					return "";
 				return enumToString[value];
 			}
-			bool convertToValue(size_t, Enum&) const;
+			bool convertToValue(size_t index, Enum& value) const
+			{
+				if (index < enumCount)
+				{
+					value = indexToEnum[index];
+					return true;
+				}
+
+				return false;
+			}
 			bool convertToValue(const std::string& text, Enum& value) const
 			{
 				std::map<std::string, Enum>::const_iterator iter = stringToEnum.find(text);
