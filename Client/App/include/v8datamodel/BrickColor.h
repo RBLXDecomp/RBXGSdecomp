@@ -190,7 +190,10 @@ namespace RBX
 		G3D::Color3 color3() const;
 		
 		const std::string& name() const;
-		int asInt() const;
+		int asInt() const
+		{
+			return number;
+		}
 
 	public:
 		bool operator==(const BrickColor& other) const

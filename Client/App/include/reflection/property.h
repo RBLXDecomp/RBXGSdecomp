@@ -169,13 +169,16 @@ namespace RBX
 				return getValue(b) == getValue(a);
 			}
 
-			virtual bool hasStringValue() const;
-			virtual std::string getStringValue(const DescribedBase*) const;
-			virtual bool setStringValue(DescribedBase*, const std::string&) const;
+			virtual bool hasStringValue() const
+			{
+				return true;
+			}
+			virtual std::string getStringValue(const DescribedBase* instance) const;
+			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const;
 
 		private:
-			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
-			virtual void writeValue(const DescribedBase*, XmlElement*) const;
+			virtual void readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const;
+			virtual void writeValue(const DescribedBase* instance, XmlElement* element) const;
 		};
 
 		class RefPropertyDescriptor : public PropertyDescriptor
