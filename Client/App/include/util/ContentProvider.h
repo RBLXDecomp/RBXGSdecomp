@@ -127,22 +127,22 @@ namespace RBX
 		void clearContentCache();
 		bool isRequestQueueEmpty();
 		bool hasContent(ContentId id);
-		boost::shared_ptr<const std::string> requestContentString(ContentId);
-		bool requestContentFile(ContentId, std::string&);
+		boost::shared_ptr<const std::string> requestContentString(ContentId id);
+		bool requestContentFile(ContentId id, std::string& filename);
 		boost::shared_ptr<const std::string> getContentString(ContentId);
 		std::auto_ptr<std::istream> getContent(ContentId);
 		std::string getFile(ContentId ticket);
 		std::string getAssetFile(const std::string& filePath);
-		void setAssetFolder(const char*);
+		void setAssetFolder(const char* sPath);
 		std::string assetFolder() const;
-		ContentId readContent(const char*, std::istream&, unsigned);
+		ContentId readContent(const char* id, std::istream& stream, unsigned long dataLength);
 	private:
 		CachedContent* loadContent(ContentId, HttpRequestType);
 		worker_thread::work_result processRequests();
-		std::string findFile(ContentId);
-		std::string findAsset(ContentId);
-		std::string findHashFile(ContentId);
-		bool registerFile(CachedContent*);
+		std::string findFile(ContentId contentId);
+		std::string findAsset(ContentId contentId);
+		std::string findHashFile(ContentId contentId);
+		bool registerFile(CachedContent* item);
 	  
 	public:
 		static ContentProvider& singleton()
@@ -158,9 +158,9 @@ namespace RBX
 	class MD5Hasher
 	{
 	public:
-		virtual void addData(const char* data, size_t nBytes) = 0;
-		virtual void addData(const std::string& data) = 0;
 		virtual void addData(std::istream& data) = 0;
+		virtual void addData(const std::string& data) = 0;
+		virtual void addData(const char* data, size_t nBytes) = 0;
 		
 		virtual std::string toString() = 0;
 		virtual const char* c_str() = 0;

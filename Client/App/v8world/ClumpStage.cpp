@@ -52,36 +52,21 @@ namespace RBX
 
 	bool PrimitiveSortCriterion::operator()(const PrimitiveEntry& p0, const PrimitiveEntry& p1) const
 	{
-		if (p0.primitive == p1.primitive)
-			return false;
-
-		if (p0.power == p1.power)
-			return p0.primitive < p1.primitive;
-
-		return p1.power < p0.power;
+		return p0.primitive == p1.primitive ? false :
+			   (p0.power == p1.power ? p0.primitive < p1.primitive : p0.power < p1.power);
 	}
 
 	// TODO: NOT CHECKED: this is inlined inside of various std::set functions
 	bool AnchorSortCriterion::operator()(const AnchorEntry& a0, const AnchorEntry& a1) const
 	{
-		if (a0.anchor == a1.anchor)
-			return false;
-
-		if (a0.size == a1.size)
-			return a0.anchor < a1.anchor;
-
-		return a0.size < a1.size;
+		return a0.anchor == a1.anchor ? false :
+			  (a0.size == a1.size ? a0.anchor < a1.anchor : a0.size < a1.size);
 	}
 
 	bool RigidSortCriterion::operator()(const RigidEntry& r0, const RigidEntry& r1) const
 	{
-		if (r0.rigidJoint == r1.rigidJoint)
-			return false;
-
-		if (r0.power == r1.power)
-			return r0.rigidJoint < r1.rigidJoint;
-
-		return r0.power < r1.power;
+		return r0.rigidJoint == r1.rigidJoint ? false :
+			  (r0.power == r1.power ? r0.rigidJoint < r1.rigidJoint : r0.power < r1.power);
 	}
 
 	void ClumpStage::anchorsInsert(Anchor* a)

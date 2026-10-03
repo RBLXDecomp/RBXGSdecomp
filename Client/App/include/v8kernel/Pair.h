@@ -82,23 +82,23 @@ namespace RBX
 		{
 			switch (this->geoPairType)
 			{
+			case POINT_PLANE_PAIR:
+				this->computePointPlane(_params);
+				break;
+			case EDGE_EDGE_PLANE_PAIR:
+				this->computeEdgeEdgePlane(_params);
+				break;
 			case BALL_BALL_PAIR:
 				this->computeBallBall(_params);
+				break;
+			case BALL_PLANE_PAIR:
+				this->computeBallPlane(_params);
 				break;
 			case BALL_POINT_PAIR:
 				this->computeBallPoint(_params);
 				break;
 			case BALL_EDGE_PAIR:
 				this->computeBallEdge(_params);
-				break;
-			case BALL_PLANE_PAIR:
-				this->computeBallPlane(_params);
-				break;
-			case POINT_PLANE_PAIR:
-				this->computePointPlane(_params);
-				break;
-			case EDGE_EDGE_PLANE_PAIR:
-				this->computeEdgeEdgePlane(_params);
 				break;
 			case EDGE_EDGE_PAIR:
 				this->computeEdgeEdge(_params);

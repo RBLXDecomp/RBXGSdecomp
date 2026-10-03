@@ -196,18 +196,15 @@ namespace RBX
 		{
 			Body* b0 = this->ballPrim()->getBody();
 			Body* b1 = this->blockPrim()->getBody();
-
-			//const CoordinateFrame& prim0Coord = b0->getPV().position;
-			//const CoordinateFrame& prim1Coord = b1->getPV().position;
 			const PV& prim0Coord = b0->getPV();
 			const PV& prim1Coord = b1->getPV();
 
-			G3D::Vector3& blockToBall = prim0Coord.position.translation - prim1Coord.position.translation;
-			projectionInBlock = prim1Coord.position.rotation.transpose() * blockToBall; //could be some sort to objectSpace inline but operator* inlines when it shouldn't
+			G3D::Vector3 blockToBall = prim0Coord.position.translation - prim1Coord.position.translation;
+			projectionInBlock = prim1Coord.position.rotation.transpose() * blockToBall;
 			
 			this->block()->projectToFace(projectionInBlock, clip, onBoarder);
-			G3D::Vector3& unkVec = prim0Coord.position.pointToObjectSpace(projectionInBlock);
-			G3D::Vector3& unkVec2 = unkVec - prim0Coord.position.translation;
+			G3D::Vector3 unkVec = prim1Coord.position.pointToWorldSpace(projectionInBlock);
+			G3D::Vector3 unkVec2 = unkVec - prim0Coord.position.translation;
 
 			return unkVec2.magnitude() < (this->ball()->getRadius() - overlapIgnored);
 		}

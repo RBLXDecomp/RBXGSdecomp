@@ -15,19 +15,16 @@ namespace RBX
 			float normalVel;
 			G3D::Vector3 perpVel;
 			this->geoPair.computeNormalPerpVel(normalVel, perpVel, params);
-			this->frictionOffset += perpVel * dt;
+			this->frictionOffset += dt * perpVel;
 
 			float v8 = this->k * 0.2f;
 			float mag = this->frictionOffset.magnitude() * v8;
 			float v10 = this->kFriction * this->forceMagLast;
-			if (v10 < mag && mag > 0.00000001)
-			{
-				float v14 = v10 / mag;
-				this->frictionOffset *= v14; 
-			}
 
-			float v18 = this->frictionOffset.dot(params.normal);
-			this->frictionOffset -= params.normal * v18;
+			if (v10 < mag && mag > 0.00000001)
+				this->frictionOffset *= (v10 / mag); 
+
+			this->frictionOffset -= params.normal * this->frictionOffset.dot(params.normal);
 
 			float newThreshold;
 			if (this->threshold != 0)
@@ -54,13 +51,13 @@ namespace RBX
 			}
 			this->firstApproach = newFirstApproach;
 
-			float kApplied = perpVel.x < 0 ? this->k : this->kNeg;
+			float kApplied = normalVel < 0 ? this->k : this->kNeg;
 			float v27 = (this->firstApproach - params.length) * kApplied;
 			this->forceMagLast = v27;
-			this->forceMagLast = this->threshold <= params.length ? 0.f : this->forceMagLast;
+			this->forceMagLast = params.length <= this->threshold ? this->forceMagLast : 0.f;
 
 			G3D::Vector3 v31 = this->frictionOffset * v8;
-			G3D::Vector3 force = (params.normal * this->forceMagLast) - v31;
+			G3D::Vector3 force = (this->forceMagLast * params.normal) - v31;
 			this->geoPair.forceToBodies(force, params.position); 
 		}
 		else

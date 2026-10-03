@@ -13,10 +13,8 @@ namespace RBX
 	class Clump;
 	class Assembly;
 
-	// MYSTERY CLASS: no size, only referenced here
-	class Influence
-	{
-	};
+	// MYSTERY CLASS: only referenced here
+	class Influence;
 
 	class PrimitiveSort
 	{
