@@ -1,8 +1,8 @@
 #include <RakPeer.h>
-#include <MessageIdentifiers.h>
 #include "Server.h"
 #include "IdManager.h"
 #include "NetworkSettings.h"
+#include "PacketIds.h"
 #include "API.h"
 #include "util/Http.h"
 #include "util/standardout.h"
@@ -201,7 +201,7 @@ namespace RBX
 		{
 			RakNet::BitStream bitStream;
 
-			bitStream << (unsigned char)'K';
+			bitStream << (unsigned char)ID_SET_GLOBALS;
 
 			std::vector<Instance*>::iterator end = replicationContainers.end();
 

@@ -4,6 +4,7 @@
 #include "Server.h"
 #include "Players.h"
 #include "Streaming.h"
+#include "PacketIds.h"
 #include "v8datamodel/GameSettings.h"
 #include "v8datamodel/Teams.h"
 #include "util/standardout.h"
@@ -145,7 +146,7 @@ namespace RBX
 					throw std::runtime_error("Can\'t report abuse: Not in a networked game");
 
 				RakNet::BitStream bitStream;
-				bitStream << (unsigned char)'Q';
+				bitStream << (unsigned char)ID_REPORT_ABUSE;
 				bitStream << (localPlayer ? localPlayer->getUserID() : 0);
 				bitStream << (player ? player->getUserID() : 0);
 				bitStream << comment;
@@ -174,7 +175,7 @@ namespace RBX
 				throw std::runtime_error("No local Player to chat from");
 
 			RakNet::BitStream bitStream;
-			bitStream << (unsigned char)'P';
+			bitStream << (unsigned char)ID_CHAT_ALL;
 
 			Guid::Data data;
 			localPlayer->getGuid().extract(data);
@@ -306,6 +307,7 @@ namespace RBX
 			}
 		}
 
+		// 98% match
 		boost::shared_ptr<Instance> Players::createLocalPlayer(int userId)
 		{
 			if (localPlayer)
@@ -317,7 +319,7 @@ namespace RBX
 			raisePropertyChanged(propLocalPlayer);
 
 			bool s = localPlayer ? Player::prop_SuperSafeChat.getValue(localPlayer.get()) : false;
-			Notifier<Players, SuperSafeChanged>::raise(s);
+			Notifier<Players, SuperSafeChanged>::raise(SuperSafeChanged(s));
 
 			return localPlayer;
 		}

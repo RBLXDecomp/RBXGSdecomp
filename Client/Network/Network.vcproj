@@ -529,6 +529,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PacketIds.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\Network\Player.h"
 				>
 			</File>

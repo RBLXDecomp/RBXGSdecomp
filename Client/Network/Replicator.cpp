@@ -3,6 +3,7 @@
 #include <GetTime.h>
 #include "Replicator.h"
 #include "NetworkSettings.h"
+#include "PacketIds.h"
 #include "security/SecurityContext.h"
 #include "v8datamodel/Stats.h"
 #include "v8datamodel/PartInstance.h"
@@ -253,7 +254,7 @@ namespace RBX
 		{
 			RakNet::BitStream bitStream;
 
-			bitStream << (unsigned char)'L';
+			bitStream << (unsigned char)ID_REQUEST_CHARACTER;
 
 			Player* player = findTargetPlayer();
 			if (!player)
@@ -334,7 +335,7 @@ namespace RBX
 			boost::shared_ptr<Marker> marker = Marker::newMarker();
 
 			RakNet::BitStream bitStream;
-			bitStream << (unsigned char)'N';
+			bitStream << (unsigned char)ID_REQUEST_MARKER;
 			bitStream << (int)marker->id();
 
 			if (NetworkSettings::singleton().printInstances)
@@ -662,7 +663,7 @@ namespace RBX
 			{
 				if (bitStream.GetNumberOfBitsUsed() == 0)
 				{
-					bitStream << (unsigned char)'M';
+					bitStream << (unsigned char)ID_DATA;
 				}
 
 				item.write(bitStream);
@@ -718,9 +719,9 @@ namespace RBX
 			{
 				bitStream.Reset();
 
-				bitStream << (unsigned char)0x18;
+				bitStream << (unsigned char)ID_TIMESTAMP;
 				bitStream << RakNet::GetTime();
-				bitStream << (unsigned char)'O';
+				bitStream << (unsigned char)ID_PHYSICS;
 
 				hasOpenPacket = true;
 				sentPacket = true;
