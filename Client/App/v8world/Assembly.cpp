@@ -117,23 +117,19 @@ namespace RBX
 	Assembly::PrimIterator Assembly::PrimIterator::begin(const Assembly* assembly)
 	{
 		const std::set<Clump*>& clumps = assembly->getClumps();
-		const std::set<Clump*>::const_iterator start = clumps.begin();
-
+		std::set<Clump*>::const_iterator start = clumps.begin();
 		RBXASSERT(start != clumps.end());
-		Clump* clump = *start;
 
-		return PrimIterator(assembly, start, clump->clumpPrimBegin());
+		return PrimIterator(assembly, start, (*start)->clumpPrimBegin());
 	}
 
 	Assembly::PrimIterator Assembly::PrimIterator::end(const Assembly* assembly)
 	{
 		const std::set<Clump*>& clumps = assembly->getClumps();
-		std::set<Clump*>::const_iterator end = clumps.end();
+		std::set<Clump*>::const_iterator begin = clumps.begin(); // unused, although iterator check for it was not discarded
+		std::set<Clump*>::const_iterator end = --clumps.end();
 
-		end--;
-		Clump* clump = *end;
-
-		return PrimIterator(assembly, end, clump->clumpPrimEnd());
+		return PrimIterator(assembly, end, (*end)->clumpPrimEnd());
 	}
 
 	void Assembly::stepUi(int uiStepId)

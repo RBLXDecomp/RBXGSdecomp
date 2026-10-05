@@ -338,7 +338,7 @@ namespace RBX
 	{
 		typedef std::set<Assembly*>::const_iterator Iter; 
 
-		RBXASSERT(fallen.size() != 0);
+		RBXASSERT(fallen.size() == 0);
 
 		const SleepStage* sStage = rbx_static_cast<SleepStage*>(jointStage->findStage(IStage::SLEEP_STAGE)); // World::getSleepStage()
 

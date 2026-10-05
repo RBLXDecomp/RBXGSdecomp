@@ -55,10 +55,10 @@ namespace RBX
 			}
 			Primitive* operator*() const;
 			bool operator==(const PrimIterator&) const;
-			__forceinline bool operator!=(const PrimIterator& other) const
+			bool operator!=(const PrimIterator& other) const
 			{
-				RBXASSERT(clumpIterator == other.clumpIterator);
-				return clumpIterator == other.clumpIterator && primIterator == other.primIterator && assembly == other.assembly;
+				RBXASSERT(assembly == other.assembly);
+				return clumpIterator != other.clumpIterator || primIterator != other.primIterator;
 			}
 			PrimIterator& operator++();
   
