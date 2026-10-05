@@ -1,5 +1,4 @@
 #include "util/Profiling.h"
-#include <g3d/system.h>
 
 namespace RBX
 {
@@ -19,6 +18,16 @@ namespace RBX
 			  userTimeSpan(0),
 			  frames(0)
 		{
+		}
+
+		Bucket& Bucket::operator+=(const Bucket& other)
+		{
+			this->sampleTimeSpan += other.sampleTimeSpan;
+			this->kernTimeSpan += other.kernTimeSpan;
+			this->userTimeSpan += other.userTimeSpan;
+			this->frames += other.frames;
+
+			return *this;
 		}
 
 		Profiler::Profiler(const char* name)
@@ -103,8 +112,25 @@ namespace RBX
 
 		Bucket Profiler::getData(double window) const
 		{
-			// TODO
-			return Bucket();
+			Bucket bucket;
+
+			if (Mark::markTlsIndex != 0)
+			{
+				double elapsed = window - (G3D::System::getTick() - lastSampleTime);
+
+				const int firstBucket = currentBucket + 4095;
+				const unsigned count = G3D::min((unsigned)(elapsed / bucketTimeSpan), 4094u);
+
+				for (unsigned i = 0; i < count; i++)
+				{
+					if (bucket.sampleTimeSpan >= elapsed)
+						break;
+
+					bucket += buckets[(firstBucket - i) % 4096];
+				}
+			}
+
+			return bucket;
 		}
 
 		double Bucket::getActualFPS() const
