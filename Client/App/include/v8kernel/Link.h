@@ -34,7 +34,6 @@ namespace RBX
 	private:
 		virtual void computeChildInParent(G3D::CoordinateFrame& answer) const;
 	public:
-		//RevoluteLink(const RevoluteLink&);
 		RevoluteLink() : jointAngle(0.0f) {}
 	public:
 		void setJointAngle(float value)
@@ -42,8 +41,5 @@ namespace RBX
 			jointAngle = value;
 			dirty();
 		}
-	public:
-		~RevoluteLink() {}
-		//RBX::RevoluteLink& operator=(const RevoluteLink&);
 	};
 }
