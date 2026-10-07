@@ -146,7 +146,10 @@ namespace RBX
 		FilteredSelection();
 		virtual ~FilteredSelection();
 		Selection* getSelection() const;
-		const std::vector<Class*>& items() const;
+		const std::vector<Class*>& items() const
+		{
+			return filteredSelection;
+		}
 		size_t size() const;
 		const Class* front() const;
 		Class* front();

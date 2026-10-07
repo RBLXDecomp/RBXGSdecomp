@@ -1,4 +1,5 @@
 #include "tool/ToolsArrow.h"
+#include "tool/DragTool.h"
 #include "v8datamodel/Camera.h"
 #include "v8datamodel/PartInstance.h"
 #include "v8datamodel/Selection.h"
@@ -20,6 +21,51 @@ namespace RBX
 	void ArrowToolBase::onMouseHover(const UIEvent& uiEvent)
 	{
 		onMouseIdle(uiEvent);
+	}
+
+	MouseCommand* ArrowToolBase::onMouseDown(const UIEvent& uiEvent)
+	{
+		RBXASSERT(uiEvent.eventType == UIEvent::MOUSE_LEFT_BUTTON_DOWN);
+
+		G3D::Vector3 hitWorld;
+
+		PartInstance* part = getUnlockedPart(uiEvent, hitWorld);
+		if (part)
+		{
+			Instance* top = getTopSelectable3d(part);
+			UserInputBase* input = uiEvent.userInput;
+
+			ServiceClient<Selection> selection(workspace);
+
+			if (!input->keyDown(SDLK_RSHIFT) && !input->keyDown(SDLK_LSHIFT) &&
+				!input->keyDown(SDLK_RCTRL) && !input->keyDown(SDLK_LCTRL))
+			{
+				if (!selection->isSelected(top))
+				{
+					selection->setSelection(top);
+				}
+
+				if (uiEvent.eventType == UIEvent::MOUSE_LEFT_BUTTON_DOWN)
+				{
+					ServiceClient<FilteredSelection<Instance>> instanceSelection(workspace);
+					return DragTool::onMouseDown(part, hitWorld, instanceSelection->items(), uiEvent, workspace);
+				}
+			}
+			else
+			{
+				if (selection->isSelected(top))
+					selection->removeFromSelection(top);
+				else
+					selection->addToSelection(top);
+			}
+
+			return NULL;
+		}
+		else
+		{
+			MouseCommand* newCommand = new BoxSelectCommand(workspace);
+			return newCommand->onMouseDown(uiEvent);
+		}
 	}
 
 	BoxSelectCommand::BoxSelectCommand(Workspace* workspace)

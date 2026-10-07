@@ -1,5 +1,6 @@
 #pragma once
 #include <G3D/Vector3.h>
+#include <G3D/System.h>
 #include <boost/noncopyable.hpp>
 #include <string>
 
@@ -25,7 +26,7 @@ namespace RBX
 		public:
 			Bucket();
 		public:
-			Bucket& operator+=(const Bucket&);
+			Bucket& operator+=(const Bucket& other);
 		};
 
 		class Profiler : public boost::noncopyable
@@ -34,19 +35,14 @@ namespace RBX
 			const double bucketTimeSpan;
 			int currentBucket;
 			Bucket buckets[4096];
-			double lastSampleTime;
+			G3D::RealTime lastSampleTime;
 		public:
 			const std::string name;
 
 		public:
-			//Profiler(const Profiler&)
 			Profiler(const char* name);
 		public:
 			Bucket getData(double window) const;
-		public:
-			~Profiler() {}
-		public:
-			//Profiler& operator=(const Profiler&);
 		};
 
 		class ThreadProfiler : public Profiler
@@ -55,14 +51,9 @@ namespace RBX
 			bool initialized;
 		  
 		public:
-			//ThreadProfiler(const ThreadProfiler&);
 			ThreadProfiler(const char* name);
 		public:
 			void sample(HANDLE thread);
-		public:
-			~ThreadProfiler() {}
-		public:
-			//ThreadProfiler& operator=(const ThreadProfiler&);
 		};
 
 		class CodeProfiler : public Profiler
@@ -73,14 +64,9 @@ namespace RBX
 			CodeProfiler *parent;
 
 		public:
-			//CodeProfiler(const CodeProfiler&);
 			CodeProfiler(const char* name);
 		private:
 			void log(G3D::int64 kern, G3D::int64 user, bool frameTick);
-		public:
-			~CodeProfiler() {}
-		public:
-			//CodeProfiler& operator=(const CodeProfiler&);
 		};
 
 		class Mark
