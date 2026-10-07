@@ -5,7 +5,7 @@
 namespace RBX
 {
 	class Body;
-	class Link
+	class __declspec(novtable) Link
 	{
 		protected:
 			RBX::Body *body;

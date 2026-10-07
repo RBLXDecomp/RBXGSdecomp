@@ -147,19 +147,19 @@ namespace RBX
 
 		int oldWindings = this->windings;
 
-		G3D::Vector3 cross = ref0base0_delta_funny.cross(ref1base0_delta_funny);
-		float garbage2 = ref1base0_delta_funny.dot(ref0base0_delta_funny);
+		float tripleProdThing = ref0base0_delta_funny.cross(ref1base0_delta_funny).dot(normal);
+		float dotThing = ref1base0_delta_funny.dot(ref0base0_delta_funny);
 
-		float result = atan2(cross.z * cross.z + cross.y * cross.y + cross.x * cross.x, garbage2);
+		float result = atan2(tripleProdThing, dotThing);
 
 		if (this->lastRotation > G3D::halfPi())
 		{
 			if (result < -G3D::halfPi()) //line numbers show that this is an actual line
 				this->windings = oldWindings + 1; // these could be very likely temp values 
 		}									   //that are later written to actual class variable according to original asm
-		else if (result < -G3D::halfPi())
+		else if (this->lastRotation < -G3D::halfPi())
 		{
-			if (result < G3D::halfPi())
+			if (result > G3D::halfPi())
 				this->windings = oldWindings - 1;
 		}
 
