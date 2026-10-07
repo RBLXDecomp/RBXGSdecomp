@@ -1743,6 +1743,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Surfaces.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Team.cpp"
 				>
 			</File>

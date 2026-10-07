@@ -2,6 +2,7 @@
 #include <boost/noncopyable.hpp>
 #include "v8datamodel/Surface.h"
 #include "util/Vector6.h"
+#include "reflection/property.h"
 
 namespace RBX
 {
@@ -51,6 +52,9 @@ namespace RBX
 	template<NormalId id, typename Type>
 	class SurfacePropDescriptor : public Reflection::TypedPropertyDescriptor<Type>
 	{
+	public:
+		template<typename GetFunction, typename SetFunction>
+		SurfacePropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags);
 	};
 
 	template<NormalId id, typename Enum>
@@ -60,6 +64,10 @@ namespace RBX
 		std::auto_ptr<typename Reflection::TypedPropertyDescriptor<Enum>::GetSet> getset;
 
 	public:
+		template<typename GetFunction, typename SetFunction>
+		SurfaceEnumPropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags);
+
+		virtual bool isReadOnly() const;
 		Enum getValue(const Reflection::DescribedBase*) const;
 		void setValue(Reflection::DescribedBase*, const Enum&) const;
 		virtual bool equalValues(const Reflection::DescribedBase*, const Reflection::DescribedBase*) const;
@@ -69,8 +77,8 @@ namespace RBX
 		virtual bool setIndexValue(Reflection::DescribedBase*, unsigned) const;
 		virtual bool hasStringValue() const;
 		virtual std::string getStringValue(const Reflection::DescribedBase*) const;
-		virtual bool setStringValue(const Reflection::DescribedBase*, const Name&) const;
-		virtual bool setStringValue(const Reflection::DescribedBase*, const std::string&) const;
+		virtual bool setStringValue(Reflection::DescribedBase*, const Name&) const;
+		virtual bool setStringValue(Reflection::DescribedBase*, const std::string&) const;
 		virtual void readValue(Reflection::DescribedBase*, const XmlElement*, IReferenceBinder&) const;
 		virtual void writeValue(const Reflection::DescribedBase*, XmlElement*) const;
 	};
@@ -83,7 +91,12 @@ namespace RBX
 		SetFunction set;
 
 	public:
-		SurfaceGetSet(GetFunction, SetFunction);
+		SurfaceGetSet(GetFunction g, SetFunction s)
+			: get(g),
+			  set(s)
+		{
+		}
+
 		virtual bool isReadOnly() const;
 		virtual Type getValue(const Reflection::DescribedBase*) const;
 		virtual void setValue(Reflection::DescribedBase*, const Type&) const;
