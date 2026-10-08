@@ -3,6 +3,24 @@
 
 namespace RBX
 {
+	template<NormalId id>
+	SurfaceDescriptor<id>::SurfaceDescriptor(const char* name)
+		: PropertyDescriptor(PartInstance::classDescriptor(), Reflection::Type::singleton<Surface>(), name, "Data", LEGACY)
+	{
+	}
+
+	template<NormalId id>
+	bool SurfaceDescriptor<id>::equalValues(const Reflection::DescribedBase* a, const Reflection::DescribedBase* b) const
+	{
+		return false;
+	}
+
+	template<NormalId id>
+	void SurfaceDescriptor<id>::readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
+	{
+		((PartInstance*) instance)->getSurfaces()[id].readValue(element, binder);
+	}
+
 	template<NormalId id, typename Type, typename GetFunction, typename SetFunction>
 	Type SurfaceGetSet<id, Type, GetFunction, SetFunction>::getValue(const Reflection::DescribedBase* instance) const
 	{
@@ -30,6 +48,125 @@ namespace RBX
 		  getset(new SurfaceGetSet<id, Enum, GetFunction, SetFunction>(get, set))
 	{
 	}
+
+	template<NormalId id, typename Enum>
+	bool SurfaceEnumPropDescriptor<id, Enum>::setEnumValue(Reflection::DescribedBase* instance, int intValue) const
+	{
+		if (Reflection::EnumDesc<Enum>::singleton().isValue(intValue))
+		{
+			setValue(instance, (Enum) intValue);
+			return true;
+		}
+
+		return false;
+	}
+
+	template<NormalId id, typename Enum>
+	size_t SurfaceEnumPropDescriptor<id, Enum>::getIndexValue(const Reflection::DescribedBase* instance) const
+	{
+		return Reflection::EnumDesc<Enum>::singleton().convertToIndex(getValue(instance));
+	}
+
+	template<NormalId id, typename Enum>
+	bool SurfaceEnumPropDescriptor<id, Enum>::setIndexValue(Reflection::DescribedBase* instance, size_t index) const
+	{
+		Enum val;
+		if (Reflection::EnumDesc<Enum>::singleton().convertToValue(index, val))
+		{
+			setValue(instance, val);
+			return true;
+		}
+		
+		return false;
+	}
+
+	template<NormalId id, typename Enum>
+	std::string SurfaceEnumPropDescriptor<id, Enum>::getStringValue(const Reflection::DescribedBase* instance) const
+	{
+		return Reflection::EnumDesc<Enum>::singleton().convertToString(getValue(instance));
+	}
+
+	template<NormalId id, typename Enum>
+	bool SurfaceEnumPropDescriptor<id, Enum>::setStringValue(Reflection::DescribedBase* instance, const Name& name) const
+	{
+		Enum val;
+		if (Reflection::EnumDesc<Enum>::singleton().convertToValue(name, val))
+		{
+			setValue(instance, val);
+			return true;
+		}
+
+		return false;
+	}
+
+	template<NormalId id, typename Enum>
+	bool SurfaceEnumPropDescriptor<id, Enum>::setStringValue(Reflection::DescribedBase* instance, const std::string& text) const
+	{
+		Enum val;
+		if (Reflection::EnumDesc<Enum>::singleton().convertToValue(text, val))
+		{
+			setValue(instance, val);
+			return true;
+		}
+
+		return false;
+	}
+
+	template<NormalId id, typename Enum>
+	void SurfaceEnumPropDescriptor<id, Enum>::readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
+	{
+		if (!element->isXsiNil())
+		{
+			if (element->isValueType<std::string>())
+			{
+				std::string text;
+				if (element->getValue(text))
+				{
+					Enum val;
+					if (Reflection::EnumDesc<Enum>::singleton().convertToValue(text, val))
+					{
+						setValue(instance, val);
+						return;
+					}
+				}
+			}
+
+			int value;
+			if (element->getValue(value))
+			{
+				setValue(instance, (Enum) value);
+			}
+			else
+			{
+				RBXASSERT(false);
+			}
+		}
+	}
+
+	template<NormalId id, typename Enum>
+	void SurfaceEnumPropDescriptor<id, Enum>::writeValue(const Reflection::DescribedBase* instance, XmlElement* element) const
+	{
+		element->setValue(getValue(instance));
+	}
+
+	template<NormalId id, typename Enum>
+	Enum SurfaceEnumPropDescriptor<id, Enum>::getValue(const Reflection::DescribedBase* object) const
+	{
+		return getset->getValue(object);
+	}
+
+	template<NormalId id, typename Enum>
+	void SurfaceEnumPropDescriptor<id, Enum>::setValue(Reflection::DescribedBase* object, const Enum& value) const
+	{
+		getset->setValue(object, value);
+	}
+
+	SurfaceDescriptor<NORM_X> desc_LegacyRight("Front");
+	SurfaceDescriptor<NORM_Y> desc_LegacyTop("Top");
+	SurfaceDescriptor<NORM_Z> desc_LegacyBack("Left");
+	SurfaceDescriptor<NORM_X_NEG> desc_LegacyLeft("Back");
+	SurfaceDescriptor<NORM_Y_NEG> desc_LegacyBottom("Bottom");
+	SurfaceDescriptor<NORM_Z_NEG> desc_LegacyFront("Right");
 	
 	SurfaceEnumPropDescriptor<NORM_X, SurfaceType> desc_RightType("RightSurface", "Surface", &Surface::getSurfaceType, &Surface::setSurfaceType, Reflection::PropertyDescriptor::STANDARD);
 	SurfaceEnumPropDescriptor<NORM_Y, SurfaceType> desc_TopType("TopSurface", "Surface", &Surface::getSurfaceType, &Surface::setSurfaceType, Reflection::PropertyDescriptor::STANDARD);
@@ -84,6 +221,8 @@ namespace RBX
 			return desc_RightType;
 		case NORM_X_NEG:
 			return desc_LeftType;
+		case NORM_Y:
+			return desc_TopType;
 		default:
 			RBXASSERT(false);
 			break;
@@ -106,6 +245,8 @@ namespace RBX
 			return desc_RightSurfaceInput;
 		case NORM_X_NEG:
 			return desc_LeftSurfaceInput;
+		case NORM_Y:
+			return desc_TopSurfaceInput;
 		default:
 			RBXASSERT(false);
 			break;
@@ -128,6 +269,8 @@ namespace RBX
 			return desc_RightParamA;
 		case NORM_X_NEG:
 			return desc_LeftParamA;
+		case NORM_Y:
+			return desc_TopParamA;
 		default:
 			RBXASSERT(false);
 			break;
@@ -150,6 +293,8 @@ namespace RBX
 			return desc_RightParamB;
 		case NORM_X_NEG:
 			return desc_LeftParamB;
+		case NORM_Y:
+			return desc_TopParamB; 
 		default:
 			RBXASSERT(false);
 			break;

@@ -19,15 +19,25 @@ namespace RBX
 		Surface Back;
 	  
 	public:
-		Surfaces(PartInstance*);
+		Surfaces(PartInstance* container);
 	public:
-		const Surface& operator[](NormalId) const;
-		Surface& operator[](NormalId);
-		Vector6<SurfaceType> surf6() const;
-		const Reflection::PropertyDescriptor& getSurfaceType(NormalId) const;
-		const Reflection::PropertyDescriptor& getSurfaceInput(NormalId) const;
-		const Reflection::PropertyDescriptor& getParamA(NormalId) const;
-		const Reflection::PropertyDescriptor& getParamB(NormalId) const;
+		const Surface& operator[](NormalId face) const;
+		Surface& operator[](NormalId face);
+		Vector6<SurfaceType> surf6() const
+		{
+			Vector6<SurfaceType> result;
+
+			for (int i = NORM_X; i < NORM_UNDEFINED; i++)
+			{
+				result[i] = (*this)[(NormalId) i].getSurfaceType();
+			}
+
+			return result;
+		}
+		const Reflection::PropertyDescriptor& getSurfaceType(NormalId face) const;
+		const Reflection::PropertyDescriptor& getSurfaceInput(NormalId face) const;
+		const Reflection::PropertyDescriptor& getParamA(NormalId face) const;
+		const Reflection::PropertyDescriptor& getParamB(NormalId face) const;
 		const bool isStandardPart() const;
 	  
 	public:
@@ -38,11 +48,11 @@ namespace RBX
 	class SurfaceDescriptor : public Reflection::PropertyDescriptor
 	{
 	public:
-		SurfaceDescriptor(const char*);
+		SurfaceDescriptor(const char* name);
 
-		virtual bool equalValues(const Reflection::DescribedBase*, const Reflection::DescribedBase*) const;
+		virtual bool equalValues(const Reflection::DescribedBase* a, const Reflection::DescribedBase* b) const;
 		virtual bool isReadOnly() const;
-		virtual void readValue(Reflection::DescribedBase*, const XmlElement*, IReferenceBinder&) const;
+		virtual void readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const;
 		virtual void writeValue(const Reflection::DescribedBase*, XmlElement*) const;
 		virtual bool hasStringValue() const;
 		virtual std::string getStringValue(const Reflection::DescribedBase*) const;
@@ -68,19 +78,19 @@ namespace RBX
 		SurfaceEnumPropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags);
 
 		virtual bool isReadOnly() const;
-		Enum getValue(const Reflection::DescribedBase*) const;
-		void setValue(Reflection::DescribedBase*, const Enum&) const;
+		Enum getValue(const Reflection::DescribedBase* object) const;
+		void setValue(Reflection::DescribedBase* object, const Enum& value) const;
 		virtual bool equalValues(const Reflection::DescribedBase*, const Reflection::DescribedBase*) const;
 		virtual int getEnumValue(const Reflection::DescribedBase*) const;
-		virtual bool setEnumValue(Reflection::DescribedBase*, int) const;
-		virtual unsigned getIndexValue(const Reflection::DescribedBase*) const;
-		virtual bool setIndexValue(Reflection::DescribedBase*, unsigned) const;
+		virtual bool setEnumValue(Reflection::DescribedBase* instance, int intValue) const;
+		virtual size_t getIndexValue(const Reflection::DescribedBase* instance) const;
+		virtual bool setIndexValue(Reflection::DescribedBase* instance , size_t index) const;
 		virtual bool hasStringValue() const;
-		virtual std::string getStringValue(const Reflection::DescribedBase*) const;
-		virtual bool setStringValue(Reflection::DescribedBase*, const Name&) const;
-		virtual bool setStringValue(Reflection::DescribedBase*, const std::string&) const;
-		virtual void readValue(Reflection::DescribedBase*, const XmlElement*, IReferenceBinder&) const;
-		virtual void writeValue(const Reflection::DescribedBase*, XmlElement*) const;
+		virtual std::string getStringValue(const Reflection::DescribedBase* instance) const;
+		virtual bool setStringValue(Reflection::DescribedBase* instance, const Name& name) const;
+		virtual bool setStringValue(Reflection::DescribedBase* instance, const std::string& text) const;
+		virtual void readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binde) const;
+		virtual void writeValue(const Reflection::DescribedBase* instance, XmlElement* element) const;
 	};
 
 	template<NormalId id, typename Type, typename GetFunction, typename SetFunction>
@@ -98,7 +108,7 @@ namespace RBX
 		}
 
 		virtual bool isReadOnly() const;
-		virtual Type getValue(const Reflection::DescribedBase*) const;
-		virtual void setValue(Reflection::DescribedBase*, const Type&) const;
+		virtual Type getValue(const Reflection::DescribedBase* instance) const;
+		virtual void setValue(Reflection::DescribedBase* instance, const Type& value) const;
 	};
 }
