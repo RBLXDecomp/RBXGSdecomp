@@ -34,7 +34,7 @@ namespace RBX
 		}
 	};
 
-	class IMovingManager
+	class __declspec(novtable) IMovingManager
 	{
 		friend class IMoving;
 

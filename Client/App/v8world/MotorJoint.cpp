@@ -68,13 +68,16 @@ namespace RBX
 		if (polarity == -1)
 		{
 			RBXASSERT(0);
-			G3D::CoordinateFrame oldParentCoord = getPrimitive(0)->getCoordinateFrame();
+
+			Primitive* p0 = getPrimitive(0);
+
+			G3D::CoordinateFrame oldParentCoord = p0->getCoordinateFrame();
 			link->setJointAngle(-value);
 			Assembly* assembly = getPrimitive(1)->getAssembly();
 			if (!assembly->getAnchored())
 			{
 				Primitive* mainPrim = assembly->getMainPrimitive();
-				G3D::CoordinateFrame newParentCoord = getPrimitive(0)->getCoordinateFrame();
+				G3D::CoordinateFrame newParentCoord = p0->getCoordinateFrame();
 				G3D::CoordinateFrame parentInRoot = mainPrim->getCoordinateFrame().toObjectSpace(newParentCoord);
 				G3D::CoordinateFrame newRoot = oldParentCoord * parentInRoot.inverse();
 				mainPrim->getBody()->setCoordinateFrame(newRoot);

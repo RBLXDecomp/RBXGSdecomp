@@ -44,7 +44,7 @@ namespace RBX
 
 		RBXASSERT(stepsToSleep == 1);
 		stepsToSleep = 0;
-		onCanAggregateChanged(false);
+		onCanAggregateChanged(true);
 		return true;
 	}
 

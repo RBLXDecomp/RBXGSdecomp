@@ -22,17 +22,17 @@ namespace RBX
 		  overlapInP0(),
 		  overlapInP1()
 	{
-		NormalId nId0 = Matrix3ToNormalId(jointCoord0.rotation);
+		NormalId nId0 = Matrix3ToNormalId(this->jointCoord0.rotation);
 		Face face0inP0 = p0->getFaceInObject(nId0);
 
-		NormalId nId1 = normalIdOpposite(Matrix3ToNormalId(jointCoord1.rotation));
+		NormalId nId1 = normalIdOpposite(Matrix3ToNormalId(this->jointCoord1.rotation));
 		Face face1inP1 = p1->getFaceInObject(nId1);
 
 		Face face0inJoint0 = face0inP0.toObjectSpace(jointCoord0);
 		Face face1inJoint1 = face1inP1.toObjectSpace(jointCoord1);
 
 		Face overlapInJoint0 = face0inJoint0.projectOverlapOnMe(face1inJoint1);
-		face0inJoint0.snapToGrid(0.1f);
+		overlapInJoint0.snapToGrid(0.1f);
 
 		this->overlapInP0 = overlapInJoint0.toWorldSpace(jointCoord0);
 		this->overlapInP1 = overlapInJoint0.toWorldSpace(jointCoord1);
