@@ -3,6 +3,12 @@
 
 namespace RBX
 {
+	template<NormalId id, typename Type, typename GetFunction, typename SetFunction>
+	Type SurfaceGetSet<id, Type, GetFunction, SetFunction>::getValue(const Reflection::DescribedBase* instance) const
+	{
+		return (((const PartInstance*) instance)->getSurfaces()[id].*get)();
+	}
+
 	template<NormalId id, typename Type>
 	template<typename GetFunction, typename SetFunction>
 	SurfacePropDescriptor<id, Type>::SurfacePropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags)
@@ -144,6 +150,38 @@ namespace RBX
 		}
 
 		return desc_TopParamB;
+	}
+
+	const Surface& Surfaces::operator[](NormalId face) const
+	{
+		const Surface* surface;
+
+		switch (face)
+		{
+		case NORM_Y_NEG:
+			surface = &Bottom;
+			break;
+		case NORM_Z:
+			surface = &Back;
+			break;
+		case NORM_Z_NEG:
+			surface = &Front;
+			break;
+		case NORM_X:
+			surface = &Right;
+			break;
+		case NORM_X_NEG:
+			surface = &Left;
+			break;
+		case NORM_Y:
+			surface = &Top;
+			break;
+		default:
+			RBXASSERT(false);
+			break;
+		}
+
+		return *surface;
 	}
 
 	Surface& Surfaces::operator[](NormalId face)
