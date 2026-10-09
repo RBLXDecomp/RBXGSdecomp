@@ -462,7 +462,9 @@ namespace RBX
 		assertNotInStep();
 		this->numLinkCalls++;
 		this->tempPrimitives.fastClear();
-		this->contactManager->getPrimitivesTouchingExtents(p->getFastFuzzyExtents(), p, this->tempPrimitives);
+
+		const Extents& fuzzyExtents = p->getFastFuzzyExtents();
+		this->contactManager->getPrimitivesTouchingExtents(fuzzyExtents, p, this->tempPrimitives);
 
 		for (int i = 0; i < this->tempPrimitives.length(); i++)
 		{

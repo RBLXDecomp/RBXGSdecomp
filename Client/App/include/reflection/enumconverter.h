@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/bind.hpp>
+#include <boost/checked_delete.hpp>
 #include <vector>
 #include <algorithm>
 #include "reflection/type.h"
@@ -90,7 +91,12 @@ namespace RBX
 		private:
 			EnumDesc();
 		private:
-			virtual ~EnumDesc() {}
+			virtual ~EnumDesc()
+			{
+				// TODO: i don't like the checked delete
+				// roblox most likely did not do this but i cannot find any other function that does the same purpose that fits here
+				std::for_each(allItems.begin(), allItems.end(), &boost::checked_delete<const Item>);
+			}
 
 		private:
 			void addPair(Enum value, const char* name)
