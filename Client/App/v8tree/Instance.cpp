@@ -209,6 +209,37 @@ namespace RBX
 		instance->predelete();
 	}
 
+	void Instance::predelete()
+	{
+		RBXASSERT(!parent);
+
+		while (children)
+		{
+			boost::shared_ptr<Instance> child;
+
+			{
+				boost::shared_ptr<std::vector<boost::shared_ptr<Instance>>> c = children.write();
+
+				child = c->back();
+
+				signalDescendentRemoving(child, this, NULL);
+
+				this->onChildRemoving(child.get());
+				child->parent = NULL;
+				c->pop_back();
+
+				if (c->empty())
+					children.reset();
+			}
+
+			event_childRemoved.fire(this, child);
+			Notifier<Instance, ChildRemoved>::raise(ChildRemoved(child.get()));
+
+			child->onAncestorChanged(AncestorChanged(child.get(), this, NULL));
+			child->raisePropertyChanged(propParent);
+		}
+	}
+
 	void Instance::onAncestorChanged(const AncestorChanged& event)
 	{
 		typedef std::vector<boost::shared_ptr<Instance>>::const_iterator Iterator;
