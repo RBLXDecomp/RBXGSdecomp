@@ -113,7 +113,7 @@ namespace RBX
 		}
 	};
 
-	template<typename Class, typename DerivedClass, const char** ClassName>
+	template<typename Class, typename DerivedClass, const char* const* ClassName>
 	class FactoryProduct : public DerivedClass
 	{
 	private:
@@ -132,7 +132,17 @@ namespace RBX
 		static const Creator creator;
 	  
 	protected:
-		FactoryProduct();
+		FactoryProduct()
+			: DerivedClass()
+		{
+		}
+
+		template<typename Arg0Type>
+		FactoryProduct(Arg0Type arg0)
+			: DerivedClass(arg0)
+		{
+		}
+
 		virtual ~FactoryProduct()
 		{
 		}
@@ -142,13 +152,16 @@ namespace RBX
 		{
 			return creator;
 		}
-		virtual const Name& getClassName() const;
+		virtual const Name& getClassName() const
+		{
+			return Name::declare<ClassName>();
+		}
 	  
 	public:
 		static const Name& className();
 	};
 
-	template<typename DerivedClass, const char** ClassName>
+	template<typename DerivedClass, const char* const* ClassName>
 	class NonFactoryProduct : public DerivedClass
 	{
 	public:
@@ -163,7 +176,10 @@ namespace RBX
 		{
 		}
 
-		virtual const Name& getClassName() const;
+		virtual const Name& getClassName() const
+		{
+			return Name::declare<ClassName>();
+		}
 
 	public:
 		static const Name& className();

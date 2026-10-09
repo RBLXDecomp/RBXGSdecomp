@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/noncopyable.hpp>
+#include <boost/thread/once.hpp>
 #include <boost/thread/mutex.hpp>
 #include <string>
 #include <map>
@@ -76,19 +77,26 @@ namespace RBX
 		static const Name& lookup(const std::string& sName);
 		static int compare(Name&, Name&);
 	private:
-		// NOTE: these have not been checked
-		// TODO: these also need to support const char* inputs
-		template<char*& sName>
+		template<const char* const* sName>
 		static const Name& doDeclare()
 		{
-			static const Name& n = declare(sName, -1);
+			static const Name& n = declare((const char*)sName, -1);
 			return n;
 		}
 
-		template<char*& sName>
-		static const Name& callDoDeclare()
+		template<const char* const* sName>
+		static void callDoDeclare()
 		{
-			return doDeclare<sName>();
+			doDeclare<sName>();
+		}
+	public:
+		template<const char* const* sName>
+		static const Name& declare()
+		{
+			static boost::once_flag flag = BOOST_ONCE_INIT;
+			boost::call_once(&callDoDeclare<sName>, flag);
+
+			return Name::doDeclare<sName>();
 		}
 	};
 
@@ -98,7 +106,7 @@ namespace RBX
 		virtual const Name& getName() const = 0;
 	};
 
-	template<typename DerivedClass, const char** ClassName>
+	template<typename DerivedClass, const char* const* ClassName>
 	class Named : public DerivedClass
 	{
 	public:
