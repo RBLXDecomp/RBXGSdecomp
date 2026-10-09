@@ -4,21 +4,21 @@
 
 namespace RBX
 {
-	const char* sBodyPosition = "BodyPosition";
-	const char* sBodyVelocity = "BodyVelocity";
-	const char* sBodyGyro = "BodyGyro";
-	const char* sBodyForce = "BodyForce";
-	const char* sBodyThrust = "BodyThrust";
-	const char* sRocket = "Rocket";
+	char* sBodyPosition = "BodyPosition";
+	char* sBodyVelocity = "BodyVelocity";
+	char* sBodyGyro = "BodyGyro";
+	char* sBodyForce = "BodyForce";
+	char* sBodyThrust = "BodyThrust";
+	char* sRocket = "Rocket";
 
 	void registerBodyMovers()
 	{
-		BodyGyro::classDescriptor();
-		BodyPosition::classDescriptor();
-		BodyVelocity::classDescriptor();
-		BodyForce::classDescriptor();
-		BodyThrust::classDescriptor();
-		Rocket::classDescriptor();
+		Name::declare<&sBodyGyro>();
+		Name::declare<&sBodyPosition>();
+		Name::declare<&sBodyVelocity>();
+		Name::declare<&sBodyForce>();
+		Name::declare<&sBodyThrust>();
+		Name::declare<&sRocket>();
 	}
 
 	BodyMover::BodyMover(const char* name)

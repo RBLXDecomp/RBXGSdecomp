@@ -30,7 +30,7 @@ namespace RBX
 		void updateWorld();
 	};
 
-	extern const char* sBodyGyro;
+	extern char* sBodyGyro;
 
 	class BodyGyro : public DescribedCreatable<BodyGyro, BodyMover, &sBodyGyro>
 	{
@@ -53,7 +53,7 @@ namespace RBX
 		virtual void computeForce(const float dt, bool throttling);
 	};
 
-	extern const char* sBodyPosition;
+	extern char* sBodyPosition;
 
 	class BodyPosition : public DescribedCreatable<BodyPosition, BodyMover, &sBodyPosition>
 	{
@@ -78,7 +78,7 @@ namespace RBX
 		virtual void computeForce(const float dt, bool throttling);
 	};
 
-	extern const char* sBodyVelocity;
+	extern char* sBodyVelocity;
 
 	class BodyVelocity : public DescribedCreatable<BodyVelocity, BodyMover, &sBodyVelocity>
 	{
@@ -106,7 +106,7 @@ namespace RBX
 		virtual void computeForce(const float dt, bool throttling);
 	};
 
-	extern const char* sBodyForce;
+	extern char* sBodyForce;
 
 	class BodyForce : public DescribedCreatable<BodyForce, BodyMover, &sBodyForce>
 	{
@@ -125,7 +125,7 @@ namespace RBX
 		virtual void computeForce(const float dt, bool throttling);
 	};
 
-	extern const char* sBodyThrust;
+	extern char* sBodyThrust;
 
 	class BodyThrust : public DescribedCreatable<BodyThrust, BodyMover, &sBodyThrust>
 	{
@@ -146,7 +146,7 @@ namespace RBX
 		virtual void computeForce(const float dt, bool throttling);
 	};
 
-	extern const char* sRocket;
+	extern char* sRocket;
 
 	class Rocket : public DescribedCreatable<Rocket, BodyMover, &sRocket>
 	{

@@ -14,7 +14,7 @@ namespace RBX
 	extern const char* sStringValue;
 	extern const char* sCFrameValue;
 
-	template<typename ValueType, const char** ClassName>
+	template<typename ValueType, const char* const* ClassName>
 	class Value : public DescribedCreatable<Value<ValueType, ClassName>, Instance, ClassName>
 	{
 	private:

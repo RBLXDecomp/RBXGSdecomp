@@ -37,7 +37,7 @@ namespace RBX
 		static boost::shared_ptr<GlobalSettings> singleton();
 	};
 
-	template<typename Class, const char** ClassName>
+	template<typename Class, const char* const* ClassName>
 	class GlobalSettingsItem : public DescribedCreatable<Class, GlobalSettings::Item, ClassName>, public Service
 	{
 	private:
