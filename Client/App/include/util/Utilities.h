@@ -39,7 +39,10 @@ namespace RBX
 			return object;
 		}
 		boost::shared_ptr<T>& write();
-		void reset();
+		void reset()
+		{
+			object.reset();
+		}
 	};
 
 	template<typename T>
