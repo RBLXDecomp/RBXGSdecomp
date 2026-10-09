@@ -58,5 +58,10 @@ namespace RBX
 		{
 			signals.reset();
 		}
+
+		boost::shared_ptr<SignalInstance> Signal::getSignalInstance() const
+		{
+			return descriptor->getSignalInstance(*instance);
+		}
 	}
 }

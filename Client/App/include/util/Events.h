@@ -98,7 +98,7 @@ namespace RBX
 			}
 		}
 
-		void raise(Event event) const
+		__declspec(nothrow) void raise(Event event) const
 		{
 			RaiseRange range = {0, listeners.size(), raiseRange};
 
@@ -106,7 +106,8 @@ namespace RBX
 
 			for (; range.index < range.upper; range.index++)
 			{
-				raise(event, listeners[range.index]);
+				Listener<Class, Event>* listener = listeners[range.index];
+				raise(event, listener);
 			}
 
 			raiseRange = range.previous;

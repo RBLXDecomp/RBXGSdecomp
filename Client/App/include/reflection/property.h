@@ -49,8 +49,16 @@ namespace RBX
 			}
 			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const = 0;
 			virtual bool hasStringValue() const = 0;
-			virtual std::string getStringValue(const DescribedBase*) const = 0;
-			virtual bool setStringValue(DescribedBase*, const std::string&) const = 0;
+			virtual std::string getStringValue(const DescribedBase* instance) const = 0
+			{
+				hasStringValue(); // Da hell
+				return "";
+			}
+			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const = 0
+			{
+				hasStringValue();
+				return false;
+			}
 			XmlElement* write(const DescribedBase* instance, bool ignoreWriteProtection) const;
 			virtual void read(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const;
 
@@ -169,10 +177,11 @@ namespace RBX
 				return getValue(b) == getValue(a);
 			}
 
-			virtual bool hasStringValue() const
-			{
-				return true;
-			}
+			/*
+				DO NOT DEFINE THESE FUNCTIONS IN THIS HEADER (unless you are really, really sure about it!)
+				These functions are supposed to be specialized for each TypedPropertyDescriptor template.
+			*/
+			virtual bool hasStringValue() const;
 			virtual std::string getStringValue(const DescribedBase* instance) const;
 			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const;
 
@@ -196,8 +205,14 @@ namespace RBX
 			{
 				return false;
 			}
-			virtual std::string getStringValue(const DescribedBase*) const;
-			virtual bool setStringValue(DescribedBase*, const std::string&) const;
+			virtual std::string getStringValue(const DescribedBase* instance) const
+			{
+				return PropertyDescriptor::getStringValue(instance);
+			}
+			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const
+			{
+				return PropertyDescriptor::setStringValue(instance, text);
+			}
 		};
 
 		class EnumPropertyDescriptor : public PropertyDescriptor

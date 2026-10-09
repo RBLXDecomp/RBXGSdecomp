@@ -1351,10 +1351,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\PV.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\util\Quaternion.cpp"
 				>
 			</File>
