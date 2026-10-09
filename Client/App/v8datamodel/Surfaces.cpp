@@ -353,8 +353,12 @@ namespace RBX
 
 	const bool Surfaces::isStandardPart() const
 	{
-		return Bottom.getSurfaceType() == INLET && Front.getSurfaceType() == NO_SURFACE && Back.getSurfaceType() == NO_SURFACE 
-			   && Left.getSurfaceType() == NO_SURFACE && Right.getSurfaceType() == NO_SURFACE;
+		return 
+			Bottom.getSurfaceType() == INLET && 
+			Front.getSurfaceType() == NO_SURFACE && 
+			Back.getSurfaceType() == NO_SURFACE && 
+			Left.getSurfaceType() == NO_SURFACE && 
+			Right.getSurfaceType() == NO_SURFACE;
 	}
 
 	bool Surfaces::isSurfaceDescriptor(const Reflection::PropertyDescriptor& desc)
