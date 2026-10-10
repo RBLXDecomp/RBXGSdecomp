@@ -29,7 +29,8 @@ namespace RBX
 			};
 
 		public:
-			typedef Function Describing;
+			typedef Function Member;
+			typedef Function ConstMember;
 
 		public:
 			const Security security;

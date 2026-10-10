@@ -1,6 +1,7 @@
 #include "v8xml/SerializerV2.h"
 #include "v8datamodel/DataModel.h"
 #include <boost/bind.hpp>
+#include <G3D/Log.h>
 #include <algorithm>
 
 bool ArchiveBinder::resolveRefs()
@@ -151,4 +152,43 @@ void SerializerV2::loadXML(std::istream& stream, RBX::DataModel* dataModel)
 		schemaVersionLoading = 1;
 		throw std::runtime_error("SerializerV2::loadXML ill-formed XML. No Roblox tag");
 	}
+}
+
+void SerializerV2::loadInstances(XmlElement* root, std::vector<boost::shared_ptr<RBX::Instance>>& result)
+{
+	if (root->getTag() == tag_roblox)
+	{
+		XmlAttribute* versionAttribute = root->findAttribute(tag_version);
+		if (versionAttribute && versionAttribute->getValue(schemaVersionLoading) && schemaVersionLoading >= 4)
+		{
+			ArchiveBinder binder;
+			const XmlElement* item = root->findFirstChildByTag(tag_Item);
+			while (item != NULL)
+			{
+				const RBX::Name* className = NULL;
+				if (item->findAttributeValue(tag_class, className))
+				{
+					boost::shared_ptr<RBX::Instance> instance = RBX::AbstractFactoryProduct<RBX::Instance>::create(*className);
+					if (instance)
+					{
+						instance->read(item, binder);
+						result.push_back(instance);
+					}
+					else
+					{
+						RBX::StandardOut::singleton()->print(RBX::MESSAGE_WARNING, "Unknown object class \"%s\" while reading XML", className ? className->c_str() : "");
+					}
+				}
+
+				item = root->findNextChildWithSameTag(item);
+			}
+
+			bool success = binder.resolveRefs();
+			RBXASSERT(success);
+
+			return;
+		}
+	}
+
+	G3D::Log::common()->println("Version 1.0 - 3.0 model files not supported - all future version will be supported");
 }
