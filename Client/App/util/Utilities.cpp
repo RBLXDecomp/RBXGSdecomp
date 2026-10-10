@@ -77,12 +77,6 @@ namespace RBX
 	}
 
 	template<>
-	static std::string StringConverter<ContentId>::convertToString(const ContentId& value)
-	{
-		return value.toString();
-	}
-
-	template<>
 	static std::string StringConverter<MeshId>::convertToString(const MeshId& value)
 	{
 		return value.toString();
@@ -213,14 +207,6 @@ namespace RBX
 				return false;
 			}
 		}
-	}
-
-	// TODO: does not match
-	template<>
-	static bool StringConverter<ContentId>::convertToValue(const std::string& text, ContentId& value)
-	{
-		value = ContentId(text);
-		return true;
 	}
 
 	// TODO: does not match
