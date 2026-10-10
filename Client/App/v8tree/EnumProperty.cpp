@@ -102,6 +102,48 @@ namespace RBX
 		}
 
 		template<>
+		bool TypedPropertyDescriptor<std::string>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<bool>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<float>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<int>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<G3D::Vector3>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<G3D::Color3>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<BrickColor>::hasStringValue() const
+		{
+			return false;
+		}
+
+		template<>
 		std::string TypedPropertyDescriptor<std::string>::getStringValue(const DescribedBase* instance) const
 		{
 			return getValue(instance);
