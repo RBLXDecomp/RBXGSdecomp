@@ -98,7 +98,6 @@ namespace RBX
 				return boost::any_cast<T>(value);
 			}
 
-			// not in resym but it might exist
 			template<typename T>
 			T cast()
 			{

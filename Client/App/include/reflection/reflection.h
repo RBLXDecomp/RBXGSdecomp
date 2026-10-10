@@ -281,15 +281,44 @@ namespace RBX
 			std::auto_ptr<typename TypedPropertyDescriptor<ReturnType*>::GetSet> getset;
 		  
 		public:
-			virtual bool isReadOnly() const;
-			ReturnType* getValue(const DescribedBase*) const;
-			void setValue(DescribedBase*, ReturnType*) const;
-			virtual bool equalValues(const DescribedBase*, const DescribedBase*) const;
-			virtual DescribedBase* getRefValue(const DescribedBase*) const;
-			virtual void setRefValue(DescribedBase*, DescribedBase*) const;
-			virtual void readValue(DescribedBase*, const XmlElement*, IReferenceBinder&) const;
-			virtual void writeValue(const DescribedBase*, XmlElement*) const;
-			virtual void assignIDREF(DescribedBase*, const InstanceHandle&) const;
+			virtual bool isReadOnly() const
+			{
+				return getset->isReadOnly();
+			}
+			ReturnType* getValue(const DescribedBase* object) const
+			{
+				return getset->getValue(object);
+			}
+			void setValue(DescribedBase* object, ReturnType* value) const
+			{
+				getset->setValue(object, value);
+			}
+			virtual bool equalValues(const DescribedBase* a, const DescribedBase* b) const
+			{
+				return getValue(a) == getValue(b);
+			}
+			virtual DescribedBase* getRefValue(const DescribedBase* instance) const
+			{
+				return getValue(instance);
+			}
+			virtual void setRefValue(DescribedBase* instance, DescribedBase* value) const
+			{
+				ReturnType* val = value ? boost::polymorphic_cast<ReturnType*>(value) : NULL;
+				setValue(instance, val);
+			}
+			virtual void readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
+			{
+				binder.announceIDREF(element, instance, this);
+			}
+			virtual void writeValue(const DescribedBase* instance, XmlElement* element) const
+			{
+				element->setValue(InstanceHandle(getValue(instance)));
+			}
+			virtual void assignIDREF(DescribedBase* propertyOwner, const InstanceHandle& handle) const
+			{
+				boost::shared_ptr<Instance> t = handle.getTarget();
+				setValue(propertyOwner, static_cast<ReturnType*>(t.get()));
+			}
 
 		public:
 			template<typename GetFunction, typename SetFunction>
