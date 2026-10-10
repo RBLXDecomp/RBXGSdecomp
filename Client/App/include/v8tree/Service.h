@@ -18,7 +18,10 @@ namespace RBX
 		const boost::shared_ptr<Instance> service;
 	  
 	public:
-		ServiceAdded(const ServiceAdded&);
+		ServiceAdded(const ServiceAdded& other)
+			: service(other.service)
+		{
+		}
 		ServiceAdded(Instance* instance)
 			: service(shared_from(instance))
 		{
@@ -34,7 +37,10 @@ namespace RBX
 		const boost::shared_ptr<Instance> service;
 	  
 	public:
-		ServiceRemoving(const ServiceRemoving&);
+		ServiceRemoving(const ServiceRemoving& other)
+			: service(other.service)
+		{
+		}
 		ServiceRemoving(Instance* instance)
 			: service(shared_from(instance))
 		{
