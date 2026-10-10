@@ -20,10 +20,10 @@ namespace RBX
 		static void movePrimitivesDelta(const G3D::Array<Primitive*>& primitives, const G3D::Vector3& delta, G3D::Vector3& movedSoFar);
 		static void movePrimitivesGoal(const G3D::Array<Primitive*>&, const G3D::Vector3&, G3D::Vector3&);
 		static void safePlaceAlongLine(const G3D::Array<Primitive*>&, const G3D::Vector3&, const G3D::Vector3&, G3D::Vector3&, ContactManager&);
-		static void searchUpFine(const G3D::Array<Primitive*>&, G3D::Vector3&, ContactManager&);
-		static void searchDownFine(const G3D::Array<Primitive*>&, G3D::Vector3&, ContactManager&);
-		static void searchUpGross(const G3D::Array<Primitive*>&, G3D::Vector3&, ContactManager&);
-		static void searchDownGross(const G3D::Array<Primitive*>&, G3D::Vector3&, ContactManager&);
+		static void searchUpFine(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager);
+		static void searchDownFine(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager);
+		static void searchUpGross(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager);
+		static void searchDownGross(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager);
 	public:
 		static const G3D::Vector3& dragSnap()
 		{
