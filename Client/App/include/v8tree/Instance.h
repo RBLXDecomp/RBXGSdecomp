@@ -352,7 +352,7 @@ namespace RBX
 		{
 			return;
 		}
-		void writeProperties(XmlElement*) const;
+		void writeProperties(XmlElement* container) const;
 	protected:
 		virtual void readProperty(const XmlElement* propertyElement, IReferenceBinder& binder);
 	public:
@@ -498,8 +498,8 @@ namespace RBX
 	private:
 		static void predelete(Instance* instance);
 	public:
-		static XmlElement* toNewXmlRoot(Instance*);
-		static boost::shared_ptr<Instance> fromXmlRoot(XmlElement*);
+		static XmlElement* toNewXmlRoot(Instance* instance);
+		static boost::shared_ptr<Instance> fromXmlRoot(XmlElement* xmlRoot);
 		static Instance* getRootAncestor(Instance*);
 		static const Instance* getRootAncestor(const Instance*);
 	private:

@@ -1,4 +1,5 @@
 #include "v8tree/Instance.h"
+#include "v8xml/Serializer.h"
 #include "reflection/function.h"
 #include "reflection/property.h"
 #include <algorithm>
@@ -474,5 +475,43 @@ namespace RBX
 
 		onAncestorChanged(AncestorChanged(this, oldParent.get(), newParent));
 		raisePropertyChanged(propParent);
+	}
+
+	void Instance::writeProperties(XmlElement* container) const
+	{
+		for (Reflection::ConstPropertyIterator iter = this->properties_begin(); iter != this->properties_end(); ++iter)
+		{
+			const Reflection::PropertyDescriptor& descriptor = (*iter).getDescriptor();
+			XmlElement* element = descriptor.write(this, false);
+			if (element)
+				container->addChild(element);
+		}
+	}
+
+	boost::shared_ptr<Instance> Instance::fromXmlRoot(XmlElement* xmlRoot)
+	{		
+		SerializerV2::isolateHandles(xmlRoot);
+
+		Serializer serializer;
+		std::vector<boost::shared_ptr<Instance>> newInstances;
+		serializer.loadInstances(xmlRoot, newInstances);
+
+		if (newInstances.empty())
+			return boost::shared_ptr<Instance>();
+		else
+			return newInstances.front();
+	}
+
+	XmlElement* Instance::toNewXmlRoot(Instance* instance) // this is a guess
+	{
+		XmlElement* root = SerializerV2::newRootElement();
+		root->addChild(instance->write());
+		return root;
+	}
+
+	boost::shared_ptr<Instance> Instance::clone()
+	{
+		boost::scoped_ptr<XmlElement> root(toNewXmlRoot(this));
+		return fromXmlRoot(root.get());
 	}
 }

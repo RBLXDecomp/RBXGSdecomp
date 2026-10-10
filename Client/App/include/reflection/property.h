@@ -12,6 +12,7 @@ namespace RBX
 	namespace Reflection
 	{
 		class Property;
+		class ConstProperty;
 		class __declspec(novtable) PropertyDescriptor : public MemberDescriptor
 		{
 		public:
@@ -24,7 +25,8 @@ namespace RBX
 			};
 
 		public:
-			typedef Property Describing;
+			typedef Property Member;
+			typedef ConstProperty ConstMember;
 
 		private:
 			unsigned bIsPublic : 1;

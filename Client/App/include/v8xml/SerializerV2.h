@@ -129,7 +129,7 @@ public:
 	static const int CURRENT_SCHEMA_VERSION;
   
 public:
-	void loadInstances(XmlElement*, std::vector<boost::shared_ptr<RBX::Instance>>&);
+	void loadInstances(XmlElement* root, std::vector<boost::shared_ptr<RBX::Instance>>& result);
 	void load(std::istream&, RBX::DataModel*);
 	void loadXML(std::istream& stream, RBX::DataModel* dataModel);
 	void merge(const XmlElement*, RBX::DataModel*);

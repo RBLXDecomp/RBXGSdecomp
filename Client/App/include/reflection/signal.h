@@ -111,7 +111,8 @@ namespace RBX
 			friend class SignalInstance;
 
 		public:
-			typedef Signal Describing;
+			typedef Signal Member;
+			typedef Signal ConstMember;
 
 		public:
 			void (*signalCreatedHook)(SignalSource*);

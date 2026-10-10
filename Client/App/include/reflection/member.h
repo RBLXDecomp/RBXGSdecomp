@@ -44,7 +44,7 @@ namespace RBX
 			};
 
 		public:
-			class Iterator : public std::iterator<std::forward_iterator_tag, typename TheDescriptor::Describing, void>
+			class Iterator : public std::iterator<std::forward_iterator_tag, typename TheDescriptor::Member, void>
 			{
 			private:
 				DescribedBase* instance;
@@ -58,9 +58,9 @@ namespace RBX
 				}
 
 			public:
-				typename TheDescriptor::Describing operator*() const
+				typename TheDescriptor::Member operator*() const
 				{
-					return TheDescriptor::Describing(**iter, instance);
+					return TheDescriptor::Member(**iter, instance);
 				}
 				bool operator==(const Iterator& other) const
 				{
@@ -71,11 +71,15 @@ namespace RBX
 					return iter != other.iter;
 				}
 				Iterator operator++(int);
-				Iterator& operator++();
+				Iterator& operator++()
+				{
+					iter++;
+					return *this;
+				}
 			};
 
 		public:
-			class ConstIterator : public std::iterator<std::forward_iterator_tag, typename TheDescriptor::Describing, void>
+			class ConstIterator : public std::iterator<std::forward_iterator_tag, typename TheDescriptor::Member, void>
 			{
 			private:
 				const DescribedBase* instance;
@@ -88,9 +92,9 @@ namespace RBX
 				{
 				}
 			public:
-				typename TheDescriptor::Describing operator*() const
+				typename TheDescriptor::ConstMember operator*() const
 				{
-					return TheDescriptor::Describing(getDescriptor(), instance);
+					return TheDescriptor::ConstMember(getDescriptor(), instance);
 				}
 				bool operator==(const ConstIterator& other) const
 				{
@@ -101,7 +105,11 @@ namespace RBX
 					return iter != other.iter;
 				}
 				ConstIterator operator++(int);
-				ConstIterator& operator++();
+				ConstIterator& operator++()
+				{
+					iter++;
+					return *this;
+				}
 				const TheDescriptor& getDescriptor() const
 				{
 					return **iter;
