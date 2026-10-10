@@ -133,46 +133,57 @@ namespace RBX
 
 	void Dragger::searchUpFine(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager)
 	{
-		do 
-		{
-			RBXASSERT(primitives.size() > 0);
-			movePrimitivesDelta(primitives, G3D::Vector3(0, 0.1, 0), movedSoFar);
-		}
-		while (intersectingWorldOrOthers(primitives, contactManager));
+		RBXASSERT(primitives.size() > 0);
+		movePrimitivesDelta(primitives, G3D::Vector3(0, 0.1, 0), movedSoFar);
+
+		if (intersectingWorldOrOthers(primitives, contactManager))
+			searchUpFine(primitives, movedSoFar, contactManager);
 	}
 
 	void Dragger::searchDownFine(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager)
 	{
-		do 
+		RBXASSERT(primitives.size() > 0);
+		movePrimitivesDelta(primitives, G3D::Vector3(0, -0.1, 0), movedSoFar);
+
+		if (!intersectingWorldOrOthers(primitives, contactManager))
 		{
-			RBXASSERT(primitives.size() > 0);
-			movePrimitivesDelta(primitives, G3D::Vector3(0, -0.1, 0), movedSoFar);
+			searchDownFine(primitives, movedSoFar, contactManager);
 		}
-		while (!intersectingWorldOrOthers(primitives, contactManager));
-		searchUpFine(primitives, movedSoFar, contactManager);
+		else
+		{
+			searchUpFine(primitives, movedSoFar, contactManager);
+		}
 	}
 
 	void Dragger::searchUpGross(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager)
 	{
-		do 
+		RBXASSERT(primitives.size() > 0);
+		movePrimitivesDelta(primitives, G3D::Vector3(0, 1.2, 0), movedSoFar);
+
+		if (intersectingWorldOrOthers(primitives, contactManager))
 		{
-			RBXASSERT(primitives.size() > 0);
-			movePrimitivesDelta(primitives, G3D::Vector3(0, 1.2, 0), movedSoFar);
+			searchUpGross(primitives, movedSoFar, contactManager);
 		}
-		while (intersectingWorldOrOthers(primitives, contactManager));
-		searchDownFine(primitives, movedSoFar, contactManager);
+		else
+		{
+			searchDownFine(primitives, movedSoFar, contactManager);
+		}
 	}
 
 	void Dragger::searchDownGross(const G3D::Array<Primitive*>& primitives, G3D::Vector3& movedSoFar, ContactManager& contactManager)
 	{
-		do 
-		{
-			RBXASSERT(primitives.size() > 0);
-			RBXASSERT(!intersectingWorldOrOthers(primitives, contactManager));
+		RBXASSERT(primitives.size() > 0);
+		RBXASSERT(!intersectingWorldOrOthers(primitives, contactManager));
 
-			movePrimitivesDelta(primitives, G3D::Vector3(0, -1.2, 0), movedSoFar);
+		movePrimitivesDelta(primitives, G3D::Vector3(0, -1.2, 0), movedSoFar);
+
+		if (!intersectingWorldOrOthers(primitives, contactManager))
+		{
+			searchDownGross(primitives, movedSoFar, contactManager);
 		}
-		while (!intersectingWorldOrOthers(primitives, contactManager));
-		searchUpFine(primitives, movedSoFar, contactManager);
+		else
+		{
+			searchUpFine(primitives, movedSoFar, contactManager);
+		}
 	}
 }
