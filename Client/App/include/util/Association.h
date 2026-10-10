@@ -28,7 +28,17 @@ namespace RBX
 		std::vector<Item*> items;
   
 	public:
-		~Association();
+		~Association()
+		{
+			std::vector<Item*>::iterator it = items.begin();
+			std::vector<Item*>::iterator end = items.end();
+
+			while(it != end)
+			{
+				delete (*it);
+				it++;
+			}
+		}
   
 	private:
 		static size_t& count();

@@ -78,6 +78,7 @@ namespace RBX
 				: descriptor(other.descriptor),
 				  instance(other.instance)
 			{
+				RBXASSERT(descriptor->isMemberOf(instance));
 			}
 			ConstProperty(const PropertyDescriptor& descriptor, const DescribedBase* instance)
 				: descriptor(&descriptor),
@@ -111,7 +112,10 @@ namespace RBX
 		class Property : public ConstProperty
 		{
 		public:
-			Property(const Property&);
+			Property(const Property& other)
+				: ConstProperty(other)
+			{
+			}
 			Property(const PropertyDescriptor& descriptor, DescribedBase* instance)
 				: ConstProperty(descriptor, instance)
 			{

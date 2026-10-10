@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1257"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="App"
 	ProjectGUID="{F6A50BC6-9F70-4186-A1FF-AA4806785EB9}"
 	RootNamespace="RBXGSdecomp"
@@ -281,6 +281,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="G3D.lib GLG3D.lib SDL.lib SDLmain.lib zlib.lib wininet.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
