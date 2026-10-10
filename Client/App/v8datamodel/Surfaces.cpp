@@ -26,7 +26,7 @@ namespace RBX
 		}
 		virtual void writeValue(const Reflection::DescribedBase* instance, XmlElement* element) const
 		{
-			static_cast<const PartInstance*>(instance)->getSurfaces()[id].writeValue(element);
+			RBXASSERT(false);
 		}
 		virtual bool hasStringValue() const
 		{
