@@ -4,162 +4,207 @@
 namespace RBX
 {
 	template<NormalId id>
-	SurfaceDescriptor<id>::SurfaceDescriptor(const char* name)
-		: PropertyDescriptor(PartInstance::classDescriptor(), Reflection::Type::singleton<Surface>(), name, "Data", LEGACY)
+	class SurfaceDescriptor : public Reflection::PropertyDescriptor
 	{
-	}
+	public:
+		SurfaceDescriptor(const char* name) 
+			: PropertyDescriptor(PartInstance::classDescriptor(), Reflection::Type::singleton<Surface>(), name, "Data", LEGACY)
+		{
+		}
 
-	template<NormalId id>
-	bool SurfaceDescriptor<id>::equalValues(const Reflection::DescribedBase* a, const Reflection::DescribedBase* b) const
-	{
-		return false;
-	}
-
-	template<NormalId id>
-	void SurfaceDescriptor<id>::readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
-	{
-		((PartInstance*) instance)->getSurfaces()[id].readValue(element, binder);
-	}
-
-	template<NormalId id, typename Type, typename GetFunction, typename SetFunction>
-	Type SurfaceGetSet<id, Type, GetFunction, SetFunction>::getValue(const Reflection::DescribedBase* instance) const
-	{
-		return (((const PartInstance*) instance)->getSurfaces()[id].*get)();
-	}
-
-	template<NormalId id, typename Type, typename GetFunction, typename SetFunction>
-	void SurfaceGetSet<id, Type, GetFunction, SetFunction>::setValue(Reflection::DescribedBase* instance, const Type& value) const
-	{
-		(((PartInstance*) instance)->getSurfaces()[id].*set)(value);
-	}
+		virtual bool equalValues(const Reflection::DescribedBase* a, const Reflection::DescribedBase* b) const
+		{
+			return false;
+		}
+		virtual bool isReadOnly() const
+		{
+			return false;
+		}
+		virtual void readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
+		{
+			static_cast<PartInstance*>(instance)->getSurfaces()[id].readValue(element, binder);
+		}
+		virtual void writeValue(const Reflection::DescribedBase* instance, XmlElement* element) const
+		{
+			static_cast<const PartInstance*>(instance)->getSurfaces()[id].writeValue(element);
+		}
+		virtual bool hasStringValue() const
+		{
+			return false;
+		}
+		virtual std::string getStringValue(const Reflection::DescribedBase* instance) const
+		{
+			return PropertyDescriptor::getStringValue(instance);
+		}
+		virtual bool setStringValue(Reflection::DescribedBase* instance, const std::string& text) const
+		{
+			return PropertyDescriptor::setStringValue(instance, text);
+		}
+	};
 
 	template<NormalId id, typename Type>
-	template<typename GetFunction, typename SetFunction>
-	SurfacePropDescriptor<id, Type>::SurfacePropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags)
-		: Reflection::TypedPropertyDescriptor<Type>::TypedPropertyDescriptor(PartInstance::classDescriptor(), name, category, 
-		  std::auto_ptr<Reflection::TypedPropertyDescriptor<Type>::GetSet>(new SurfaceGetSet<id, Type, GetFunction, SetFunction>(get, set)), flags)
+	class SurfacePropDescriptor : public Reflection::TypedPropertyDescriptor<Type>
 	{
-	}
-
-	template<NormalId id, typename Enum>
-	template<typename GetFunction, typename SetFunction>
-	SurfaceEnumPropDescriptor<id, Enum>::SurfaceEnumPropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags)
-		: EnumPropertyDescriptor(PartInstance::classDescriptor(), Reflection::EnumDesc<Enum>::singleton(), name, category, flags),
-		  getset(new SurfaceGetSet<id, Enum, GetFunction, SetFunction>(get, set))
-	{
-	}
-
-	template<NormalId id, typename Enum>
-	bool SurfaceEnumPropDescriptor<id, Enum>::setEnumValue(Reflection::DescribedBase* instance, int intValue) const
-	{
-		if (Reflection::EnumDesc<Enum>::singleton().isValue(intValue))
+	public:
+		template<typename GetFunction, typename SetFunction>
+		SurfacePropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags) 
+			: Reflection::TypedPropertyDescriptor<Type>::TypedPropertyDescriptor(PartInstance::classDescriptor(), name, category, 
+			  std::auto_ptr<Reflection::TypedPropertyDescriptor<Type>::GetSet>(new SurfaceGetSet<id, Type, GetFunction, SetFunction>(get, set)), flags)
 		{
-			setValue(instance, (Enum) intValue);
-			return true;
+		}
+	};
+
+	template<NormalId id, typename Enum>
+	class SurfaceEnumPropDescriptor : public Reflection::EnumPropertyDescriptor
+	{
+	private:
+		std::auto_ptr<typename Reflection::TypedPropertyDescriptor<Enum>::GetSet> getset;
+
+	public:
+		template<typename GetFunction, typename SetFunction>
+		SurfaceEnumPropDescriptor(const char* name, const char* category, GetFunction get, SetFunction set, Functionality flags) 
+			: EnumPropertyDescriptor(PartInstance::classDescriptor(), Reflection::EnumDesc<Enum>::singleton(), name, category, flags), 
+			  getset(new SurfaceGetSet<id, Enum, GetFunction, SetFunction>(get, set))
+		{
 		}
 
-		return false;
-	}
-
-	template<NormalId id, typename Enum>
-	size_t SurfaceEnumPropDescriptor<id, Enum>::getIndexValue(const Reflection::DescribedBase* instance) const
-	{
-		return Reflection::EnumDesc<Enum>::singleton().convertToIndex(getValue(instance));
-	}
-
-	template<NormalId id, typename Enum>
-	bool SurfaceEnumPropDescriptor<id, Enum>::setIndexValue(Reflection::DescribedBase* instance, size_t index) const
-	{
-		Enum val;
-		if (Reflection::EnumDesc<Enum>::singleton().convertToValue(index, val))
+		virtual bool isReadOnly() const
 		{
-			setValue(instance, val);
-			return true;
+			return getset->isReadOnly();
 		}
-		
-		return false;
-	}
-
-	template<NormalId id, typename Enum>
-	std::string SurfaceEnumPropDescriptor<id, Enum>::getStringValue(const Reflection::DescribedBase* instance) const
-	{
-		return Reflection::EnumDesc<Enum>::singleton().convertToString(getValue(instance));
-	}
-
-	template<NormalId id, typename Enum>
-	bool SurfaceEnumPropDescriptor<id, Enum>::setStringValue(Reflection::DescribedBase* instance, const Name& name) const
-	{
-		Enum val;
-		if (Reflection::EnumDesc<Enum>::singleton().convertToValue(name, val))
+		Enum getValue(const Reflection::DescribedBase* object) const
 		{
-			setValue(instance, val);
-			return true;
+			return getset->getValue(object);
 		}
-
-		return false;
-	}
-
-	template<NormalId id, typename Enum>
-	bool SurfaceEnumPropDescriptor<id, Enum>::setStringValue(Reflection::DescribedBase* instance, const std::string& text) const
-	{
-		Enum val;
-		if (Reflection::EnumDesc<Enum>::singleton().convertToValue(text, val))
+		void setValue(Reflection::DescribedBase* object, const Enum& value) const
 		{
-			setValue(instance, val);
-			return true;
+			getset->setValue(object, value);
 		}
-
-		return false;
-	}
-
-	template<NormalId id, typename Enum>
-	void SurfaceEnumPropDescriptor<id, Enum>::readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
-	{
-		if (!element->isXsiNil())
+		virtual bool equalValues(const Reflection::DescribedBase* a, const Reflection::DescribedBase* b) const
 		{
-			if (element->isValueType<std::string>())
+			return getValue(a) == getValue(b);
+		}
+		virtual int getEnumValue(const Reflection::DescribedBase* instance) const
+		{
+			return getValue(instance);
+		}
+		virtual bool setEnumValue(Reflection::DescribedBase* instance, int intValue) const
+		{
+			if (Reflection::EnumDesc<Enum>::singleton().isValue(intValue))
 			{
-				std::string text;
-				if (element->getValue(text))
+				setValue(instance, (Enum) intValue);
+				return true;
+			}
+
+			return false;
+		}
+		virtual size_t getIndexValue(const Reflection::DescribedBase* instance) const
+		{
+			return Reflection::EnumDesc<Enum>::singleton().convertToIndex(getValue(instance));
+		}
+		virtual bool setIndexValue(Reflection::DescribedBase* instance , size_t index) const
+		{
+			Enum val;
+			if (Reflection::EnumDesc<Enum>::singleton().convertToValue(index, val))
+			{
+				setValue(instance, val);
+				return true;
+			}
+			
+			return false;
+		}
+		virtual bool hasStringValue() const
+		{
+			return true;
+		}
+		virtual std::string getStringValue(const Reflection::DescribedBase* instance) const
+		{
+			return Reflection::EnumDesc<Enum>::singleton().convertToString(getValue(instance));
+		}
+		virtual bool setStringValue(Reflection::DescribedBase* instance, const Name& name) const
+		{
+			Enum val;
+			if (Reflection::EnumDesc<Enum>::singleton().convertToValue(name, val))
+			{
+				setValue(instance, val);
+				return true;
+			}
+
+			return false;
+		}
+		virtual bool setStringValue(Reflection::DescribedBase* instance, const std::string& text) const
+		{
+			Enum val;
+			if (Reflection::EnumDesc<Enum>::singleton().convertToValue(text, val))
+			{
+				setValue(instance, val);
+				return true;
+			}
+
+			return false;
+		}
+		virtual void readValue(Reflection::DescribedBase* instance, const XmlElement* element, IReferenceBinder& binde) const
+		{
+			if (!element->isXsiNil())
+			{
+				if (element->isValueType<std::string>())
 				{
-					Enum val;
-					if (Reflection::EnumDesc<Enum>::singleton().convertToValue(text, val))
+					std::string text;
+					if (element->getValue(text))
 					{
-						setValue(instance, val);
-						return;
+						Enum val;
+						if (Reflection::EnumDesc<Enum>::singleton().convertToValue(text, val))
+						{
+							setValue(instance, val);
+							return;
+						}
 					}
 				}
-			}
 
-			int value;
-			if (element->getValue(value))
-			{
-				setValue(instance, (Enum) value);
-			}
-			else
-			{
-				RBXASSERT(false);
+				int value;
+				if (element->getValue(value))
+				{
+					setValue(instance, (Enum) value);
+				}
+				else
+				{
+					RBXASSERT(false);
+				}
 			}
 		}
-	}
+		virtual void writeValue(const Reflection::DescribedBase* instance, XmlElement* element) const
+		{
+			element->setValue(getValue(instance));
+		}
+	};
 
-	template<NormalId id, typename Enum>
-	void SurfaceEnumPropDescriptor<id, Enum>::writeValue(const Reflection::DescribedBase* instance, XmlElement* element) const
+	template<NormalId id, typename Type, typename GetFunction, typename SetFunction>
+	class SurfaceGetSet : public Reflection::TypedPropertyDescriptor<Type>::GetSet
 	{
-		element->setValue(getValue(instance));
-	}
+	private:
+		GetFunction get;
+		SetFunction set;
 
-	template<NormalId id, typename Enum>
-	Enum SurfaceEnumPropDescriptor<id, Enum>::getValue(const Reflection::DescribedBase* object) const
-	{
-		return getset->getValue(object);
-	}
+	public:
+		SurfaceGetSet(GetFunction g, SetFunction s)
+			: get(g),
+			  set(s)
+		{
+		}
 
-	template<NormalId id, typename Enum>
-	void SurfaceEnumPropDescriptor<id, Enum>::setValue(Reflection::DescribedBase* object, const Enum& value) const
-	{
-		getset->setValue(object, value);
-	}
+		virtual bool isReadOnly() const
+		{
+			return false;
+		}
+		virtual Type getValue(const Reflection::DescribedBase* instance) const
+		{
+			return (static_cast<const PartInstance*>(instance)->getSurfaces()[id].*get)();
+		}
+		virtual void setValue(Reflection::DescribedBase* instance, const Type& value) const
+		{
+			(static_cast<PartInstance*>(instance)->getSurfaces()[id].*set)(value);
+		}
+	};
 
 	SurfaceDescriptor<NORM_X> desc_LegacyRight("Front");
 	SurfaceDescriptor<NORM_Y> desc_LegacyTop("Top");

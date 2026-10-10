@@ -390,7 +390,10 @@ namespace RBX
 				
 				return false;
 			}
-			virtual bool hasStringValue() const;
+			virtual bool hasStringValue() const
+			{
+				return true;
+			}
 			virtual std::string getStringValue(const DescribedBase* instance) const
 			{
 				return EnumDesc<Enum>::singleton().convertToString(getValue(instance));
