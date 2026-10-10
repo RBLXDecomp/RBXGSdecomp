@@ -30,7 +30,10 @@ namespace RBX
 		const boost::shared_ptr<Instance> child;
   
 	public:
-		ChildAdded(const ChildAdded&);
+		ChildAdded(const ChildAdded& other)
+			: child(other.child)
+		{
+		}
 		ChildAdded(Instance* child)
 			: child(shared_from(child))
 		{
@@ -45,7 +48,10 @@ namespace RBX
 		const boost::shared_ptr<Instance> child;
   
 	public:
-		ChildRemoved(const ChildRemoved&);
+		ChildRemoved(const ChildRemoved& other)
+			: child(other.child)
+		{
+		}
 		ChildRemoved(Instance* child)
 			: child(shared_from(child))
 		{
@@ -127,7 +133,10 @@ namespace RBX
 			//RBXASSERT(property.getDescriptor().isMemberOf(property.getInstance()));
 		}
 	public:
-		PropertyChanged(const PropertyChanged&);
+		PropertyChanged(const PropertyChanged& other)
+			: property(other.property)
+		{
+		}
 	};
 
 	extern const char* sInstance;
