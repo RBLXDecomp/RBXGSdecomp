@@ -435,4 +435,14 @@ namespace RBX
 
 		return false;
 	}
+
+	namespace Reflection
+	{
+		template<>
+		const Type& Type::singleton<Surface>()
+		{
+			static Type type("Surface", typeid(Surface), "Complex");
+			return type;
+		}
+	}
 }

@@ -325,6 +325,12 @@ namespace RBX
 		}
 
 		template<>
+		bool TypedPropertyDescriptor<ContentId>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
 		bool TypedPropertyDescriptor<BrickColor>::hasStringValue() const
 		{
 			return false;

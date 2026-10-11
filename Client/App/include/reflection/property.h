@@ -111,11 +111,7 @@ namespace RBX
 			T getValue() const
 			{
 				RBXASSERT(dynamic_cast<const TypedPropertyDescriptor<T>*>(descriptor));
-				const TypedPropertyDescriptor<T>* value = dynamic_cast<const TypedPropertyDescriptor<T>*>(descriptor);
-
-				if (value == NULL)
-					throw std::bad_cast();
-
+				const TypedPropertyDescriptor<T>* value = boost::polymorphic_cast<const TypedPropertyDescriptor<T>*>(descriptor);
 				return value->getValue(instance);
 			}
 		};
