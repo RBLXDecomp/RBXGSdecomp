@@ -9,8 +9,8 @@
 #include "v8world/MotorJoint.h"
 #include "util/Debug.h"
 
-static RBX::Reflection::PropDescriptor<RBX::AutoJoint, RBX::PartInstance*> prop_Part0("Part0", "Data", &RBX::AutoJoint::getPart0, &RBX::AutoJoint::setPart0, RBX::Reflection::PropertyDescriptor::LEGACY); 
-static RBX::Reflection::PropDescriptor<RBX::AutoJoint, RBX::PartInstance*> prop_Part1("Part1", "Data", &RBX::AutoJoint::getPart1, &RBX::AutoJoint::setPart1, RBX::Reflection::PropertyDescriptor::LEGACY); 
+static RBX::Reflection::RefPropDescriptor<RBX::AutoJoint, RBX::PartInstance> prop_Part0("Part0", "Data", &RBX::AutoJoint::getPart0, &RBX::AutoJoint::setPart0, RBX::Reflection::PropertyDescriptor::LEGACY); 
+static RBX::Reflection::RefPropDescriptor<RBX::AutoJoint, RBX::PartInstance> prop_Part1("Part1", "Data", &RBX::AutoJoint::getPart1, &RBX::AutoJoint::setPart1, RBX::Reflection::PropertyDescriptor::LEGACY); 
 
 static RBX::Reflection::PropDescriptor<RBX::AutoJoint, G3D::CoordinateFrame> prop_C1("C1", "Data", &RBX::AutoJoint::getC1, &RBX::AutoJoint::setC1, RBX::Reflection::PropertyDescriptor::LEGACY);
 static RBX::Reflection::PropDescriptor<RBX::AutoJoint, G3D::CoordinateFrame> prop_C0("C0", "Data", &RBX::AutoJoint::getC0, &RBX::AutoJoint::setC0, RBX::Reflection::PropertyDescriptor::LEGACY);

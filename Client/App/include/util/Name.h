@@ -135,7 +135,10 @@ namespace RBX
 		{
 		}
 
-		virtual const Name& getName() const;
+		virtual const Name& getName() const
+		{
+			return Name::declare<ClassName>();
+		}
 
 	public:
 		static const Name& name();
