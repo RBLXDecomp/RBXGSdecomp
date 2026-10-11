@@ -5,7 +5,7 @@
 
 namespace RBX
 {
-	extern const char* sGroupDragTool;
+	extern char* sGroupDragTool;
 
 	class GroupDragTool : public Named<MouseCommand, &sGroupDragTool>
 	{

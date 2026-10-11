@@ -40,7 +40,7 @@ namespace RBX
 	static Reflection::EnumPropDescriptor<Feature, Feature::LeftRight> prop_LeftRight ("LeftRight", "Data", &Feature::getLeftRight, &Feature::setLeftRight, Reflection::PropertyDescriptor::LEGACY);
 	static Reflection::EnumPropDescriptor<Feature, Feature::InOut> prop_InOut ("InOut", "Data", &Feature::getInOut, &Feature::setInOut, Reflection::PropertyDescriptor::LEGACY);
 
-    const char* sFeature = "Feature";
+    const char* const sFeature = "Feature";
 
 	Feature::Feature()
 		: faceId(NORM_X),
@@ -179,7 +179,7 @@ namespace RBX
 		}
 	}
 
-    const char* sHole = "Hole";
+    const char* const sHole = "Hole";
 
 	Hole::Hole()
 	{
@@ -194,7 +194,7 @@ namespace RBX
 			DrawAdorn::cylinder(adorn, worldCoord, 2, 0.2, 0.3, G3D::Color3::black());
 	}
 
-    const char* sMotorFeature = "MotorFeature";
+    const char* const sMotorFeature = "MotorFeature";
 
 	MotorFeature::MotorFeature()
 	{
@@ -209,7 +209,7 @@ namespace RBX
 			DrawAdorn::cylinder(adorn, worldCoord, 2, 1.0, 0.3, G3D::Color3::yellow());
 	}
 
-    const char* sVelocityMotor = "VelocityMotor";
+    const char* const sVelocityMotor = "VelocityMotor";
 
 	VelocityMotor::VelocityMotor()
 		: DescribedCreatable(new MotorJoint())

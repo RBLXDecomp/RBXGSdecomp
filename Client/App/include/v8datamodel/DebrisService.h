@@ -7,7 +7,7 @@ namespace RBX
 {
 	class TimerService;
 
-	extern const char* sDebrisService;
+	extern char* sDebrisService;
 
 	class DebrisService : public DescribedCreatable<DebrisService, Instance, &sDebrisService>, public Service
 	{

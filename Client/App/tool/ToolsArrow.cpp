@@ -8,6 +8,8 @@
 
 namespace RBX
 {
+	char* sArrowTool = "Arrow";
+
 	const std::string ArrowToolBase::getCursorName() const
 	{
 		return overInstance ? "DragCursor" : "ArrowCursor";
@@ -67,6 +69,8 @@ namespace RBX
 			return newCommand->onMouseDown(uiEvent);
 		}
 	}
+
+	char* sBoxSelectCommand = "BoxSelect";
 
 	BoxSelectCommand::BoxSelectCommand(Workspace* workspace)
 		: Base(workspace),

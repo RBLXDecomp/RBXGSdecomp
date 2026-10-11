@@ -54,6 +54,8 @@ namespace RBX
 {
 	namespace Network
 	{
+		char* sPlayer = "Player";
+
 		Player::Player()
 			: teamColor(BrickColor::lego_1),
 			  neutral(true),

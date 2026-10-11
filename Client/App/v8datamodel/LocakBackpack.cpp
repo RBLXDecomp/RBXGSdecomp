@@ -2,6 +2,8 @@
 
 namespace RBX
 {
+	const char* const sLocalBackpackItem = "LocalBackpackItem";
+
 	LocalBackpackItem::LocalBackpackItem() {}
 
 	void LocalBackpackItem::onClick(const GuiEvent& event)
@@ -16,6 +18,8 @@ namespace RBX
 		float width = GuiRoot::toPixelSize(G3D::Vector2(10.0f, 10.0f)).x;
 		return G3D::Vector2(width, width);
 	}
+
+	const char* const sLocalBackpack = "LocalBackpack";
 
 	LocalBackpack::LocalBackpack()
 		: lastRemovedIndex(-1)

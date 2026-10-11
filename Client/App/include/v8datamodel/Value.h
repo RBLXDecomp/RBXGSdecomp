@@ -5,14 +5,14 @@
 
 namespace RBX
 {
-	extern const char* sIntValue;
-	extern const char* sBoolValue;
-	extern const char* sFloatValue;
-	extern const char* sColor3Value;
-	extern const char* sVector3Value;
-	extern const char* sBrickColorValue;
-	extern const char* sStringValue;
-	extern const char* sCFrameValue;
+	extern char* sIntValue;
+	extern char* sBoolValue;
+	extern char* sFloatValue;
+	extern char* sColor3Value;
+	extern char* sVector3Value;
+	extern char* sBrickColorValue;
+	extern char* sStringValue;
+	extern char* sCFrameValue;
 
 	template<typename ValueType, const char* const* ClassName>
 	class Value : public DescribedCreatable<Value<ValueType, ClassName>, Instance, ClassName>
@@ -44,7 +44,7 @@ namespace RBX
 	typedef Value<std::string,	&sStringValue>		StringValue;
 	typedef Value<G3D::CoordinateFrame, &sCFrameValue> CFrameValue;
 
-	extern const char* sObjectValue;
+	extern char* sObjectValue;
 	
 	class ObjectValue : public DescribedCreatable<ObjectValue, Instance, &sObjectValue>
 	{

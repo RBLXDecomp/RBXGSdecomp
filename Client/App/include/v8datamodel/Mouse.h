@@ -9,7 +9,7 @@ namespace RBX
 	class MouseCommand;
 	class PartInstance;
 
-	extern const char* sMouse;
+	extern const char* const sMouse;
 
 	class Mouse : public DescribedNonCreatable<Mouse, Instance, &sMouse>
 	{

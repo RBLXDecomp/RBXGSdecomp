@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sFallingDown;
+	extern const char* const sFallingDown;
 
 	class FallingDown : public Named<Humanoid::State, &sFallingDown>
 	{

@@ -158,7 +158,10 @@ namespace RBX
 		}
 	  
 	public:
-		static const Name& className();
+		static const Name& className()
+		{
+			return Name::declare<ClassName>();
+		}
 	};
 
 	template<typename DerivedClass, const char* const* ClassName>
@@ -182,6 +185,9 @@ namespace RBX
 		}
 
 	public:
-		static const Name& className();
+		static const Name& className()
+		{
+			return Name::declare<ClassName>();
+		}
 	};
 }

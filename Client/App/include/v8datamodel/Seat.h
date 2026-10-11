@@ -6,7 +6,7 @@ namespace RBX
 	class Weld;
 	class Humanoid;
 
-	extern const char* sSeat;
+	extern char* sSeat;
 
 	class Seat : public DescribedCreatable<Seat, PartInstance, &sSeat>
 	{

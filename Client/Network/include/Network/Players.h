@@ -66,7 +66,7 @@ namespace RBX
 			static worker_thread::work_result processRequests(boost::shared_ptr<data>, std::string);
 		};
 
-		extern const char* sPlayers;
+		extern char* sPlayers;
 		class Players : public DescribedNonCreatable<Players, Instance, &sPlayers>,
 						public Service,
 						public Notifier<Players, ChatMessage>,

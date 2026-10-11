@@ -26,7 +26,7 @@ namespace RBX
 
 	namespace Network
 	{
-		extern const char* sMarker;
+		extern const char* const sMarker;
 
 		class Marker : public DescribedNonCreatable<Marker, Reflection::DescribedBase, &sMarker>, private boost::noncopyable
 		{
@@ -63,7 +63,7 @@ namespace RBX
 			static Marker* fromId(long);
 		};
 
-		extern const char* sReplicator;
+		extern const char* const sReplicator;
 
 		class Replicator : public DescribedNonCreatable<Replicator, IdSerializer, &sReplicator>, public PluginInterface
 		{
@@ -303,7 +303,7 @@ namespace RBX
 			virtual bool canSendItems();
 		};
 
-		extern const char* sPeer;
+		extern const char* const sPeer;
 
 		class Peer : public Reflection::Described<Peer, &sPeer, Instance>, public PluginInterface, public Listener<RunService, Heartbeat>
 		{

@@ -70,10 +70,15 @@ namespace RBX
 				{
 					return iter != other.iter;
 				}
-				Iterator operator++(int);
+				Iterator operator++(int) // Guess based on how this operator is commonly implemented
+				{
+					Iterator old = *this;
+					++*this;
+					return old;
+				}
 				Iterator& operator++()
 				{
-					iter++;
+					++iter;
 					return *this;
 				}
 			};
@@ -104,10 +109,15 @@ namespace RBX
 				{
 					return iter != other.iter;
 				}
-				ConstIterator operator++(int);
+				ConstIterator operator++(int) // Guess based on how this operator is commonly implemented
+				{
+					ConstIterator old = *this;
+					++*this;
+					return old;
+				}
 				ConstIterator& operator++()
 				{
-					iter++;
+					++iter;
 					return *this;
 				}
 				const TheDescriptor& getDescriptor() const

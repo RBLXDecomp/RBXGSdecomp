@@ -7,7 +7,7 @@ namespace RBX
 {
 	class Sky;
 
-	extern const char* sLighting;
+	extern char* sLighting;
 	class Lighting : public DescribedCreatable<Lighting, Instance, &sLighting>,
 					 public Service
 	{

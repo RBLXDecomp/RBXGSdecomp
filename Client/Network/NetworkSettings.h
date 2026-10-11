@@ -3,7 +3,7 @@
 
 namespace RBX
 {
-	extern const char* sNetworkSettings;
+	extern const char* const sNetworkSettings;
 
 	class NetworkSettings : public GlobalSettingsItem<NetworkSettings, &sNetworkSettings>
 	{

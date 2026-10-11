@@ -6,7 +6,7 @@ namespace RBX
 {
 	namespace Network
 	{
-		extern const char* sServer;
+		extern char* sServer;
 
 		class Server : public DescribedCreatable<Server, Peer, &sServer>
 		{

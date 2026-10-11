@@ -38,6 +38,8 @@ RBX::Reflection::BoundProp<bool, 1> prop_SoundWarnings("SoundWarnings", "Errors"
 
 namespace RBX
 {
+	const char* const sDebugSettings = "DebugSettings";
+
 	DebugSettings::DebugSettings()
 		: stackTracingEnabled(true),
 		  ioEnabled(false),

@@ -7,7 +7,7 @@ namespace RBX
 	class RunDragger;
 	class MegaDragger;
 
-	extern const char* sPartDragTool;
+	extern char* sPartDragTool;
 
 	class PartDragTool : public Named<MouseCommand, &sPartDragTool>
 	{

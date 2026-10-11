@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sVisit;
+	extern char* sVisit;
 
 	class Visit : public DescribedCreatable<Visit, Instance, &sVisit>, public Service
 	{

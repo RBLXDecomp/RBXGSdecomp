@@ -5,7 +5,7 @@ namespace RBX
 {
 	class Tool;
 
-	extern const char* sToolMouseCommand;
+	extern char* sToolMouseCommand;
 
 	class ToolMouseCommand : public Named<ScriptMouseCommand, &sToolMouseCommand>
 	{

@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sBackpack;
+	extern const char* const sBackpack;
 	class Backpack : public RBX::DescribedCreatable<Backpack, Hopper, &sBackpack>,
 					 public IScriptOwner
 	{

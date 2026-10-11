@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sNewNullTool;
+	extern char* sNewNullTool;
 
 	class NewNullTool : public Named<MouseCommand, &sNewNullTool>
 	{
@@ -41,7 +41,7 @@ namespace RBX
 		virtual ~NewNullTool();
 	};
 
-	extern const char* sNullTool;
+	extern char* sNullTool;
 
 	// this class is completely unused in RBXGS
 	class NullTool : public Named<MouseCommand, &sNullTool>

@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sTeam;
+	extern const char* const sTeam;
 	class Team : public DescribedCreatable<Team, Instance, &sTeam>
 	{
 	protected:

@@ -3,6 +3,8 @@
 
 namespace RBX
 {
+	const char* const sGettingUp = "GettingUp";
+
 	GettingUp::GettingUp(Humanoid* humanoid)
 		: Base(humanoid, 5000.0f, 300.0f)
 	{

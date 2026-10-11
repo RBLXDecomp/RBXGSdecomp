@@ -27,7 +27,7 @@ namespace RBX
 		}
 	};
 
-	extern const char* sArrowTool;
+	extern char* sArrowTool;
 
 	class ArrowTool : public Named<ArrowToolBase, &sArrowTool>
 	{
@@ -43,7 +43,7 @@ namespace RBX
 		}
 	};
 
-	extern const char* sBoxSelectCommand;
+	extern char* sBoxSelectCommand;
 
 	class BoxSelectCommand : public Named<MouseCommand, &sBoxSelectCommand>
 	{

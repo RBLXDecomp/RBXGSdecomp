@@ -4,6 +4,8 @@
 
 namespace RBX
 {
+	char* sMessage = "Message";
+
 	static Reflection::PropDescriptor<Message, std::string> desc_Text("Text", "Appearance", &Message::getText, &Message::setText, Reflection::PropertyDescriptor::STANDARD);
 
 	Message::Message() 
@@ -44,4 +46,6 @@ namespace RBX
 		adorn->rect2d(translucentArea.toRect2D(), G3D::Color4(0.5f, 0.5f, 0.5f, 0.5f));
 		adorn->drawFont2D(text, textPos, 14.0, G3D::Color3::white(), G3D::Color3::black(), Adorn::XALIGN_CENTER, Adorn::YALIGN_CENTER, Adorn::PROPORTIONAL_SPACING);
 	}
+
+	char* sHint = "Hint";
 }

@@ -3,6 +3,8 @@
 
 namespace RBX
 {
+	const char* const sRunning = "Running";
+
 	Running::Running(Humanoid* humanoid)
 		: Base(humanoid, 300.0f, 50.0f),
 		  jumpWarmup(-0.45f),

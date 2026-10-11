@@ -2,6 +2,8 @@
 
 namespace RBX
 {
+	const char* const sBackpack = "Backpack";
+
 	Backpack::Backpack()
 	{
 		setName("Backpack");

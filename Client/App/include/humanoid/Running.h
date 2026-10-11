@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sRunning;
+	extern const char* const sRunning;
 
 	class Running : public Named<Balancing, &sRunning>
 	{

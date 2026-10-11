@@ -16,7 +16,7 @@
 
 namespace RBX
 {
-	const char* sRootInstance = "RootInstance";
+	char* sRootInstance = "RootInstance";
 
 #pragma warning (push)
 #pragma warning (disable : 4355) // warning C4355: 'this' : used in base member initializer list

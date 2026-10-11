@@ -17,7 +17,7 @@ void initScriptCpp()
     helloWorld.reset(new std::string("print(\"Hello world!\")\r\n"));
 }
 
-const char* RBX::sScript = "Script";
+char* RBX::sScript = "Script";
 
 Script::Script()
     : DescribedCreatable("Script"),
@@ -28,7 +28,7 @@ Script::Script()
     embeddedSource = helloWorld;
 }
 
-const char* RBX::sLocalScript = "LocalScript";
+char* RBX::sLocalScript = "LocalScript";
 
 LocalScript::LocalScript()
 {

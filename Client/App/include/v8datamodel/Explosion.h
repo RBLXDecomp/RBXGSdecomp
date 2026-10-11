@@ -6,7 +6,7 @@ namespace RBX
 {
 	class Primitive;
 
-	extern const char* sExplosion;
+	extern char* sExplosion;
 
 	class Explosion : public DescribedCreatable<Explosion, Instance, &sExplosion>,
 					  public Listener<RunService, Stepped>,

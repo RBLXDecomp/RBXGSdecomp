@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sFlying;
+	extern const char* const sFlying;
 
 	class Flying : public Named<Balancing, &sFlying>
 	{

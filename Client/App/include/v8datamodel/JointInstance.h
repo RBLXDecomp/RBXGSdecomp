@@ -8,7 +8,7 @@
 
 namespace RBX 
 {
-	extern const char* sJointInstance;
+	extern const char* const sJointInstance;
 	class JointInstance : public DescribedNonCreatable<JointInstance, Instance, &sJointInstance>,
 						  public IRenderable,
 						  public IJointOwner
@@ -25,7 +25,7 @@ namespace RBX
 		Joint::JointType getJointType() const;
     };
 
-	extern const char* sAutoJoint;
+	extern const char* const sAutoJoint;
 	class AutoJoint : public DescribedNonCreatable<AutoJoint, JointInstance, &sAutoJoint>
 	{
 	private:
@@ -58,7 +58,7 @@ namespace RBX
 	};
 
 
-	extern const char* sSnap;
+	extern const char* const sSnap;
 	class Snap : public DescribedCreatable<Snap, AutoJoint, &sSnap>
 	{
 	public:
@@ -66,7 +66,7 @@ namespace RBX
 		Snap();
 	};
 
-	extern const char* sWeld;
+	extern const char* const sWeld;
 	class Weld : public DescribedCreatable<Weld, AutoJoint, &sWeld>
 	{
 	public:
@@ -74,7 +74,7 @@ namespace RBX
 		Weld();
 	};
 
-	extern const char* sGlue;
+	extern const char* const sGlue;
 	class Glue : public DescribedCreatable<Glue, AutoJoint, &sGlue>
 	{
 	public:
@@ -82,7 +82,7 @@ namespace RBX
 		Glue();
 	};
 
-	extern const char* sRotate;
+	extern const char* const sRotate;
 	class Rotate : public DescribedCreatable<Rotate, AutoJoint, &sRotate>
 	{
 	public:
@@ -90,7 +90,7 @@ namespace RBX
 		Rotate();
 	};
 
-	extern const char* sRotateP;
+	extern const char* const sRotateP;
 	class RotateP : public DescribedCreatable<RotateP, AutoJoint, &sRotateP>
 	{
 	public:
@@ -98,7 +98,7 @@ namespace RBX
 		RotateP();
 	};
 
-	extern const char* sRotateV;
+	extern const char* const sRotateV;
 	class RotateV : public DescribedCreatable<RotateV, AutoJoint, &sRotateV>
 	{
 	public:
@@ -106,7 +106,7 @@ namespace RBX
 		RotateV();
 	};
 
-	extern const char* sMotor;
+	extern const char* const sMotor;
 	class Motor : public DescribedCreatable<Motor, AutoJoint, &sMotor>
 	{
 	private:

@@ -22,7 +22,7 @@ static RBX::Reflection::PropDescriptor<RBX::Motor, float> prop_CurrentAngle("Cur
 
 namespace RBX
 {
-	const char* sJointInstance = "JointInstance";
+	const char* const sJointInstance = "JointInstance";
 
 	JointInstance::JointInstance(Joint* joint)
 		: joint(joint)
@@ -79,7 +79,7 @@ namespace RBX
 		}
 	}
 
-	const char* sAutoJoint = "AutoJoint";
+	const char* const sAutoJoint = "AutoJoint";
 
 	AutoJoint::AutoJoint(Joint* _joint)
 		: DescribedNonCreatable(_joint)
@@ -203,7 +203,7 @@ namespace RBX
 		raisePropertyChanged(prop_C1);
 	}
 
-	const char* sSnap = "Snap";
+	const char* const sSnap = "Snap";
 
 	Snap::Snap(Joint* joint)
 		: DescribedCreatable(joint)
@@ -218,7 +218,7 @@ namespace RBX
 		setName("Snap");
 	}
 
-	const char* sWeld = "Weld";
+	const char* const sWeld = "Weld";
 
 	Weld::Weld(Joint* joint)
 		: DescribedCreatable(joint)
@@ -231,7 +231,7 @@ namespace RBX
 	{
 	}
 
-	const char* sGlue = "Glue";
+	const char* const sGlue = "Glue";
 
 	Glue::Glue(Joint* joint)
 		: DescribedCreatable(joint)
@@ -244,7 +244,7 @@ namespace RBX
 	{
 	}
 
-	const char* sRotate = "Rotate";
+	const char* const sRotate = "Rotate";
 
 	Rotate::Rotate(Joint* joint)
 		: DescribedCreatable(joint)
@@ -257,7 +257,7 @@ namespace RBX
 	{
 	}
 
-	const char* sRotateP = "RotateP";
+	const char* const sRotateP = "RotateP";
 
 	RotateP::RotateP(Joint* joint)
 		: DescribedCreatable(joint)
@@ -270,7 +270,7 @@ namespace RBX
 	{
 	}
 
-	const char* sRotateV = "RotateV";
+	const char* const sRotateV = "RotateV";
 
 	RotateV::RotateV(Joint* joint)
 		: DescribedCreatable(joint)
@@ -283,7 +283,7 @@ namespace RBX
 	{
 	}
 
-	const char* sMotor = "Motor";
+	const char* const sMotor = "Motor";
 
 	Motor::Motor(Joint* joint)
 		: DescribedCreatable(joint)

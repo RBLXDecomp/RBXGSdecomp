@@ -11,7 +11,7 @@ namespace RBX
 	class ModelInstance;
 	class PartInstance;
 
-	extern const char* sAccoutrement;
+	extern const char* const sAccoutrement;
 
 	class Accoutrement : public DescribedCreatable<Accoutrement, Instance, &sAccoutrement>,
 						 public IEquipable,
@@ -115,7 +115,7 @@ namespace RBX
 		static void dropAllOthers(ModelInstance*, Accoutrement*);
 	};
 
-	extern const char* sHat;
+	extern const char* const sHat;
 
 	class Hat : public DescribedCreatable<Hat, Accoutrement, &sHat>
 	{

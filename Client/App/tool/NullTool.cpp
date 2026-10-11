@@ -5,6 +5,10 @@
 
 namespace RBX
 {
+	char* sNullTool = "NullTool";
+
+	char* sNewNullTool = "NewNullTool";
+
 	NewNullTool::NewNullTool(Workspace* workspace)
 		: Base(workspace),
 		  cursor("ArrowCursor"),

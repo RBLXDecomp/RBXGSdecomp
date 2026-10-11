@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sMessage;
+	extern char* sMessage;
 
 	class Message : public DescribedCreatable<Message, Instance, &sMessage>, public IRenderable
 	{
@@ -38,7 +38,7 @@ namespace RBX
 		void setText(const std::string& value);
 	};
 
-	extern const char* sHint;
+	extern char* sHint;
 
 	class Hint : public DescribedCreatable<Hint, Message, &sHint>
 	{

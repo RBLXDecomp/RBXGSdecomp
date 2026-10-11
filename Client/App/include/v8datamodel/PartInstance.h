@@ -25,7 +25,7 @@ namespace RBX
 		}
 	};
 
-	extern const char* sPart;
+	extern char* sPart;
 	class PartInstance : public DescribedCreatable<PartInstance, PVInstance, &sPart>,
 						 public Notifier<PartInstance, CanAggregateChanged>,
 						 public IMoving,
