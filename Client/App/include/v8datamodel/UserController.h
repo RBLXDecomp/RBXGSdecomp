@@ -8,7 +8,7 @@ namespace RBX
 {
 	class PVInstance;
 
-	extern const char* sControllerService;
+	extern char* sControllerService;
 	class ControllerService : public DescribedCreatable<ControllerService, Instance, &sControllerService>, public Service
 	{
 	private:

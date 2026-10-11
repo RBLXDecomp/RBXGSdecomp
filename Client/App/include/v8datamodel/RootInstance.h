@@ -12,7 +12,7 @@ namespace RBX
 	class SpawnLocation;
 	class MegaDragger;
 
-	extern const char* sRootInstance;
+	extern char* sRootInstance;
 	class RootInstance : public Reflection::Described<RootInstance, &sRootInstance, ModelInstance>,
 						 public ICameraOwner
 	{

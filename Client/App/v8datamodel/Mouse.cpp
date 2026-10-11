@@ -5,6 +5,8 @@
 
 namespace RBX
 {
+	const char* const sMouse = "Mouse";
+
 	G3D::CoordinateFrame Mouse::getHit() const
 	{
 		checkActive();

@@ -11,7 +11,7 @@ namespace RBX
 		class Player;
 	}
 
-	extern const char* sFlag;
+	extern const char* const sFlag;
 
 	class Flag : public DescribedCreatable<Flag, Tool, &sFlag>
 	{

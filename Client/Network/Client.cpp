@@ -22,6 +22,8 @@ namespace RBX
 {
 	namespace Network
 	{
+		char* sClient = "NetworkClient";
+
 		Client::Client()
 		{
 			setName("NetworkClient");

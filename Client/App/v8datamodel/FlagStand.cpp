@@ -3,6 +3,8 @@
 
 namespace RBX
 {
+	char* sFlagStand = "FlagStand";
+
 	static Reflection::PropDescriptor<FlagStand, BrickColor> prop_Color("TeamColor", "Data", &FlagStand::getTeamColor, &FlagStand::setTeamColor, Reflection::PropertyDescriptor::STANDARD);
 	static Reflection::SignalDesc<FlagStand, void(boost::shared_ptr<Instance>)> event_FlagCaptured("FlagCaptured", "Player");
 
@@ -81,6 +83,8 @@ namespace RBX
 			standTouched.disconnect();
 		}
 	}
+
+	const char* const sFlagStandService = "FlagStandService";
 
 	FlagStandService::FlagStandService()
 	{

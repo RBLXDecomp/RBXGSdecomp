@@ -2,6 +2,8 @@
 
 namespace RBX
 {
+	const char* const sNetworkSettings = "NetworkSettings";
+
 	Reflection::BoundProp<bool, 1> prop_LogPackets("LogPackets", "Diagnostics", &NetworkSettings::logPackets, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::BoundProp<bool, 1> prop_PrintInstances("PrintInstances", "Diagnostics", &NetworkSettings::printInstances, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::BoundProp<bool, 1> prop_PrintProperties("PrintProperties", "Diagnostics", &NetworkSettings::printProperties, Reflection::PropertyDescriptor::STANDARD);

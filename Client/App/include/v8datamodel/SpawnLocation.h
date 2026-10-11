@@ -9,7 +9,7 @@ namespace RBX
 		class Player;
 	}
 
-	extern const char* sSpawnLocation;
+	extern char* sSpawnLocation;
 	class SpawnLocation : public DescribedCreatable<SpawnLocation, PartInstance, &sSpawnLocation>
 	{
 	private:
@@ -33,7 +33,7 @@ namespace RBX
 		void setTeamColor(BrickColor color);
 	};
 
-	extern const char* sSpawnerService;
+	extern const char* const sSpawnerService;
 	class SpawnerService : public DescribedCreatable<SpawnerService, Instance, &sSpawnerService>, public Service
 	{
 	private:

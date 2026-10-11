@@ -28,7 +28,7 @@ namespace RBX
 		virtual void onSelectionChanged(const SelectionChanged&) = 0;
 	};
 
-	extern const char* sSelection;
+	extern const char* const sSelection;
 
 	class Selection : public DescribedCreatable<Selection, Instance, &sSelection>,
 					  public Notifier<Selection, SelectionChanged>,

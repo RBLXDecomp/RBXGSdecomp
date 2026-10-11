@@ -3,6 +3,8 @@
 
 namespace RBX
 {
+	const char* const sFreefall = "Freefall";
+
 	Freefall::Freefall(Humanoid* humanoid)
 		: Base(humanoid)
 	{

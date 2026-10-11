@@ -5,7 +5,7 @@
 
 namespace RBX
 {
-	extern const char* sSky;
+	extern char* sSky;
 	class Sky : public DescribedCreatable<Sky, Instance, &sSky>
 	{
 	public:

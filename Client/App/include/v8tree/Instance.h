@@ -139,7 +139,7 @@ namespace RBX
 		}
 	};
 
-	extern const char* sInstance;
+	extern const char* const sInstance;
 	class Instance : public boost::enable_shared_from_this<Instance>,
 					 public AbstractFactoryProduct<Instance>,
 					 public Reflection::Described<Instance, &sInstance, Reflection::DescribedBase>,

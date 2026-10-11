@@ -6,7 +6,7 @@
 
 namespace RBX 
 {
-	extern const char* sFaceInstance;
+	extern const char* const sFaceInstance;
 
 	class FaceInstance : public Reflection::Described<FaceInstance, &sFaceInstance, Instance> 
 	{

@@ -11,7 +11,7 @@ namespace RBX
 	class Primitive;
 	class PartInstance;
 
-	extern const char* sModel;
+	extern char* sModel;
 	class ModelInstance : public DescribedCreatable<ModelInstance, PVInstance, &sModel>,
 						  public IRenderable,
 						  public virtual IPrimaryPart,

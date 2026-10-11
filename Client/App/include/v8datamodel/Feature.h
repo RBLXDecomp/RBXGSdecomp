@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-    extern const char* sFeature;
+    extern const char* const sFeature;
     class Feature : public DescribedNonCreatable<Feature, Instance, &sFeature>,
                     public IRenderable
     {
@@ -82,7 +82,7 @@ namespace RBX
         G3D::CoordinateFrame computeLocalCoordinateFrame() const;
     };
 
-    extern const char* sHole;
+    extern const char* const sHole;
     class Hole : public DescribedCreatable<Hole, Feature, &sHole>
     {
     private:
@@ -94,7 +94,7 @@ namespace RBX
         virtual ~Hole();
     };
 
-    extern const char* sMotorFeature;
+    extern const char* const sMotorFeature;
     class MotorFeature : public DescribedCreatable<MotorFeature, Feature, &sMotorFeature>
     {
     private:
@@ -109,7 +109,7 @@ namespace RBX
         static void join(Instance*, Instance*);
     };
 
-    extern const char* sVelocityMotor;
+    extern const char* const sVelocityMotor;
     class VelocityMotor : public DescribedCreatable<VelocityMotor, JointInstance, &sVelocityMotor>
     {
     private:

@@ -5,7 +5,7 @@
 
 namespace RBX 
 {
-	extern const char* sDecal;
+	extern char* sDecal;
 
 	class Decal : public DescribedCreatable<Decal, FaceInstance, &sDecal> 
 	{
@@ -42,7 +42,7 @@ namespace RBX
 		void setShiny(float value);
 	};
 
-	extern const char* sTexture;
+	extern char* sTexture;
 
 	class Texture : public DescribedCreatable<Texture, Decal, &sTexture>
 	{

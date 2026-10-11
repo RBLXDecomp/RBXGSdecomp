@@ -5,6 +5,8 @@ static RBX::Reflection::BoundFuncDesc<RBX::Selection, void(boost::shared_ptr<con
 
 namespace RBX
 {
+	const char* const sSelection = "Selection";
+
 	Selection::Selection()
 		: selection(std::vector<boost::shared_ptr<Instance>>())
 	{

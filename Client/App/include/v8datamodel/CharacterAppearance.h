@@ -16,7 +16,7 @@ namespace RBX
 		virtual bool askSetParent(const Instance* instance) const;
 	};
 
-	extern const char* sBodyColors;
+	extern const char* const sBodyColors;
 	class BodyColors : public DescribedCreatable<BodyColors, CharacterAppearance, &sBodyColors>
 	{
 	private:
@@ -51,7 +51,7 @@ namespace RBX
 		}
 	};
 
-	extern const char* sShirtGraphic;
+	extern const char* const sShirtGraphic;
 	class ShirtGraphic : public DescribedCreatable<ShirtGraphic, CharacterAppearance, &sShirtGraphic>
 	{
 	private:
@@ -75,7 +75,7 @@ namespace RBX
 		}
 	};
 
-	extern const char* sShirt;
+	extern const char* const sShirt;
 	class Shirt : public DescribedCreatable<Shirt, ShirtGraphic, &sShirt>
 	{
 	private:
@@ -103,7 +103,7 @@ namespace RBX
 		}
 	};
 
-	extern const char* sSkin;
+	extern const char* const sSkin;
 	class Skin : public DescribedCreatable<Skin, CharacterAppearance, &sSkin>
 	{
 	private:

@@ -17,7 +17,7 @@ namespace RBX
 	class Accoutrement;
 	class Controller;
 
-	extern const char* sHumanoid;
+	extern char* sHumanoid;
 	class Humanoid : public DescribedCreatable<Humanoid, Instance, &sHumanoid>,
 					 public Connector,
 					 public IControllable,

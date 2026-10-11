@@ -5,6 +5,8 @@
 
 namespace RBX
 {
+	const char* const sJumping = "Jumping";
+
 	Jumping::Jumping(Humanoid* humanoid)
 		: Base(humanoid),
 		  timeout(0.5f),

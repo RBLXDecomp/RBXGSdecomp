@@ -3,7 +3,7 @@
 
 namespace RBX
 {
-	const char* sServiceProvider = "ServiceProvider";
+	const char* const sServiceProvider = "ServiceProvider";
 
 	Reflection::BoundFuncDesc<ServiceProvider, boost::shared_ptr<Instance>(std::string), 1> ServiceProvider::func_service(&ServiceProvider::findServiceByClassNameString, "service", "name", Reflection::FunctionDescriptor::AnyCaller);
 	Reflection::BoundFuncDesc<ServiceProvider, boost::shared_ptr<Instance>(std::string), 1> ServiceProvider::func_GetService(&ServiceProvider::findServiceByClassNameString, "GetService", "name", Reflection::FunctionDescriptor::AnyCaller);

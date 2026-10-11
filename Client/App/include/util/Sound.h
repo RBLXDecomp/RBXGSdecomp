@@ -101,7 +101,7 @@ namespace RBX
 			void release();
 		};
 
-		extern const char* sSoundChannel;
+		extern char* sSoundChannel;
 
 		class SoundChannel : public DescribedCreatable<SoundChannel, Instance, &sSoundChannel>,
 							 public Listener<RunService, Heartbeat>
@@ -152,7 +152,7 @@ namespace RBX
 			void onChannelEnd();
 		};
 
-		extern const char* sSoundService;
+		extern char* sSoundService;
 
 		class SoundService : public DescribedCreatable<SoundService, Instance, &sSoundService>,
 							 public Service,
@@ -211,7 +211,7 @@ namespace RBX
 	void registerSound();
 }
 
-extern const char* sStockSound;
+extern char* sStockSound;
 
 class StockSound : public RBX::DescribedCreatable<StockSound, RBX::Soundscape::SoundChannel, &sStockSound>
 {

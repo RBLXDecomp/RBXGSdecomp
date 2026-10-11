@@ -10,7 +10,7 @@
 
 namespace RBX
 {
-	extern const char* sRunService;
+	extern const char* const sRunService;
 
 	class DataModel;
 

@@ -33,7 +33,7 @@ namespace RBX
 			}
 		};
 
-		extern const char* sPlayer;
+		extern char* sPlayer;
 		class Player : public DescribedCreatable<Player, Instance, &sPlayer>,
 					   public Notifier<Player, CharacterAdded>,
 					   public Notifier<Player, CharacterRemoving>

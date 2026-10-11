@@ -20,6 +20,8 @@ static std::string testImage(const std::string& file, G3D::GImage& master)
 
 namespace RBX
 {
+	char* sSky = "Sky";
+
 	Sky::Sky()
 		: drawCelestialBodies(true),
 		  numStars(3000)

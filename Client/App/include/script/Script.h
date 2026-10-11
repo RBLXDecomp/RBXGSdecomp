@@ -7,7 +7,7 @@ namespace RBX
 {
 	class ScriptContext;
 
-	extern const char* sScript;
+	extern char* sScript;
 	class Script : public DescribedCreatable<Script, Instance, &sScript>
 	{
 	public:
@@ -65,7 +65,7 @@ namespace RBX
 		virtual void onAncestorChanged(const AncestorChanged& event);
 	};
 
-	extern const char* sLocalScript;
+	extern char* sLocalScript;
 	class LocalScript : public DescribedCreatable<LocalScript, Script, &sLocalScript>
 	{
 	public:

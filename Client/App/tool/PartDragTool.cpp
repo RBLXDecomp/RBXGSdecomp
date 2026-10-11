@@ -6,6 +6,8 @@
 
 namespace RBX
 {
+	char* sPartDragTool = "PartDragTool";
+
 	PartDragTool::PartDragTool(PartInstance* mousePart, const G3D::Vector3& hitPointWorld, Workspace* workspace)
 		: Base(workspace),
 		  hitWorld(hitPointWorld),

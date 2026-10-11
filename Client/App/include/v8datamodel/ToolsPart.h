@@ -27,7 +27,7 @@ namespace RBX
 		void set(const BrickColor&);
 	};
 
-	extern const char* sFillTool;
+	extern char* sFillTool;
 
 	class FillTool : public Named<PartTool, &sFillTool>
 	{
@@ -42,7 +42,7 @@ namespace RBX
 		virtual MouseCommand* isSticky() const;
 	};
 
-	extern const char* sDropperTool;
+	extern char* sDropperTool;
 
 	class DropperTool : public Named<PartTool, &sDropperTool>
 	{
@@ -53,7 +53,7 @@ namespace RBX
 		DropperTool(Workspace*);
 	};
 
-	extern const char* sModelSetPrimaryPartTool;
+	extern char* sModelSetPrimaryPartTool;
 
 	class ModelSetPrimaryPartTool : public Named<PartTool, &sModelSetPrimaryPartTool>
 	{

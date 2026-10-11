@@ -23,7 +23,7 @@ namespace RBX
 	{
 	};
 
-	extern const char* sWorkspace;
+	extern char* sWorkspace;
 	class Workspace : public DescribedNonCreatable<Workspace, RootInstance, &sWorkspace>,
 					  public Service,
 					  public GuiTarget,

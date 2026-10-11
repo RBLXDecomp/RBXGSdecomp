@@ -7,7 +7,7 @@ namespace RBX
 {
     namespace Stats
     {
-        extern const char* sStatsItem;
+        extern char* sStatsItem;
         class Item : public DescribedNonCreatable<Item, Instance, &sStatsItem>
         {
         protected:
@@ -67,7 +67,7 @@ namespace RBX
             virtual void update();
         };
 
-        extern const char *sStats;
+        extern char *sStats;
         class StatsService : public DescribedNonCreatable<StatsService, Instance, &sStats>, 
                              public Service
         {

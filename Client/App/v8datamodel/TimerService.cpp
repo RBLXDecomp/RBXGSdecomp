@@ -3,6 +3,8 @@
 
 namespace RBX
 {
+	char* sTimerService = "Timer";
+
 	TimerService::TimerService() {}
 
 	void TimerService::delay(boost::function0<void> func, double seconds)

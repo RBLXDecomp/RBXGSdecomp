@@ -3,6 +3,8 @@
 
 namespace RBX
 {
+	char* sSpawnLocation = "SpawnLocation";
+
 	static Reflection::PropDescriptor<SpawnLocation, BrickColor> prop_TeamColor("TeamColor", "Teams", &SpawnLocation::getTeamColor, &SpawnLocation::setTeamColor, Reflection::PropertyDescriptor::STANDARD);
 
 	SpawnLocation::SpawnLocation()
@@ -47,6 +49,8 @@ namespace RBX
 			spawnerService->UnregisterSpawner(this);
 		}
 	}
+
+	const char* const sSpawnerService = "SpawnerService";
 
 	SpawnerService::SpawnerService()
 	{

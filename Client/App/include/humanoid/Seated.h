@@ -4,7 +4,7 @@
 
 namespace RBX
 {
-	extern const char* sSeated;
+	extern const char* const sSeated;
 
 	class Seated : public Named<Humanoid::State, &sSeated>
 	{

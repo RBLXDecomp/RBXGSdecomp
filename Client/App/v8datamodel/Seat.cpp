@@ -7,6 +7,8 @@
 
 namespace RBX
 {
+	char* sSeat = "Seat";
+
 	Seat::Seat()
 		: sleepTime(0.0f)
 	{

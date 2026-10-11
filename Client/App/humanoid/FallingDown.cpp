@@ -3,6 +3,8 @@
 
 namespace RBX
 {
+	const char* const sFallingDown = "FallingDown";
+
 	FallingDown::FallingDown(Humanoid* humanoid, float timeToGetUp)
 		: Base(humanoid),
 		  timeToGetUp(timeToGetUp),

@@ -31,6 +31,8 @@ namespace RBX
 		return true;
 	}
 
+	const char* const sBackpackItem = "BackpackItem";
+
 	bool BackpackItem::askSetParent(const Instance* instance) const
 	{
 		return true;
@@ -73,6 +75,8 @@ namespace RBX
 		float width = GuiRoot::toPixelSize(G3D::Vector2(10.0f, 10.0f)).x;
 		return G3D::Vector2(width, width);
 	}
+
+	const char* const sHopperBin = "HopperBin";
 
 	HopperBin::HopperBin()
 		: binType(SCRIPT_BIN),
@@ -184,6 +188,8 @@ namespace RBX
 		}
 	}
 
+	const char* const sStarterPackService = "StarterPack";
+
 	StarterPackService::StarterPackService()
 	{
 		setName("StarterPack");
@@ -213,6 +219,8 @@ namespace RBX
 			);
 		}
 	}
+
+	const char* const sLegacyHopperService = "Hopper";
 
 	LegacyHopperService::LegacyHopperService()
 	{

@@ -45,6 +45,8 @@ namespace RBX
 {
 	namespace Network
 	{
+		char* sPlayers = "Players";
+
 		class Players::Plugin : public PluginInterfaceAdapter<Players>
 		{
 		public:

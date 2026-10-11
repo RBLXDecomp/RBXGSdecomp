@@ -10,6 +10,8 @@ static RBX::Reflection::EnumPropDescriptor<RBX::SpecialShape, RBX::SpecialShape:
 
 namespace RBX
 {
+	char* sSpecialShape = "SpecialMesh";
+
 	SpecialShape::SpecialShape()
 		: scale(1.0f, 1.0f, 1.0f),
 		  vertColor(1.0f, 1.0f, 1.0f),

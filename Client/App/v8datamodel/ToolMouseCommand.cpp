@@ -5,6 +5,8 @@
 
 namespace RBX
 {
+	char* sToolMouseCommand = "ToolMouseCommand";
+
 	ToolMouseCommand::ToolMouseCommand(Workspace* workspace, Tool* tool)
 		: Base(workspace),
 		  tool(shared_from(tool))

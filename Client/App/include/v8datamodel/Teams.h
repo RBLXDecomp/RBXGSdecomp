@@ -13,7 +13,7 @@ namespace RBX
 	}
 	class Humanoid;
 
-	extern const char* sTeams;
+	extern const char* const sTeams;
 	class Teams : public DescribedCreatable<Teams, Instance, &sTeams>, public Service
 	{
 	private:

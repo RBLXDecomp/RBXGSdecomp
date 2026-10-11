@@ -13,7 +13,7 @@ namespace RBX
 	class TimeState;
 	class IMetric;
 
-	extern const char* sDataModel;
+	extern const char* const sDataModel;
 
 	class DataModel : public DescribedNonCreatable<DataModel, ServiceProvider, &sDataModel>,
 					  public VerbContainer,

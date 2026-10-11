@@ -9,7 +9,7 @@
 
 namespace RBX
 {
-	extern const char* sIdManager;
+	extern char* sIdManager;
 
 	class IdManager : public DescribedNonCreatable<IdManager, Instance, &sIdManager>, public Service
 	{

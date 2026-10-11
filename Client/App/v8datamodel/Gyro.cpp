@@ -9,7 +9,7 @@ namespace RBX
 	char* sBodyGyro = "BodyGyro";
 	char* sBodyForce = "BodyForce";
 	char* sBodyThrust = "BodyThrust";
-	char* sRocket = "Rocket";
+	char* sRocket = "RocketPropulsion";
 
 	void registerBodyMovers()
 	{

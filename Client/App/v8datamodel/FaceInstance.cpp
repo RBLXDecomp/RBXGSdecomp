@@ -5,7 +5,7 @@
 #include "reflection/reflection.h"
 namespace RBX 
 {
-	const char* sFaceInstance = "FaceInstance";
+	const char* const sFaceInstance = "FaceInstance";
 	const Reflection::EnumPropDescriptor<FaceInstance,NormalId> FaceInstance::prop_Face("Face", "Data", &FaceInstance::getFace, &FaceInstance::setFace, Reflection::PropertyDescriptor::STANDARD);
 
 	FaceInstance::FaceInstance()

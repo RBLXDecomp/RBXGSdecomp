@@ -3,7 +3,7 @@
 
 namespace RBX
 {
-	extern const char* sGameSettings;
+	extern const char* const sGameSettings;
 
 	class GameSettings : public GlobalSettingsItem<GameSettings, &sGameSettings>
 	{

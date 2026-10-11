@@ -5,7 +5,7 @@
 
 namespace RBX
 {
-	extern const char* sSpecialShape;
+	extern char* sSpecialShape;
 
 	class SpecialShape : public DescribedCreatable<SpecialShape, Instance, &sSpecialShape>
 	{

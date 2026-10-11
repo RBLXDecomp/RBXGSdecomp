@@ -4,6 +4,8 @@
 
 namespace RBX
 {
+	char* sGroupDragTool = "GroupDragTool";
+
 	GroupDragTool::GroupDragTool(PartInstance* mousePart, const G3D::Vector3& hitPointWorld, const std::vector<boost::weak_ptr<PartInstance>>& partArray, Workspace* workspace)
 		: Base(workspace),
 		  dragging(false)

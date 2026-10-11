@@ -15,7 +15,7 @@ namespace RBX
 	class Mouse;
 	class ToolMouseCommand;
 
-	extern const char* sTool;
+	extern const char* const sTool;
 	class Tool : public DescribedCreatable<Tool, BackpackItem, &sTool>,
 				 public IEquipable,
 				 public IRenderable,

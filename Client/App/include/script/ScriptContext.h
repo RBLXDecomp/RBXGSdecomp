@@ -28,7 +28,7 @@ namespace RBX
         class YieldingThreads;
     }
 
-    extern const char *sScriptContext;
+    extern char* sScriptContext;
     class ScriptContext : public DescribedCreatable<ScriptContext, Instance, &sScriptContext>,
                           public Service,
                           public Listener<RunService, RunTransition>,

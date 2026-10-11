@@ -11,7 +11,7 @@ namespace RBX
 {
 	namespace Network
 	{
-		extern const char* sClient;
+		extern char* sClient;
 
 		class Client : public DescribedCreatable<Client, Peer, &sClient>, public Service, public Listener<ServiceProvider, Closing>
 		{

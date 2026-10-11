@@ -7,6 +7,8 @@
 
 namespace RBX
 {
+	const char* const sFlag = "Flag";
+
 	static Reflection::PropDescriptor<Flag, BrickColor> prop_Color("TeamColor", "Data", &Flag::getTeamColor, &Flag::setTeamColor, Reflection::PropertyDescriptor::STANDARD);
 
 	Flag::Flag()

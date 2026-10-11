@@ -23,6 +23,8 @@ namespace RBX
 {
 	namespace Network
 	{
+		char* sServer = "NetworkServer";
+
 		Server::Server()
 			: outgoingPort(0)
 		{

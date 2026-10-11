@@ -8,7 +8,7 @@
 
 namespace RBX
 {
-	extern const char* sGlobalSettings;
+	extern const char* const sGlobalSettings;
 
 	class GlobalSettings : public DescribedNonCreatable<GlobalSettings, ServiceProvider, &sGlobalSettings>
 	{

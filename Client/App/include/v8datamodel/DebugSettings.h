@@ -5,7 +5,7 @@
 
 namespace RBX
 {
-    extern const char* sDebugSettings;
+    extern const char* const sDebugSettings;
     class DebugSettings : public GlobalSettingsItem<DebugSettings, &sDebugSettings>
     {
     public:

@@ -3,7 +3,7 @@
 
 namespace RBX
 {
-	extern const char* sFreefall;
+	extern const char* const sFreefall;
 
 	class Freefall : public Named<Flying, &sFreefall>
 	{

@@ -3,7 +3,7 @@
 
 namespace RBX
 {
-	extern const char* sTimerService;
+	extern char* sTimerService;
 
 	class TimerService : public DescribedCreatable<TimerService, Instance, &sTimerService>, public Service, public Listener<RunService, Heartbeat>
 	{

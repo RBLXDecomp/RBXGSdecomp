@@ -107,6 +107,9 @@ namespace RBX
 {
 	namespace Network
 	{
+		const char* const sMarker = "NetworkMarker";
+		const char* const sPeer = "NetworkPeer";
+
 		Peer::Peer()
 			: profilePacketsThread(new Profiling::ThreadProfiler("Packets Thread")),
 			  rakPeer(new RakPeer)
@@ -170,6 +173,8 @@ namespace RBX
 				NetworkSettings::singleton().extraPingVariance
 			);
 		}
+
+		const char* const sReplicator = "NetworkReplicator";
 
 		Replicator::Replicator(SystemAddress remotePlayerId, RakPeerInterface* peer)
 			: lastSendTime(G3D::System::getLocalTime()),
