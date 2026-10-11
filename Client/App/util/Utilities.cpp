@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include "util/Utilities.h"
 #include "util/ContentProvider.h"
-#include "util/TextureId.h"
 #include <stdio.h>
 #include <boost/lexical_cast.hpp>
 
@@ -73,12 +72,6 @@ namespace RBX
 			_snprintf(buffer, 32, "%.9g", value);
 			return buffer;
 		}
-	}
-
-	template<>
-	static std::string StringConverter<TextureId>::convertToString(const TextureId& value)
-	{
-		return value.toString();
 	}
 
 	template<>
@@ -200,13 +193,5 @@ namespace RBX
 				return false;
 			}
 		}
-	}
-
-	// TODO: does not match
-	template<>
-	static bool StringConverter<TextureId>::convertToValue(const std::string& text, TextureId& value)
-	{
-		value = TextureId(text);
-		return true;
 	}
 }
