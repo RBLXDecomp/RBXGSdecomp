@@ -1612,6 +1612,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Enums.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Explosion.cpp"
 				>
 			</File>

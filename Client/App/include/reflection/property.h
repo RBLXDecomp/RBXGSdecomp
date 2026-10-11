@@ -108,7 +108,16 @@ namespace RBX
 
 		public:
 			template<typename T>
-			T getValue() const;
+			T getValue() const
+			{
+				RBXASSERT(dynamic_cast<const TypedPropertyDescriptor<T>*>(descriptor));
+				const TypedPropertyDescriptor<T>* value = dynamic_cast<const TypedPropertyDescriptor<T>*>(descriptor);
+
+				if (value == NULL)
+					throw std::bad_cast();
+
+				return value->getValue(instance);
+			}
 		};
 
 		class Property : public ConstProperty

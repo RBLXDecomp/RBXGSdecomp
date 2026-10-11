@@ -862,125 +862,140 @@ namespace RBX
 		return !event_Touched.empty(this);
 	}
 
-	template<>
-	bool Reflection::TypedPropertyDescriptor<G3D::CoordinateFrame>::hasStringValue() const
+	namespace Reflection
 	{
-		return false;
-	}
-
-	template<>
-	std::string Reflection::TypedPropertyDescriptor<G3D::CoordinateFrame>::getStringValue(const DescribedBase* instance) const
-	{
-		return PropertyDescriptor::getStringValue(instance);
-	}
-
-	template<>
-	bool Reflection::TypedPropertyDescriptor<G3D::CoordinateFrame>::setStringValue(DescribedBase* instance, const std::string& text) const
-	{
-		PropertyDescriptor::setStringValue(instance, text);
-		return false;
-	}
-
-	template<>
-	void Reflection::TypedPropertyDescriptor<G3D::CoordinateFrame>::readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
-	{
-		if (!element->isXsiNil())
+		EnumDesc<PartInstance::FormFactor>::EnumDesc()
+			: EnumDescriptor("FormFactor", typeid(PartInstance::FormFactor))
 		{
-			float value;
-			G3D::CoordinateFrame result;
-			
-			bool gotValue1 = element->findFirstChildByTag(tag_X)->getValue(value);
-			RBXASSERT(gotValue1);
-			result.translation.x = value;
+			addPair(PartInstance::SYMETRIC, "Symmetric");
+			addPair(PartInstance::BRICK, "Brick");
+			addPair(PartInstance::PLATE, "Plate");
 
-			bool gotValue2 = element->findFirstChildByTag(tag_Y)->getValue(value);
-			RBXASSERT(gotValue2);
-			result.translation.y = value;
-
-			bool gotValue3 = element->findFirstChildByTag(tag_Z)->getValue(value);
-			RBXASSERT(gotValue3);
-			result.translation.z = value;
-
-			bool gotValue4 = element->findFirstChildByTag(tag_R00)->getValue(value);
-			RBXASSERT(gotValue4);
-			result.rotation[0][0] = value;
-
-			bool gotValue5 = element->findFirstChildByTag(tag_R01)->getValue(value);
-			RBXASSERT(gotValue5);
-			result.rotation[0][1] = value;
-
-			bool gotValue6 = element->findFirstChildByTag(tag_R02)->getValue(value);
-			RBXASSERT(gotValue6);
-			result.rotation[0][2] = value;
-
-			bool gotValue7 = element->findFirstChildByTag(tag_R10)->getValue(value);
-			RBXASSERT(gotValue7);
-			result.rotation[1][0] = value;
-
-			bool gotValue8 = element->findFirstChildByTag(tag_R11)->getValue(value);
-			RBXASSERT(gotValue8);
-			result.rotation[1][1] = value;
-
-			bool gotValue9 = element->findFirstChildByTag(tag_R12)->getValue(value);
-			RBXASSERT(gotValue9);
-			result.rotation[1][2] = value;
-
-			bool gotValue10 = element->findFirstChildByTag(tag_R20)->getValue(value);
-			RBXASSERT(gotValue10);
-			result.rotation[2][0] = value;
-
-			bool gotValue11 = element->findFirstChildByTag(tag_R21)->getValue(value);
-			RBXASSERT(gotValue11);
-			result.rotation[2][1] = value;
-
-			bool gotValue12 = element->findFirstChildByTag(tag_R22)->getValue(value);
-			RBXASSERT(gotValue12);
-			result.rotation[2][2] = value;
-
-			getset->setValue(instance, result);
+			const Name* name = &Name::declare("Block", -1);
+			nameToEnumLegacy[name] = PartInstance::BRICK;
+			stringToEnumLegacy[name->toString()] = PartInstance::BRICK;
 		}
-	}
+
+		template<>
+		bool TypedPropertyDescriptor<G3D::CoordinateFrame>::hasStringValue() const
+		{
+			return false;
+		}
+
+		template<>
+		std::string TypedPropertyDescriptor<G3D::CoordinateFrame>::getStringValue(const DescribedBase* instance) const
+		{
+			return PropertyDescriptor::getStringValue(instance);
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<G3D::CoordinateFrame>::setStringValue(DescribedBase* instance, const std::string& text) const
+		{
+			PropertyDescriptor::setStringValue(instance, text);
+			return false;
+		}
+
+		template<>
+		void TypedPropertyDescriptor<G3D::CoordinateFrame>::readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
+		{
+			if (!element->isXsiNil())
+			{
+				float value;
+				G3D::CoordinateFrame result;
+				
+				bool gotValue1 = element->findFirstChildByTag(tag_X)->getValue(value);
+				RBXASSERT(gotValue1);
+				result.translation.x = value;
+
+				bool gotValue2 = element->findFirstChildByTag(tag_Y)->getValue(value);
+				RBXASSERT(gotValue2);
+				result.translation.y = value;
+
+				bool gotValue3 = element->findFirstChildByTag(tag_Z)->getValue(value);
+				RBXASSERT(gotValue3);
+				result.translation.z = value;
+
+				bool gotValue4 = element->findFirstChildByTag(tag_R00)->getValue(value);
+				RBXASSERT(gotValue4);
+				result.rotation[0][0] = value;
+
+				bool gotValue5 = element->findFirstChildByTag(tag_R01)->getValue(value);
+				RBXASSERT(gotValue5);
+				result.rotation[0][1] = value;
+
+				bool gotValue6 = element->findFirstChildByTag(tag_R02)->getValue(value);
+				RBXASSERT(gotValue6);
+				result.rotation[0][2] = value;
+
+				bool gotValue7 = element->findFirstChildByTag(tag_R10)->getValue(value);
+				RBXASSERT(gotValue7);
+				result.rotation[1][0] = value;
+
+				bool gotValue8 = element->findFirstChildByTag(tag_R11)->getValue(value);
+				RBXASSERT(gotValue8);
+				result.rotation[1][1] = value;
+
+				bool gotValue9 = element->findFirstChildByTag(tag_R12)->getValue(value);
+				RBXASSERT(gotValue9);
+				result.rotation[1][2] = value;
+
+				bool gotValue10 = element->findFirstChildByTag(tag_R20)->getValue(value);
+				RBXASSERT(gotValue10);
+				result.rotation[2][0] = value;
+
+				bool gotValue11 = element->findFirstChildByTag(tag_R21)->getValue(value);
+				RBXASSERT(gotValue11);
+				result.rotation[2][1] = value;
+
+				bool gotValue12 = element->findFirstChildByTag(tag_R22)->getValue(value);
+				RBXASSERT(gotValue12);
+				result.rotation[2][2] = value;
+
+				getset->setValue(instance, result);
+			}
+		}
 
 
-	template<>
-	void Reflection::TypedPropertyDescriptor<G3D::CoordinateFrame>::writeValue(const DescribedBase* instance, XmlElement* element) const
-	{
-		G3D::CoordinateFrame coord = getValue(instance);
+		template<>
+		void TypedPropertyDescriptor<G3D::CoordinateFrame>::writeValue(const DescribedBase* instance, XmlElement* element) const
+		{
+			G3D::CoordinateFrame coord = getValue(instance);
 
-		XmlElement* xElement = new XmlElement(tag_X, coord.translation.x);
-		element->pushBackChild(xElement);
+			XmlElement* xElement = new XmlElement(tag_X, coord.translation.x);
+			element->pushBackChild(xElement);
 
-		XmlElement* yElement = new XmlElement(tag_Y, coord.translation.y);
-		element->pushBackChild(yElement);
+			XmlElement* yElement = new XmlElement(tag_Y, coord.translation.y);
+			element->pushBackChild(yElement);
 
-		XmlElement* zElement = new XmlElement(tag_Z, coord.translation.z);
-		element->pushBackChild(zElement);
+			XmlElement* zElement = new XmlElement(tag_Z, coord.translation.z);
+			element->pushBackChild(zElement);
 
-		XmlElement* r00Element = new XmlElement(tag_R00, coord.rotation[0][0]);
-		element->pushBackChild(r00Element);
+			XmlElement* r00Element = new XmlElement(tag_R00, coord.rotation[0][0]);
+			element->pushBackChild(r00Element);
 
-		XmlElement* r01Element = new XmlElement(tag_R01, coord.rotation[0][1]);
-		element->pushBackChild(r01Element);
+			XmlElement* r01Element = new XmlElement(tag_R01, coord.rotation[0][1]);
+			element->pushBackChild(r01Element);
 
-		XmlElement* r02Element = new XmlElement(tag_R02, coord.rotation[0][2]);
-		element->pushBackChild(r02Element);
+			XmlElement* r02Element = new XmlElement(tag_R02, coord.rotation[0][2]);
+			element->pushBackChild(r02Element);
 
-		XmlElement* r10Element = new XmlElement(tag_R10, coord.rotation[1][0]);
-		element->pushBackChild(r10Element);
+			XmlElement* r10Element = new XmlElement(tag_R10, coord.rotation[1][0]);
+			element->pushBackChild(r10Element);
 
-		XmlElement* r11Element = new XmlElement(tag_R11, coord.rotation[1][1]);
-		element->pushBackChild(r11Element);
+			XmlElement* r11Element = new XmlElement(tag_R11, coord.rotation[1][1]);
+			element->pushBackChild(r11Element);
 
-		XmlElement* r12Element = new XmlElement(tag_R12, coord.rotation[1][2]);
-		element->pushBackChild(r12Element);
+			XmlElement* r12Element = new XmlElement(tag_R12, coord.rotation[1][2]);
+			element->pushBackChild(r12Element);
 
-		XmlElement* r20Element = new XmlElement(tag_R20, coord.rotation[2][0]);
-		element->pushBackChild(r20Element);
+			XmlElement* r20Element = new XmlElement(tag_R20, coord.rotation[2][0]);
+			element->pushBackChild(r20Element);
 
-		XmlElement* r21Element = new XmlElement(tag_R21, coord.rotation[2][1]);
-		element->pushBackChild(r21Element);
+			XmlElement* r21Element = new XmlElement(tag_R21, coord.rotation[2][1]);
+			element->pushBackChild(r21Element);
 
-		XmlElement* r22Element = new XmlElement(tag_R22, coord.rotation[2][2]);
-		element->pushBackChild(r22Element);
+			XmlElement* r22Element = new XmlElement(tag_R22, coord.rotation[2][2]);
+			element->pushBackChild(r22Element);
+		}
 	}
 }

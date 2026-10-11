@@ -93,4 +93,19 @@ namespace RBX
 			setMeshType(FILE_MESH);
 		}
 	}
+
+	namespace Reflection
+	{
+		EnumDesc<SpecialShape::MeshType>::EnumDesc()
+			: EnumDescriptor("MeshType", typeid(SpecialShape::MeshType))
+		{
+			addPair(SpecialShape::HEAD_MESH, "Head");
+			addPair(SpecialShape::TORSO_MESH, "Torso");
+			addPair(SpecialShape::WEDGE_MESH, "Wedge");
+			addPair(SpecialShape::BRICK_MESH, "Brick");
+			addPair(SpecialShape::SPHERE_MESH, "Sphere");
+			addPair(SpecialShape::CYLINDER_MESH, "Cylinder");
+			addPair(SpecialShape::FILE_MESH, "FileMesh");
+		}
+	}
 }

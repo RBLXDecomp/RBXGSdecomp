@@ -286,4 +286,22 @@ namespace RBX
 
 		return osvi.dwPlatformId;
 	}
+
+	namespace Reflection
+	{
+		EnumDesc<DebugSettings::ErrorReporting>::EnumDesc()
+			: EnumDescriptor("ErrorReporting", typeid(DebugSettings::ErrorReporting))
+		{
+			addPair(DebugSettings::DontReport, "DontReport");
+			addPair(DebugSettings::Prompt, "Prompt");
+			addPair(DebugSettings::Report, "Report");
+		}
+
+		EnumDesc<Debugable::AssertAction>::EnumDesc()
+			: EnumDescriptor("AssertAction", typeid(Debugable::AssertAction))
+		{
+			addPair(Debugable::CrashOnAssert, "CrashOnAssert");
+			addPair(Debugable::IgnoreAssert, "IgnoreAssert");
+		}
+	}
 }

@@ -4,6 +4,7 @@
 #include <boost/shared_ptr.hpp>
 #include "v8tree/Instance.h"
 #include "v8datamodel/BrickColor.h"
+#include "util/NormalId.h"
 
 namespace RBX
 {
@@ -99,6 +100,18 @@ namespace RBX
 		{
 			static Type type("BrickColor", typeid(BrickColor), "int");
 			return type;
+		}
+
+		template<>
+		EnumDesc<NormalId>::EnumDesc()
+			: EnumDescriptor("NormalId", typeid(NormalId))
+		{
+			addPair(NORM_Y, "Top"),
+			addPair(NORM_Y_NEG, "Bottom");
+			addPair(NORM_Z, "Back");
+			addPair(NORM_Z_NEG, "Front");
+			addPair(NORM_X, "Right");
+			addPair(NORM_X_NEG, "Left");
 		}
 
 		template<>
