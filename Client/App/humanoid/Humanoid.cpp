@@ -28,6 +28,17 @@ namespace RBX
 	Reflection::RefPropDescriptor<Humanoid, PartInstance> propRightLeg("RightLeg", "Data", &Humanoid::getRightLeg, &Humanoid::setRightLeg, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::RefPropDescriptor<Humanoid, PartInstance> propWalkToPart("WalkToPart", "Control", &Humanoid::getWalkToPart, &Humanoid::setWalkToPart, Reflection::PropertyDescriptor::STREAMING);
 
+	Reflection::BoundProp<float, 1> Humanoid::propHealth("Health", "Game", &Humanoid::health, &Humanoid::onChangedHealth, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<float, 1> Humanoid::propMaxHealth("MaxHealth", "Game", &Humanoid::maxHealth, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::SignalDesc<Humanoid, void(void)> Humanoid::event_Died("Died");
+	Reflection::SignalDesc<Humanoid, void(float)> Humanoid::event_Running("Running", "speed");
+	Reflection::SignalDesc<Humanoid, void(float)> Humanoid::event_Climbing("Climbing", "speed");
+	Reflection::SignalDesc<Humanoid, void(bool)> Humanoid::event_Jumping("Jumping", "active");
+	Reflection::SignalDesc<Humanoid, void(bool)> Humanoid::event_FreeFalling("FreeFalling", "active");
+	Reflection::SignalDesc<Humanoid, void(bool)> Humanoid::event_GettingUp("GettingUp", "active");
+	Reflection::SignalDesc<Humanoid, void(bool)> Humanoid::event_FallingDown("FallingDown", "active");
+	Reflection::SignalDesc<Humanoid, void(bool)> Humanoid::event_Seated("Seated", "active");
+
 	Humanoid::Humanoid()
 		: health(100.0f),
 		  maxHealth(100.0f),

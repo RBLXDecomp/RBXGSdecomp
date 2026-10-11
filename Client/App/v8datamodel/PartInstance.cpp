@@ -32,18 +32,18 @@ namespace RBX
 	static Reflection::PropDescriptor<PartInstance, float> prop_Friction("Friction", category_Part, &PartInstance::getFriction, &PartInstance::setFriction, Reflection::PropertyDescriptor::STANDARD);
 	static Reflection::PropDescriptor<PartInstance, float> prop_Elasticity("Elasticity", category_Part, &PartInstance::getElasticity, &PartInstance::setElasticity, Reflection::PropertyDescriptor::STANDARD);
 
-	const Reflection::PropDescriptor<PartInstance, float> prop_RenderImportance("RenderImportance", "Behavior", &PartInstance::getRenderImportance, &PartInstance::setRenderImportance, Reflection::PropertyDescriptor::LEGACY);
-	const Reflection::EnumPropDescriptor<PartInstance, Part::PartType> prop_shapeXml("shape", category_Part, &PartInstance::getPartType, &PartInstance::setPartTypeXml, Reflection::PropertyDescriptor::STREAMING);
-	const Reflection::PropDescriptor<PartInstance, G3D::Color3> prop_Color("Color", "Appearance", &PartInstance::getColor3, &PartInstance::setColor3, Reflection::PropertyDescriptor::LEGACY);
-	const Reflection::PropDescriptor<PartInstance, BrickColor> prop_BrickColor("BrickColor", "Appearance", &PartInstance::getColor, &PartInstance::setColor, Reflection::PropertyDescriptor::STANDARD);
-	const Reflection::PropDescriptor<PartInstance, float> prop_Transparency("Transparency", "Appearance", &PartInstance::getTransparencyXml, &PartInstance::setTransparency, Reflection::PropertyDescriptor::STANDARD);
-	const Reflection::PropDescriptor<PartInstance, float> prop_Reflectance("Reflectance", "Appearance", &PartInstance::getReflectance, &PartInstance::setReflectance, Reflection::PropertyDescriptor::STANDARD);
-	const Reflection::PropDescriptor<PartInstance, bool> prop_Locked("Locked", "Behavior", &PartInstance::getPartLocked, &PartInstance::setPartLocked, Reflection::PropertyDescriptor::STANDARD);
-	const Reflection::PropDescriptor<PartInstance, bool> prop_CanCollide("CanCollide", "Behavior", &PartInstance::getCanCollide, &PartInstance::setCanCollide, Reflection::PropertyDescriptor::STANDARD);
-	const Reflection::PropDescriptor<PartInstance, bool> prop_Anchored("Anchored", "Behavior", &PartInstance::getAnchored, &PartInstance::setAnchored, Reflection::PropertyDescriptor::STANDARD);
-	const Reflection::PropDescriptor<PartInstance, G3D::Vector3> prop_Size("Size", category_Part, &PartInstance::getPartSizeXml, &PartInstance::setPartSizeXml, Reflection::PropertyDescriptor::STREAMING);
-	const Reflection::PropDescriptor<PartInstance, G3D::CoordinateFrame> prop_CFrame("CFrame", "Data", &PartInstance::getCoordinateFrame, &PartInstance::setCoordinateFrame, Reflection::PropertyDescriptor::STANDARD);
-	Reflection::SignalDesc<PartInstance, void(boost::shared_ptr<Instance>)> event_Touched("Touched", "part");
+	const Reflection::PropDescriptor<PartInstance, float> PartInstance::prop_RenderImportance("RenderImportance", "Behavior", &PartInstance::getRenderImportance, &PartInstance::setRenderImportance, Reflection::PropertyDescriptor::LEGACY);
+	const Reflection::EnumPropDescriptor<PartInstance, Part::PartType> PartInstance::prop_shapeXml("shape", category_Part, &PartInstance::getPartType, &PartInstance::setPartTypeXml, Reflection::PropertyDescriptor::STREAMING);
+	const Reflection::PropDescriptor<PartInstance, G3D::Color3> PartInstance::prop_Color("Color", "Appearance", &PartInstance::getColor3, &PartInstance::setColor3, Reflection::PropertyDescriptor::LEGACY);
+	const Reflection::PropDescriptor<PartInstance, BrickColor> PartInstance::prop_BrickColor("BrickColor", "Appearance", &PartInstance::getColor, &PartInstance::setColor, Reflection::PropertyDescriptor::STANDARD);
+	const Reflection::PropDescriptor<PartInstance, float> PartInstance::prop_Transparency("Transparency", "Appearance", &PartInstance::getTransparencyXml, &PartInstance::setTransparency, Reflection::PropertyDescriptor::STANDARD);
+	const Reflection::PropDescriptor<PartInstance, float> PartInstance::prop_Reflectance("Reflectance", "Appearance", &PartInstance::getReflectance, &PartInstance::setReflectance, Reflection::PropertyDescriptor::STANDARD);
+	const Reflection::PropDescriptor<PartInstance, bool> PartInstance::prop_Locked("Locked", "Behavior", &PartInstance::getPartLocked, &PartInstance::setPartLocked, Reflection::PropertyDescriptor::STANDARD);
+	const Reflection::PropDescriptor<PartInstance, bool> PartInstance::prop_CanCollide("CanCollide", "Behavior", &PartInstance::getCanCollide, &PartInstance::setCanCollide, Reflection::PropertyDescriptor::STANDARD);
+	const Reflection::PropDescriptor<PartInstance, bool> PartInstance::prop_Anchored("Anchored", "Behavior", &PartInstance::getAnchored, &PartInstance::setAnchored, Reflection::PropertyDescriptor::STANDARD);
+	const Reflection::PropDescriptor<PartInstance, G3D::Vector3> PartInstance::prop_Size("Size", category_Part, &PartInstance::getPartSizeXml, &PartInstance::setPartSizeXml, Reflection::PropertyDescriptor::STREAMING);
+	const Reflection::PropDescriptor<PartInstance, G3D::CoordinateFrame> PartInstance::prop_CFrame("CFrame", "Data", &PartInstance::getCoordinateFrame, &PartInstance::setCoordinateFrame, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::SignalDesc<PartInstance, void(boost::shared_ptr<Instance>)> PartInstance::event_Touched("Touched", "part");
 
 	namespace Reflection
 	{
