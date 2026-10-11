@@ -13,7 +13,7 @@ namespace RBX
 		std::string text;
 
 	public:
-		ChatOption(std::string);
+		ChatOption(std::string text);
 		ChatOption();
 		~ChatOption();
 	};
@@ -25,12 +25,15 @@ namespace RBX
 
 	public:
 		SafeChat();
-		ChatOption* getChatRoot();
-		std::string getMessage(std::vector<std::string>);
+		ChatOption* getChatRoot()
+		{
+			return chatRoot.get();
+		}
+		std::string getMessage(std::vector<std::string> code);
 	private:
 		void loadChatTree();
 		void saveChatTree();
-		void loadChildren(ChatOption*, const XmlElement*);
+		void loadChildren(ChatOption* parentOption, const XmlElement* parentElement);
 
 	public:
 		static SafeChat& singleton();

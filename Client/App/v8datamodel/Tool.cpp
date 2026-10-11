@@ -4,6 +4,7 @@
 #include "v8datamodel/JointInstance.h"
 #include "v8datamodel/ToolMouseCommand.h"
 #include "v8datamodel/Mouse.h"
+#include "v8datamodel/Backpack.h"
 #include "tool/DragUtilities.h"
 #include "humanoid/Humanoid.h"
 #include "Network/Players.h"

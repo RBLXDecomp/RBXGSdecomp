@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Gui.h"
 
 namespace RBX
@@ -11,6 +12,6 @@ namespace RBX
 		virtual std::string getLabel() const;
 	public:
 		EquationDisplay(const std::string&, const std::string&, const std::string&);
-		EquationDisplay(const std::string&, const std::string&);
+		EquationDisplay(const std::string& label, const std::string& equation);
 	};
 }

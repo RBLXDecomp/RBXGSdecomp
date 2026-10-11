@@ -29,7 +29,10 @@ namespace RBX
 			return Name::getNullName();
 		}
 	protected:
-		GuiItem* getFocus();
+		GuiItem* getFocus()
+		{
+			return focus.get();
+		}
 		void loseFocus()
 		{
 			if (focus)
@@ -44,7 +47,7 @@ namespace RBX
 			return getMyRect().toRect2D();
 		}
 	protected:
-		void label2d(Adorn*, const std::string&, const G3D::Color4&, const G3D::Color4&, Adorn::XAlign) const;
+		void label2d(Adorn* adorn, const std::string& label, const G3D::Color4& fill, const G3D::Color4& border, Adorn::XAlign align) const;
 
 		virtual void onLoseFocus()
 		{
@@ -96,12 +99,18 @@ namespace RBX
 		GuiItem(const GuiItem&);
 		GuiItem();
 	public:
-		void addGuiItem(boost::shared_ptr<GuiItem>);
+		void addGuiItem(boost::shared_ptr<GuiItem> guiItem)
+		{
+			guiItem->setParent(this);
+		}
 		void setGuiSize(const G3D::Vector2& guiSize)
 		{
 			this->guiSize = guiSize;
 		}
-		const G3D::Vector2& getGuiSize() const;
+		const G3D::Vector2& getGuiSize() const
+		{
+			return this->guiSize;
+		}
 		__declspec(noinline) const GuiItem* getGuiParent() const;
 		GuiItem* getGuiParent();
 		const GuiItem* getGuiItem(int index) const;
@@ -135,31 +144,45 @@ namespace RBX
 		MenuState menuState;
 
 	private:
-		GuiResponse processShown_InTitle(const GuiEvent&);
-		GuiResponse processShown_OutOfTitle(const GuiEvent&);
-		GuiResponse processNothing(const GuiEvent&);
-		GuiResponse processHover(const GuiEvent&);
-		GuiResponse processShown(const GuiEvent&);
-		GuiResponse processKey(const GuiEvent&);
-		void render2dChildren(Adorn*);
-		virtual G3D::Vector2 getChildPosition(const GuiItem*) const;
-		virtual bool canLoseFocus();
+		GuiResponse processShown_InTitle(const GuiEvent& event);
+		GuiResponse processShown_OutOfTitle(const GuiEvent& event);
+		GuiResponse processNothing(const GuiEvent& event);
+		GuiResponse processHover(const GuiEvent& event);
+		GuiResponse processShown(const GuiEvent& event);
+		GuiResponse processKey(const GuiEvent& event);
+		void render2dChildren(Adorn* adorn);
+		virtual G3D::Vector2 getChildPosition(const GuiItem* child) const;
+		virtual bool canLoseFocus()
+		{
+			return true;
+		}
 		virtual void onLoseFocus();
-		virtual int getFontSize() const;
+		virtual int getFontSize() const
+		{
+			return 10;
+		}
 		void init();
 	protected:
 		bool showChildren();
-		virtual void onMenuStateChanged();
+		virtual void onMenuStateChanged()
+		{
+		}
 		virtual G3D::Vector2 firstChildPosition() const;
 		virtual G3D::Vector2 childOffset() const;
-		virtual void render2dMe(Adorn*);
+		virtual void render2dMe(Adorn* adorn);
 	public:
 		UnifiedWidget(const std::string&);
-		UnifiedWidget();
-		MenuState getMenuState() const;
-		void setMenuState(MenuState);
-		virtual GuiResponse process(const GuiEvent&);
-		virtual void render2d(Adorn*);
+		UnifiedWidget()
+		{
+			init();
+		}
+		MenuState getMenuState() const
+		{
+			return menuState;
+		}
+		void setMenuState(MenuState newMenuState);
+		virtual GuiResponse process(const GuiEvent& event);
+		virtual void render2d(Adorn* adorn);
 	};
 
 	class TextDisplay : public GuiItem
@@ -177,14 +200,30 @@ namespace RBX
 		virtual int getFontSize() const;
 		virtual std::string getLabel() const;
 	public:
-		TextDisplay(const std::string&, const std::string&);
+		TextDisplay(const std::string& name, const std::string& label);
 		TextDisplay();
-		virtual void render2d(Adorn*);
-		void setLabel(const std::string&);
-		void setFontSize(int);
-		void setFontColor(const G3D::Color4&);
-		void setBorderColor(const G3D::Color4&);
-		void setAlign(Adorn::XAlign);
+		virtual void render2d(Adorn* adorn);
+		void setLabel(const std::string& label)
+		{
+			this->label = label;
+		}
+		void setFontSize(int fontSize)
+		{
+			this->fontSize = fontSize;
+			setGuiSize(G3D::Vector2(this->fontSize * 10.0f, this->fontSize * 2.0f));
+		}
+		void setFontColor(const G3D::Color4& fontColor)
+		{
+			this->fontColor = fontColor;
+		}
+		void setBorderColor(const G3D::Color4& borderColor)
+		{
+			this->borderColor = borderColor;
+		}
+		void setAlign(Adorn::XAlign align)
+		{
+			this->align = align;
+		}
 	};
 
 	class TopMenuBar : public GuiItem
@@ -195,12 +234,12 @@ namespace RBX
 		bool visible;
 
 	private:
-		__declspec(noinline) void init();
+		void init();
 	protected:
 		virtual G3D::Vector2 getChildPosition(const GuiItem* child) const;
 	public:
 		TopMenuBar(const std::string&, Layout::Style, G3D::Color4);
-		TopMenuBar(const std::string&, Layout::Style, bool);
+		TopMenuBar(const std::string& name, Layout::Style layoutStyle, bool useTranslucentBackdrop = false);
 		TopMenuBar()
 		{
 			init();
@@ -213,7 +252,10 @@ namespace RBX
 		{
 			return visible;
 		}
-		void setVisible(bool);
+		void setVisible(bool visible)
+		{
+			this->visible = visible;
+		}
 	};
 
 	class RelativePanel : public TopMenuBar
@@ -243,8 +285,30 @@ namespace RBX
 		G3D::Vector2 position;
 
 	public:
-		PercentPanel(Rect::Location, Rect::Location, const G3D::Vector2);
+		PercentPanel(Rect::Location xLocation, Rect::Location yLocation, const G3D::Vector2 position)
+			: xLocation(xLocation),
+			  yLocation(yLocation),
+			  position(position)
+		{
+		}
 		virtual G3D::Vector2 getPosition() const;
+	};
+
+	class MenuSpacer : public GuiItem
+	{
+	protected:
+		void addItem(GuiItem*);
+	public:
+		MenuSpacer(float x, float y);
+	};
+
+	class MenuDivider : public MenuSpacer
+	{
+	public:
+		MenuDivider(float, float);
+		MenuDivider(float);
+		MenuDivider();
+		virtual void render2d(Adorn*);
 	};
 
 	class GuiRoot : public GuiItem
@@ -261,38 +325,27 @@ namespace RBX
 		}
 	public:
 		GuiRoot();
-		virtual void render2d(Adorn*);
+		virtual void render2d(Adorn* adorn);
 	protected:
-		virtual bool askSetParent(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
 	
 	private:
 		static bool preProcess(const GuiEvent&);
 	public:
 		static GuiResponse processTarget(const GuiEvent&, GuiTarget*);
 		static void render2dItem(Adorn*, GuiItem*);
-		static void setCanvasSize(const G3D::Vector2&);
+		static void setCanvasSize(const G3D::Vector2& size)
+		{
+			canvasSize = size;
+		}
 		static G3D::Vector2 getCanvasSize()
 		{
 			return canvasSize;
 		}
 		static G3D::Vector2 toPixelSize(const G3D::Vector2&);
 		static int normalizedFontSize(int fontSize);
-	};
-
-	class MenuSpacer : public GuiItem
-	{
-	protected:
-		void addItem(GuiItem*);
-	public:
-		MenuSpacer(float, float);
-	};
-
-	class MenuDivider : public MenuSpacer
-	{
-	public:
-		MenuDivider(float, float);
-		MenuDivider(float);
-		MenuDivider();
-		virtual void render2d(Adorn*);
 	};
 }

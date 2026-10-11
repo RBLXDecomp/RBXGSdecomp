@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Gui.h"
 #include "gui/Button.h"
 #include "v8tree/Verb.h"

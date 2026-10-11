@@ -13,14 +13,19 @@ namespace RBX
 		G3D::ReferenceCountedPointer<TextureProxyBase> disable;
 		G3D::ReferenceCountedPointer<TextureProxyBase> hover;
 		G3D::ReferenceCountedPointer<TextureProxyBase> down;
-		G3D::Vector2 size;
+		mutable G3D::Vector2 size;
 
 	private:
-		void draw(Adorn*, G3D::ReferenceCountedPointer<TextureProxyBase>, const Rect&, const G3D::Color4&, const G3D::Color4&);
-		void setImageFromName(Adorn*, const std::string&);
+		void draw(Adorn* adorn, G3D::ReferenceCountedPointer<TextureProxyBase> texture, const Rect& rect, const G3D::Color4& behind, const G3D::Color4& inFront);
+		void setImageFromName(Adorn* adorn, const std::string& name);
 	public:
-		GuiDrawImage(Adorn*, const std::string&);
-		GuiDrawImage();
+		GuiDrawImage(Adorn* adorn, const std::string& name)
+		{
+			setImageFromName(adorn, name);
+		}
+		GuiDrawImage()
+		{
+		}
 	public:
 		void render2d(Adorn* adorn, bool enabled, Rect& rect, Widget::WidgetState state);
 		void setImageSize(const G3D::Vector2&);

@@ -19,8 +19,8 @@ namespace RBX
 		WidgetState widgetState;
 	  
 	private:
-		GuiResponse processMouse(const GuiEvent&);
-		GuiResponse processKey(const GuiEvent&);
+		GuiResponse processMouse(const GuiEvent& event);
+		GuiResponse processKey(const GuiEvent& event);
 	protected:
 		virtual GuiResponse process(const GuiEvent& event);
 
@@ -31,9 +31,8 @@ namespace RBX
 
 		virtual void render2d(Adorn* adorn);
 
-		virtual void onClick(const GuiEvent&)
+		virtual void onClick(const GuiEvent& event)
 		{
-			return;
 		}
 
 		virtual bool onDrag(const GuiEvent& event)
@@ -43,12 +42,10 @@ namespace RBX
 
 		virtual void onDown(const UIEvent& event)
 		{
-			return;
 		}
 
-		virtual void onUp(const UIEvent&)
+		virtual void onUp(const UIEvent& event)
 		{
-			return;
 		}
 
 		virtual int getFontSize() const
@@ -76,11 +73,14 @@ namespace RBX
 		Verb* verb;
 
 	protected:
-		Verb* getVerb();
+		Verb* getVerb()
+		{
+			return verb;
+		}
 		virtual bool isEnabled();
-		virtual void onClick(const GuiEvent&);
+		virtual void onClick(const GuiEvent& event);
 	public:
-		VerbWidget(Verb*);
+		VerbWidget(Verb* verb);
 		VerbWidget();
 		virtual ~VerbWidget();
 	};

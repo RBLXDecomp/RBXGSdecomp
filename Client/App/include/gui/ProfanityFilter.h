@@ -1,3 +1,4 @@
+#pragma once
 #include <set>
 #include <string>
 
@@ -11,7 +12,7 @@ namespace RBX
 	public:
 		WordList();
 		~WordList();
-		bool ContainsProfanity(std::string);
+		bool ContainsProfanity(std::string text);
 	};
 
 	class ProfanityFilter
@@ -22,6 +23,6 @@ namespace RBX
 	public:
 		ProfanityFilter();
 		~ProfanityFilter();
-		bool ContainsProfanity(std::string);
+		bool ContainsProfanity(std::string text);
 	};
 }

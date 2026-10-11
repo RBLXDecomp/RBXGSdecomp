@@ -379,6 +379,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\Hash.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\HitTestFilter.h"
 					>
 				</File>
@@ -1320,6 +1324,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util\Hash.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\util\Http.cpp"
 				>
 			</File>
@@ -1641,6 +1649,10 @@
 			</File>
 			<File
 				RelativePath=".\v8datamodel\GlobalSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\v8datamodel\GuiBuilder.cpp"
 				>
 			</File>
 			<File
@@ -2044,11 +2056,47 @@
 			Name="gui"
 			>
 			<File
+				RelativePath=".\gui\ArrowPanel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\Button.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\ChatOutput.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\ChatWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\EquationDisplay.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\gui\GUI.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\gui\GuiDraw.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\HealthHud.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\MenuItem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\ProfanityFilter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\gui\ScoreHud.cpp"
 				>
 			</File>
 			<File

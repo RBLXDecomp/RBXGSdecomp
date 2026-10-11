@@ -6,6 +6,7 @@
 #include "v8datamodel/Teams.h"
 #include "v8datamodel/JointsService.h"
 #include "v8datamodel/LocalBackpack.h"
+#include "v8datamodel/GuiBuilder.h"
 #include "script/ScriptContext.h"
 #include "gui/GUI.h"
 #include "util/Log.h"
@@ -171,6 +172,12 @@ namespace RBX
 
 			return "";
 		}
+	}
+
+	void DataModel::buildGui(Adorn* adorn)
+	{
+		RBXASSERT(guiRoot->numChildren() == 0);
+		GuiBuilder().buildGui(adorn, this, workspace.get());
 	}
 
 	void DataModel::clearContents()

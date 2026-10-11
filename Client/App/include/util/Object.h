@@ -40,11 +40,15 @@ namespace RBX
 	template<typename T>
 	class Creatable : public Object
 	{
-	public:
+	protected:
 		class Deleter
 		{
 		public:
-			void operator()(T*);
+			void operator()(T* obj)
+			{
+				T::predelete(obj);
+				delete obj;
+			}
 		};
 
 	protected:
@@ -70,6 +74,21 @@ namespace RBX
 		static boost::shared_ptr<Class> create(Parameter1 p1, Parameter2 p2)
 		{
 			return boost::shared_ptr<Class>(new Class(p1, p2), Deleter());
+		}
+		template<typename Class, typename Parameter1, typename Parameter2, typename Parameter3>
+		static boost::shared_ptr<Class> create(Parameter1 p1, Parameter2 p2, Parameter3 p3)
+		{
+			return boost::shared_ptr<Class>(new Class(p1, p2, p3), Deleter());
+		}
+		template<typename Class, typename Parameter1, typename Parameter2, typename Parameter3, typename Parameter4>
+		static boost::shared_ptr<Class> create(Parameter1 p1, Parameter2 p2, Parameter3 p3, Parameter4 p4)
+		{
+			return boost::shared_ptr<Class>(new Class(p1, p2, p3, p4), Deleter());
+		}
+		template<typename Class, typename Parameter1, typename Parameter2, typename Parameter3, typename Parameter4, typename Parameter5>
+		static boost::shared_ptr<Class> create(Parameter1 p1, Parameter2 p2, Parameter3 p3, Parameter4 p4, Parameter5 p5)
+		{
+			return boost::shared_ptr<Class>(new Class(p1, p2, p3, p4, p5), Deleter());
 		}
 	private:
 		static void* operator new(size_t size)

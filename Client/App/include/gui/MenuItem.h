@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Widget.h"
 
 namespace RBX
@@ -8,10 +9,13 @@ namespace RBX
 		std::string accelerator;
 
 	protected:
-		virtual bool canLoseFocus();
+		virtual bool canLoseFocus()
+		{
+			return true;
+		}
 	public:
 		MenuItem(Verb*, const std::string&, std::string);
-		MenuItem(Verb*, const std::string&);
-		virtual void render2d(Adorn*);
+		MenuItem(Verb* verb, const std::string& name);
+		virtual void render2d(Adorn* adorn);
 	};
 }

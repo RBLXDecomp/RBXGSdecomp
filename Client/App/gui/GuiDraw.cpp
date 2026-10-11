@@ -49,6 +49,20 @@ namespace RBX
 		}
 	}
 
+	G3D::Vector2 GuiDrawImage::getImageSize() const
+	{
+		if (size.isZero() && normal.notNull())
+			size = normal->getSize();
+
+		return size;
+	}
+
+	void GuiDrawImage::setImageFromName(Adorn* adorn, const std::string& name)
+	{
+		ContentId id = ContentId::fromAssets("Textures\\" + name + ".png");
+		setImage(adorn, id);
+	}
+
 	bool GuiDrawImage::setImage(Adorn* adorn, const TextureId& textureId)
 	{
 		if (textureId != currentTexture)

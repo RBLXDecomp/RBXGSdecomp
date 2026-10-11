@@ -31,7 +31,10 @@ namespace RBX
 		virtual ~Verb();
 		virtual bool isEnabled() const;
 		virtual bool isChecked() const;
-		const Name& getName() const;
+		const Name& getName() const
+		{
+			return name;
+		}
 		virtual void doIt(IDataState*) = 0;
 		VerbContainer* getContainer() const;
 	};

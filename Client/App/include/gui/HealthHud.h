@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Gui.h"
 
 namespace RBX
@@ -10,7 +11,7 @@ namespace RBX
 		boost::shared_ptr<Visit> visit;
 
 	private:
-		virtual void render2d(Adorn*);
+		virtual void render2d(Adorn* adorn);
 	public:
 		HealthHud();
 	};

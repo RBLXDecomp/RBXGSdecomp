@@ -25,15 +25,138 @@ namespace RBX
 		}
 	}
 
-	GuiResponse Widget::process(const GuiEvent& event)
+	GuiResponse Widget::processMouse(const GuiEvent& event)
 	{
-		if (isEnabled() && event.isMouseEvent())
+		bool inWidget = getMyRect().pointInRect(event.mousePosition);
+
+		switch (widgetState)
 		{
-			return processMouse(event);
-		}
-		else
-		{
+		case NOTHING:
+		case HOVER:
+			if (inWidget)
+			{
+				if (!isEnabled())
+				{
+					widgetState = NOTHING;
+					return GuiResponse::used();
+				}
+
+				switch (event.eventType)
+				{
+				case GuiEvent::MOUSE_LEFT_BUTTON_DOWN:
+					widgetState = DOWN_OVER;
+					onDown(event);
+					return GuiResponse::used();
+
+				case GuiEvent::MOUSE_MOVE:
+					widgetState = HOVER;
+					return GuiResponse::used();
+					
+				default:
+					return GuiResponse::used();
+				}
+			}
+			else
+			{
+				widgetState = NOTHING;
+				return GuiResponse::notUsed();
+			}
+
+		case DOWN_OVER:
+			switch (event.eventType)
+			{
+			case GuiEvent::MOUSE_LEFT_BUTTON_DOWN:
+				return GuiResponse::used();
+
+			case GuiEvent::MOUSE_LEFT_BUTTON_UP:
+				widgetState = NOTHING;
+				onUp(event);
+
+				if (inWidget)
+				{
+					onClick(event);
+					return GuiResponse::finished();
+				}
+				else
+				{
+					return GuiResponse::notUsed();
+				}
+
+			case GuiEvent::MOUSE_MOVE:
+				if (!inWidget)
+					widgetState = onDrag(event) ? NOTHING : DOWN_AWAY;
+
+				return GuiResponse::used();
+
+			default:
+				return GuiResponse::notUsed();
+			}
+
+		case DOWN_AWAY:
+			switch (event.eventType)
+			{
+			case GuiEvent::MOUSE_LEFT_BUTTON_DOWN:
+				return GuiResponse::used();
+
+			case GuiEvent::MOUSE_LEFT_BUTTON_UP:
+				widgetState = NOTHING;
+				onUp(event);
+
+				if (inWidget)
+				{
+					onClick(event);
+					return GuiResponse::used();
+				}
+				else
+				{
+					return GuiResponse::notUsed();
+				}
+
+			case GuiEvent::MOUSE_MOVE:
+				widgetState = inWidget ? DOWN_OVER : DOWN_AWAY;
+				return GuiResponse::used();
+			}
+
+		default:
 			return GuiResponse::notUsed();
 		}
+	}
+
+	GuiResponse Widget::processKey(const GuiEvent& event)
+	{
+		return GuiResponse::notUsed();
+	}
+
+	GuiResponse Widget::process(const GuiEvent& event)
+	{
+		if (isEnabled())
+		{
+			if (event.isMouseEvent())
+				return processMouse(event);
+			else
+				return processKey(event);
+		}
+			
+		return GuiResponse::notUsed();
+	}
+
+	VerbWidget::VerbWidget(Verb* verb)
+		: verb(verb)
+	{
+	}
+
+	VerbWidget::~VerbWidget()
+	{
+	}
+
+	bool VerbWidget::isEnabled()	
+	{
+		return isVisible() && verb && verb->isEnabled();
+	}
+
+	void VerbWidget::onClick(const GuiEvent& event)
+	{
+		if (verb && verb->isEnabled())
+			verb->doIt(event.iDataState);
 	}
 }

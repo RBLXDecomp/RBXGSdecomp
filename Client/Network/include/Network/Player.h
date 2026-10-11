@@ -2,11 +2,12 @@
 #include "Network/Players.h"
 #include "humanoid/Humanoid.h"
 #include "v8datamodel/BrickColor.h"
-#include "v8datamodel/Backpack.h"
 #include "v8datamodel/Workspace.h"
 
 namespace RBX
 {
+	class Backpack;
+
 	namespace Network
 	{
 		struct CharacterAdded
@@ -87,7 +88,10 @@ namespace RBX
 			}
 			void setCharacterAppearance(const std::string& value);
 			bool getUnder13() const;
-			bool getSuperSafeChat() const;
+			bool getSuperSafeChat() const
+			{
+				return superSafeChat;
+			}
 			void setUnder13(bool value)
 			{
 				prop_Under13.setValue(this, value);

@@ -152,6 +152,7 @@ namespace RBX
 					 public Notifier<Instance, PropertyChanged>,
 					 public boost::noncopyable
 	{
+		friend class Deleter;
 		friend class RaiseDescendentAdded2;
 
 	private:
@@ -500,8 +501,14 @@ namespace RBX
 	public:
 		static XmlElement* toNewXmlRoot(Instance* instance);
 		static boost::shared_ptr<Instance> fromXmlRoot(XmlElement* xmlRoot);
-		static Instance* getRootAncestor(Instance*);
-		static const Instance* getRootAncestor(const Instance*);
+		static Instance* getRootAncestor(Instance* instance)
+		{
+			return instance ? instance->getRootAncestor() : NULL;
+		}
+		static const Instance* getRootAncestor(const Instance* instance)
+		{
+			return instance ? instance->getRootAncestor() : NULL;
+		}
 	private:
 		static void signalDescendentAdded(Instance* instance, Instance* beginParent, Instance* oldParent);
 		static void signalDescendentRemoving(const boost::shared_ptr<Instance>& instance, Instance* beginParent, Instance* newParent);

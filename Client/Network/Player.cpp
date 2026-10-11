@@ -6,6 +6,7 @@
 #include "v8datamodel/Accoutrement.h"
 #include "v8datamodel/Hopper.h"
 #include "v8datamodel/SpawnLocation.h"
+#include "v8datamodel/Backpack.h"
 #include "v8world/World.h"
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>

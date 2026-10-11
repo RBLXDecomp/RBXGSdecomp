@@ -37,7 +37,7 @@ namespace RBX
 		bool altKeyDown() const;
 		bool shiftKeyDown() const;
 		bool ctrlKeyDown() const;
-		virtual void setKeyState(SDLKey, bool) = 0;
+		virtual void setKeyState(SDLKey key, bool down) = 0;
 		virtual void setCursorId(Adorn*, const TextureId&);
 		void renderGameCursor(Adorn*);
 	};

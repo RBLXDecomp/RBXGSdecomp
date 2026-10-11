@@ -34,11 +34,15 @@ namespace RBX
 		{
 		}
 		Rect::Rect(const G3D::Vector2& size)
-			: low(G3D::Vector2::zero()), // TODO: only a CRC match. function might not be correct
+			: low(G3D::Vector2::zero()),
 			  high(size)
 		{
 		}
-		Rect(float, float, float, float);
+		Rect(float lowX, float lowY, float highX, float highY)
+			: low(lowX, lowY),
+			  high(highX, highY)
+		{
+		}
 		Rect(G3D::Rect2D rect) 
 			: low(rect.x0y0()), 
 			  high(rect.x1y1())
@@ -70,8 +74,8 @@ namespace RBX
 			return (low + high) * 0.5f;
 		}
 		Location pointInBorder(const G3D::Vector2&, float);
-		G3D::Vector2 positionPoint(const G3D::Vector2&, Location, Location) const;
-		G3D::Vector2 positionPoint(Location, Location) const;
+		G3D::Vector2 positionPoint(const G3D::Vector2& point, Location xLocation, Location yLocation) const;
+		G3D::Vector2 positionPoint(Location xLocation, Location yLocation) const;
 		Rect positionChild(const RBX::Rect& child, Location xLocation, Location yLocation) const;
 		Rect inset(const G3D::Vector2int16&);
 		Rect inset(int);

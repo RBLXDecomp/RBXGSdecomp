@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Widget.h"
 #include "gui/GuiDraw.h"
 
@@ -19,9 +20,12 @@ namespace RBX
 		GuiDrawImage guiImageDraw;
 
 	public:
-		ImageWidget(Adorn*, const std::string&);
-		virtual void render2d(Adorn*);
-		virtual G3D::Vector2 getSize() const;
+		ImageWidget(Adorn* adorn, const std::string& name);
+		virtual void render2d(Adorn* adorn);
+		virtual G3D::Vector2 getSize() const
+		{
+			return guiImageDraw.getImageSize();
+		}
 	};
 
 	class ImageButton : public VerbWidget
@@ -30,8 +34,8 @@ namespace RBX
 		GuiDrawImage guiImageDraw;
 
 	public:
-		ImageButton(Adorn*, Verb*, const std::string&);
-		virtual void render2d(Adorn*);
+		ImageButton(Adorn* adorn, Verb* verb, const std::string& name);
+		virtual void render2d(Adorn* adorn);
 		void setSize(const G3D::Vector2&);
 		virtual G3D::Vector2 getSize() const;
 	};
@@ -59,17 +63,19 @@ namespace RBX
 
 	class KeyButton : public Widget
 	{
+		friend class ImageKeyButton;
+
 	private:
 		SDLKey keyCode;
 		bool keyIsDown;
 
 	protected:
-		virtual void onDown(const UIEvent&);
-		virtual void onUp(const UIEvent&);
+		virtual void onDown(const UIEvent& event);
+		virtual void onUp(const UIEvent& event);
 		virtual bool isEnabled();
-		virtual GuiResponse process(const GuiEvent&);
+		virtual GuiResponse process(const GuiEvent& event);
 	public:
-		KeyButton(const std::string&, SDLKey);
+		KeyButton(const std::string& name, SDLKey key);
 	};
 
 	class ImageKeyButton : public KeyButton
@@ -78,8 +84,8 @@ namespace RBX
 		GuiDrawImage imageDraw;
 
 	public:
-		ImageKeyButton(Adorn*, const std::string&, SDLKey);
-		virtual void render2d(Adorn*);
+		ImageKeyButton(Adorn* adorn, const std::string& name, SDLKey key);
+		virtual void render2d(Adorn* adorn);
 		virtual G3D::Vector2 getSize() const;
 	};
 }

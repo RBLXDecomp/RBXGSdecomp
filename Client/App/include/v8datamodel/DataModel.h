@@ -69,9 +69,12 @@ namespace RBX
 		boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> get(ContentId contentId);
 		void raiseClose();
 		int numChatOptions();
-		void buildGui(Adorn*);
+		void buildGui(Adorn* adorn);
 		void processGui(const UIEvent&);
-		GuiRoot* getGuiRoot() const;
+		GuiRoot* getGuiRoot() const
+		{
+			return guiRoot.get();
+		}
 		GuiRoot* getGuiHooks() const;
 
 		virtual void setDirty(bool dirty)

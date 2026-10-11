@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Gui.h"
 #include "gui/ProfanityFilter.h"
 #include "Network/Players.h"
@@ -14,7 +15,7 @@ namespace RBX
 		bool profane;
 
 	public:
-		ChatLine(Network::Player*, const std::string&, float);
+		ChatLine(Network::Player* player, const std::string& message, float dieTime);
 		ChatLine(const std::string&, const std::string&, float);
 	};
 
@@ -32,11 +33,11 @@ namespace RBX
 	private:
 		void removeOldest();
 		void frontIsOld();
-		bool ParseCommand(Network::ChatMessage);
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-		virtual void onEvent(const Network::Players*, Network::ChatMessage);
-		virtual void onEvent(const RunService*, Heartbeat);
-		virtual void render2d(Adorn*);
+		bool ParseCommand(Network::ChatMessage message);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
+		virtual void onEvent(const Network::Players* source, Network::ChatMessage event);
+		virtual void onEvent(const RunService* source, Heartbeat event);
+		virtual void render2d(Adorn* adorn);
 	public:
 		ChatOutput();
 		virtual ~ChatOutput();

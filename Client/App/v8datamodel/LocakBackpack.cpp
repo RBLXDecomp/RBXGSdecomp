@@ -1,4 +1,5 @@
 #include "v8datamodel/LocalBackpack.h"
+#include "v8datamodel/Backpack.h"
 
 namespace RBX
 {

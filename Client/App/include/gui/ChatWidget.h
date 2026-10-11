@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Widget.h"
 #include "gui/GuiDraw.h"
 
@@ -11,9 +12,9 @@ namespace RBX
 	private:
 		std::string findMenuString(GuiItem*);
 		virtual void onMenuStateChanged();
-		virtual GuiResponse process(const GuiEvent&);
+		virtual GuiResponse process(const GuiEvent& event);
 	public:
-		ChatWidget(const std::string&, std::string);
+		ChatWidget(const std::string& name, std::string code);
 	};
 
 	class UnifiedImageWidget : public UnifiedWidget
@@ -22,18 +23,24 @@ namespace RBX
 		GuiDrawImage guiImageDraw;
 
 	public:
-		UnifiedImageWidget(Adorn*, const std::string&);
+		UnifiedImageWidget(Adorn* adorn, const std::string& name);
 		Widget::WidgetState getWidgetState() const;
-		virtual void render2dMe(Adorn*);
-		void setSize(const G3D::Vector2&);
-		virtual G3D::Vector2 getSize() const;
+		virtual void render2dMe(Adorn* adorn);
+		void setSize(const G3D::Vector2& size);
+		virtual G3D::Vector2 getSize() const
+		{
+			return guiImageDraw.getImageSize();
+		}
 	};
 
 	class ChatButton : public UnifiedImageWidget
 	{
 	private:
-		virtual bool isVisible() const;
+		virtual bool isVisible() const
+		{
+			return true;
+		}
 	public:
-		ChatButton(Adorn*, const std::string&);
+		ChatButton(Adorn* adorn, const std::string& name);
 	};
 }

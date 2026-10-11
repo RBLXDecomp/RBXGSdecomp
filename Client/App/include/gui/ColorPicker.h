@@ -1,3 +1,4 @@
+#pragma once
 #include "gui/Widget.h"
 
 namespace RBX
