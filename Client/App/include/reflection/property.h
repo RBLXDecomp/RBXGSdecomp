@@ -183,13 +183,22 @@ namespace RBX
 				return getValue(b) == getValue(a);
 			}
 
-			/*
-				DO NOT DEFINE THESE FUNCTIONS IN THIS HEADER (unless you are really, really sure about it!)
-				These functions are supposed to be specialized for each TypedPropertyDescriptor template.
-			*/
-			virtual bool hasStringValue() const;
-			virtual std::string getStringValue(const DescribedBase* instance) const;
-			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const;
+			// Stubs; must be specialized for every class
+			virtual bool hasStringValue() const
+			{
+				RBXASSERT(0);
+				return false;
+			}
+			virtual std::string getStringValue(const DescribedBase* instance) const
+			{
+				RBXASSERT(0);
+				return "";
+			}
+			virtual bool setStringValue(DescribedBase* instance, const std::string& text) const
+			{
+				RBXASSERT(0);
+				return false;
+			}
 
 		private:
 			virtual void readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const;
