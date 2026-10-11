@@ -62,7 +62,7 @@ namespace RBX
 		template<>
 		const Type& Type::singleton<ContentId>()
 		{
-			static Type type("ContentId", typeid(ContentId));
+			static Type type("Content", typeid(ContentId));
 			return type;
 		}
 
@@ -97,7 +97,7 @@ namespace RBX
 		template<>
 		const Type& Type::singleton<BrickColor>()
 		{
-			static Type type("BrickColor", typeid(BrickColor));
+			static Type type("BrickColor", typeid(BrickColor), "int");
 			return type;
 		}
 

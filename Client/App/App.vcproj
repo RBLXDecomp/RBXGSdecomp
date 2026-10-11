@@ -1340,6 +1340,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util\MeshId.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\util\Name.cpp"
 				>
 			</File>
