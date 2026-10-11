@@ -131,6 +131,7 @@ public:
 		  contentIdValue(new RBX::ContentId(value))
 	{
 	}
+
 	XmlNameValuePair::XmlNameValuePair(const RBX::Name& tag, const char* text)
 		: tag(tag),
 		  valueType(STRING),
