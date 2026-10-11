@@ -360,6 +360,12 @@ namespace RBX
 		}
 
 		template<>
+		std::string TypedPropertyDescriptor<BrickColor>::getStringValue(const DescribedBase* instance) const
+		{
+			return PropertyDescriptor::getStringValue(instance);
+		}
+
+		template<>
 		bool TypedPropertyDescriptor<std::string>::setStringValue(DescribedBase* instance, const std::string& text) const
 		{
 			setValue(instance, text);
@@ -441,6 +447,13 @@ namespace RBX
 				return true;
 			}
 
+			return false;
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<BrickColor>::setStringValue(DescribedBase* instance, const std::string& text) const
+		{
+			PropertyDescriptor::setStringValue(instance, text);
 			return false;
 		}
 
