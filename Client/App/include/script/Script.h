@@ -44,7 +44,10 @@ namespace RBX
 			return disabled;
 		}
 
-	  	virtual bool askSetParent(const Instance*) const;
+	  	virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
 	  	bool isCodeEmbedded() const;
 	  	boost::shared_ptr<const std::string> requestCode();
 
@@ -70,7 +73,9 @@ namespace RBX
 	{
 	public:
 		LocalScript();
-		virtual ~LocalScript();
+		virtual ~LocalScript()
+		{
+		}
 	};
 
 	class __declspec(novtable) IScriptOwner

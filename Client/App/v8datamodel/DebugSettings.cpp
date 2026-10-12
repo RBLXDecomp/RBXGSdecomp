@@ -40,6 +40,8 @@ namespace RBX
 {
 	const char* const sDebugSettings = "DebugSettings";
 
+	GlobalSettingsItem<DebugSettings, &sDebugSettings>* DebugSettings::sing = NULL;
+
 	DebugSettings::DebugSettings()
 		: stackTracingEnabled(true),
 		  ioEnabled(false),
