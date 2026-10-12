@@ -235,10 +235,14 @@ namespace RBX
 		void setSurfaceData(NormalId id, const SurfaceData& newSurfaceData);
 		const SurfaceData& getSurfaceData(NormalId id) const
 		{
-			// TODO: get this fully matching
-			// check RotateJoint::getChannelValue
-			const SurfaceData* data = surfaceData[id];
-			return data ? *data : SurfaceData::empty();
+			if (!surfaceData[id])
+			{
+				return SurfaceData::empty();
+			}
+			else
+			{
+				return *surfaceData[id];
+			}
 		}
 		void setController(Controller* _controller);
 		Controller* getController()

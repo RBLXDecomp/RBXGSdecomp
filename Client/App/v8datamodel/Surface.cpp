@@ -33,8 +33,6 @@ namespace RBX
 		}
 	}
 
-	// the functions below don't match 100% most likely due to Primitive::getSurfaceData
-
 	Controller::InputType Surface::getInput() const
 	{
 		RBXASSERT(partInstance->getPrimitive());
@@ -51,6 +49,48 @@ namespace RBX
 	{
 		RBXASSERT(partInstance->getPrimitive());
 		return partInstance->getPrimitive()->getSurfaceData(surfId).paramB;
+	}
+
+	void Surface::setParamA(float value)
+	{
+		RBXASSERT(partInstance->getPrimitive());
+		SurfaceData current = const_cast<SurfaceData&>(partInstance->getPrimitive()->getSurfaceData(surfId));
+
+		if (current.paramA != value)
+		{
+			current.paramA = value;
+			partInstance->getPrimitive()->setSurfaceData(surfId, current);
+			partInstance->onSurfaceChanged(surfId);
+			partInstance->raisePropertyChanged(partInstance->getSurfaces().getParamA(surfId));
+		}
+	}
+
+	void Surface::setParamB(float value)
+	{
+		RBXASSERT(partInstance->getPrimitive());
+		SurfaceData current = const_cast<SurfaceData&>(partInstance->getPrimitive()->getSurfaceData(surfId));
+
+		if (current.paramB != value)
+		{
+			current.paramB = value;
+			partInstance->getPrimitive()->setSurfaceData(surfId, current);
+			partInstance->onSurfaceChanged(surfId);
+			partInstance->raisePropertyChanged(partInstance->getSurfaces().getParamB(surfId));
+		}
+	}
+
+	void Surface::setSurfaceInput(Controller::InputType value)
+	{
+		RBXASSERT(partInstance->getPrimitive());
+		SurfaceData current = const_cast<SurfaceData&>(partInstance->getPrimitive()->getSurfaceData(surfId));
+
+		if (value != current.inputType)
+		{
+			current.inputType = value;
+			partInstance->getPrimitive()->setSurfaceData(surfId, current);
+			partInstance->onSurfaceChanged(surfId);
+			partInstance->raisePropertyChanged(partInstance->getSurfaces().getSurfaceInput(surfId));
+		}
 	}
 
 	void Surface::readValue(const XmlElement* element, IReferenceBinder& binder)
