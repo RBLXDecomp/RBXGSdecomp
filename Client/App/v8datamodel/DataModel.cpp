@@ -446,14 +446,14 @@ namespace RBX
 	{
 		boost::shared_ptr<RunService> runService;
 		{
-			DataModel::Lock dLock(dataModel);
+			DataModel::Lock lock(dataModel);
 			runService = dataModel->runService;
 		}
 
 		if (runService)
 			runService->endRunThread(joinRunThread);
 
-		DataModel::Lock dLock(dataModel);
+		DataModel::Lock lock(dataModel);
 
 		dataModel->Notifier<ServiceProvider, Closing>::raise(Closing());
 		event_Closing.fire(dataModel.get());
