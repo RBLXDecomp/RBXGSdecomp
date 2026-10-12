@@ -499,6 +499,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\Timer.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\UIEvent.h"
 					>
 				</File>
@@ -1385,6 +1389,10 @@
 			</File>
 			<File
 				RelativePath=".\util\standardout.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\Timer.cpp"
 				>
 			</File>
 			<File

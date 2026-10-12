@@ -1,5 +1,8 @@
 #include "util/RunStateOwner.h"
+#include "util/Timer.h"
+#include "util/standardout.h"
 #include "v8datamodel/DataModel.h"
+#include <boost/thread/xtime.hpp>
 
 namespace RBX
 {
@@ -91,5 +94,62 @@ namespace RBX
 
 		boost::shared_ptr<DataModel> dataModel = shared_from(dynamic_cast<DataModel*>(getParent()));
 		runThread.reset(new boost::thread(background_function(boost::bind(&RunService::runProc, shared_from(this), dataModel), "rbx_runProc")));
+	}
+
+	void RunService::runProc(boost::shared_ptr<DataModel> dataModel)
+	{
+		double lastTime = getRealTime();
+		while (true)
+		{
+			double deltaTime = lastTime - getRealTime();
+
+			{
+				boost::mutex::scoped_lock lock(viewMutex);
+				for (std::map<IRunView*, bool>::iterator it = views.begin(); it != views.end(); it++)
+					it->first->AdjustThrottle(deltaTime);
+			}
+
+			double clampedDeltaTime = G3D::max(0.0, deltaTime);
+			boost::xtime stateChangedTimeout;
+			boost::xtime_get(&stateChangedTimeout, boost::TIME_UTC);
+			stateChangedTimeout.nsec += (boost::xtime::xtime_nsec_t)(clampedDeltaTime * 1e9);
+
+			bool stateChanged;
+			{
+				boost::mutex::scoped_lock lock(runMutex);
+				stateChanged = stateChangedCondition.timed_wait(lock, stateChangedTimeout);
+			}
+
+			if (!stateChanged)
+			{
+				boost::xtime runViewsDoneTimeout;
+				boost::xtime_get(&runViewsDoneTimeout, boost::TIME_UTC);
+				runViewsDoneTimeout.sec += 1;
+
+				boost::mutex::scoped_lock lock(runMutex);
+				if (invalidRunViewCount != 0)
+					runViewsDoneCondition.timed_wait(lock, runViewsDoneTimeout);
+			}
+
+			if (deltaTime <= 0.0)
+				lastTime = getRealTime();
+
+			{
+				DataModel::Lock lock(dataModel);
+
+				if (!stopRequested)
+				{
+					RBXASSERT(getParent() == dataModel.get());
+					dataModel->step(framePeriod);
+				}
+				else
+				{
+					StandardOut::singleton()->print(MESSAGE_INFO, "runProc ending");
+					return;
+				}
+			}
+
+			lastTime += framePeriod;
+		}
 	}
 }
