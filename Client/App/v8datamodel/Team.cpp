@@ -17,6 +17,8 @@ namespace RBX
 		color = BrickColor::lego_1;
 	}
 
+	Team::~Team() {}
+
 	int Team::getScore() const
 	{
 		return score;

@@ -18,6 +18,8 @@ namespace RBX
 	Reflection::BoundProp<float, 1> prop_DataPacketSize("DataPacketSize", "Replication", &NetworkSettings::dataPacketSize, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::BoundProp<float, 1> prop_SendRate("SendRate", "Replication", &NetworkSettings::sendRate, Reflection::PropertyDescriptor::STANDARD);
 
+	GlobalSettingsItem<NetworkSettings, &sNetworkSettings>* NetworkSettings::sing = NULL;
+
 	NetworkSettings::NetworkSettings()
 		: clientPhysicsSpeed(1.0f),
 		  clientPhysicsLifetime(0.5f),

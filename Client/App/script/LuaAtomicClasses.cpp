@@ -1,5 +1,4 @@
 #include "script/LuaAtomicClasses.h"
-#include "script/ThreadRef.h"
 #include "v8datamodel/BrickColor.h"
 #include "G3D/Quat.h"
 #include "lua.h"

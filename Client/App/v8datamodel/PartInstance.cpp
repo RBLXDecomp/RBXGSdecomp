@@ -1,4 +1,5 @@
 #include "v8datamodel/PartInstance.h"
+#include "v8datamodel/ModelInstance.h"
 #include "v8datamodel/Workspace.h"
 #include "v8world/Assembly.h"
 #include "v8world/Controller.h"
@@ -47,16 +48,12 @@ namespace RBX
 	const Reflection::PropDescriptor<PartInstance, G3D::CoordinateFrame> PartInstance::prop_CFrame("CFrame", "Data", &PartInstance::getCoordinateFrame, &PartInstance::setCoordinateFrame, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::SignalDesc<PartInstance, void(boost::shared_ptr<Instance>)> PartInstance::event_Touched("Touched", "part");
 
-	namespace Reflection
-	{
-		// TODO: check if type singletons are matching
-		template<>
-		const Type& Type::singleton<G3D::CoordinateFrame>()
-		{
-			static Type type("CoordinateFrame", typeid(G3D::CoordinateFrame));
-			return type;
-		}
-	}
+	bool PartInstance::highlightSleepParts = false;
+	bool PartInstance::highlightAwakeParts = false;
+	bool PartInstance::showAnchoredParts = false;
+	bool PartInstance::showPartCoord = false;
+	bool PartInstance::showUnalignedParts = false;
+	bool PartInstance::showSpanningTree = false;
 
 #pragma warning (push)
 #pragma warning (disable : 4355) // warning C4355: 'this' : used in base member initializer list
@@ -93,6 +90,11 @@ namespace RBX
 	{
 		RBXASSERT(!primitive->getClump());
 		RBXASSERT(!myWorld);
+	}
+
+	bool PartInstance::askSetParent(const Instance* instance) const
+	{
+		return dynamic_cast<const ModelInstance*>(instance) != NULL;
 	}
 
 	Surfaces& PartInstance::getSurfaces()
@@ -871,9 +873,14 @@ namespace RBX
 			addPair(PartInstance::BRICK, "Brick");
 			addPair(PartInstance::PLATE, "Plate");
 
-			const Name* name = &Name::declare("Block", -1);
-			nameToEnumLegacy[name] = PartInstance::BRICK;
-			stringToEnumLegacy[name->toString()] = PartInstance::BRICK;
+			addLegacyName("Block", PartInstance::BRICK);
+		}
+
+		template<>
+		const Type& Type::singleton<G3D::CoordinateFrame>()
+		{
+			static Type type("CoordinateFrame", typeid(G3D::CoordinateFrame));
+			return type;
 		}
 
 		template<>

@@ -200,13 +200,27 @@ namespace RBX
 		bool hasWalkToPoint(G3D::Vector3& worldPosition) const;
 		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		virtual void onAncestorChanged(const AncestorChanged& event);
-		virtual bool askSetParent(const Instance*) const;
-		virtual bool shouldRender2d() const;
-		virtual bool shouldRender3dAdorn() const;
+		virtual bool askSetParent(const Instance* instance) const;
+
+		virtual bool shouldRender2d() const
+		{
+			return true;
+		}
+
+		virtual bool shouldRender3dAdorn() const
+		{
+			return true;
+		}
+
 		virtual void render2d(Adorn* adorn);
 		virtual void render3dAdorn(Adorn* adorn);
 		void renderMultiplayer(Adorn*, const G3D::GCamera&);
-		virtual bool isControllable() const;
+
+		virtual bool isControllable() const
+		{
+			return true;
+		}
+
 		virtual void onEvent(const RunService* source, Stepped event);
 		virtual void computeForce(const float dt, bool throttling);
 		virtual const G3D::CoordinateFrame getLocation() const;

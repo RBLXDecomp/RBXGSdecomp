@@ -43,7 +43,10 @@ namespace RBX
 		{
 			return stack.size();
 		}
-		virtual bool isStackTooBig() const;
+		virtual bool isStackTooBig() const
+		{
+			return false;
+		}
 	private:
 		void clearStackAfter(int index)
 		{

@@ -23,6 +23,9 @@ static void timeStamp(std::ofstream& stream, bool includeDate)
 
 namespace RBX
 {
+	Log::Severity Log::aggregateWorstSeverity = Information;
+	ILogProvider* Log::provider = NULL;
+
 	void Log::setLogProvider(ILogProvider* provider)
 	{
 		Log::provider = provider;

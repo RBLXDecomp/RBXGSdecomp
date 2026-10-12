@@ -24,6 +24,9 @@ namespace RBX
 	static Reflection::BoundFuncDesc<Workspace, void(bool), 1> workspace_SetThrottleEnabled(&Workspace::setThrottleEnabled, "SetPhysicsThrottleEnabled", "value", Reflection::FunctionDescriptor::NeedTrustedCaller);
 	static Reflection::BoundFuncDesc<Workspace, void(void), 0> workspace_zoomToExtents(&Workspace::zoomToExtents, "ZoomToExtents", Reflection::FunctionDescriptor::NeedTrustedCaller);
 
+	bool Workspace::showWorldCoord = false;
+	bool Workspace::showHashGrid = false;
+
 	Workspace::Workspace(IDataState* dataState)
 		: VerbContainer(NULL),
 		  dataState(dataState),
