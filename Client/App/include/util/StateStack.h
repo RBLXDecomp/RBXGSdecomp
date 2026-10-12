@@ -42,6 +42,15 @@ namespace RBX
 		size_t getStackSize() const;
 		virtual bool isStackTooBig() const;
 	private:
-		void clearStackAfter(int);
+		void clearStackAfter(int index)
+		{
+			for (int i = stack.size() - 1; i > index; i--)
+			{
+				delete stack[i].redoState;
+				delete stack[i].undoState;
+			}
+
+			stack.resize(index + 1);
+		}
 	};
 }
