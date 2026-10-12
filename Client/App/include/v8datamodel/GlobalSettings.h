@@ -44,10 +44,28 @@ namespace RBX
 		static GlobalSettingsItem* sing;
 
 	protected:
-		GlobalSettingsItem();
-		~GlobalSettingsItem();
+		GlobalSettingsItem()
+		{
+			setName(*ClassName);
+			sing = this;
+		}
+		~GlobalSettingsItem()
+		{
+			sing = NULL;
+		}
 
 	public:
-		static Class& singleton();
+		static Class& singleton()
+		{
+			boost::recursive_mutex::scoped_lock lock(GlobalSettings::mutex);
+
+			if (!sing)
+			{
+				boost::shared_ptr<Class> s = Creatable::create<Class>();
+				s->setParent(GlobalSettings::singleton().get());
+			}
+
+			return *static_cast<Class*>(sing);
+		}
 	};
 }

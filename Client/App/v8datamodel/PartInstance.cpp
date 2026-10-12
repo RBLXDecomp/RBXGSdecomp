@@ -47,6 +47,13 @@ namespace RBX
 	const Reflection::PropDescriptor<PartInstance, G3D::CoordinateFrame> PartInstance::prop_CFrame("CFrame", "Data", &PartInstance::getCoordinateFrame, &PartInstance::setCoordinateFrame, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::SignalDesc<PartInstance, void(boost::shared_ptr<Instance>)> PartInstance::event_Touched("Touched", "part");
 
+	bool PartInstance::highlightSleepParts = false;
+	bool PartInstance::highlightAwakeParts = false;
+	bool PartInstance::showAnchoredParts = false;
+	bool PartInstance::showPartCoord = false;
+	bool PartInstance::showUnalignedParts = false;
+	bool PartInstance::showSpanningTree = false;
+
 	namespace Reflection
 	{
 		// TODO: check if type singletons are matching

@@ -18,7 +18,10 @@ namespace RBX
 		const bool canClump;
   
 	public:
-		CanAggregateChanged(const CanAggregateChanged&);
+		CanAggregateChanged(const CanAggregateChanged& other)
+			: canClump(other.canClump)
+		{
+		}
 		CanAggregateChanged(bool canAggregate)
 			: canClump(canAggregate)
 		{

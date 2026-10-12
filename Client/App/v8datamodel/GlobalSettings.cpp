@@ -9,7 +9,6 @@ namespace RBX
 		boost::recursive_mutex::scoped_lock lock(mutex);
 
 		static boost::shared_ptr<GlobalSettings> sing = Creatable::create<GlobalSettings>();
-
 		return sing;
 	}
 }

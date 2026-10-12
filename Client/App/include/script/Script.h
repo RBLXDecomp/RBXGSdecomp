@@ -79,7 +79,13 @@ namespace RBX
 
 	protected:
 		virtual IScriptOwner* scriptShouldRun(Script* script) = 0;
-		virtual void runScript(Script* script, ScriptContext* context);
-		virtual void releaseScript(Script* script);
+		virtual void runScript(Script* script, ScriptContext* context)
+		{
+			RBXASSERT(0);
+		}
+		virtual void releaseScript(Script* script)
+		{
+			RBXASSERT(0);
+		}
 	};
 }
