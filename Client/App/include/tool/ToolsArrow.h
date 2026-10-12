@@ -56,8 +56,8 @@ namespace RBX
 
 	private:
 		void getMouseInstances(std::set<Instance*>& instances, const UIEvent& uiEvent, G3D::Rect2D& selectBox);
-		void selectAnd(const std::set<Instance*>&);
-		void selectReverse(const std::set<Instance*>&);
+		void selectAnd(const std::set<Instance*>& newItemsInBox);
+		void selectReverse(const std::set<Instance*>& newItemsInBox);
 	public:
 		virtual MouseCommand* onMouseDown(const UIEvent& uiEvent);
 		virtual void onMouseMove(const UIEvent& uiEvent);

@@ -137,4 +137,38 @@ namespace RBX
 			}
 		}
 	}
+
+	void BoxSelectCommand::selectAnd(const std::set<Instance*>& newItemsInBox)
+	{
+		std::set_difference(
+			newItemsInBox.begin(), newItemsInBox.end(), 
+			previousItemsInBox.begin(), previousItemsInBox.end(), 
+			Selection::AddIterator(selection)
+		);
+
+		std::set_difference(
+			previousItemsInBox.begin(), previousItemsInBox.end(), 
+			newItemsInBox.begin(), newItemsInBox.end(), 
+			Selection::RemoveIterator(selection)
+		);
+
+		previousItemsInBox = newItemsInBox;
+	}
+
+	void BoxSelectCommand::selectReverse(const std::set<Instance*>& newItemsInBox)
+	{
+		std::set_difference(
+			newItemsInBox.begin(), newItemsInBox.end(), 
+			previousItemsInBox.begin(), previousItemsInBox.end(), 
+			Selection::ToggleIterator(selection)
+		);
+
+		std::set_difference(
+			previousItemsInBox.begin(), previousItemsInBox.end(), 
+			newItemsInBox.begin(), newItemsInBox.end(), 
+			Selection::ToggleIterator(selection)
+		);
+
+		previousItemsInBox = newItemsInBox;
+	}
 }
