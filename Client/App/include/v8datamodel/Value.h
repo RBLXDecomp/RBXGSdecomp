@@ -30,9 +30,15 @@ namespace RBX
 		const Value& getValue() const;
 		void setValue(const Value&);
 	protected:
-		virtual bool askSetParent(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
 	private:
-		void onValueChanged(const Reflection::PropertyDescriptor&);
+		void onValueChanged(const Reflection::PropertyDescriptor&)
+		{
+			desc_ValueChanged.fire(this, value);
+		}
 	};
 
 	typedef Value<int,			&sIntValue>			IntValue;
@@ -56,10 +62,24 @@ namespace RBX
 
 	public:
 		ObjectValue();
-		Instance* getValue() const;
-		void setValue(Instance*);
+		Instance* getValue() const
+		{
+			return value.get();
+		}
+		void setValue(Instance* value)
+		{
+			if (this->value.get() != value)
+			{
+				this->value = shared_from(value);
+				raisePropertyChanged(desc_Value);
+				desc_ValueChanged.fire(this, this->value);
+			}
+		}
 	protected:
-		virtual bool askSetParent(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
 	private:
 		void onValueChanged(const Reflection::PropertyDescriptor&);
 	};

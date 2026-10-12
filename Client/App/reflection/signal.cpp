@@ -50,6 +50,8 @@ namespace RBX
 			return signalInstance;
 		}
 
+		GenericSlotWrapper::~GenericSlotWrapper() {}
+
 		SignalInstance::~SignalInstance() {}
 
 		SignalSource::~SignalSource() {}

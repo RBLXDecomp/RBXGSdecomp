@@ -25,7 +25,11 @@ namespace RBX
 			currentState = -1; // see DataModel constructor
 		}
 
-		~StateStack();
+		~StateStack()
+		{
+			clearStackAfter(-1);
+			currentState = -1;
+		}
 
 		void pushState(const Name&, T*, T*);
 		void pushState(std::string, T*, T*);

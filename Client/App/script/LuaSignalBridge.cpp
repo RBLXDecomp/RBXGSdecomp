@@ -6,6 +6,9 @@ using namespace RBX;
 using namespace RBX::Lua;
 using namespace RBX::Reflection;
 
+const char* Bridge<boost::shared_ptr<Reflection::SignalInstance>, false>::className = "RBXScriptSignal";
+const char* Bridge<boost::signals::connection, true>::className = "RBXScriptConnection";
+
 template<>
 int SignalBridge::on_index(const boost::shared_ptr<Reflection::SignalInstance>& object, const char* name, lua_State* L)
 {

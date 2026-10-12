@@ -1792,6 +1792,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\v8datamodel\Value.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\v8datamodel\Visit.cpp"
 				>
 			</File>

@@ -7,6 +7,8 @@ namespace RBX
 {
     namespace Lua
     {
+		const char* Bridge<boost::shared_ptr<ThreadRef::Node>, true>::className = "shared_ptr<ThreadRef::Node>";
+
         ThreadRef::ThreadRef(lua_State* thread)
             : sync(syncSingleton),
               node(NULL),
