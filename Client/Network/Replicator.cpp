@@ -610,6 +610,7 @@ namespace RBX
 				
 				if (!isDeserializeProperty && (descriptor->canStreamWrite() || descriptor == &Instance::propParent) && !isSerializePending(instance.get()))
 				{
+					// ideally this should also be a ConstProperty/Property but i couldnt get the constructor to inline with it
 					const DescribedBase* inst = static_cast<DescribedBase*>(instance.get());
 					RBXASSERT(descriptor->isMemberOf(inst));
 
