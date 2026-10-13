@@ -1,5 +1,7 @@
 #include "v8datamodel/FlagStand.h"
 #include "v8datamodel/Flag.h"
+#include "humanoid/Humanoid.h"
+#include "Network/Player.h"
 
 namespace RBX
 {
@@ -81,6 +83,42 @@ namespace RBX
 			flagStandService->UnregisterFlagStand(this);
 
 			standTouched.disconnect();
+		}
+	}
+
+	void FlagStand::onEvent_standTouched(boost::shared_ptr<Instance> other)
+	{
+		RBXASSERT(Network::Players::backendProcessing(this, true));
+		Instance* parent = other->getParent();
+
+		Humanoid* humanoid = Humanoid::modelIsCharacter(parent);
+		if (!humanoid)
+			return;
+
+		Flag* flag = parent->findFirstChildOfType<Flag>();
+		if (!flag)
+			return;
+
+		Network::Player* player = Network::Players::getPlayerFromCharacter(parent);
+		if (!player)
+			return;
+
+		if (player->getNeutral() != false)
+			return;
+
+		BrickColor current = teamColor;
+		if (player->getTeamColor() != current)
+			return;
+
+		if (flag->getTeamColor() == current)
+			return;
+
+		event_FlagCaptured.fire(this, shared_from(player));
+
+		FlagStandService* fss = ServiceProvider::create<FlagStandService>(this);
+		if (FlagStand* fs = fss->FindClosestEmptyStandForFlag(flag))
+		{
+			fs->AffixFlag(flag);
 		}
 	}
 
