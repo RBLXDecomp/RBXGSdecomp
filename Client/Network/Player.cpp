@@ -27,7 +27,7 @@ static RBX::Reflection::SignalDesc<RBX::Network::Player, void(float)> event_Idle
 RBX::Reflection::BoundProp<int, 1> RBX::Network::Player::prop_userId("userId", "Data", &RBX::Network::Player::userId, RBX::Reflection::PropertyDescriptor::STANDARD);
 RBX::Reflection::BoundProp<bool, 1> RBX::Network::Player::prop_Under13("Under13", "Data", &RBX::Network::Player::under13, RBX::Reflection::PropertyDescriptor::STREAMING);
 RBX::Reflection::BoundProp<bool, 1> RBX::Network::Player::prop_SuperSafeChat("SuperSafeChat", "Data", &RBX::Network::Player::superSafeChat, RBX::Reflection::PropertyDescriptor::STREAMING);
-RBX::Reflection::SignalDesc<RBX::Network::Player, void(std::string, boost::shared_ptr<RBX::Instance>)> event_Chatted("Chatted", "message", "recipient");
+RBX::Reflection::SignalDesc<RBX::Network::Player, void(std::string, boost::shared_ptr<RBX::Instance>)> RBX::Network::Player::event_Chatted("Chatted", "message", "recipient");
 
 static void addChild(const boost::shared_ptr<RBX::ModelInstance>& parent, const boost::shared_ptr<RBX::Instance>& child)
 {
