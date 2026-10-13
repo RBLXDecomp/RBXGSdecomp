@@ -65,7 +65,10 @@ namespace RBX
 			Player();
 			virtual ~Player();
 		public:
-			virtual XmlElement* write();
+			virtual XmlElement* write()
+			{
+				return NULL;
+			}
 			virtual void setName(const std::string& value);
 			ModelInstance* getCharacter() const
 			{

@@ -130,7 +130,10 @@ namespace RBX
 
 		public:
 			Property& operator=(const Property&);
-			bool operator==(const Property&) const;
+			bool operator==(const Property& other) const
+			{
+				return this->descriptor == other.descriptor && this->instance == other.instance;
+			}
 			bool operator!=(const Property&) const;
 			DescribedBase* getInstance() const
 			{

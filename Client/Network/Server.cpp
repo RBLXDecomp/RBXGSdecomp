@@ -14,6 +14,8 @@ static RBX::Reflection::BoundFuncDesc<RBX::Network::Server, int(void), 0> f_GetC
 
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Server, void(std::string, std::string, int), 3> server_setServerManagerPingFunction(&RBX::Network::Server::setServerManagerPing, "SetServerManagerPing", "pingUrl", "publicIP", "thumbnailId", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 
+RBX::Reflection::SignalDesc<RBX::Network::Server, void(std::string, boost::shared_ptr<RBX::Instance>)> RBX::Network::Server::event_IncommingConnection("IncommingConnection", "peer", "replicator");
+
 static bool isReplicator(boost::shared_ptr<RBX::Instance> instance)
 {
 	return dynamic_cast<const RBX::Network::Replicator*>(instance.get()) != NULL;

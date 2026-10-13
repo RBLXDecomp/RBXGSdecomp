@@ -8,6 +8,10 @@
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Client, void(std::string, int, int, int), 4> f_connect(&RBX::Network::Client::connect, "Connect", "server", "serverPort", "clientPort", "threadSleepTime", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Client, void(int), 1> f_disconnect(&RBX::Network::Client::disconnect, "Disconnect", "blockDuration", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 
+RBX::Reflection::SignalDesc<RBX::Network::Client, void(std::string, boost::shared_ptr<RBX::Instance>)> RBX::Network::Client::event_ConnectionAccepted("ConnectionAccepted", "peer", "replicator");
+RBX::Reflection::SignalDesc<RBX::Network::Client, void(std::string, int)> RBX::Network::Client::event_ConnectionFailed("ConnectionFailed", "peer", "code");
+RBX::Reflection::SignalDesc<RBX::Network::Client, void(std::string)> RBX::Network::Client::event_ConnectionRejected("ConnectionRejected", "peer");
+
 class Exposer : protected PacketLogger
 {
 public:
