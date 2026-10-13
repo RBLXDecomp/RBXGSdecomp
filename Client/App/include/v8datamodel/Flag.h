@@ -32,7 +32,7 @@ namespace RBX
 		BrickColor teamColor;
 
 	private:
-		void onEvent_flagTouched(boost::shared_ptr<Instance>);
+		void onEvent_flagTouched(boost::shared_ptr<Instance> other);
 		void doUglyPeriodicCloneHack();
 	protected:
 		virtual bool canUnequip()
@@ -44,7 +44,7 @@ namespace RBX
 	public:
 		BrickColor getTeamColor() const;
 		void setTeamColor(BrickColor color);
-		virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+		virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		Flag();
 		virtual ~Flag();
 		virtual void onChildAdded(Instance* instance);
