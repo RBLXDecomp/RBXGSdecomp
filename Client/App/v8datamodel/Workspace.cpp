@@ -7,6 +7,8 @@
 #include "v8datamodel/Selection.h"
 #include "script/ScriptContext.h"
 #include "humanoid/Humanoid.h"
+#include "v8world/CollisionStage.h"
+#include "v8world/SleepStage.h"
 #include "v8world/World.h"
 #include "tool/NullTool.h"
 #include "tool/ToolsArrow.h"
@@ -516,5 +518,49 @@ namespace RBX
 			adorn->setObjectToWorldMatrix(G3D::CoordinateFrame());
 			adorn->box(G3D::AABox(G3D::Vector3(28, 4, 12), G3D::Vector3(32, 8, 16)), G3D::Color4(1.0, 0.2, 0.2, 0.5), G3D::Color4::clear());
 		}
+	}
+
+	static double getFPS(Profiling::CodeProfiler* profiler)
+	{
+		return profiler->getData(3.0).getActualFPS();
+	}
+
+	WorkspaceStatsItem::WorkspaceStatsItem(const Workspace* workspace, const World* world)
+	{
+		setName("Workspace");
+
+		createChildItem<double>("FPS", boost::bind(&getFPS, workspace->profileWorkspaceStep.get()));
+		createBoundChildItem(*workspace->profileRun);
+
+		Stats::Item* pWorkspaceStep = createBoundChildItem(*workspace->profileWorkspaceStep);
+		Stats::Item* pWorldStep = pWorkspaceStep->createBoundChildItem(world->getProfileWorldStep());
+
+		pWorldStep->createBoundChildItem(world->getProfileUiStep());
+		pWorldStep->createBoundChildItem(world->getProfileBroadphase());
+		pWorldStep->createBoundChildItem(*world->getCollisionStage()->profilingCollision);
+		pWorldStep->createBoundChildItem(*world->getSleepStage()->profilingSleep);
+		pWorldStep->createBoundChildItem(*world->getKernel().profilingKernel);
+
+		pWorkspaceStep->createBoundChildItem(*workspace->profileRunServiceStepped);
+		pWorkspaceStep->createBoundChildItem(*workspace->profileRunServiceHeartbeat);
+
+		Stats::Item* pWorld = createChildItem("World");
+		pWorld->createChildItem<int>("Primitives", boost::bind(&World::getNumPrimitives, world));
+		pWorld->createChildItem<int>("Joints", boost::bind(&World::getNumJoints, world));
+		pWorld->createChildItem<int>("Contacts", boost::bind(&World::getNumContacts, world));
+		
+		Stats::Item* pContacts = createChildItem("Contacts");
+		pContacts->createChildItem<int>("CtctStageCtcts", boost::bind(&World::getMetric, world, IWorldStage::NUM_CONTACTSTAGE_CONTACTS));
+		pContacts->createChildItem<int>("SteppingCtcts", boost::bind(&World::getMetric, world, IWorldStage::NUM_STEPPING_CONTACTS));
+		pContacts->createChildItem<int>("TouchingCtcts", boost::bind(&World::getMetric, world, IWorldStage::NUM_TOUCHING_CONTACTS));
+		pContacts->createChildItem<int>("MaxTreeDepth", boost::bind(&World::getMetric, world, IWorldStage::MAX_TREE_DEPTH));
+		pContacts->createChildItem<int>("# link(p)", boost::bind(&World::getNumLinkCalls, world));
+		pContacts->createChildItem<int>("Hash Nodes Out", boost::bind(&World::getNumHashNodes, world));
+		pContacts->createChildItem<int>("Max Bucket Size", boost::bind(&World::getMaxBucketSize, world));
+
+		Stats::Item* pKernel = createChildItem("Kernel");
+		pKernel->createChildItem<int>("Bodies", boost::bind(&World::getNumBodies, world));
+		pKernel->createChildItem<int>("Constraints", boost::bind(&World::getNumConstraints, world));
+		pKernel->createChildItem<int>("Points", boost::bind(&World::getNumPoints, world));
 	}
 }

@@ -784,7 +784,7 @@ namespace RBX
 		{
 			if (replicator->peer)
 			{
-				bps->formatMem((size_t)statistics->bitsPerSecond / 8);
+				bps->formatMem((unsigned)statistics->bitsPerSecond / 8);
 
 				ping->formatValue(
 					replicator->peer->GetLastPing(replicator->remotePlayerId),
