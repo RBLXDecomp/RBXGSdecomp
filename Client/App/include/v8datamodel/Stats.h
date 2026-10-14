@@ -23,7 +23,11 @@ namespace RBX
             const std::string& getStringValue();
             double getValue();
             std::string getStringValue2();
-            void setValue(double, const std::string&);
+            void setValue(double value, const std::string& stringValue)
+			{
+				val = value;
+				sValue = stringValue;
+			}
             void formatMem(size_t);
             void formatValue(double, const char*, ...);
             void formatPercent(double);

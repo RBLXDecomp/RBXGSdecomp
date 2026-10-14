@@ -11,3 +11,4 @@ You can create the [objdiff](https://github.com/encounter/objdiff) project by ex
 * [boost 1.34.1](https://www.boost.org/users/history/version_1_34_1.html)
 * [SDL 1.2.6](https://www.libsdl.org/release/SDL-1.2.6.zip)
 * [Graphics3D 6.09](https://sourceforge.net/projects/g3d/files/g3d-cpp/6.09/)
+* FMOD Ex 4.08.08
