@@ -81,9 +81,9 @@ namespace RBX
 			return stream;
 		}
 
-		RakNet::BitStream& operator<<(RakNet::BitStream& stream, long& value)
+		RakNet::BitStream& operator>>(RakNet::BitStream& stream, long& value)
 		{
-			stream.Write(value);
+			stream.Read(value);
 			return stream;
 		}
 
@@ -92,7 +92,6 @@ namespace RBX
 			stream.Read(value);
 			return stream;
 		}
-
 
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, unsigned char& value)
 		{
