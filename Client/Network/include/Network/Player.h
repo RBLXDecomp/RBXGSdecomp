@@ -57,7 +57,10 @@ namespace RBX
 			static Reflection::SignalDesc<Player, void(std::string, boost::shared_ptr<Instance>)> event_Chatted;
 
 		private:
-			virtual bool askAddChild(const Instance*) const;
+			virtual bool askAddChild(const Instance* instance) const
+			{
+				return true;
+			}
 			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 			void onCharacterChangedFrontend();
 			void registerLocalPlayerNotIdle();

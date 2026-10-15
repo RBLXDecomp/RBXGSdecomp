@@ -8,6 +8,9 @@ namespace RBX
 {
 	namespace Stats
 	{
+		char* sStatsItem = "Item";
+		char* sStats = "Stats";
+
 		void Item::formatMem(unsigned bytes)
 		{
 			setValue(bytes, Log::formatMem(bytes));
