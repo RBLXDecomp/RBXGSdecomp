@@ -33,7 +33,7 @@ namespace RBX
 		bool isFacingStairs();
 		void updateGoals(Controller&);
 		virtual void onComputeForce(const float);
-		virtual Humanoid::State* onStep(const float, Controller&);
+		virtual Humanoid::State* onStep(const float stepDt, Controller& controller);
 
 		virtual bool canSleep() const
 		{

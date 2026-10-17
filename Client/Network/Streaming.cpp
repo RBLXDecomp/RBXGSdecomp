@@ -135,6 +135,16 @@ namespace RBX
 			return stream;
 		}
 
+		RakNet::BitStream& operator>>(RakNet::BitStream& stream, ContentId& value)
+		{
+			std::string id;
+			stream >> id;
+
+			value = ContentId(id);
+
+			return stream;
+		}
+
 		template<typename T>
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, T& value) // TODO: check match
 		{
@@ -446,6 +456,21 @@ namespace RBX
 			else
 			{
 				id.index = 0;
+			}
+		}
+
+		bool IdSerializer::deserializeInstanceRef(RakNet::BitStream& stream, Instance*& instance, Guid::Data& id)
+		{
+			deserializeId(stream, id);
+			if ((*id.scope) != Name::getNullName())
+			{
+				instance = ServiceProvider::create<IdManager>(this)->getInstance(id);
+				return instance != NULL;
+			}
+			else
+			{
+				instance = NULL;
+				return true;
 			}
 		}
 	}

@@ -147,7 +147,12 @@ namespace RBX
 
 		public:
 			template<typename T>
-			void setValue(const T& value);
+			void setValue(const T& value)
+			{
+				RBXASSERT(dynamic_cast<const TypedPropertyDescriptor<T>*>(descriptor));
+				const TypedPropertyDescriptor<T>* typedProp = boost::polymorphic_cast<const TypedPropertyDescriptor<T>*>(descriptor);
+				typedProp->setValue(getInstance(), value);
+			}
 		};
 
 		template<typename PropType>

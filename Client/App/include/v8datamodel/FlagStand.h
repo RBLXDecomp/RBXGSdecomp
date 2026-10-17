@@ -37,7 +37,7 @@ namespace RBX
 	public:
 		FlagStandService();
 		virtual ~FlagStandService();
-		FlagStand* FindClosestEmptyStandForFlag(Flag*);
+		FlagStand* FindClosestEmptyStandForFlag(Flag* f);
 		FlagStand* FindStandWithFlag(Flag* f);
 		void RegisterFlagStand(FlagStand* s);
 		void UnregisterFlagStand(FlagStand* s);

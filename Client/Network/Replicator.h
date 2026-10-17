@@ -291,7 +291,7 @@ namespace RBX
 			void createStatsItems(Stats::StatsService* stats);
 			virtual bool remoteDeleteOnDisconnect(const Instance* instance) const;
 			void serializeValue(const Reflection::ConstProperty&, bool, RakNet::BitStream&);
-			void deserializeValue(RakNet::BitStream&, bool, Reflection::Property&);
+			void deserializeValue(RakNet::BitStream& inBitStream, bool lengthIncluded, Reflection::Property& property);
 			void skipValue(RakNet::BitStream&);
 			void receiveData(Packet* packet);
 			void readInstanceNew(RakNet::BitStream&);

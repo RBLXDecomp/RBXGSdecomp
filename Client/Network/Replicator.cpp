@@ -885,5 +885,72 @@ namespace RBX
 				}
 			}
 		}
+
+		void Replicator::deserializeValue(RakNet::BitStream& inBitStream, bool lengthIncluded, Reflection::Property& property)
+		{
+			if (lengthIncluded)
+			{
+				ValueType output = ValueType_nil;
+				inBitStream.ReadBits((unsigned char*)&output, 4);
+			}
+
+			if (property.getDescriptor().type == Reflection::Type::singleton<std::string>())
+			{
+				getSharedDictionary(property.getDescriptor()).deserializeString(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<bool>())
+			{
+				deserialize<bool>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<int>())
+			{
+				deserialize<int>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<float>())
+			{
+				deserialize<float>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<BrickColor>())
+			{
+				deserialize<BrickColor>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Color3>())
+			{
+				deserialize<G3D::Color3>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Vector3>())
+			{
+				if (property.getDescriptor() == PartInstance::prop_Size)
+				{
+					G3D::Vector3 value;
+					readBrickVector(inBitStream, value);
+					property.setValue<G3D::Vector3>(value);
+				}
+				else
+				{
+					deserialize<G3D::Vector3>(property, inBitStream);
+				}
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::CoordinateFrame>())
+			{
+				deserialize<G3D::CoordinateFrame>(property, inBitStream);
+			}
+			else if (dynamic_cast<const Reflection::EnumPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				deserializeEnum(property, inBitStream);
+			}
+			else if (dynamic_cast<const Reflection::RefPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				deserializeRef(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<ContentId>())
+			{
+				deserialize<ContentId>(property, inBitStream);
+			}
+			else
+			{
+				RBXASSERT(false);
+			}
+		}
 	}
 }

@@ -35,4 +35,44 @@ namespace RBX
 			return NULL;
 		}
 	}
+
+	G3D::Vector3 Balancing::getYAxis() const
+	{
+		Body* torsoBody = humanoid->getTorsoBody();
+
+		if (torsoBody)
+		{
+			G3D::Vector3 yAxis = torsoBody->getCoordinateFrame().vectorToObjectSpace(G3D::Vector3::unitY());
+			return yAxis;
+		}
+		else
+		{
+			RBXASSERT(false);
+			return G3D::Vector3::unitY();
+		}
+	}
+
+	HitTestFilter::Result Balancing::filterResult(const Primitive* testMe) const
+	{
+		RBXASSERT(testMe);
+		Primitive* torsoPrim = humanoid->getTorsoPrimitive();
+		HitTestFilter::Result result = INCLUDE_PRIM;
+
+		if (testMe->getDragging() == false && testMe->getCanCollide() != false)
+		{
+			if (torsoPrim)
+			{
+				if (torsoPrim->getAssembly() == testMe->getAssembly())
+				{
+					result = IGNORE_PRIM;
+				}
+			}
+		}
+		else
+		{
+			result = IGNORE_PRIM;
+		}
+
+		return result;
+	}
 }

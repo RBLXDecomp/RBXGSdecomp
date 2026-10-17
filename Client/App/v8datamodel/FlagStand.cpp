@@ -61,6 +61,11 @@ namespace RBX
 		return NULL;
 	}
 
+	bool FlagStand::HasFlag()
+	{
+		return GetFlag() != NULL;
+	}
+
 	void FlagStand::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
 	{
 		Instance::onServiceProvider(oldProvider, newProvider);
@@ -154,5 +159,29 @@ namespace RBX
 	void FlagStandService::UnregisterFlagStand(FlagStand* s)
 	{
 		flagStands.remove(s);
+	}
+
+	FlagStand* FlagStandService::FindClosestEmptyStandForFlag(Flag* f)
+	{
+		if (flagStands.empty())
+			return NULL;
+
+		std::vector<FlagStand*> possibleLocations;
+		
+		for (std::list<FlagStand*>::const_iterator iter = flagStands.begin(); iter != flagStands.end(); iter++)
+		{
+			if ((*iter)->teamColor.asInt() == f->getTeamColor().asInt())
+			{
+				if (!(*iter)->HasFlag())
+				{
+					possibleLocations.push_back((*iter));
+				}
+			}
+		}
+
+		if (possibleLocations.empty())
+			return NULL;
+
+		return possibleLocations[rand() % possibleLocations.size()];
 	}
 }
