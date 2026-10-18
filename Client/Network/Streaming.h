@@ -14,7 +14,16 @@ namespace RBX
 	namespace Network
 	{
 		template<typename T>
-		void serialize(const Reflection::ConstProperty&, RakNet::BitStream&);
+		void serialize(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream)
+		{
+			operator<<(bitStream, property.getValue<T>());
+		}
+
+		template<>
+		void serialize<BrickColor>(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
+
+		template<>
+		void serialize<ContentId>(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
 
 		template<typename T>
 		void deserialize(Reflection::Property& property, RakNet::BitStream& bitStream)
@@ -23,6 +32,12 @@ namespace RBX
 			operator>><T>(bitStream, value);
 			property.setValue<T>(value);
 		}
+
+		template<>
+		void deserialize<BrickColor>(Reflection::Property& property, RakNet::BitStream& bitStream);
+
+		template<>
+		void deserialize<ContentId>(Reflection::Property& property, RakNet::BitStream& bitStream);
 
 		void serializeEnum(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream);
 		void deserializeEnum(Reflection::Property& property, RakNet::BitStream& bitStream);

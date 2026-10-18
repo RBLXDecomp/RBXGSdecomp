@@ -139,7 +139,10 @@ namespace RBX
 			{
 				return const_cast<DescribedBase*>(instance); // might not be right
 			}
-			bool setStringValue(const std::string&);
+			bool setStringValue(const std::string& text)
+			{
+				return descriptor->setStringValue(const_cast<DescribedBase*>(instance), text);
+			}
 			void read(const XmlElement* propertyElement, IReferenceBinder& binder)
 			{
 				descriptor->read(getInstance(), propertyElement, binder);

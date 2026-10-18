@@ -952,5 +952,76 @@ namespace RBX
 				RBXASSERT(false);
 			}
 		}
+
+		void Replicator::serializeValue(const Reflection::ConstProperty& property, bool includeLength, RakNet::BitStream& outBitStream)
+		{
+			if (property.getDescriptor().type == Reflection::Type::singleton<std::string>())
+			{
+				writeValueType(includeLength, ValueType_string, outBitStream);
+				getSharedDictionary(property.getDescriptor()).serializeString(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<bool>())
+			{
+				writeValueType(includeLength, ValueType_bool, outBitStream);
+				serialize<bool>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<int>())
+			{
+				writeValueType(includeLength, ValueType_int, outBitStream);
+				serialize<int>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<float>())
+			{
+				writeValueType(includeLength, ValueType_float, outBitStream);
+				serialize<float>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<BrickColor>())
+			{
+				writeValueType(includeLength, ValueType_BrickColor, outBitStream);
+				serialize<BrickColor>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Color3>())
+			{
+				writeValueType(includeLength, ValueType_Color3, outBitStream);
+				serialize<G3D::Color3>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Vector3>())
+			{
+				if (property.getDescriptor() == PartInstance::prop_Size)
+				{
+					writeValueType(includeLength, ValueType_BrickVector, outBitStream);
+					writeBrickVector(outBitStream, property.getValue<G3D::Vector3>());
+				}
+				else
+				{
+					writeValueType(includeLength, ValueType_Vector3, outBitStream);
+					serialize<G3D::Vector3>(property, outBitStream);
+				}
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::CoordinateFrame>())
+			{
+				writeValueType(includeLength, ValueType_CoordinateFrame, outBitStream);
+				serialize<G3D::CoordinateFrame>(property, outBitStream);
+			}
+			else if (dynamic_cast<const Reflection::EnumPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				writeValueType(includeLength, ValueType_Enum, outBitStream);
+				serializeEnum(property, outBitStream);
+			}
+			else if (dynamic_cast<const Reflection::RefPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				writeValueType(includeLength, ValueType_Ref, outBitStream);
+				serializeRef(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<ContentId>())
+			{
+				writeValueType(includeLength, ValueType_ContentId, outBitStream);
+				serialize<ContentId>(property, outBitStream);
+			}
+			else
+			{
+				RBXASSERT(false);
+			}
+		}
 	}
 }
