@@ -219,5 +219,49 @@ namespace RBX
 
 			peer->Send(&bitStream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, remotePlayerId, false);
 		}
+
+		//99.80% matching.
+		PluginReceiveResult Server::ClientProxy::OnReceive(RakPeerInterface* peer, Packet* packet)
+		{
+			if (packet->systemAddress != remotePlayerId)
+				return Replicator::OnReceive(peer, packet);
+
+			if (packet->data[0] != ID_USER_PACKET_ENUM+1)
+				return Replicator::OnReceive(peer, packet);
+
+			try
+			{
+				RakNet::BitStream inBitstream(packet->data, packet->length, false);
+				inBitstream.IgnoreBits(8);
+
+				Instance* instance;
+				Guid::Data id;
+
+				if (deserializeInstanceRef(inBitstream, instance, id))
+				{
+					if (NetworkSettings::singleton().printInstances)
+					{
+						StandardOut::singleton()->print(MESSAGE_INFO, "Received remotePlayer %s from %s", this, id.readableString(4).c_str(), packet->systemAddress.ToString());
+					}
+
+					remotePlayer = shared_from_dynamic_cast<Player, Instance>(instance);
+
+					if (!remotePlayer)
+						throw std::runtime_error("remotePlayer is NULL");
+
+					remotePlayer->loadCharacter();
+				}
+				else
+				{
+					throw std::runtime_error(G3D::format("Couldn't resolve remotePlayer %s from %s", id.readableString(4).c_str(), packet->systemAddress.ToString()));
+				}
+			}
+			catch (std::exception& e)
+			{
+				StandardOut::singleton()->print(MESSAGE_ERROR, "Replicator::ClientProxy::OnReceive packet %d: %s", packet->data[0], e.what());
+			}
+
+			return RR_STOP_PROCESSING_AND_DEALLOCATE;
+		}
 	}
 }

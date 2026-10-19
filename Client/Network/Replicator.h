@@ -150,7 +150,11 @@ namespace RBX
 				int id;
 
 			public:
-				MarkerItem(Replicator&, int);
+				MarkerItem(Replicator& replicator, int id)
+					: Item(replicator),
+					  id(id)
+				{
+				}
 				virtual void write(RakNet::BitStream& bitStream);
 			};
 
