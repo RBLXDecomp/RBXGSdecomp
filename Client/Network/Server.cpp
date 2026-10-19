@@ -226,7 +226,7 @@ namespace RBX
 			if (packet->systemAddress != remotePlayerId)
 				return Replicator::OnReceive(peer, packet);
 
-			if (packet->data[0] != ID_USER_PACKET_ENUM+1)
+			if (packet->data[0] != ID_REQUEST_CHARACTER)
 				return Replicator::OnReceive(peer, packet);
 
 			try
@@ -244,7 +244,7 @@ namespace RBX
 						StandardOut::singleton()->print(MESSAGE_INFO, "Received remotePlayer %s from %s", this, id.readableString(4).c_str(), packet->systemAddress.ToString());
 					}
 
-					remotePlayer = shared_from_dynamic_cast<Player, Instance>(instance);
+					remotePlayer = shared_from_dynamic_cast<Player>(instance);
 
 					if (!remotePlayer)
 						throw std::runtime_error("remotePlayer is NULL");
