@@ -11,6 +11,7 @@
 #include "util/Log.h"
 #include "util/standardout.h"
 #include <g3d/system.h>
+#include "IdManager.h"
 
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Replicator, boost::shared_ptr<RBX::Reflection::DescribedBase>(void), 0> func_SendMarker(&RBX::Network::Replicator::sendMarker, "SendMarker", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Replicator, void(void), 0> func_requestCharacter(&RBX::Network::Replicator::requestCharacter, "RequestCharacter", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
@@ -1022,6 +1023,79 @@ namespace RBX
 			{
 				RBXASSERT(false);
 			}
+		}
+
+		PluginReceiveResult Replicator::OnReceive(RakPeerInterface* peer, Packet* packet)
+		{
+			RBXASSERT(this->peer == peer);
+			if (packet->systemAddress == remotePlayerId)
+			{
+				Profiling::Mark mark(*profileReplication, false);
+
+				try
+				{
+					switch(packet->data[0])
+					{
+					case ID_TIMESTAMP:
+						{
+							return OnReceive_ID_TIMESTAMP(packet);
+						}
+					case ID_CONNECTION_LOST:
+						{
+							StandardOut::singleton()->print(MESSAGE_WARNING, "Lost connection to %s\n", packet->systemAddress.ToString());
+							event_Disconnection.fire(this, packet->systemAddress.ToString(), true);
+							disconnected = true;
+							return RR_CONTINUE_PROCESSING;
+						}
+					case ID_DISCONNECTION_NOTIFICATION:
+						{
+							StandardOut::singleton()->print(MESSAGE_INFO, "Disconnect from %s", packet->systemAddress.ToString());
+							event_Disconnection.fire(this, packet->systemAddress.ToString(), false);
+							disconnected = true;
+							return RR_CONTINUE_PROCESSING;
+						}
+					case ID_DATA:
+						{
+							receiveData(packet);
+							return RR_STOP_PROCESSING_AND_DEALLOCATE;
+						}
+					case ID_REQUEST_MARKER:
+						{
+							RakNet::BitStream inBitstream(packet->data, packet->length, false);
+							inBitstream.IgnoreBits(8);
+
+							int id;
+							inBitstream >> id;
+
+							pendingItems.push_back(boost::shared_ptr<Item>(new MarkerItem(*this, id)));
+							return RR_STOP_PROCESSING_AND_DEALLOCATE;
+						}
+					case ID_SET_GLOBALS:
+						{
+							RakNet::BitStream inBitstream(packet->data, packet->length, false);
+							inBitstream.IgnoreBits(8);
+
+							std::vector<Instance*>::iterator end = replicationContainers.end();
+
+							for (std::vector<Instance*>::iterator iter = replicationContainers.begin(); iter != end; iter++)
+							{
+								Guid::Data id;
+								deserializeId(inBitstream, id);
+								ServiceProvider::create<IdManager>(this)->addInstance(*iter, id);
+								resolvePendingBindings(*iter, id);
+							}
+						}
+						receivedGlobals = true;
+						return RR_STOP_PROCESSING_AND_DEALLOCATE;
+					}
+				}
+				catch (std::exception& e)
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Replicator::OnReceive packet %d: %s", packet->data[0], e.what());
+				}
+			}
+
+			return RR_CONTINUE_PROCESSING;
 		}
 	}
 }
