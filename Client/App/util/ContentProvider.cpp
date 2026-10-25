@@ -327,6 +327,19 @@ namespace RBX
 		return contentId;
 	}
 
+	std::auto_ptr<std::istream> ContentProvider::getContent(ContentId ticket)
+	{
+		CachedContent* cachedContent = loadContent(ticket, SyncHttpRequest);
+
+		if (!cachedContent)
+			throw std::runtime_error(G3D::format("Unable to load %s", ticket.c_str()));
+
+		if (cachedContent->data)
+			return std::auto_ptr<std::istream>(new std::istringstream(*cachedContent->data));
+		else
+			return std::auto_ptr<std::istream>(new std::ifstream(cachedContent->filename->c_str()));
+	}
+
 	ContentProvider::FailedUrl::FailedUrl(const char* url)
 		: url(url),
 		  expiration(boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(5))
