@@ -340,6 +340,47 @@ namespace RBX
 			return std::auto_ptr<std::istream>(new std::ifstream(cachedContent->filename->c_str()));
 	}
 
+	worker_thread::work_result ContentProvider::processRequests()
+	{
+		ContentId id;
+		{
+			boost::mutex::scoped_lock lock(requestSync);
+
+			if (requestQueue.empty())
+				return worker_thread::done;
+
+			id = requestQueue.front();
+		}
+
+		try
+		{
+			boost::shared_ptr<std::string> data(new std::string());
+
+			try
+			{
+				Http(id.toString()).get(*data);
+			}
+			catch (std::exception)
+			{
+				boost::mutex::scoped_lock lock(requestSync);
+				failedUrls.push_front(FailedUrl(id.c_str()));
+				throw;
+			}
+			
+			boost::mutex::scoped_lock lock(contentCacheMutex);
+			contentCache[id].data = data;
+		}
+		catch (std::exception& e)
+		{
+			StandardOut::singleton()->print(MESSAGE_ERROR, "Content failed for %s because %s", id.c_str(), e.what());
+		}
+
+		boost::mutex::scoped_lock lock(requestSync);
+		requestQueue.erase(requestQueue.begin());
+
+		return worker_thread::more;
+	}
+
 	ContentProvider::FailedUrl::FailedUrl(const char* url)
 		: url(url),
 		  expiration(boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(5))
