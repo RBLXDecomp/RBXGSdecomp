@@ -337,7 +337,7 @@ namespace RBX
 		if (cachedContent->data)
 			return std::auto_ptr<std::istream>(new std::istringstream(*cachedContent->data));
 		else
-			return std::auto_ptr<std::istream>(new std::ifstream(cachedContent->filename->c_str()));
+			return std::auto_ptr<std::istream>(new std::ifstream(cachedContent->filename->c_str(), std::ios_base::binary | std::ios_base::in));
 	}
 
 	worker_thread::work_result ContentProvider::processRequests()
@@ -363,7 +363,10 @@ namespace RBX
 			catch (std::exception)
 			{
 				boost::mutex::scoped_lock lock(requestSync);
-				failedUrls.push_front(FailedUrl(id.c_str()));
+				{
+					FailedUrl url(id.c_str());
+					failedUrls.push_front(url);
+				}
 				throw;
 			}
 			
