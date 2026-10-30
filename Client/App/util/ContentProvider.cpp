@@ -327,6 +327,63 @@ namespace RBX
 		return contentId;
 	}
 
+	std::auto_ptr<std::istream> ContentProvider::getContent(ContentId ticket)
+	{
+		CachedContent* cachedContent = loadContent(ticket, SyncHttpRequest);
+
+		if (!cachedContent)
+			throw std::runtime_error(G3D::format("Unable to load %s", ticket.c_str()));
+
+		if (cachedContent->data)
+			return std::auto_ptr<std::istream>(new std::istringstream(*cachedContent->data));
+		else
+			return std::auto_ptr<std::istream>(new std::ifstream(cachedContent->filename->c_str(), std::ios_base::binary | std::ios_base::in));
+	}
+
+	worker_thread::work_result ContentProvider::processRequests()
+	{
+		ContentId id;
+		{
+			boost::mutex::scoped_lock lock(requestSync);
+
+			if (requestQueue.empty())
+				return worker_thread::done;
+
+			id = requestQueue.front();
+		}
+
+		try
+		{
+			boost::shared_ptr<std::string> data(new std::string());
+
+			try
+			{
+				Http(id.toString()).get(*data);
+			}
+			catch (std::exception)
+			{
+				boost::mutex::scoped_lock lock(requestSync);
+				{
+					FailedUrl url(id.c_str());
+					failedUrls.push_front(url);
+				}
+				throw;
+			}
+			
+			boost::mutex::scoped_lock lock(contentCacheMutex);
+			contentCache[id].data = data;
+		}
+		catch (std::exception& e)
+		{
+			StandardOut::singleton()->print(MESSAGE_ERROR, "Content failed for %s because %s", id.c_str(), e.what());
+		}
+
+		boost::mutex::scoped_lock lock(requestSync);
+		requestQueue.erase(requestQueue.begin());
+
+		return worker_thread::more;
+	}
+
 	ContentProvider::FailedUrl::FailedUrl(const char* url)
 		: url(url),
 		  expiration(boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(5))

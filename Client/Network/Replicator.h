@@ -258,7 +258,7 @@ namespace RBX
 				return shared_from(findTargetPlayer());
 			}
 			virtual void Update(RakPeerInterface* peer);
-			virtual PluginReceiveResult OnReceive(RakPeerInterface*, Packet*);
+			virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
 			virtual const Name& getClassName() const
 			{
 				return Name::getNullName();
