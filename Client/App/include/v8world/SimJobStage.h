@@ -38,6 +38,32 @@ namespace RBX
 		void notifyMovingPrimitives();
 
 		template<typename Class>
-		void reportMechanisms(Class& callback, MechanismTracker& tracker, const Mechanism* ignore);
+		void reportMechanisms(Class& callback, MechanismTracker& tracker, const Mechanism* ignore)
+		{
+			if (mechanisms.empty())
+				return;
+
+			if (!tracker.tracking())
+				tracker.setMechanism(mechanisms.front());
+
+			size_t i = 0;
+			Mechanism* current = tracker.getMechanism();
+
+			while (i < mechanisms.size())
+			{
+				Mechanism* temp = current;
+				i++;
+
+				current = nextMechanism(mechanisms, current);
+
+				if (temp != ignore)
+				{
+					if (!callback.report(*temp))
+						break;
+				}
+			}
+
+			tracker.setMechanism(current);
+		}
 	};
 }

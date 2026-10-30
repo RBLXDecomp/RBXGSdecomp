@@ -21,7 +21,10 @@ protected:
 	{
 	}
 public:
-	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
+	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet)
+	{
+		return c->OnReceive(peer, packet) ? RR_CONTINUE_PROCESSING : RR_STOP_PROCESSING_AND_DEALLOCATE;
+	}
 };
 
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, void(boost::shared_ptr<RBX::Instance>, std::string), 2> funcReportAbuse(&RBX::Network::Players::reportAbuse, "ReportAbuse", "player", "message", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);

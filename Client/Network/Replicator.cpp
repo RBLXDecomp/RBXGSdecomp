@@ -5,8 +5,12 @@
 #include "NetworkSettings.h"
 #include "PacketIds.h"
 #include "security/SecurityContext.h"
+#include "v8datamodel/Lighting.h"
 #include "v8datamodel/Stats.h"
 #include "v8datamodel/PartInstance.h"
+#include "v8datamodel/Hopper.h"
+#include "v8datamodel/Teams.h"
+#include "v8datamodel/JointsService.h"
 #include "v8world/SimJobStage.h"
 #include "util/Log.h"
 #include "util/standardout.h"
@@ -178,6 +182,34 @@ namespace RBX
 				NetworkSettings::singleton().minExtraPing,
 				NetworkSettings::singleton().extraPingVariance
 			);
+		}
+
+		void Peer::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+		{
+			Stats::StatsService* oldStats = ServiceProvider::find<Stats::StatsService>(oldProvider);
+			if (oldStats)
+			{
+				boost::shared_ptr<Stats::Item> network = shared_from_polymorphic_downcast<Stats::Item>(oldStats->findFirstChildByName("Network"));
+				if (network)
+					network->setParent(NULL);
+			}
+
+			Notifier<RunService, Heartbeat>::disconnect(ServiceProvider::find<RunService>(oldProvider), this);
+
+			Instance::onServiceProvider(oldProvider, newProvider);
+
+			Notifier<RunService, Heartbeat>::connect(ServiceProvider::find<RunService>(newProvider), this);
+
+			Stats::StatsService* newStats = ServiceProvider::find<Stats::StatsService>(newProvider);
+			if (newStats)
+			{
+				RBXASSERT(!shared_from_polymorphic_downcast<Stats::Item>(newStats->findFirstChildByName("Network")));
+
+				boost::shared_ptr<Stats::Item> network = Creatable::create<Stats::Item>();
+				network->setName("Network");
+				network->setParent(newStats);
+				network->createBoundChildItem(*profilePacketsThread);
+			}
 		}
 
 		const char* const sReplicator = "NetworkReplicator";
@@ -352,7 +384,7 @@ namespace RBX
 
 			RakNet::BitStream bitStream;
 			bitStream << (unsigned char)ID_REQUEST_MARKER;
-			bitStream << (int)marker->id();
+			bitStream << marker->id();
 
 			if (NetworkSettings::singleton().printInstances)
 			{
@@ -628,13 +660,69 @@ namespace RBX
 			}
 		}
 
+		bool Replicator::remoteDeleteOnDisconnect(const Instance* instance) const
+		{
+			if (instance->isDescendentOf(players))
+				return true;
+
+			if (instance == Players::findLocalCharacter(instance))
+				return true;
+
+			return false;
+		}
+
+		void Replicator::onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider)
+		{
+			Instance* oldLighting = ServiceProvider::create<Lighting>(oldProvider);
+			if (oldLighting)
+				disconnectPropertyChanged(shared_from(oldLighting));
+
+			disconnectAllPropertyChangedConnections();
+			pendingItems.clear();
+			replicationContainers.clear();
+
+			Instance::onServiceProvider(oldProvider, newProvider);
+
+			createStatsItems(ServiceProvider::find<Stats::StatsService>(newProvider));
+
+			replicationContainers.push_back(ServiceProvider::create<StarterPackService>(newProvider));
+			replicationContainers.push_back(ServiceProvider::find<Workspace>(newProvider));
+			replicationContainers.push_back(ServiceProvider::create<JointsService>(newProvider));
+
+			Players* players = ServiceProvider::create<Players>(newProvider);
+			this->players = players;
+
+			replicationContainers.push_back(players);
+			replicationContainers.push_back(ServiceProvider::create<Lighting>(newProvider));
+			replicationContainers.push_back(ServiceProvider::create<Teams>(newProvider));
+
+			Instance* newLighting = ServiceProvider::create<Lighting>(newProvider);
+			if (newLighting)
+			{
+				connectPropertyChanged(shared_from(newLighting));
+				pendingItems.push_back(boost::shared_ptr<Item>(new NewInstanceItem(*this, shared_from(newLighting))));
+			}
+
+			connectToReplicationContainers();
+
+			if (!newProvider)
+			{
+				if (peer)
+				{
+					peer->DetachPlugin(this);
+					peer = NULL;
+				}
+				deleteDisconnectInstances();
+			}
+		}
+
 		void Replicator::Item::readItemType(RakNet::BitStream& stream, ItemType& value)
 		{
 			value = ItemTypeEnd;
 
 			stream.ReadBits((unsigned char*)&value, 2, true);
 
-			if (value < 1 || value > 3) // neither of Delete, New, ChangeProperty
+			if (value < ItemTypeDelete || value > ItemTypeChangeProperty) // neither of Delete, New, ChangeProperty
 			{
 				stream.Read(value);
 			}
@@ -642,14 +730,14 @@ namespace RBX
 
 		void Replicator::Item::writeItemType(RakNet::BitStream& stream, ItemType value)
 		{
-			if (value >= 1 && value <= 3) // Delete, New, ChangeProperty
+			if (value >= ItemTypeDelete && value <= ItemTypeChangeProperty) // Delete, New, ChangeProperty
 			{
 				stream.WriteBits((unsigned char*)&value, 2, true);
 			}
 			else
 			{
-				unsigned char zeroes = 0;
-				stream.WriteBits(&zeroes, 2, true);
+				unsigned char zero = 0;
+				stream.WriteBits(&zero, 2, true);
 				stream.Write(value);
 			}
 		}
@@ -843,6 +931,20 @@ namespace RBX
 
 				replicator.serializeValue(Reflection::ConstProperty(desc, instance.get()), true, bitStream);
 			}
+		}
+
+		Replicator::NewInstanceItem::NewInstanceItem(Replicator& replicator, const boost::shared_ptr<Instance>& instance)
+			: Item(replicator),
+			  instance(instance)
+		{
+			replicator.pendingNewInstances.insert(instance.get());
+		}
+
+		Replicator::DeleteInstanceItem::DeleteInstanceItem(Replicator& replicator, const boost::shared_ptr<const Instance>& instance)
+			: Item(replicator),
+			  instance(instance)
+		{
+			replicator.pendingDeleteInstances.insert(instance.get());
 		}
 
 		void Replicator::DeleteInstanceItem::write(RakNet::BitStream& bitStream)
