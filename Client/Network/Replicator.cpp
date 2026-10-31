@@ -26,7 +26,7 @@ static RBX::Reflection::BoundFuncDesc<RBX::Network::Replicator, boost::shared_pt
 RBX::Reflection::BoundProp<int, 1> RBX::Network::Replicator::prop_maxDataModelSendBuffer("MaxDataModelSendBuffer", "Replication", &RBX::NetworkSettings::maxDataModelSendBuffer, RBX::Reflection::PropertyDescriptor::STANDARD);
 
 RBX::Reflection::SignalDesc<RBX::Network::Marker, void(void)> RBX::Network::Marker::event_Returned("Received");
-RBX::Reflection::SignalDesc<RBX::Network::Replicator, void(std::string, bool)> event_Disconnection("Disconnection", "peer", "lostConnection");
+RBX::Reflection::SignalDesc<RBX::Network::Replicator, void(std::string, bool)> RBX::Network::Replicator::event_Disconnection("Disconnection", "peer", "lostConnection");
 
 enum ValueType // NOTE: may not be intended for this file
 {
@@ -320,6 +320,14 @@ namespace RBX
 			}
 
 			peer->Send(&bitStream, MEDIUM_PRIORITY, RELIABLE_ORDERED, 0, remotePlayerId, false);
+		}
+
+		void Replicator::connectPropertyChanged(boost::shared_ptr<Instance> instance)
+		{
+			if (propertyChangedConnections.find(instance) == propertyChangedConnections.end())
+			{
+				propertyChangedConnections[instance] = Instance::event_propertyChanged.connect(instance.get(), boost::bind(&Replicator::onPropertyChanged, this, instance, _1));
+			}
 		}
 
 		void Replicator::disconnectPropertyChanged(boost::shared_ptr<Instance> instance)
@@ -714,6 +722,30 @@ namespace RBX
 					peer = NULL;
 				}
 				deleteDisconnectInstances();
+			}
+		}
+
+		void Replicator::connectToReplicationContainers()
+		{
+			std::vector<boost::signals::connection>::iterator dEnd = replicationContainerConnections.end();
+
+			for (std::vector<boost::signals::connection>::iterator it = replicationContainerConnections.begin(); it != dEnd; it++)
+			{
+				it->disconnect();
+			}
+
+			replicationContainerConnections.clear();
+
+			std::vector<Instance*>::iterator cEnd = replicationContainers.end();
+
+			for (std::vector<Instance*>::iterator it = replicationContainers.begin(); it != cEnd; it++)
+			{
+				if (*it && wantReplicate(*it))
+				{
+					replicationContainerConnections.push_back(Instance::event_descendentAdded.connect(*it, boost::bind(&Replicator::onDescendentAdded, this, _1)));
+					replicationContainerConnections.push_back(Instance::event_descendentRemoving.connect(*it, boost::bind(&Replicator::onDescendentRemoving, this, _1)));
+					(*it)->visitDescendents(boost::bind(&Replicator::onDescendentAdded, this, _1));
+				}
 			}
 		}
 

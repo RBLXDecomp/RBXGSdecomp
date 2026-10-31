@@ -1,8 +1,12 @@
+#pragma warning (disable : 4244) //  warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+
 #include <BitStream.h>
 #include <StringCompressor.h>
 #include "Streaming.h"
 #include "IdManager.h"
 #include "v8tree/Service.h"
+#include "util/Math.h"
+#include "util/Quaternion.h"
 #include <G3D/vectorMath.h>
 #include <algorithm>
 
@@ -69,37 +73,65 @@ namespace RBX
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, bool& value)
+		RakNet::BitStream& operator<<(RakNet::BitStream& stream, const G3D::CoordinateFrame& cf)
+		{
+			G3D::CoordinateFrame value = cf;
+			rationalize(value);
+			writeBrickVector(stream, value.translation);
+
+			if (Math::isAxisAligned(value.rotation))
+			{
+				stream.Write(true);
+				int orientId = Math::getOrientId(value.rotation);
+				stream.WriteBits((unsigned char*)&orientId, 6);
+			}
+			else
+			{
+				stream.Write(false);
+				Quaternion q(value.rotation);
+				stream.WriteNormQuat(q.w, q.x, q.y, q.z);
+			}
+
+			return stream;
+		}
+
+		template<>
+		RakNet::BitStream& operator>><bool>(RakNet::BitStream& stream, bool& value)
 		{
 			stream.Read(value);
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, int& value)
+		template<>
+		RakNet::BitStream& operator>><int>(RakNet::BitStream& stream, int& value)
 		{
 			stream.Read(value);
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, long& value)
+		template<>
+		RakNet::BitStream& operator>><long>(RakNet::BitStream& stream, long& value)
 		{
 			stream.Read(value);
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, unsigned int& value)
+		template<>
+		RakNet::BitStream& operator>><unsigned int>(RakNet::BitStream& stream, unsigned int& value)
 		{
 			stream.Read(value);
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, unsigned char& value)
+		template<>
+		RakNet::BitStream& operator>><unsigned char>(RakNet::BitStream& stream, unsigned char& value)
 		{
 			stream.Read(value);
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, float& value)
+		template<>
+		RakNet::BitStream& operator>><float>(RakNet::BitStream& stream, float& value)
 		{
 			stream.Read(value);
 			return stream;
@@ -118,7 +150,8 @@ namespace RBX
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, G3D::Vector3& value)
+		template<>
+		RakNet::BitStream& operator>><G3D::Vector3>(RakNet::BitStream& stream, G3D::Vector3& value)
 		{
 			stream >> value.x;
 			stream >> value.y;
@@ -126,7 +159,8 @@ namespace RBX
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, G3D::Color3& value)
+		template<>
+		RakNet::BitStream& operator>><G3D::Color3>(RakNet::BitStream& stream, G3D::Color3& value)
 		{
 			stream >> value.r;
 			stream >> value.g;
@@ -134,7 +168,8 @@ namespace RBX
 			return stream;
 		}
 
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, ContentId& value)
+		template<>
+		RakNet::BitStream& operator>><ContentId>(RakNet::BitStream& stream, ContentId& value)
 		{
 			std::string id;
 			stream >> id;
@@ -144,10 +179,39 @@ namespace RBX
 			return stream;
 		}
 
-		template<typename T>
-		RakNet::BitStream& operator>>(RakNet::BitStream& stream, T& value) // TODO: check match
+		template<>
+		RakNet::BitStream& operator>><G3D::CoordinateFrame>(RakNet::BitStream& stream, G3D::CoordinateFrame& value)
 		{
-			return operator>>(stream, value);
+			readBrickVector(stream, value.translation);
+
+			bool isAxisAligned;
+			stream >> isAxisAligned;
+
+			if (isAxisAligned)
+			{
+				int orientId = 0;
+				stream.ReadBits((unsigned char*)&orientId, 6);
+				Math::idToMatrix3(orientId, value.rotation);
+			}
+			else
+			{
+				Quaternion q;
+				stream.ReadNormQuat(q.w, q.x, q.y, q.z);
+				q.toRotationMatrix(value.rotation);
+				Math::orthonormalizeIfNecessary(value.rotation);
+			}
+
+			return stream;
+		}
+
+		template<>
+		RakNet::BitStream& operator>><BrickColor>(RakNet::BitStream& stream, BrickColor& value)
+		{
+			unsigned int i = 0;
+			stream.ReadBits((unsigned char*)&i, 5);
+			value = BrickColor::colorPalette()[i];
+
+			return stream;
 		}
 
 		bool brickEq(float a, float b)
@@ -500,6 +564,27 @@ namespace RBX
 			{
 				instance = NULL;
 				return true;
+			}
+		}
+
+		void IdSerializer::deserializeRef(Reflection::Property& property, RakNet::BitStream& bitStream)
+		{
+			Guid::Data id;
+			deserializeId(bitStream, id);
+
+			Instance* value = ServiceProvider::create<IdManager>(this)->getInstance(id);
+
+			Instance* instance = static_cast<Instance*>(property.getInstance());
+			const Reflection::RefPropertyDescriptor& desc = static_cast<const Reflection::RefPropertyDescriptor&>(property.getDescriptor());
+
+			if (value)
+			{
+				desc.setRefValue(instance, value);
+			}
+			else
+			{
+				WaitItem item = {&desc, shared_from(instance)};
+				waitItems[id].push_back(item);
 			}
 		}
 	}

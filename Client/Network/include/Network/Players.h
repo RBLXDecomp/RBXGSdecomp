@@ -122,7 +122,7 @@ namespace RBX
 			std::list<ChatMessage>::const_iterator chatHistory_end();
 			bool canReportAbuse() const;
 			void setAbuseReportUrl(std::string value);
-			bool OnReceive(RakPeerInterface*, Packet*);
+			bool OnReceive(RakPeerInterface* peer, Packet* packet);
 			void setConnection(RakPeerInterface* peer);
 			boost::shared_ptr<Instance> playerFromCharacter(boost::shared_ptr<Instance> character);
 			boost::shared_ptr<Instance> getPlayerByID(int userID);
