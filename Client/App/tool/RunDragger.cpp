@@ -237,4 +237,38 @@ namespace RBX
 
 		RBXASSERT(!workspace->getWorld()->getContactManager().intersectingOthers(drag, 0.01f));
 	}
+
+	void RunDragger::smartPtrHackPre()
+	{
+		World* world = workspace->getWorld();
+
+		RBXASSERT(!dragPart.expired());
+		RBXASSERT(Workspace::getWorldIfInWorkspace(dragPart.lock().get()) == world);
+		RBXASSERT(dragPart.lock()->getPrimitive() == drag);
+		RBXASSERT(PartInstance::nonNullInWorkspace(dragPart.lock()));
+
+		boost::shared_ptr<PartInstance> p = snapPart.lock();
+		if (PartInstance::nonNullInWorkspace(p))
+		{
+			RBXASSERT(Workspace::getWorldIfInWorkspace(p.get()) == world);
+			snapInfo.snap = p->getPrimitive();
+		}
+		else
+		{
+			snapInfo.snap = NULL;
+		}
+	}
+
+	void RunDragger::smartPtrHackPost()
+	{
+		if (snapInfo.snap)
+		{
+			snapPart = shared_from(PartInstance::fromPrimitive(snapInfo.snap));
+			RBXASSERT(Workspace::getWorldIfInWorkspace(snapPart.lock().get()) == workspace->getWorld());
+		}
+		else
+		{
+			snapPart.reset();
+		}
+	}
 }
