@@ -5,6 +5,7 @@
 #include "v8datamodel/Camera.h"
 #include "v8datamodel/Hopper.h"
 #include "v8datamodel/Selection.h"
+#include "v8datamodel/UserController.h"
 #include "script/ScriptContext.h"
 #include "humanoid/Humanoid.h"
 #include "v8world/CollisionStage.h"
@@ -518,6 +519,86 @@ namespace RBX
 			adorn->setObjectToWorldMatrix(G3D::CoordinateFrame());
 			adorn->box(G3D::AABox(G3D::Vector3(28, 4, 12), G3D::Vector3(32, 8, 16)), G3D::Color4(1.0, 0.2, 0.2, 0.5), G3D::Color4::clear());
 		}
+	}
+
+	IScriptOwner* Workspace::scriptShouldRun(Script* script)
+	{
+		RBXASSERT(this->isAncestorOf(script));
+
+		bool c;
+
+		if (!dynamic_cast<LocalScript*>(script))
+		{
+			c = Network::Players::backendProcessing(this, true);
+		}
+		else
+		{
+			ModelInstance* character = Network::Players::findLocalCharacter(this);
+			c = (character && script->isDescendentOf(character));
+		}
+
+		return c ? this : NULL;
+	}
+
+	GuiResponse Workspace::process(const GuiEvent& event)
+	{
+		RBXASSERT(currentCommand.get());
+
+		switch (event.eventType)
+		{
+		case UIEvent::KEY_DOWN:
+			currentCommand->onPeekKeyDown(event);
+			if (!currentCommand->captured())
+				return GuiResponse::notUsed();
+
+			setMouseCommand(currentCommand->onKeyDown(event));
+			break;
+
+		case UIEvent::MOUSE_RIGHT_BUTTON_DOWN:
+			inMouselookMode = true;
+			event.userInput->setWrapMode(UserInputBase::WRAP_CENTER);
+			break;
+
+		case UIEvent::MOUSE_RIGHT_BUTTON_UP:
+			inMouselookMode = false;
+			event.userInput->setWrapMode(UserInputBase::WRAP_AUTO);
+			break;
+
+		case UIEvent::MOUSE_LEFT_BUTTON_DOWN:
+			if (!currentCommand->captured())
+				setMouseCommand(currentCommand->onMouseDown(event));
+			break;
+
+		case UIEvent::MOUSE_MOVE:
+			if (currentCommand->captured())
+				currentCommand->onMouseMove(event);
+			else
+				currentCommand->onMouseHover(event);
+
+			break;
+
+		case UIEvent::MOUSE_DELTA:
+			if (currentCommand->captured())
+				currentCommand->onMouseDelta(event);
+			break;
+
+		case UIEvent::MOUSE_LEFT_BUTTON_UP:
+			setMouseCommand(currentCommand->onMouseUp(event));
+			break;
+
+		default:
+			return GuiResponse::notUsed();
+		}
+
+		if (event.isMouseEvent())
+		{
+			idleMouseEvent = event;
+			idleMouseEvent.eventType = UIEvent::MOUSE_IDLE;
+		}
+
+		RBXASSERT(currentCommand.get());
+
+		return GuiResponse::used(currentCommand->captured() ? this : NULL);
 	}
 
 	static double getFPS(Profiling::CodeProfiler* profiler)

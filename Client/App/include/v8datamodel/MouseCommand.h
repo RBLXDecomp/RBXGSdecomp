@@ -17,6 +17,8 @@ namespace RBX
 
 	class MouseCommand : public INamed, public IRenderable
 	{
+		friend class Workspace;
+
 	private:
 		bool capturedMouse;
 	protected:

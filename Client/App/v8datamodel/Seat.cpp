@@ -74,4 +74,30 @@ namespace RBX
 			seatTouched.disconnect();
 		}
 	}
+
+	bool Seat::charSeated() // this is a guess
+	{
+		return weld && weld->getPart0() && weld->getPart1() && Workspace::getWorkspaceIfInWorkspace(weld.get());
+	}
+
+	void Seat::onEvent_seatTouched(boost::shared_ptr<Instance> other)
+	{
+		if (charSeated() || G3D::System::getLocalTime() - sleepTime < 3.0f)
+			return;
+
+		RBXASSERT(Network::Players::backendProcessing(this, true));
+
+		if (Instance* otherParent = other->getParent())
+		{
+			if (Humanoid* humanoid = otherParent->findFirstChildOfType<Humanoid>())
+			{
+				if (humanoid->getTorso() && humanoid->canSit())
+				{
+					humanoid->setSit(true);
+					seatCharacter(humanoid);
+					humanoidJumped = Humanoid::event_Jumping.connect(humanoid, boost::bind(&Seat::onEvent_humanoidJumped, this, _1));
+				}
+			}
+		}
+	}
 }
