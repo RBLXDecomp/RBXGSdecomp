@@ -7,8 +7,8 @@ namespace RBX
 {
 	const char* const sJumping = "Jumping";
 
-	static const float kJumpP = 5000.0f;
-	static const float jumpVelocityGrid = 50.0f;
+	const float Jumping::kJumpP = 5000.0f;
+	const float Jumping::jumpVelocityGrid = 50.0f;
 
 	Jumping::Jumping(Humanoid* humanoid)
 		: Base(humanoid),

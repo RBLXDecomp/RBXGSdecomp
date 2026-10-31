@@ -9,14 +9,14 @@ namespace RBX
 {
 	const char* const sRunning = "Running";
 
-	static const float manualTurnSpeed = 4.0f;
-	static const float autoTurnSpeed = 8.0f;
-	static const float kTurnP = 7500.0f;
-	static const float kTurnAccelMax = 160000.0f;
-	static const float kMoveP = 1250.0f;
-	static const float kAltitudeP = 10000.0f;
-	static const float kAltitudeD = 1250.0f;
-	static const G3D::Vector3 maxMoveAccelerationGrid(1000.0f, 10000.0f, 200.0f);
+	const float Running::manualTurnSpeed = 4.0f;
+	const float Running::autoTurnSpeed = 8.0f;
+	const float Running::kTurnP = 7500.0f;
+	const float Running::kTurnAccelMax = 160000.0f;
+	const float Running::kMoveP = 1250.0f;
+	const float Running::kAltitudeP = 10000.0f;
+	const float Running::kAltitudeD = 1250.0f;
+	const G3D::Vector3 Running::maxMoveAccelerationGrid(1000.0f, 10000.0f, 200.0f);
 
 	Running::Running(Humanoid* humanoid)
 		: Base(humanoid, 300.0f, 50.0f),

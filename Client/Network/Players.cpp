@@ -4,6 +4,7 @@
 #include "Server.h"
 #include "Players.h"
 #include "Streaming.h"
+#include "IdManager.h"
 #include "PacketIds.h"
 #include "v8datamodel/GameSettings.h"
 #include "v8datamodel/Teams.h"
@@ -314,7 +315,6 @@ namespace RBX
 			}
 		}
 
-		// 98% match
 		boost::shared_ptr<Instance> Players::createLocalPlayer(int userId)
 		{
 			if (localPlayer)
@@ -329,6 +329,76 @@ namespace RBX
 			Notifier<Players, SuperSafeChanged>::raise(SuperSafeChanged(s));
 
 			return localPlayer;
+		}
+
+		// 98% match
+		bool Players::OnReceive(RakPeerInterface* peer, Packet* packet)
+		{
+			switch (packet->data[0])
+			{
+			case ID_CHAT_ALL:
+				try
+				{
+					Instance* instance = NULL;
+					RakNet::BitStream inBitstream(packet->data, packet->length, false);
+					inBitstream.IgnoreBits(8);
+
+					Guid::Data id;
+
+					std::string foo;
+					inBitstream >> foo;
+					id.scope = &Name::lookup(foo);
+
+					inBitstream >> id.index;
+
+					IdManager* idManager = ServiceProvider::find<IdManager>(this);
+					if (idManager)
+						instance = idManager->getInstance(id);
+
+					std::string message;
+					inBitstream >> message;
+
+					if (!instance)
+					{
+						StandardOut::singleton()->print(MESSAGE_WARNING, "Chat message from unknown Player %s %s", packet->systemAddress.ToString(), message.c_str());
+					}
+					else if (instance->getParent() == this)
+					{
+						ChatMessage event = {message, shared_from_polymorphic_downcast<Player>(instance), boost::shared_ptr<Player>()};
+						addChatMessage(event);
+						peer->Send((const char*)packet->data, packet->length, MEDIUM_PRIORITY, RELIABLE_ORDERED, 2, packet->systemAddress, true);
+					}
+				}
+				catch (std::exception& e)
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Players::OnReceive packet %d: %s", packet->data[0], e.what());
+				}
+				return false;
+
+			case ID_REPORT_ABUSE:
+				try
+				{
+					if (abuseReporter)
+					{
+						RakNet::BitStream inBitstream(packet->data, packet->length, false);
+						inBitstream.IgnoreBits(8);
+
+						AbuseReport r;
+						inBitstream >> r.submitterID;
+						inBitstream >> r.allegedAbuserID;
+						inBitstream >> r.comment;
+
+						abuseReporter->add(r, chatHistory);
+					}
+				}
+				catch (std::exception& e)
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Players::OnReceive packet %d: %s", packet->data[0], e.what());
+				}
+				return false;
+			}
+
+			return true;
 		}
 
 		void AbuseReport::addMessage(const ChatMessage& cm)
