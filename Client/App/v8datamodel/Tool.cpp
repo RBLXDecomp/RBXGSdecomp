@@ -491,6 +491,12 @@ namespace RBX
 		handleTouched.disconnect();
 	}
 
+	void Tool::upTo_InWorkspace()
+	{
+		RBXASSERT(ServiceProvider::findServiceProvider(this));
+		RBXASSERT(Network::Players::backendProcessing(this, true));
+	}
+
 	void Tool::setDesiredState(ToolState desiredState, const ServiceProvider* serviceProvider)
 	{
 		int numToolsInCharacter;
