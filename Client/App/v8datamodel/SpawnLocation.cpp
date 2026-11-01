@@ -1,4 +1,5 @@
 #include "v8datamodel/SpawnLocation.h"
+#include "humanoid/Humanoid.h"
 #include "Network/Players.h"
 
 namespace RBX
@@ -47,6 +48,28 @@ namespace RBX
 			RBXASSERT(spawnerService != NULL);
 
 			spawnerService->UnregisterSpawner(this);
+		}
+	}
+
+	void SpawnLocation::onEvent_spawnerTouched(boost::shared_ptr<Instance> other)
+	{
+		if (!allowTeamChangeOnTouch)
+			return;
+
+		RBXASSERT(Network::Players::backendProcessing(this, true));
+
+		Instance* parent = other->getParent();
+		if (parent)
+		{
+			if (parent->findFirstChildOfType<Humanoid>())
+			{
+				Network::Player* player = Network::Players::getPlayerFromCharacter(parent);
+				if (player)
+				{
+					player->setTeamColor(getTeamColor());
+					player->setNeutral(neutral);
+				}
+			}
 		}
 	}
 

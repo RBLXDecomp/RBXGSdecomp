@@ -6,7 +6,7 @@
 
 bool ArchiveBinder::resolveRefs()
 {
-	size_t counts = std::count_if(idrefBindings.begin(), idrefBindings.end(), boost::bind(&ArchiveBinder::resolveIDREF, this, _1));
+	size_t counts = std::count_if(idrefBindings.begin(), idrefBindings.end(), std::bind1st(std::mem_fun(&ArchiveBinder::resolveIDREF), this));
 
 	return MergeBinder::resolveRefs() && counts == idrefBindings.size();
 }
@@ -128,6 +128,77 @@ void SerializerV2::load(XmlElement* root, RBX::DataModel* dataModel)
 	dataModel->readChildren(root, binder);
 
 	binder.resolveRefs();
+}
+
+// 98% match
+// some MSVC shenanigans going on here
+void SerializerV2::load(std::istream& stream, RBX::DataModel* dataModel)
+{
+	char header[5];
+	header[4] = '\0';
+
+	if (!stream.read(header, 4).good())
+		throw std::runtime_error("SerializerV2::load can\'t read header");
+
+	if (strcmp(header, "RBX_") != 0)
+	{
+		stream.clear();
+		stream.seekg(0, std::ios::beg);
+	}
+	else
+	{
+		unsigned long fileFormatVersion;
+		if (!stream.read((char*)&fileFormatVersion, 4).good())
+			throw std::runtime_error("SerializerV2::load can\'t read old fileFormatVersion");
+
+		if (fileFormatVersion != 1)
+			throw std::runtime_error("SerializerV2::load canfileFormatVersion!=1");
+
+		unsigned long contentPos = 0;
+		if (!stream.read((char*)&contentPos, 4).good())
+			throw std::runtime_error("SerializerV2::load can\'t read contentPos");
+
+		if (contentPos != 0)
+		{
+			int prev = stream.tellg();
+			stream.clear();
+			stream.seekg(contentPos, std::ios::beg);
+
+			while (stream.peek() != '\0')
+			{
+				char id[33];
+				id[32] = '\0';
+
+				if (!stream.read(id, 32).good())
+					throw std::runtime_error("SerializerV2::load error reading compound file (1)");
+
+				unsigned long contentLength;
+				if (!stream.read((char*)&contentLength, 4).good())
+					throw std::runtime_error("SerializerV2::load error reading compound file (2)");
+
+				unsigned char compression;
+				if (!stream.read((char*)&compression, 1).good())
+					throw std::runtime_error("SerializerV2::load error reading compound file (3)");
+
+				if (compression != 0)
+					throw std::runtime_error("SerializerV2::load error reading compound file (4)");
+
+				RBX::ContentProvider::singleton().readContent(id, stream, contentLength);
+			}
+
+			stream.clear();
+			stream.seekg(prev, std::ios::beg);
+		}
+
+		unsigned char xmlCompression;
+		if (!stream.read((char*)&xmlCompression, 1).good())
+			throw std::runtime_error("SerializerV2::load error reading compound file (5)");
+
+		if (xmlCompression != 0)
+			throw std::runtime_error("SerializerV2::load error reading compound file (6)");
+	}
+
+	loadXML(stream, dataModel);
 }
 
 void SerializerV2::loadXML(std::istream& stream, RBX::DataModel* dataModel)

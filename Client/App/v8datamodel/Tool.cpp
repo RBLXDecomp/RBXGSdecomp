@@ -50,13 +50,11 @@ namespace RBX
 	void Tool::readProperty(const XmlElement* propertyElement, IReferenceBinder& binder)
 	{
 		const Name* name = NULL;
-		if (const XmlAttribute* attrib = propertyElement->findAttribute(name_name))
+
+		if (propertyElement->findAttributeValue(name_name, name))
 		{
-			if (attrib->getValue(name))
-			{
-				if (name->toString() == "BackendToolState" || name->toString() == "ActivationState")
-					return;
-			}
+			if (name->toString() == "BackendToolState" || name->toString() == "ActivationState")
+				return;
 		}
 
 		Instance::readProperty(propertyElement, binder);
@@ -471,6 +469,131 @@ namespace RBX
 				setBackendToolState(value % 2 == 0 ? EQUIPPED : ACTIVATED);
 			}
 		}
+	}
+
+	void Tool::upTo_Activated() // guess based on setDesiredState
+	{
+		return;
+	}
+
+	void Tool::upTo_HasHandle() // guess based on setDesiredState
+	{
+		connectTouchEvent();
+	}
+
+	void Tool::downFrom_InWorkspace() // guess based on setDesiredState
+	{
+		return;
+	}
+
+	void Tool::downFrom_HasHandle() // guess based on setDesiredState
+	{
+		handleTouched.disconnect();
+	}
+
+	void Tool::setDesiredState(ToolState desiredState, const ServiceProvider* serviceProvider)
+	{
+		int numToolsInCharacter;
+		RBXASSERT((numToolsInCharacter = getNumToolsInCharacter(), true)); // what
+		RBXASSERT(Network::Players::backendProcessing(serviceProvider, true));
+
+		if (backendToolState < desiredState)
+		{
+			switch (backendToolState)
+			{
+			case ACTIVATED:
+				RBXASSERT(false);
+				break;
+			case EQUIPPED:
+				upTo_Activated();
+				break;
+			case HAS_TORSO:
+				upTo_Equipped();
+				break;
+			case IN_CHARACTER:
+				upTo_HasTorso();
+				break;
+			case IN_WORKSPACE:
+				upTo_InCharacter();
+				break;
+			case HAS_HANDLE:
+				upTo_InWorkspace();
+				break;
+			case NOTHING:
+				upTo_HasHandle();
+				break;
+			}
+
+			setBackendToolState(backendToolState + 1);
+		}
+		else if (desiredState < backendToolState)
+		{
+			switch (backendToolState)
+			{
+			case EQUIPPED:
+				downFrom_Equipped();
+				break;
+			case HAS_TORSO:
+				downFrom_HasTorso();
+				break;
+			case IN_CHARACTER:
+				downFrom_InCharacter();
+				break;
+			case IN_WORKSPACE:
+				downFrom_InWorkspace();
+				break;
+			case HAS_HANDLE:
+				downFrom_HasHandle();
+				break;
+			case NOTHING:
+				RBXASSERT(false);
+				break;
+			}
+
+			setBackendToolState(backendToolState - 1);
+		}
+
+		if (desiredState != backendToolState)
+			setDesiredState(desiredState, serviceProvider);
+
+		RBXASSERT(numToolsInCharacter == getNumToolsInCharacter());
+	}
+
+	void Tool::onAncestorChanged(const AncestorChanged& event)
+	{
+		int numToolsInCharacter;
+		RBXASSERT((numToolsInCharacter = getNumToolsInCharacter(), true)); // what
+
+		const ServiceProvider* oldProvider = ServiceProvider::findServiceProvider(event.oldParent);
+		const ServiceProvider* newProvider = ServiceProvider::findServiceProvider(event.newParent);
+
+		if (oldProvider)
+		{
+			if (Network::Players::backendProcessing(oldProvider, true))
+			{
+				setDesiredState(NOTHING, oldProvider);
+			}
+			else
+			{
+				setBackendToolStateNoReplicate(NOTHING);
+			}
+		}
+
+		Instance::onAncestorChanged(event);
+
+		if (newProvider)
+		{
+			if (Network::Players::backendProcessing(newProvider, true))
+			{
+				ToolState state = computeDesiredState();
+				const ServiceProvider* thisProvider = ServiceProvider::findServiceProvider(this);
+				RBXASSERT(thisProvider);
+
+				setDesiredState(state, thisProvider);
+			}
+		}
+
+		RBXASSERT(numToolsInCharacter == getNumToolsInCharacter());
 	}
 
 	void Tool::activate()

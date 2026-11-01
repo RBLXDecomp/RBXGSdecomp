@@ -69,7 +69,7 @@ namespace RBX
 	public:
 		RunDragger();
 		~RunDragger();
-		void init(Workspace*, boost::weak_ptr<PartInstance>, const G3D::Vector3&);
+		void init(Workspace* _workspace, boost::weak_ptr<PartInstance> _dragPart, const G3D::Vector3& _dragPointWorld);
 		bool snap(const G3D::Ray&);
 
 	public:
