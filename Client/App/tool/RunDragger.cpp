@@ -271,4 +271,22 @@ namespace RBX
 			snapPart.reset();
 		}
 	}
+
+	void RunDragger::init(Workspace* _workspace, boost::weak_ptr<PartInstance> _dragPart, const G3D::Vector3& _dragPointWorld)
+	{
+		RBXASSERT(!_dragPart.expired());
+		RBXASSERT(PartInstance::nonNullInWorkspace(_dragPart.lock()));
+
+		workspace = _workspace;
+		dragPart = _dragPart;
+		drag = _dragPart.lock()->getPrimitive();
+		dragPointLocal = drag->getCoordinateFrame().pointToObjectSpace(_dragPointWorld);
+
+		drag->setVelocity(Velocity::zero());
+
+		snapInfo = SnapInfo();
+		turnUpright(dragPart.lock().get());
+
+		RBXASSERT(Workspace::getWorldIfInWorkspace(dragPart.lock().get()) == workspace->getWorld());
+	}
 }

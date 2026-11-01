@@ -539,6 +539,15 @@ namespace RBX
 		offset = layout.offset;
 	}
 
+	G3D::Vector2 RelativePanel::getPosition() const
+	{
+		Rect canvas(GuiRoot::getCanvasSize());
+		Rect me(getSize());
+
+		canvas = canvas.inset(offset);
+		return canvas.positionChild(me, xLocation, yLocation).low;
+	}
+
 	G3D::Vector2 PercentPanel::getPosition() const
 	{
 		Rect canvasRect(GuiRoot::getCanvasSize());

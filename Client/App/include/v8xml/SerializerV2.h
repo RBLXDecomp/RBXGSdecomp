@@ -130,7 +130,7 @@ public:
   
 public:
 	void loadInstances(XmlElement* root, std::vector<boost::shared_ptr<RBX::Instance>>& result);
-	void load(std::istream&, RBX::DataModel*);
+	void load(std::istream& stream, RBX::DataModel* dataModel);
 	void loadXML(std::istream& stream, RBX::DataModel* dataModel);
 	void merge(const XmlElement*, RBX::DataModel*);
   

@@ -77,8 +77,14 @@ namespace RBX
 		G3D::Vector2 positionPoint(const G3D::Vector2& point, Location xLocation, Location yLocation) const;
 		G3D::Vector2 positionPoint(Location xLocation, Location yLocation) const;
 		Rect positionChild(const RBX::Rect& child, Location xLocation, Location yLocation) const;
-		Rect inset(const G3D::Vector2int16&);
-		Rect inset(int);
+		Rect inset(const G3D::Vector2int16& offset)
+		{
+			return Rect(low.x + offset.x, low.y + offset.y, high.x - offset.x, high.y - offset.y);
+		}
+		Rect inset(int offset)
+		{
+			return Rect(low.x + offset, low.y + offset, high.x - offset, high.y - offset);
+		}
 		G3D::Vector2 clamp(const G3D::Vector2&);
 
 	public:
