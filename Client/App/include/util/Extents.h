@@ -92,7 +92,10 @@ namespace RBX
 		{
 			return Extents(center - corner, center + corner);
 		}
-		static Extents fromCenterRadius(const G3D::Vector3&, float);
+		static Extents fromCenterRadius(const G3D::Vector3& center, float radius)
+		{
+			return fromCenterCorner(center, G3D::Vector3(radius, radius, radius));
+		}
 		static Extents vv(const G3D::Vector3& v0, const G3D::Vector3& v1);
 		static bool overlapsOrTouches(const Extents&, const Extents&);
 		static const Extents& zero();

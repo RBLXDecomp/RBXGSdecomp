@@ -63,7 +63,7 @@ namespace RBX
 			void add(AbuseReport& r, const std::list<ChatMessage>& chatHistory);
 
 		private:
-			static worker_thread::work_result processRequests(boost::shared_ptr<data>, std::string);
+			static worker_thread::work_result processRequests(boost::shared_ptr<data> _data, std::string abuseUrl);
 		};
 
 		extern char* sPlayers;

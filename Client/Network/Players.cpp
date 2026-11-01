@@ -8,6 +8,7 @@
 #include "PacketIds.h"
 #include "v8datamodel/GameSettings.h"
 #include "v8datamodel/Teams.h"
+#include "util/Http.h"
 #include "util/standardout.h"
 
 template<class Class>
@@ -46,6 +47,13 @@ static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, boost::shared_ptr<R
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, void(std::string), 1> funcChat(&RBX::Network::Players::chat, "Chat", "message", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 
 RBX::Reflection::RefPropDescriptor<RBX::Network::Players, RBX::Network::Player> RBX::Network::Players::propLocalPlayer("LocalPlayer", "Data", &RBX::Network::Players::getLocalPlayer, NULL, RBX::Reflection::PropertyDescriptor::STANDARD);
+
+static void writeMessage(const RBX::Network::AbuseReport::Message& msg, XmlElement* messages)
+{
+	XmlElement* message = messages->addChild(RBX::Name::declare("message", -1));
+	message->setValue(msg.text);
+	message->addAttribute(RBX::Name::declare("userID", -1), msg.userID);
+}
 
 namespace RBX
 {
@@ -424,6 +432,53 @@ namespace RBX
 			}
 
 			requestProcessor->wake();
+		}
+
+		worker_thread::work_result AbuseReporter::processRequests(boost::shared_ptr<data> _data, std::string abuseUrl)
+		{
+			try
+			{
+				AbuseReport abuseReport;
+
+				{
+					boost::mutex::scoped_lock lock(_data->requestSync);
+					if (_data->queue.empty())
+						return worker_thread::done;
+
+					abuseReport = _data->queue.front();
+				}
+
+				std::stringstream body;
+
+				{
+					TextXmlWriter writer(body);
+
+					XmlElement root(Name::declare("report", -1));
+					root.addAttribute(Name::declare("userID", -1), abuseReport.submitterID);
+					root.addChild(new XmlElement(Name::declare("comment", -1), abuseReport.comment));
+					XmlElement* messages = root.addChild(new XmlElement(Name::declare("messages", -1)));
+
+					std::for_each(abuseReport.messages.begin(), abuseReport.messages.end(), boost::bind(&writeMessage, _1, messages));
+					writer.serialize(&root);
+					body.flush();
+				}
+
+				std::string response;
+				Http(abuseUrl).post(body, false, response);
+
+				StandardOut::singleton()->print(MESSAGE_INFO, "Posted abuse report to %s", abuseUrl.c_str());
+			}
+			catch (std::exception& e)
+			{
+				StandardOut::singleton()->print(MESSAGE_WARNING, "Unable to post abuse report to %s. %s", abuseUrl.c_str(), e.what());
+			}
+
+			{
+				boost::mutex::scoped_lock lock(_data->requestSync);
+				_data->queue.pop();
+			}
+
+			return worker_thread::more;
 		}
 	}
 }

@@ -6,6 +6,8 @@
 #include "v8datamodel/Workspace.h"
 #include "v8world/Primitive.h"
 #include "v8world/World.h"
+#include <G3D/RegistryUtil.h>
+#include <setupapi.h>
 
 static RBX::Reflection::PropDescriptor<RBX::DebugSettings, bool> prop_AnchoredParts("ShowAnchors", "Display", &RBX::DebugSettings::getShowAnchoredParts, &RBX::DebugSettings::setShowAnchoredParts, RBX::Reflection::PropertyDescriptor::STANDARD);
 static RBX::Reflection::PropDescriptor<RBX::DebugSettings, bool> prop_HighlightSleepParts("HighlightSleepParts", "Display", &RBX::DebugSettings::getHighlightSleepParts, &RBX::DebugSettings::setHighlightSleepParts, RBX::Reflection::PropertyDescriptor::STANDARD);
@@ -269,8 +271,7 @@ namespace RBX
 
 	std::string DebugSettings::osVer() const
 	{
-		OSVERSIONINFOA osvi;
-		ZeroMemory((char*)&osvi + sizeof(DWORD), sizeof(OSVERSIONINFOA) - sizeof(DWORD)); // dwOSVersionInfoSize is the first element
+		OSVERSIONINFOA osvi = {0};
 		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
 
 		GetVersionExA(&osvi);
@@ -280,13 +281,76 @@ namespace RBX
 
 	int DebugSettings::osPlatformId() const
 	{
-		OSVERSIONINFOA osvi;
-		ZeroMemory((char*)&osvi + sizeof(DWORD), sizeof(OSVERSIONINFOA) - sizeof(DWORD));
+		OSVERSIONINFOA osvi = {0};
 		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
 
 		GetVersionExA(&osvi);
 
 		return osvi.dwPlatformId;
+	}
+
+	std::string DebugSettings::gfxcard() const
+	{
+		DISPLAY_DEVICEA displayDevice = {};
+		displayDevice.cb = sizeof(DISPLAY_DEVICEA);
+
+		EnumDisplayDevicesA(NULL, 0L, &displayDevice, 0L);
+
+		SP_CLASSIMAGELIST_DATA _spImageData = {};
+		SetupDiDestroyClassImageList(&_spImageData);
+		ZeroMemory(&_spImageData, sizeof(SP_CLASSIMAGELIST_DATA));
+
+		_spImageData.cbSize = sizeof(SP_CLASSIMAGELIST_DATA);
+		SetupDiGetClassImageList(&_spImageData);
+
+		SP_DEVINFO_DATA spDevInfoData = {0};
+		char szName[64] = {0};
+
+		HDEVINFO hDeviceInfo = SetupDiGetClassDevsA(NULL, NULL, NULL, DIGCF_PROFILE | DIGCF_ALLCLASSES | DIGCF_PRESENT);
+		if (hDeviceInfo == INVALID_HANDLE_VALUE)
+			return "";
+
+		short deviceIndex = 0;
+		spDevInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
+
+		while (SetupDiEnumDeviceInfo(hDeviceInfo, deviceIndex, &spDevInfoData))
+		{
+			char szBuf[MAX_PATH] = {0};
+			int wImageIdx = 0;
+			DWORD dwRequireSize;
+
+			if (SetupDiGetDeviceRegistryPropertyA(hDeviceInfo, &spDevInfoData, SPDRP_CLASS, NULL, (PBYTE)szBuf, MAX_PATH - 1, NULL) &&
+				SetupDiGetClassImageIndex(&_spImageData, &spDevInfoData.ClassGuid, &wImageIdx) &&
+				SetupDiGetClassDescriptionA(&spDevInfoData.ClassGuid, szBuf, MAX_PATH, &dwRequireSize))
+			{
+				if (SetupDiGetDeviceRegistryPropertyA(hDeviceInfo, &spDevInfoData, SPDRP_FRIENDLYNAME, NULL, (PBYTE)szName, 63, NULL))
+				{
+					if (strcmp(szName, displayDevice.DeviceString) == 0)
+						break;
+				}
+				else if (SetupDiGetDeviceRegistryPropertyA(hDeviceInfo, &spDevInfoData, SPDRP_DEVICEDESC, NULL, (PBYTE)szName, 63, NULL))
+				{
+					if (strcmp(szName, displayDevice.DeviceString) == 0)
+						break;
+				}
+			}
+
+			deviceIndex++;
+		}
+
+		std::string deviceKey = "unknown";
+		char buf[64] = {0};
+
+		spDevInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
+		if (SetupDiGetDeviceRegistryPropertyA(hDeviceInfo, &spDevInfoData, SPDRP_DRIVER, NULL, (PBYTE)buf, 63, NULL))
+		{
+			deviceKey = buf;
+		}
+
+		std::string driverVersion = "?";
+		G3D::RegistryUtil::readString("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Class\\" + deviceKey + "\\DriverVersion", driverVersion);
+
+		return std::string(displayDevice.DeviceString) + " drv=" + driverVersion;
 	}
 
 	namespace Reflection

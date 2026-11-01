@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include <G3D/Color3.h>
 #include <G3D/Vector3.h>
+#include <G3D/CoordinateFrame.h>
 #include "v8datamodel/BrickColor.h"
 #include "util/ContentProvider.h"
 #include "util/Utilities.h"
@@ -118,5 +119,22 @@ namespace RBX
 	{
 		value = ContentId(text);
 		return true;
+	}
+
+	template<>
+	static std::string StringConverter<G3D::CoordinateFrame>::convertToString(const G3D::CoordinateFrame& value)
+	{
+		std::string text = StringConverter<G3D::Vector3>::convertToString(value.translation);
+
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				text += ", ";
+				text += StringConverter<float>::convertToString(value.rotation[i][j]);
+			}
+		}
+		
+		return text;
 	}
 }

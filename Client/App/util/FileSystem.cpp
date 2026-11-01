@@ -12,8 +12,7 @@ namespace RBX
 	{
 		*pVal = 0;
 
-		OSVERSIONINFOA osvi;
-		ZeroMemory((char*)&osvi + sizeof(DWORD), sizeof(OSVERSIONINFOA) - sizeof(DWORD));
+		OSVERSIONINFOA osvi = {0};
 		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
 
 		GetVersionExA(&osvi);
