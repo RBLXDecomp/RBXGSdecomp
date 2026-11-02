@@ -289,4 +289,124 @@ namespace RBX
 
 		RBXASSERT(Workspace::getWorldIfInWorkspace(dragPart.lock().get()) == workspace->getWorld());
 	}
+
+	RunDragger::SnapInfo RunDragger::findSnap(const G3D::Array<Primitive*>& triedSnap)
+	{
+		SnapInfo answer;
+
+		answer = rayHitsPart(triedSnap, true);
+		if (answer.snap)
+			return answer;
+
+		answer = bestProximatePart(triedSnap, &Contact::computeIsAdjacent);
+		if (answer.snap)
+			return answer;
+
+		answer = bestProximatePart(triedSnap, &Contact::computeIsColliding);
+		if (answer.snap)
+			return answer;
+
+		answer = rayHitsPart(triedSnap, false);
+		if (answer.snap)
+			return answer;
+
+		return SnapInfo();
+	}
+	
+	bool RunDragger::snapDragPart()
+	{
+		Face snapFace = snapInfo.snap->getFaceInWorld(snapInfo.surface);
+		Face dragFace = drag->getFaceInWorld(dragSurface);
+
+		G3D::Vector3 snapCornerWorld = snapFace[0];
+		G3D::Vector3 dragCornerWorld = dragFace[0];
+
+		G3D::CoordinateFrame snapFaceCoords(snapInfo.snap->getCoordinateFrame().rotation, snapCornerWorld);
+
+		G3D::Vector3 dragCornerLocal = snapFaceCoords.pointToObjectSpace(dragCornerWorld);
+		G3D::Vector3 snapDragCornerLocal = Math::iRoundVector3(dragCornerLocal);
+		dragCornerWorld = snapFaceCoords.pointToWorldSpace(snapDragCornerLocal) - dragCornerWorld;
+
+		G3D::CoordinateFrame newDragCoord = drag->getCoordinateFrame();
+		newDragCoord.translation += dragCornerWorld;
+
+		dragPart.lock()->setCoordinateFrame(newDragCoord);
+
+		if (snapDragCornerLocal != snapInfo.lastDragSnap)
+		{
+			snapInfo.lastDragSnap = snapDragCornerLocal;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool RunDragger::fallOffPart(bool& snapped)
+	{
+		G3D::Array<NormalId> triedSurfaces;
+
+		while (snapInfo.snap)
+		{
+			Face snapFace = snapInfo.snap->getFaceInWorld(snapInfo.surface);
+			Face dragFace = drag->getFaceInWorld(dragSurface);
+
+			if (Face::hasOverlap(snapFace, dragFace, -0.01f))
+				break;
+
+			triedSurfaces.push_back(snapInfo.surface);
+
+			snapInfo = createSnapSurface(snapInfo.snap, &triedSurfaces);
+			if (!snapInfo.snap)
+				break;
+
+			snapped = moveDragPart();
+		}
+
+		return snapInfo.snap == NULL;
+	}
+
+	bool RunDragger::snap(const G3D::Ray& _mouseRay)
+	{
+		smartPtrHackPre();
+		mouseRay = _mouseRay;
+
+		G3D::CoordinateFrame originalDrag = drag->getCoordinateFrame();
+		G3D::Array<Primitive*> triedSnap;
+
+		if (snapInfo.snap)
+		{
+			snapInfo.updateHitFromSurface(mouseRay);
+		}
+		else
+		{
+			snapInfo = findSnap(triedSnap);
+		}
+
+		while (snapInfo.snap)
+		{
+			if (triedSnap.find(snapInfo.snap) != triedSnap.end())
+				break;
+
+			RBXASSERT(snapInfo.surface != NORM_UNDEFINED);
+
+			triedSnap.push_back(snapInfo.snap);
+			bool snapped = moveDragPart();
+
+			if (!fallOffPart(snapped) && !workspace->getWorld()->getContactManager().intersectingOthers(drag, 0.01f) &&
+				!rayHitsCloserPart() && !tooCloseToCamera())
+			{
+				smartPtrHackPost();
+				return snapped;
+			}
+
+			snapInfo = findSnap(triedSnap);
+		}
+
+		findNoSnapPosition(originalDrag);
+		smartPtrHackPost();
+
+		return false;
+	}
 }

@@ -345,7 +345,7 @@ namespace RBX
 		{
 			return canvasSize;
 		}
-		static G3D::Vector2 toPixelSize(const G3D::Vector2&);
+		static G3D::Vector2 toPixelSize(const G3D::Vector2& percent);
 		static int normalizedFontSize(int fontSize);
 	};
 }

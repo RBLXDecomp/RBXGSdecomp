@@ -452,7 +452,7 @@ namespace RBX
 		}
 		virtual const char* c_str()
 		{
-			if (result.empty())
+			if (result.size() == 0)
 			{
 				DWORD hashSize;
 				DWORD hashSizeLen = sizeof(DWORD);
@@ -461,13 +461,13 @@ namespace RBX
 					StandardOut::singleton()->print(MESSAGE_ERROR, "Error during CryptGetHashParam. GetLastError = %d", GetLastError());
 				}
 
-				char* hashValue = new char[hashSize];
-				if (!CryptGetHashParam(hHash, HP_HASHVAL, (BYTE*)&hashValue, &hashSize, 0))
+				BYTE* hashValue = new BYTE[hashSize];
+				if (!CryptGetHashParam(hHash, HP_HASHVAL, hashValue, &hashSize, 0))
 				{
 					StandardOut::singleton()->print(MESSAGE_ERROR, "Error during CryptGetHashParam. GetLastError = %d", GetLastError());
 				}
 
-				for (int i = 0; i < (int)hashSize; ++i)
+				for (DWORD i = 0; i < hashSize; ++i)
 				{
 					ATL::CString temp;
 					temp.Format("%x", hashValue[i]);

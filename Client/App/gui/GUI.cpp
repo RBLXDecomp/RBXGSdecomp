@@ -571,6 +571,22 @@ namespace RBX
 		return G3D::iRound(floorf(fontSize * toPixelSize(percentSize).x * 0.001f));
 	}
 
+	G3D::Vector2 GuiRoot::toPixelSize(const G3D::Vector2& percent)
+	{
+		G3D::Vector2 result;
+
+		if (canvasSize.x * 0.75f < canvasSize.y)
+		{
+			result = 0.01f * percent * G3D::Vector2(canvasSize.x, canvasSize.x * 0.75f);
+		}
+		else
+		{
+			result = 0.01f * percent * G3D::Vector2(canvasSize.y * 1.33f, canvasSize.y);
+		}
+
+		return result;
+	}
+
 	void GuiRoot::render2d(Adorn* adorn)
 	{
 		short height = static_cast<short>(adorn->getHeight());
