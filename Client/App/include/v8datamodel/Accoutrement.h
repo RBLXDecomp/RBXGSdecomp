@@ -104,8 +104,8 @@ namespace RBX
 		const G3D::Vector3 getAttachmentRight() const;
 		void setAttachmentPos(const G3D::Vector3& v);
 		void setAttachmentForward(const G3D::Vector3& v);
-		void setAttachmentUp(const G3D::Vector3&);
-		void setAttachmentRight(const G3D::Vector3&);
+		void setAttachmentUp(const G3D::Vector3& v);
+		void setAttachmentRight(const G3D::Vector3& v);
 
 	protected:
 		static AccoutrementState characterCanPickUpAccoutrement(Instance*);

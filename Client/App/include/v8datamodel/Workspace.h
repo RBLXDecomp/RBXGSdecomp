@@ -89,7 +89,7 @@ namespace RBX
 			ModelInstance::onExtentsChanged();
 			raiseDrawChanged();
 		}
-		virtual void onEvent(const RunService*, Heartbeat);
+		virtual void onEvent(const RunService* source, Heartbeat event);
 	public:
 		Workspace(IDataState* dataState);
 		virtual ~Workspace();

@@ -143,8 +143,8 @@ namespace RBX
 		const G3D::Vector3 getGripRight() const;
 		void setGripPos(const G3D::Vector3& v);
 		void setGripForward(const G3D::Vector3& v);
-		void setGripUp(const G3D::Vector3&);
-		void setGripRight(const G3D::Vector3&);
+		void setGripUp(const G3D::Vector3& v);
+		void setGripRight(const G3D::Vector3& v);
 
 	private:
 		static void moveAllToolsToBackpack(Network::Player* player);
