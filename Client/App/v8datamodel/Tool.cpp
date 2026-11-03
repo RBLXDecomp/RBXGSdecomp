@@ -417,8 +417,8 @@ namespace RBX
 	void Tool::setGripForward(const G3D::Vector3& v)
 	{
 		G3D::CoordinateFrame c = grip;
-		G3D::Vector3 oldX = c.rotation.getColumn(0);
-		G3D::Vector3 oldY = c.rotation.getColumn(1);
+		G3D::Vector3 oldX = c.rightVector();
+		G3D::Vector3 oldY = c.upVector();
 
 		G3D::Vector3 z = -v.direction();
 
@@ -427,6 +427,48 @@ namespace RBX
 
 		G3D::Vector3 y = z.cross(x);
 		y.unitize();
+		
+		c.rotation.setColumn(0, x);
+		c.rotation.setColumn(1, y);
+		c.rotation.setColumn(2, z);
+
+		setGrip(c);
+	}
+
+	void Tool::setGripRight(const G3D::Vector3& v)
+	{
+		G3D::CoordinateFrame c = grip;
+		G3D::Vector3 oldY = c.upVector();
+		G3D::Vector3 oldZ = -c.lookVector();
+
+		G3D::Vector3 x = v.direction();
+
+		G3D::Vector3 z = x.cross(oldY);
+		z.unitize();
+
+		G3D::Vector3 y = z.cross(x);
+		y.unitize();
+		
+		c.rotation.setColumn(0, x);
+		c.rotation.setColumn(1, y);
+		c.rotation.setColumn(2, z);
+
+		setGrip(c);
+	}
+
+	void Tool::setGripUp(const G3D::Vector3& v)
+	{
+		G3D::CoordinateFrame c = grip;
+		G3D::Vector3 oldX = c.rightVector();
+		G3D::Vector3 oldZ = -c.lookVector();
+
+		G3D::Vector3 y = v.direction();
+
+		G3D::Vector3 z = oldX.cross(y);
+		z.unitize();
+
+		G3D::Vector3 x = y.cross(z);
+		x.unitize();
 		
 		c.rotation.setColumn(0, x);
 		c.rotation.setColumn(1, y);
@@ -495,6 +537,38 @@ namespace RBX
 	{
 		RBXASSERT(ServiceProvider::findServiceProvider(this));
 		RBXASSERT(Network::Players::backendProcessing(this, true));
+	}
+
+	void Tool::downFrom_Equipped()
+	{
+		ModelInstance* character = NULL;
+
+		if (weld)
+		{
+			PartInstance* part = weld->getPart0();
+			if (part)
+				character = dynamic_cast<ModelInstance*>(part->getParent());
+
+			weld->setParent(NULL);
+			weld.reset();
+		}
+
+		if (Humanoid::modelIsCharacter(character))
+		{
+			G3D::CoordinateFrame cf = character->getLocation();
+			G3D::Vector3 pos = cf.translation;
+			pos.y += 4.0f;
+			pos += cf.lookVector() * 8.0f;
+
+			PartInstance* handle = getHandle();
+			if (handle)
+			{
+				handle->moveToPoint(pos);
+				handle->setRotationalVelocity(G3D::Vector3(1.0f, 1.0f, 1.0f));
+			}
+		}
+
+		connectTouchEvent();
 	}
 
 	void Tool::setDesiredState(ToolState desiredState, const ServiceProvider* serviceProvider)
