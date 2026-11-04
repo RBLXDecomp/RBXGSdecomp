@@ -12,6 +12,15 @@ namespace RBX
 	char* sCFrameValue = "CFrameValue";
 	char* sObjectValue = "ObjectValue";
 
+	const int IntValue::defaultValue = 0;
+	const bool BoolValue::defaultValue = false;
+	const float FloatValue::defaultValue = 0.0f;
+	const G3D::Color3 Color3Value::defaultValue;
+	const G3D::Vector3 Vector3Value::defaultValue;
+	const BrickColor BrickColorValue::defaultValue = BrickColor::random();
+	const std::string StringValue::defaultValue;
+	const G3D::CoordinateFrame CFrameValue::defaultValue;
+
 	Reflection::BoundProp<int, 1> IntValue::desc_Value("Value", "Data", &IntValue::value, &IntValue::onValueChanged, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::SignalDesc<IntValue, void(int)> IntValue::desc_ValueChanged("Changed", "value");
 
