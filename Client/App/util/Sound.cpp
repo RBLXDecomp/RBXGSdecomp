@@ -880,7 +880,7 @@ namespace RBX
 						FMOD_VECTOR listenerForward;
 						if (convert(forward, listenerForward))
 						{
-							G3D::Vector3 up = cf.rotation.getColumn(1);
+							G3D::Vector3 up = cf.upVector();
 							FMOD_VECTOR listenerUp;
 							if (convert(up, listenerUp))
 							{
