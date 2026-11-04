@@ -130,13 +130,19 @@ namespace RBX
 
 		public:
 			Property& operator=(const Property&);
-			bool operator==(const Property&) const;
+			bool operator==(const Property& other) const
+			{
+				return this->descriptor == other.descriptor && this->instance == other.instance;
+			}
 			bool operator!=(const Property&) const;
 			DescribedBase* getInstance() const
 			{
 				return const_cast<DescribedBase*>(instance); // might not be right
 			}
-			bool setStringValue(const std::string&);
+			bool setStringValue(const std::string& text)
+			{
+				return descriptor->setStringValue(const_cast<DescribedBase*>(instance), text);
+			}
 			void read(const XmlElement* propertyElement, IReferenceBinder& binder)
 			{
 				descriptor->read(getInstance(), propertyElement, binder);
@@ -144,7 +150,12 @@ namespace RBX
 
 		public:
 			template<typename T>
-			void setValue(const T& value);
+			void setValue(const T& value)
+			{
+				RBXASSERT(dynamic_cast<const TypedPropertyDescriptor<T>*>(descriptor));
+				const TypedPropertyDescriptor<T>* typedProp = boost::polymorphic_cast<const TypedPropertyDescriptor<T>*>(descriptor);
+				typedProp->setValue(getInstance(), value);
+			}
 		};
 
 		template<typename PropType>

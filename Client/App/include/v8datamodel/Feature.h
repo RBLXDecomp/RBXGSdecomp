@@ -43,13 +43,22 @@ namespace RBX
         InOut inOut;
 
     private:
-        virtual bool askSetParent(const Instance*) const;
-        virtual bool shouldRender3dAdorn() const;
+        virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
+        virtual bool shouldRender3dAdorn() const
+		{
+			return true;
+		}
         virtual void render3dSelect(Adorn* adorn, SelectState selectState);
 
     protected:
         bool getRenderCoord(G3D::CoordinateFrame& c) const;
-        virtual Feature::InOutZ getCoordOrientation() const;
+        virtual Feature::InOutZ getCoordOrientation() const
+		{
+			return Z_OUT;
+		}
 
     public:
         Feature();
@@ -87,11 +96,13 @@ namespace RBX
     {
     private:
         virtual void render3dAdorn(Adorn* adorn);
-        virtual Feature::InOutZ getCoordOrientation() const;
+        virtual Feature::InOutZ getCoordOrientation() const
+		{
+			return Z_IN;
+		}
 
     public:
         Hole();
-        virtual ~Hole();
     };
 
     extern const char* const sMotorFeature;
@@ -103,7 +114,6 @@ namespace RBX
 
     public:
         MotorFeature();
-        virtual ~MotorFeature();
 
         static bool canJoin(Instance*, Instance*);
         static void join(Instance*, Instance*);
@@ -128,7 +138,10 @@ namespace RBX
         void onEvent_HoleAncestorChanged();
         void setPart(int i, Feature* feature);
 
-        virtual bool askSetParent(const Instance*) const;
+        virtual bool askSetParent(const Instance* instance) const
+		{
+			return true;
+		}
         virtual void onAncestorChanged(const AncestorChanged& event);
 
     public:

@@ -20,7 +20,7 @@ namespace RBX
 	protected:
 		virtual void onComputeForce(const float);
 		virtual Humanoid::State* onStep(const float stepDt, Controller& controller);
-		virtual HitTestFilter::Result filterResult(const Primitive*) const;
+		virtual HitTestFilter::Result filterResult(const Primitive* testMe) const;
 		G3D::Vector3 getYAxis() const;
 	public:
 		Balancing(Humanoid* humanoid, const float kP, const float kD);

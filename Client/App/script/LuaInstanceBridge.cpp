@@ -17,6 +17,8 @@ using namespace RBX::Lua;
 using namespace RBX::Reflection;
 using namespace RBX::Soundscape;
 
+const char* Bridge<boost::shared_ptr<Reflection::DescribedBase>, false>::className = "Object";
+
 void RBX::Lua::newweaktable(lua_State* L, const char* mode)
 {
     lua_newtable(L);

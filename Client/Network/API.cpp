@@ -9,6 +9,8 @@ namespace RBX
 {
 	namespace Network
 	{
+		std::string API::version;
+
 		void API::init(const char* version)
 		{
 			API::version = version;

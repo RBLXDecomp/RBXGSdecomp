@@ -10,6 +10,8 @@ namespace RBX
 	Reflection::BoundProp<bool, 1> prop_SoundEnabled("SoundEnabled", "Sound", &GameSettings::soundEnabled, Reflection::PropertyDescriptor::STANDARD);
 	Reflection::BoundProp<bool, 1> prop_SoftwareSound("SoftwareSound", "Sound", &GameSettings::softwareSound, Reflection::PropertyDescriptor::STANDARD);
 
+	GlobalSettingsItem<GameSettings, &sGameSettings>* GameSettings::sing = NULL;
+
 	GameSettings::GameSettings()
 		: chatHistory(50),
 		  chatScrollLength(5),

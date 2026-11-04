@@ -31,8 +31,14 @@ namespace RBX
 		private:
 			void doLock(const DataModel* dataModel);
 		public:
-			Lock(const DataModel* dataModel);
-			Lock(boost::shared_ptr<const DataModel> dataModel);
+			Lock(const DataModel* dataModel) //havent checked if matching
+			{
+				doLock(dataModel);
+			}
+			Lock(boost::shared_ptr<const DataModel> dataModel) //havent checked if matching
+			{
+				doLock(dataModel.get());
+			}
 			~Lock();
 		};
 
@@ -87,14 +93,17 @@ namespace RBX
 			return dirty;
 		}
 
-		virtual bool isStackTooBig() const;
+		virtual bool isStackTooBig() const
+		{
+			return getStackSize() > 10;
+		}
 
 		Workspace* getWorkspace() const
 		{
 			return workspace.get();
 		}
 
-		float step(float);
+		float step(float timeInterval);
 		float getSimTime() const;
 		TimeState* getTimeState();
 		virtual std::string evaluate(const std::string& valueName) const;

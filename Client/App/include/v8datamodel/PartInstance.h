@@ -18,7 +18,10 @@ namespace RBX
 		const bool canClump;
   
 	public:
-		CanAggregateChanged(const CanAggregateChanged&);
+		CanAggregateChanged(const CanAggregateChanged& other)
+			: canClump(other.canClump)
+		{
+		}
 		CanAggregateChanged(bool canAggregate)
 			: canClump(canAggregate)
 		{
@@ -198,7 +201,7 @@ namespace RBX
 		virtual void onCanAggregateChanged(bool canAggregate);
 		virtual bool reportTouches() const;
 		virtual void onAncestorChanged(const AncestorChanged& event);
-		virtual bool askSetParent(const Instance*) const;
+		virtual bool askSetParent(const Instance* instance) const;
 		virtual void onChildAdded(Instance* child);
 		virtual void onGuidChanged();
 		virtual const G3D::CoordinateFrame getLocation() const

@@ -77,6 +77,7 @@ namespace RBX
 					   public Notifier<RunService, RunTransition>,
 					   public Notifier<RunService, RunState>
 	{
+	friend DataModel;
 	private:
 		RunState runState;
 		boost::mutex runMutex;

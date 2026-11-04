@@ -387,6 +387,82 @@ namespace RBX
 		}
 	}
 
+	void DataModel::initializeContents()
+	{
+		workspace->setParent(this);
+		guiRoot->setParent(this);
+		guiHooks->setParent(this);
+
+		localBackpack = shared_from(ServiceProvider::create<LocalBackpack>());
+		starterPackService = shared_from(ServiceProvider::create<StarterPackService>());
+		runService = shared_from(ServiceProvider::create<RunService>());
+		ServiceProvider::create<Soundscape::SoundService>();
+
+		workspace->setDefaultMouseCommand();
+		workspace->setVerbParent(this);
+
+		runService->start();
+		Notifier<RunService, RunTransition>::connect(runService, this);
+
+		ServiceProvider::create<JointsService>();
+	}
+
+	float DataModel::step(float timeInterval)
+	{
+		workspace->profileRun->sample(GetCurrentThread());
+		Profiling::Mark mark = Profiling::Mark(*workspace->profileWorkspaceStep.get(), true);
+
+		timeState->fpsStopwatch.tick();
+		timeState->fpsStopwatch.tock();
+
+		if (runService->isRunState())
+		{
+			timeState->simulationStopwatch.tick();
+			timeInterval = workspace->step(timeInterval);
+			timeState->simulationStopwatch.tock();
+
+			timeState->totalVirtualTime += timeInterval;
+
+			Profiling::Mark mark = Profiling::Mark(*workspace->profileRunServiceStepped.get(), true);
+
+			float totalVirtualTime = timeState->totalVirtualTime;
+			runService->raiseStepped(totalVirtualTime, timeInterval);
+		}
+
+		{
+			Profiling::Mark mark = Profiling::Mark(*workspace->profileRunServiceHeartbeat.get(), true);
+
+			float totalVirtualTime = timeState->totalVirtualTime;
+			runService->raiseHeartbeat(totalVirtualTime, timeInterval);
+		}
+
+		workspace->getCamera()->onHeartbeat();
+		localBackpack->onHeartbeat();
+
+		return timeInterval;
+	}
+
+	void DataModel::closeDataModel(boost::shared_ptr<DataModel> dataModel, bool joinRunThread)
+	{
+		boost::shared_ptr<RunService> runService;
+		{
+			DataModel::Lock lock(dataModel);
+			runService = dataModel->runService;
+		}
+
+		if (runService)
+			runService->endRunThread(joinRunThread);
+
+		DataModel::Lock lock(dataModel);
+
+		dataModel->Notifier<ServiceProvider, Closing>::raise(Closing());
+		event_Closing.fire(dataModel.get());
+
+		dataModel->clearContents();
+		dataModel->removeAllChildren();
+		dataModel->clearServices();
+	}
+
 	void DataModel::Lock::doLock(const DataModel* dataModel)
 	{
 		if (dataModel)

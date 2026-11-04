@@ -75,6 +75,9 @@ namespace RBX
 	template<typename Class, typename DerivedClass, const char* const* ClassName>
 	class DescribedNonCreatable : public Reflection::Described<Class, ClassName, NonFactoryProduct<DerivedClass, ClassName>>
 	{
+	public:
+		typedef DescribedNonCreatable<Class, DerivedClass, ClassName> Base;
+
 	protected:
 		DescribedNonCreatable()
 			: Described()

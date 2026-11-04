@@ -90,7 +90,13 @@ FilePacketLogger::FilePacketLogger(RBX::Network::Peer* peer)
 		RBX::StandardOut::singleton()->print(RBX::MESSAGE_WARNING, "Failed to create log file %s", pathName.c_str());
 	}
 }
-	
+
+FilePacketLogger::~FilePacketLogger()
+{
+	if (packetLogFile)
+		fclose(packetLogFile);
+}
+
 void FilePacketLogger::OnAttach(RakPeerInterface* peer)
 {
 	PacketLogger::OnAttach(peer);
@@ -597,15 +603,14 @@ namespace RBX
 
 				if (deserializeProperty)
 				{
-					const DescribedBase* inst = static_cast<DescribedBase*>(instance.get()); // force static cast outside of the RBXASSERT block
-					RBXASSERT(descriptor->isMemberOf(inst));
-
-					if (descriptor == &deserializeProperty->getDescriptor() && inst == deserializeProperty->getInstance())
+					Reflection::Property prop(*descriptor, instance.get());
+					if (prop == *deserializeProperty)
 						isDeserializeProperty = true;
 				}
 				
 				if (!isDeserializeProperty && (descriptor->canStreamWrite() || descriptor == &Instance::propParent) && !isSerializePending(instance.get()))
 				{
+					// ideally this should also be a ConstProperty/Property but i couldnt get the constructor to inline with it
 					const DescribedBase* inst = static_cast<DescribedBase*>(instance.get());
 					RBXASSERT(descriptor->isMemberOf(inst));
 
@@ -784,7 +789,7 @@ namespace RBX
 		{
 			if (replicator->peer)
 			{
-				bps->formatMem((size_t)statistics->bitsPerSecond / 8);
+				bps->formatMem((unsigned)statistics->bitsPerSecond / 8);
 
 				ping->formatValue(
 					replicator->peer->GetLastPing(replicator->remotePlayerId),
@@ -878,6 +883,144 @@ namespace RBX
 						e.what()
 					);
 				}
+			}
+		}
+
+		void Replicator::deserializeValue(RakNet::BitStream& inBitStream, bool lengthIncluded, Reflection::Property& property)
+		{
+			if (lengthIncluded)
+			{
+				ValueType output = ValueType_nil;
+				inBitStream.ReadBits((unsigned char*)&output, 4);
+			}
+
+			if (property.getDescriptor().type == Reflection::Type::singleton<std::string>())
+			{
+				getSharedDictionary(property.getDescriptor()).deserializeString(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<bool>())
+			{
+				deserialize<bool>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<int>())
+			{
+				deserialize<int>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<float>())
+			{
+				deserialize<float>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<BrickColor>())
+			{
+				deserialize<BrickColor>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Color3>())
+			{
+				deserialize<G3D::Color3>(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Vector3>())
+			{
+				if (property.getDescriptor() == PartInstance::prop_Size)
+				{
+					G3D::Vector3 value;
+					readBrickVector(inBitStream, value);
+					property.setValue<G3D::Vector3>(value);
+				}
+				else
+				{
+					deserialize<G3D::Vector3>(property, inBitStream);
+				}
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::CoordinateFrame>())
+			{
+				deserialize<G3D::CoordinateFrame>(property, inBitStream);
+			}
+			else if (dynamic_cast<const Reflection::EnumPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				deserializeEnum(property, inBitStream);
+			}
+			else if (dynamic_cast<const Reflection::RefPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				deserializeRef(property, inBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<ContentId>())
+			{
+				deserialize<ContentId>(property, inBitStream);
+			}
+			else
+			{
+				RBXASSERT(false);
+			}
+		}
+
+		void Replicator::serializeValue(const Reflection::ConstProperty& property, bool includeLength, RakNet::BitStream& outBitStream)
+		{
+			if (property.getDescriptor().type == Reflection::Type::singleton<std::string>())
+			{
+				writeValueType(includeLength, ValueType_string, outBitStream);
+				getSharedDictionary(property.getDescriptor()).serializeString(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<bool>())
+			{
+				writeValueType(includeLength, ValueType_bool, outBitStream);
+				serialize<bool>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<int>())
+			{
+				writeValueType(includeLength, ValueType_int, outBitStream);
+				serialize<int>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<float>())
+			{
+				writeValueType(includeLength, ValueType_float, outBitStream);
+				serialize<float>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<BrickColor>())
+			{
+				writeValueType(includeLength, ValueType_BrickColor, outBitStream);
+				serialize<BrickColor>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Color3>())
+			{
+				writeValueType(includeLength, ValueType_Color3, outBitStream);
+				serialize<G3D::Color3>(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::Vector3>())
+			{
+				if (property.getDescriptor() == PartInstance::prop_Size)
+				{
+					writeValueType(includeLength, ValueType_BrickVector, outBitStream);
+					writeBrickVector(outBitStream, property.getValue<G3D::Vector3>());
+				}
+				else
+				{
+					writeValueType(includeLength, ValueType_Vector3, outBitStream);
+					serialize<G3D::Vector3>(property, outBitStream);
+				}
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<G3D::CoordinateFrame>())
+			{
+				writeValueType(includeLength, ValueType_CoordinateFrame, outBitStream);
+				serialize<G3D::CoordinateFrame>(property, outBitStream);
+			}
+			else if (dynamic_cast<const Reflection::EnumPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				writeValueType(includeLength, ValueType_Enum, outBitStream);
+				serializeEnum(property, outBitStream);
+			}
+			else if (dynamic_cast<const Reflection::RefPropertyDescriptor*>(&property.getDescriptor()))
+			{
+				writeValueType(includeLength, ValueType_Ref, outBitStream);
+				serializeRef(property, outBitStream);
+			}
+			else if (property.getDescriptor().type == Reflection::Type::singleton<ContentId>())
+			{
+				writeValueType(includeLength, ValueType_ContentId, outBitStream);
+				serialize<ContentId>(property, outBitStream);
+			}
+			else
+			{
+				RBXASSERT(false);
 			}
 		}
 	}

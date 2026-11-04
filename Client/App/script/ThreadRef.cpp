@@ -7,6 +7,10 @@ namespace RBX
 {
     namespace Lua
     {
+		const char* Bridge<boost::shared_ptr<ThreadRef::Node>, true>::className = "shared_ptr<ThreadRef::Node>";
+
+		boost::shared_ptr<boost::mutex> ThreadRef::syncSingleton(new boost::mutex);
+
         ThreadRef::ThreadRef(lua_State* thread)
             : sync(syncSingleton),
               node(NULL),

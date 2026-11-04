@@ -67,7 +67,7 @@ namespace RBX
 
 		class Replicator : public DescribedNonCreatable<Replicator, IdSerializer, &sReplicator>, public PluginInterface
 		{
-			class Item : private boost::noncopyable
+			class __declspec(novtable) Item : private boost::noncopyable
 			{
 			public:
 				enum ItemType
@@ -88,7 +88,9 @@ namespace RBX
 				{
 				}
 			public:
-				virtual ~Item();
+				virtual ~Item()
+				{
+				}
 				virtual void write(RakNet::BitStream& bitStream) = 0;
 				
 			public:
@@ -148,7 +150,11 @@ namespace RBX
 				int id;
 
 			public:
-				MarkerItem(Replicator&, int);
+				MarkerItem(Replicator& replicator, int id)
+					: Item(replicator),
+					  id(id)
+				{
+				}
 				virtual void write(RakNet::BitStream& bitStream);
 			};
 
@@ -173,8 +179,8 @@ namespace RBX
 				const boost::shared_ptr<Replicator> replicator;
 				const RakNetStatistics* statistics;
 			public:
-				size_t instanceCount;
-				size_t instanceBits;
+				unsigned instanceCount;
+				unsigned instanceBits;
 
 			public:
 				ReplicatorStatsItem(const boost::shared_ptr<Replicator>& replicator, const RakNetStatistics* statistics);
@@ -288,8 +294,8 @@ namespace RBX
 			void sendPhysicsData(RakNet::BitStream&, const Assembly&);
 			void createStatsItems(Stats::StatsService* stats);
 			virtual bool remoteDeleteOnDisconnect(const Instance* instance) const;
-			void serializeValue(const Reflection::ConstProperty&, bool, RakNet::BitStream&);
-			void deserializeValue(RakNet::BitStream&, bool, Reflection::Property&);
+			void serializeValue(const Reflection::ConstProperty& property, bool includeLength, RakNet::BitStream& outBitStream);
+			void deserializeValue(RakNet::BitStream& inBitStream, bool lengthIncluded, Reflection::Property& property);
 			void skipValue(RakNet::BitStream&);
 			void receiveData(Packet* packet);
 			void readInstanceNew(RakNet::BitStream&);

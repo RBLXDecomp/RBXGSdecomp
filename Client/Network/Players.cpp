@@ -41,6 +41,8 @@ static RBX::Reflection::PropDescriptor<RBX::Network::Players, int> propPlayerMax
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, boost::shared_ptr<RBX::Instance>(int), 1> func_GetPlayerByID(&RBX::Network::Players::getPlayerByID, "GetPlayerByID", "userID", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, void(std::string), 1> funcChat(&RBX::Network::Players::chat, "Chat", "message", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 
+RBX::Reflection::RefPropDescriptor<RBX::Network::Players, RBX::Network::Player> RBX::Network::Players::propLocalPlayer("LocalPlayer", "Data", &RBX::Network::Players::getLocalPlayer, NULL, RBX::Reflection::PropertyDescriptor::STANDARD);
+
 namespace RBX
 {
 	namespace Network

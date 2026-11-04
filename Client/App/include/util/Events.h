@@ -16,7 +16,17 @@ namespace RBX
 		size_t upper;
 		RaiseRange* previous;
 	public:
-		void removeIndex(size_t);
+		void removeIndex(size_t index)
+		{
+			if (this->upper > index)
+				this->upper--;
+
+			if (this->index >= index)
+				this->index--;
+
+			if (previous)
+				previous->removeIndex(index);
+		}
 	};
 
 	template<typename Class, typename Event>

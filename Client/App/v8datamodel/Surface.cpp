@@ -1,5 +1,7 @@
 #include "v8datamodel/Surface.h"
 #include "v8datamodel/PartInstance.h"
+#include "v8xml/XmlElement.h"
+#include "reflection/EnumConverter.h"
 
 namespace RBX
 {
@@ -31,8 +33,6 @@ namespace RBX
 		}
 	}
 
-	// the functions below don't match 100% most likely due to Primitive::getSurfaceData
-
 	Controller::InputType Surface::getInput() const
 	{
 		RBXASSERT(partInstance->getPrimitive());
@@ -49,5 +49,133 @@ namespace RBX
 	{
 		RBXASSERT(partInstance->getPrimitive());
 		return partInstance->getPrimitive()->getSurfaceData(surfId).paramB;
+	}
+
+	void Surface::setParamA(float value)
+	{
+		RBXASSERT(partInstance->getPrimitive());
+		SurfaceData current = const_cast<SurfaceData&>(partInstance->getPrimitive()->getSurfaceData(surfId));
+
+		if (current.paramA != value)
+		{
+			current.paramA = value;
+			partInstance->getPrimitive()->setSurfaceData(surfId, current);
+			partInstance->onSurfaceChanged(surfId);
+			partInstance->raisePropertyChanged(partInstance->getSurfaces().getParamA(surfId));
+		}
+	}
+
+	void Surface::setParamB(float value)
+	{
+		RBXASSERT(partInstance->getPrimitive());
+		SurfaceData current = const_cast<SurfaceData&>(partInstance->getPrimitive()->getSurfaceData(surfId));
+
+		if (current.paramB != value)
+		{
+			current.paramB = value;
+			partInstance->getPrimitive()->setSurfaceData(surfId, current);
+			partInstance->onSurfaceChanged(surfId);
+			partInstance->raisePropertyChanged(partInstance->getSurfaces().getParamB(surfId));
+		}
+	}
+
+	void Surface::setSurfaceInput(Controller::InputType value)
+	{
+		RBXASSERT(partInstance->getPrimitive());
+		SurfaceData current = const_cast<SurfaceData&>(partInstance->getPrimitive()->getSurfaceData(surfId));
+
+		if (value != current.inputType)
+		{
+			current.inputType = value;
+			partInstance->getPrimitive()->setSurfaceData(surfId, current);
+			partInstance->onSurfaceChanged(surfId);
+			partInstance->raisePropertyChanged(partInstance->getSurfaces().getSurfaceInput(surfId));
+		}
+	}
+
+	void Surface::readValue(const XmlElement* element, IReferenceBinder& binder)
+	{
+		static const Name* desc_LegacyType = &Name::declare("Type", -1);
+		static const Name* desc_LegacySurfaceInput = &Name::declare("SurfaceInput", -1);
+		static const Name* desc_LegacyParamA = &Name::declare("ParamA", -1);
+		static const Name* desc_LegacyParamB = &Name::declare("ParamB", -1);
+		static const Name* desc_LegacyConstraint = &Name::declare("Constraint", -1);
+
+		for (const XmlElement* iter = element->firstChild(); iter != NULL; iter = iter->nextSibling())
+		{
+			const Name* name = NULL;
+			if (!iter->isXsiNil())
+			{
+				if (const XmlAttribute* attribute = iter->findAttribute(name_name))
+				{
+					if (attribute->getValue(name))
+					{
+						if (name == desc_LegacyType)
+						{
+							std::string text;
+							if (iter->getValue(text))
+							{
+								SurfaceType value;
+								if (Reflection::EnumDesc<SurfaceType>::singleton().convertToValue(text, value))
+								{
+									setSurfaceType(value);
+								}
+								else
+								{
+									setSurfaceType(NO_SURFACE);
+								}
+							}
+						}
+						else if (name == desc_LegacySurfaceInput)
+						{
+							std::string text;
+							if (iter->getValue(text))
+							{
+								Controller::InputType value;
+								if (Reflection::EnumDesc<Controller::InputType>::singleton().convertToValue(text, value))
+								{
+									setSurfaceInput(value);
+								}
+							}
+						}
+						else if (name == desc_LegacyParamA)
+						{
+							float value;
+							if (iter->getValue(value))
+							{
+								setParamA(value);
+							}
+						}
+						else if (name == desc_LegacyParamB)
+						{
+							float value;
+							if (iter->getValue(value))
+							{
+								setParamB(value);
+							}
+						}
+						else if (name == desc_LegacyConstraint)
+						{
+							std::string text;
+							if (iter->getValue(text))
+							{
+								SurfaceType value;
+								if (Reflection::EnumDesc<SurfaceType>::singleton().convertToValue(text, value))
+								{
+									if (value != NO_SURFACE)
+									{
+										setSurfaceType(value);
+									}
+								}
+							}
+						}
+						else
+						{
+							RBXASSERT(false);
+						}
+					}
+				}
+			}
+		}
 	}
 }

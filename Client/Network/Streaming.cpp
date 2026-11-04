@@ -135,6 +135,16 @@ namespace RBX
 			return stream;
 		}
 
+		RakNet::BitStream& operator>>(RakNet::BitStream& stream, ContentId& value)
+		{
+			std::string id;
+			stream >> id;
+
+			value = ContentId(id);
+
+			return stream;
+		}
+
 		template<typename T>
 		RakNet::BitStream& operator>>(RakNet::BitStream& stream, T& value) // TODO: check match
 		{
@@ -277,6 +287,36 @@ namespace RBX
 			RBXASSERT(value < (int)prop.enumDescriptor.getEnumCount());
 
 			bitStream.WriteBits((unsigned char*)&value, (int)prop.enumDescriptor.getEnumCountMSB() + 1);
+		}
+
+		template<>
+		void serialize<BrickColor>(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream)
+		{
+			BrickColor color(property.getValue<BrickColor>().number);
+			unsigned int index = color.getClosestPaletteIndex();
+			bitStream.WriteBits((unsigned char*)&index, 5);
+		}
+
+		template<>
+		void deserialize<BrickColor>(Reflection::Property& property, RakNet::BitStream& bitStream)
+		{
+			BrickColor value;
+			bitStream >> value;
+			property.setValue<BrickColor>(value);
+		}
+
+		template<>
+		void serialize<ContentId>(const Reflection::ConstProperty& property, RakNet::BitStream& bitStream)
+		{
+			bitStream << property.getStringValue();
+		}
+
+		template<>
+		void deserialize<ContentId>(Reflection::Property& property, RakNet::BitStream& bitStream)
+		{
+			std::string value;
+			bitStream >> value;
+			property.setStringValue(value);
 		}
 
 		void StringReceiver::receive(RakNet::BitStream& stream, std::string& value)
@@ -446,6 +486,21 @@ namespace RBX
 			else
 			{
 				id.index = 0;
+			}
+		}
+
+		bool IdSerializer::deserializeInstanceRef(RakNet::BitStream& stream, Instance*& instance, Guid::Data& id)
+		{
+			deserializeId(stream, id);
+			if ((*id.scope) != Name::getNullName())
+			{
+				instance = ServiceProvider::create<IdManager>(this)->getInstance(id);
+				return instance != NULL;
+			}
+			else
+			{
+				instance = NULL;
+				return true;
 			}
 		}
 	}

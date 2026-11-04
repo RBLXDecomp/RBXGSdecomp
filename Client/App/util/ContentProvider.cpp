@@ -10,7 +10,6 @@
 
 namespace RBX
 {
-	// TODO: check match
 	bool operator<(const ContentId& a, const ContentId& b)
 	{
 		return a.toString() < b.toString();
@@ -19,6 +18,11 @@ namespace RBX
 	bool operator!=(const ContentId& a, const ContentId& b)
 	{
 		return a.toString() != b.toString();
+	}
+
+	bool operator==(const ContentId& a, const ContentId& b)
+	{
+		return a.toString() == b.toString();
 	}
 
 	ContentId ContentId::fromAssets(const std::string& filePath)

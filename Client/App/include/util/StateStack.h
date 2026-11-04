@@ -25,7 +25,11 @@ namespace RBX
 			currentState = -1; // see DataModel constructor
 		}
 
-		~StateStack();
+		~StateStack()
+		{
+			clearStackAfter(-1);
+			currentState = -1;
+		}
 
 		void pushState(const Name&, T*, T*);
 		void pushState(std::string, T*, T*);
@@ -35,9 +39,24 @@ namespace RBX
 		bool canRedo(std::string&) const;
 		T* redo();
 	protected:
-		size_t getStackSize() const;
-		virtual bool isStackTooBig() const;
+		size_t getStackSize() const
+		{
+			return stack.size();
+		}
+		virtual bool isStackTooBig() const
+		{
+			return false;
+		}
 	private:
-		void clearStackAfter(int);
+		void clearStackAfter(int index)
+		{
+			for (int i = stack.size() - 1; i > index; i--)
+			{
+				delete stack[i].redoState;
+				delete stack[i].undoState;
+			}
+
+			stack.resize(index + 1);
+		}
 	};
 }

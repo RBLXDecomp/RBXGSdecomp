@@ -37,7 +37,10 @@ namespace RBX
 					return std::find(begin, end, instance) == end;
 				}
 
-				virtual bool canSendItems();
+				virtual bool canSendItems()
+				{
+					return true;
+				}
 			};
 
 		private:
@@ -56,7 +59,10 @@ namespace RBX
 			void start(int port, int threadSleepTime);
 			void stop(int blockDuration);
 			int getClientCount();
-			virtual XmlElement* write();
+			virtual XmlElement* write()
+			{
+				return NULL;
+			}
 			virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
 			void setServerManagerPing(std::string pingUrl, std::string publicIP, int thumbnailId);
 		protected:

@@ -13,12 +13,12 @@ namespace RBX
 
 	void registerBodyMovers()
 	{
-		Name::declare<&sBodyGyro>();
-		Name::declare<&sBodyPosition>();
-		Name::declare<&sBodyVelocity>();
-		Name::declare<&sBodyForce>();
-		Name::declare<&sBodyThrust>();
-		Name::declare<&sRocket>();
+		BodyGyro::className();
+		BodyPosition::className();
+		BodyVelocity::className();
+		BodyForce::className();
+		BodyThrust::className();
+		Rocket::className();
 	}
 
 	BodyMover::BodyMover(const char* name)

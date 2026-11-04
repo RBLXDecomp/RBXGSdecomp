@@ -17,7 +17,7 @@ namespace RBX
 	{
 		typedef std::vector<boost::any> Arguments;
 
-		class GenericSlotWrapper
+		class __declspec(novtable) GenericSlotWrapper
 		{
 		public:
 			virtual ~GenericSlotWrapper();

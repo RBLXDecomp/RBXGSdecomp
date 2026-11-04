@@ -74,6 +74,11 @@ namespace RBX
 		DrawAdorn::cylinder(adorn, G3D::CoordinateFrame(waypoint), 1, 0.2f, 1.0f, G3D::Color3::green());
 	}
 
+	bool Humanoid::askSetParent(const Instance* instance) const
+	{
+		return dynamic_cast<const ModelInstance*>(instance) != NULL;
+	}
+
 	ContactManager* Humanoid::getContactManager()
 	{
 		World* world = Workspace::getWorldIfInWorkspace(this);

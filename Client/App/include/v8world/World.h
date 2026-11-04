@@ -149,13 +149,22 @@ namespace RBX
 		{
 			return primitives.size();
 		}
-		const Profiling::CodeProfiler& getProfileWorldStep() const;
+		const Profiling::CodeProfiler& getProfileWorldStep() const
+		{
+			return *profilingWorldStep;
+		}
 		Profiling::CodeProfiler& getProfileWorldStep()
 		{
 			return *profilingWorldStep;
 		}
-		const Profiling::CodeProfiler& getProfileBroadphase() const;
-		const Profiling::CodeProfiler& getProfileUiStep() const;
+		const Profiling::CodeProfiler& getProfileBroadphase() const
+		{
+			return *profilingBroadphase;
+		}
+		const Profiling::CodeProfiler& getProfileUiStep() const
+		{
+			return *profilingUiStep;
+		}
 		void onPrimitiveAddedAnchor(Primitive* p);
 		void onPrimitiveRemovingAnchor(Primitive* p);
 		void onPrimitiveExtentsChanged(Primitive* p);
