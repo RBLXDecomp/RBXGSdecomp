@@ -58,7 +58,7 @@ namespace RBX
             void formatPercent(double);
             Item* createChildItem(const char* item);
             Item* createBoundChildItem(const Profiling::Profiler& p);
-            Item* createBoundMemChildItem(const char*, const unsigned&);
+            Item* createBoundMemChildItem(const char*, const size_t&);
 
         protected:
             virtual bool askAddChild(const Instance* instance) const
@@ -120,10 +120,10 @@ namespace RBX
 			}
         };
 
-        class TypedMemItem : public TypedStatsItem<unsigned>
+        class TypedMemItem : public TypedStatsItem<size_t>
         {
         public:
-            TypedMemItem(const unsigned* value)
+            TypedMemItem(const size_t* value)
 				: TypedStatsItem(value)
 			{
 			}

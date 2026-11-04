@@ -41,7 +41,7 @@ namespace RBX
 		virtual ~Log();
 
 	public:
-		static std::string formatMem(unsigned bytes);
+		static std::string formatMem(size_t bytes);
 		static std::string formatTime(double time);
 		static void setLogProvider(ILogProvider* provider);
 		static Log* current()
