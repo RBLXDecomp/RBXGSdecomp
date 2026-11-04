@@ -151,12 +151,12 @@ namespace RBX
 		public:
 			Creator()
 			{
-				RBXASSERT(getCreators().find(&Class::className()) == getCreators().end());
-				getCreators()[&Class::className()] = this;
+				RBXASSERT(getCreators().find(&getClassName()) == getCreators().end());
+				getCreators()[&getClassName()] = this;
 			}
 			~Creator()
 			{
-				getCreators().erase(&Class::className());
+				getCreators().erase(&getClassName());
 			}
 		};
 
