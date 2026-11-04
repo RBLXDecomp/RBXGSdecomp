@@ -20,7 +20,6 @@ namespace RBX
 		virtual bool shouldRender2d() const
 		{
 			return true;
-
 		}
 
 		virtual void render2d(Adorn* adorn);
