@@ -26,7 +26,11 @@ namespace RBX
 		static Reflection::SignalDesc<Value, void(ValueType)> desc_ValueChanged;
 
 	public:
-		Value();
+		Value()
+			: value(defaultValue)
+		{
+			setName("Value");
+		}
 		const Value& getValue() const;
 		void setValue(const Value&);
 	protected:
@@ -61,7 +65,10 @@ namespace RBX
 		static Reflection::SignalDesc<ObjectValue, void(boost::shared_ptr<Instance>)> desc_ValueChanged;
 
 	public:
-		ObjectValue();
+		ObjectValue()
+		{
+			setName("Value");
+		}
 		Instance* getValue() const
 		{
 			return value.get();
