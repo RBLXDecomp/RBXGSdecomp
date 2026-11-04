@@ -139,12 +139,25 @@ namespace RBX
 		class Creator : public ICreator
 		{
 		public:
-			virtual boost::shared_ptr<Object> create() const;
-			const Name& getClassName() const;
+			virtual boost::shared_ptr<Object> create() const
+			{
+				return Creatable::create<Class>();
+			}
+			const Name& getClassName() const
+			{
+				return Name::declare<ClassName>();
+			}
 
 		public:
-			Creator();
-			~Creator();
+			Creator()
+			{
+				RBXASSERT(getCreators().find(&Class::className()) == getCreators().end());
+				getCreators()[&Class::className()] = this;
+			}
+			~Creator()
+			{
+				getCreators().erase(&Class::className());
+			}
 		};
 
 	private:
@@ -173,15 +186,18 @@ namespace RBX
 		}
 		virtual const Name& getClassName() const
 		{
-			return Name::declare<ClassName>();
+			return creator.getClassName();
 		}
 	  
 	public:
 		static const Name& className()
 		{
-			return Name::declare<ClassName>();
+			return creator.getClassName();
 		}
 	};
+
+	template<typename Class, typename DerivedClass, const char* const* ClassName>
+	const typename FactoryProduct<Class, DerivedClass, ClassName>::Creator FactoryProduct<Class, DerivedClass, ClassName>::creator;
 
 	template<typename DerivedClass, const char* const* ClassName>
 	class NonFactoryProduct : public DerivedClass
