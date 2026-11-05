@@ -53,6 +53,53 @@ namespace RBX
 		return getParent() && dynamic_cast<Backpack*>(getParent()) != NULL;
 	}
 
+	int BackpackItem::getBinId() const // this is a guess
+	{
+		if (getParent())
+			return getParent()->findChildIndex(this);
+
+		RBXASSERT(0);
+		return -1;
+	}
+
+	void BackpackItem::render2d(Adorn* adorn)
+	{
+		bool viewHack = false;
+		Workspace* workspace = ServiceProvider::find<Workspace>(this);
+		if (workspace && workspace->imageServerViewHack)
+			viewHack = true;
+
+		Rect draw = viewHack ? Rect(GuiRoot::getCanvasSize()) : getMyRect();
+		int fontSize = GuiRoot::normalizedFontSize(12);
+
+		float numberRectSize = draw.size().x * 0.2f;
+		Rect numberRect = Rect::fromLowSize(G3D::Vector2(draw.low.x + 2.0f, draw.high.y - 2.0f - numberRectSize), G3D::Vector2(numberRectSize, numberRectSize));
+
+		if (!viewHack)
+		{
+			adorn->rect2d(draw.toRect2D(), GuiItem::translucentBackdrop());
+		}
+
+		if (isEnabled())
+		{
+			adorn->rect2d(numberRect.toRect2D(), G3D::Color3::gray());
+			adorn->drawFont2D(StringConverter<int>::convertToString(getBinId() + 1), numberRect.center(), fontSize, G3D::Color3::white(), G3D::Color4::clear(), Adorn::XALIGN_CENTER, Adorn::YALIGN_CENTER, Adorn::PROPORTIONAL_SPACING);
+		}
+
+		if (drawSelected())
+		{
+			adorn->outlineRect2d(draw.toRect2D(), 3.0f, G3D::Color3::green());
+		}
+
+		if (guiImageDraw.setImage(adorn, textureId))
+		{
+			guiImageDraw.render2d(adorn, isEnabled() || viewHack, draw.inset(fontSize), widgetState);
+			return;
+		}
+
+		Widget::render2d(adorn);
+	}
+
 	void BackpackItem::setTextureId(const TextureId& value)
 	{
 		if (value != textureId)
@@ -207,16 +254,7 @@ namespace RBX
 			int fontSize = GuiRoot::normalizedFontSize(12);
 			G3D::Vector2 pos2d = viewPort.x0y1() + G3D::Vector2(4.0f, -4.0f);
 
-			adorn->drawFont2D(
-				"StarterPack - these items will be given to each new player", 
-				pos2d, 
-				fontSize, 
-				G3D::Color3::white(), 
-				G3D::Color4::clear(), 
-				Adorn::XALIGN_LEFT, 
-				Adorn::YALIGN_BOTTOM,
-				Adorn::PROPORTIONAL_SPACING
-			);
+			adorn->drawFont2D("StarterPack - these items will be given to each new player", pos2d, fontSize, G3D::Color3::white(), G3D::Color4::clear(), Adorn::XALIGN_LEFT, Adorn::YALIGN_BOTTOM,Adorn::PROPORTIONAL_SPACING);
 		}
 	}
 
