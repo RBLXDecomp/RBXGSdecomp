@@ -20,6 +20,44 @@ namespace RBX
 		return G3D::Vector2(width, width);
 	}
 
+	int LocalBackpackItem::getBinId() const // this is a guess
+	{
+		return getParent()->findChildIndex(this);
+	}
+
+	// 99% match
+	// different register allocation
+	void LocalBackpackItem::render2d(Adorn* adorn)
+	{
+		int fontSize = GuiRoot::normalizedFontSize(12);
+		Rect draw = getMyRect();
+
+		float numberRectSize = draw.size().x * 0.2f;
+		Rect numberRect = Rect::fromLowSize(G3D::Vector2(draw.low.x + 2.0f, draw.high.y - 2.0f - numberRectSize), G3D::Vector2(numberRectSize, numberRectSize));
+
+		adorn->rect2d(draw.toRect2D(), GuiItem::translucentBackdrop());
+		adorn->rect2d(numberRect.toRect2D(), G3D::Color3::gray());
+		adorn->drawFont2D(StringConverter<int>::convertToString(getBinId() + 1), numberRect.center(), fontSize, G3D::Color3::white(), G3D::Color4::clear(), Adorn::XALIGN_CENTER, Adorn::YALIGN_CENTER, Adorn::PROPORTIONAL_SPACING);
+
+		if (myItem)
+		{
+			if (myItem->drawSelected())
+			{
+				adorn->outlineRect2d(draw.toRect2D(), 3.0f, G3D::Color3::green());
+			}
+
+			if (guiImageDraw.setImage(adorn, myItem->getTextureId()))
+			{
+				guiImageDraw.render2d(adorn, myItem->drawEnabled(), draw.inset(fontSize), widgetState);
+				return;
+			}
+
+			setName(myItem->getName());
+		}
+
+		Widget::render2d(adorn);
+	}
+
 	const char* const sLocalBackpack = "LocalBackpack";
 
 	LocalBackpack::LocalBackpack()
