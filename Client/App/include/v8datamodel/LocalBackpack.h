@@ -18,7 +18,7 @@ namespace RBX
 		}
 
 		virtual G3D::Vector2 getSize() const;
-		virtual void render2d(Adorn*);
+		virtual void render2d(Adorn* adorn);
 		virtual void onClick(const GuiEvent& event);
 		int getBinId() const;
 	public:

@@ -63,7 +63,7 @@ namespace RBX
 			void add(AbuseReport& r, const std::list<ChatMessage>& chatHistory);
 
 		private:
-			static worker_thread::work_result processRequests(boost::shared_ptr<data>, std::string);
+			static worker_thread::work_result processRequests(boost::shared_ptr<data> _data, std::string abuseUrl);
 		};
 
 		extern char* sPlayers;
@@ -122,7 +122,7 @@ namespace RBX
 			std::list<ChatMessage>::const_iterator chatHistory_end();
 			bool canReportAbuse() const;
 			void setAbuseReportUrl(std::string value);
-			bool OnReceive(RakPeerInterface*, Packet*);
+			bool OnReceive(RakPeerInterface* peer, Packet* packet);
 			void setConnection(RakPeerInterface* peer);
 			boost::shared_ptr<Instance> playerFromCharacter(boost::shared_ptr<Instance> character);
 			boost::shared_ptr<Instance> getPlayerByID(int userID);

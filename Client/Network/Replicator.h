@@ -164,7 +164,7 @@ namespace RBX
 				boost::shared_ptr<Instance> instance;
 
 			public:
-				NewInstanceItem(Replicator&, const boost::shared_ptr<Instance>&);
+				NewInstanceItem(Replicator& replicator, const boost::shared_ptr<Instance>& instance);
 				virtual void write(RakNet::BitStream&);
 			};
 
@@ -258,19 +258,22 @@ namespace RBX
 				return shared_from(findTargetPlayer());
 			}
 			virtual void Update(RakPeerInterface* peer);
-			virtual PluginReceiveResult OnReceive(RakPeerInterface*, Packet*);
+			virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
 			virtual const Name& getClassName() const
 			{
 				return Name::getNullName();
 			}
-			virtual XmlElement* write();
+			virtual XmlElement* write()
+			{
+				return NULL;
+			}
 			boost::shared_ptr<Reflection::DescribedBase> sendMarker();
 			bool isSerializePending(const Instance* instance) const;
 			bool isPropertyChangedPending(const Reflection::Property&) const;
 			void requestCharacter();
 			void closeConnection();
 		protected:
-			virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 			void onDescendentAdded(boost::shared_ptr<Instance>);
 			void onDescendentRemoving(boost::shared_ptr<Instance>);
 			void onPropertyChanged(boost::shared_ptr<Instance> instance, const Reflection::PropertyDescriptor* descriptor);
@@ -279,7 +282,10 @@ namespace RBX
 			void connectPropertyChanged(boost::shared_ptr<Instance> instance);
 			void disconnectPropertyChanged(boost::shared_ptr<Instance> instance);
 			virtual bool wantReplicate(const Instance* source) const;
-			virtual void onSentMarker(long);
+			virtual void onSentMarker(long id)
+			{
+				return;
+			}
 		private:
 			void disconnectAllPropertyChangedConnections();
 			void connectToReplicationContainers();

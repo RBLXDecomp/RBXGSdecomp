@@ -10,6 +10,7 @@
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
+#include "util/standardout.h"
 
 class HttpRequest_source : public boost::iostreams::device<boost::iostreams::input>
 {
@@ -123,7 +124,8 @@ namespace RBX
 					ThrowIfFailure(false, "HttpAddRequestHeaders failed");
 			}
 
-			if (!HttpAddRequestHeadersA(request, "Accept-Encoding: gzip\r\n", (int)strlen("Accept-Encoding: gzip\r\n"), HTTP_ADDREQ_FLAG_ADD))
+			const char* acceptEncodingHeader = "Accept-Encoding: gzip\r\n";
+			if (!HttpAddRequestHeadersA(request, acceptEncodingHeader, (int)strlen(acceptEncodingHeader), HTTP_ADDREQ_FLAG_ADD))
 				ThrowIfFailure(false, "HttpAddRequestHeaders failed");
 
 			{
@@ -133,6 +135,7 @@ namespace RBX
 				{
 					std::string uploadData;
 
+					try
 					{
 						boost::iostreams::filtering_stream<boost::iostreams::output> out;
 
@@ -148,6 +151,11 @@ namespace RBX
 						out.push(String_sink(uploadData));
 						boost::iostreams::copy(data, out);
 					}
+					catch (boost::iostreams::gzip_error& e)
+					{
+						int error = e.error();
+						throw std::runtime_error(G3D::format("Upload GZip error %d, ZLib error %d, \"%s\"", error, e.zlib_error_code(), url.c_str()));
+					}
 
 					int headerLength = (int)uploadData.size();
 
@@ -156,12 +164,20 @@ namespace RBX
 					if (!HttpSendRequestExA(request, &buffers, NULL, 0, TRUE))
 						throw std::runtime_error("HttpSendRequestEx failed");
 
-					DWORD bytesWritten;
-					if (!InternetWriteFile(request, uploadData.c_str(), headerLength, &bytesWritten))
-						ThrowIfFailure(false, "InternetWriteFile failed");
+					try
+					{
+						DWORD bytesWritten;
+						if (!InternetWriteFile(request, uploadData.c_str(), headerLength, &bytesWritten))
+							ThrowIfFailure(false, "InternetWriteFile failed");
 
-					if (bytesWritten != headerLength)
-						throw std::runtime_error("Failed to upload content");
+						if (bytesWritten != headerLength)
+							throw std::runtime_error("Failed to upload content");
+					}
+					catch (std::exception)
+					{
+						HttpEndRequestA(request, NULL, 0, TRUE);
+						throw;
+					}
 
 					if (!HttpEndRequestA(request, NULL, 0, TRUE))
 						ThrowIfFailure(false, "HttpEndRequest failed");
@@ -181,19 +197,35 @@ namespace RBX
 					statusCode = atol(buffer);
 				}
 
+				try
 				{
-					boost::iostreams::filtering_stream<boost::iostreams::input> in;
-
-					char buffer[256];
-					DWORD length = sizeof(buffer);
-					if (HttpQueryInfoA(request, HTTP_QUERY_CONTENT_ENCODING, buffer, &length, NULL))
+					try
 					{
-						if (std::string(buffer) == "gzip")
-							in.push(boost::iostreams::basic_gzip_decompressor<>());
-					}
+						boost::iostreams::filtering_stream<boost::iostreams::input> in;
 
-					in.push(HttpRequest_source(request));
-					boost::iostreams::copy(in, String_sink(response));
+						char buffer[256];
+						DWORD length = sizeof(buffer);
+
+						if (HttpQueryInfoA(request, HTTP_QUERY_CONTENT_ENCODING, buffer, &length, NULL))
+						{
+							if (std::string(buffer) == "gzip")
+								in.push(boost::iostreams::basic_gzip_decompressor<>());
+						}
+
+						in.push(HttpRequest_source(request));
+						boost::iostreams::copy(in, String_sink(response));
+					}
+					catch (boost::iostreams::gzip_error& e)
+					{
+						int error = e.error();
+						int zLibError = e.zlib_error_code();
+						throw std::runtime_error(G3D::format("GZip error %d, ZLib error %d, \"%s\"", error, zLibError, url.c_str()));
+					}
+				}
+				catch (boost::iostreams::zlib_error& e)
+				{
+					int error = e.error();
+					throw std::runtime_error(G3D::format("ZLib error %d, \"%s\"", error, url.c_str()));
 				}
 
 				if (statusCode != 200)
@@ -291,7 +323,16 @@ namespace RBX
 			h = additionalHeaders.c_str();
 
 		std::istringstream dummy;
-		httpGetPost<false>(url, dummy, false, h, response);
+
+		try
+		{
+			httpGetPost<false>(url, dummy, false, h, response);
+		}
+		catch (std::exception)
+		{
+			StandardOut::singleton()->print(MESSAGE_WARNING, "httpGet failed, trying again");
+			httpGetPost<false>(url, dummy, false, h, response);
+		}
 	}
 
 	void Http::post(std::istream& input, bool compress, std::string& response)

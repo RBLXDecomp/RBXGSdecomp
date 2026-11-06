@@ -58,19 +58,19 @@ namespace RBX
 		SnapInfo rayHitsPart(const G3D::Array<Primitive*>& triedSnap, bool forceAdjacent);
 		SnapInfo bestProximatePart(const G3D::Array<Primitive*>& triedSnap, bool (Contact::* proximityTest)(float));
 		bool fallOffEdge();
-		bool fallOffPart(bool&);
+		bool fallOffPart(bool& snapped);
 		bool colliding();
 		bool rayHitsCloserPart();
 		bool tooCloseToCamera();
-		SnapInfo findSnap(const G3D::Array<Primitive*>&);
+		SnapInfo findSnap(const G3D::Array<Primitive*>& triedSnap);
 		void findNoSnapPosition(const G3D::CoordinateFrame& original);
 		void smartPtrHackPre();
 		void smartPtrHackPost();
 	public:
 		RunDragger();
 		~RunDragger();
-		void init(Workspace*, boost::weak_ptr<PartInstance>, const G3D::Vector3&);
-		bool snap(const G3D::Ray&);
+		void init(Workspace* _workspace, boost::weak_ptr<PartInstance> _dragPart, const G3D::Vector3& _dragPointWorld);
+		bool snap(const G3D::Ray& _mouseRay);
 
 	public:
 		static void turnUpright(PartInstance* part);

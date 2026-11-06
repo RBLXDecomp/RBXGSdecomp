@@ -57,7 +57,7 @@ namespace RBX
 		void downFrom_HasHandle();
 		void onChildAdded();
 		void onChildRemoved();
-		virtual void onAncestorChanged(const AncestorChanged&);
+		virtual void onAncestorChanged(const AncestorChanged& event);
 
 		virtual bool askSetParent(const Instance* instance) const
 		{
@@ -102,10 +102,10 @@ namespace RBX
 		const G3D::Vector3 getAttachmentForward() const;
 		const G3D::Vector3 getAttachmentUp() const;
 		const G3D::Vector3 getAttachmentRight() const;
-		void setAttachmentPos(const G3D::Vector3&);
-		void setAttachmentForward(const G3D::Vector3&);
-		void setAttachmentUp(const G3D::Vector3&);
-		void setAttachmentRight(const G3D::Vector3&);
+		void setAttachmentPos(const G3D::Vector3& v);
+		void setAttachmentForward(const G3D::Vector3& v);
+		void setAttachmentUp(const G3D::Vector3& v);
+		void setAttachmentRight(const G3D::Vector3& v);
 
 	protected:
 		static AccoutrementState characterCanPickUpAccoutrement(Instance*);

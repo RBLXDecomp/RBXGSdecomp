@@ -6,9 +6,9 @@ namespace RBX
 {
 	const char* const sFlying = "Flying";
 
-	static const float turnSpeed = 6.0f;
-	static const float kTurnP = 7500.0f;
-	static const float kTurnAccelMax = 120000.0f;
+	const float Flying::turnSpeed = 6.0f;
+	const float Flying::kTurnP = 7500.0f;
+	const float Flying::kTurnAccelMax = 120000.0f;
 
 	Flying::Flying(Humanoid* humanoid)
 		: Base(humanoid, 300.0f, 50.0f),

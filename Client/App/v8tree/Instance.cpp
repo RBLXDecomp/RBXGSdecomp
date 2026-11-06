@@ -150,25 +150,21 @@ namespace RBX
 	void Instance::readChild(const XmlElement* childElement, IReferenceBinder& binder)
 	{
 		const Name* className = NULL;
-		const XmlAttribute* classAttrib = childElement->findAttribute(tag_class);
 
-		if (classAttrib)
+		if (childElement->findAttributeValue(tag_class, className))
 		{
-			if (classAttrib->getValue(className))
+			boost::shared_ptr<Instance> childInstance = createChild(*className);
+			if (childInstance)
 			{
-				boost::shared_ptr<Instance> childInstance = createChild(*className);
+				childInstance->read(childElement, binder);
 				if (childInstance)
-				{
-					childInstance->read(childElement, binder);
-					if (childInstance)
-						childInstance->setParent(this);
-				}
-				else
-				{
-					const XmlAttribute* nameRef = childElement->findAttribute(name_referent);
-					if (nameRef)
-						binder.announceID(nameRef, NULL);
-				}
+					childInstance->setParent(this);
+			}
+			else
+			{
+				const XmlAttribute* nameRef = childElement->findAttribute(name_referent);
+				if (nameRef)
+					binder.announceID(nameRef, NULL);
 			}
 		}
 	}
@@ -202,7 +198,9 @@ namespace RBX
 			readChildren(element, binder);
 		}
 		else
+		{
 			readProperty(element, binder);
+		}
 	}
 
 	void Instance::predelete(Instance* instance)
@@ -384,21 +382,17 @@ namespace RBX
 		}
 	}
 
-	//96.19% matching.
 	void Instance::readProperty(const XmlElement* propertyElement, IReferenceBinder& binder)
 	{
 		const Name* value = NULL;
 
-		if (const XmlAttribute* attribute = propertyElement->findAttribute(name_name))
+		if (propertyElement->findAttributeValue(name_name, value))
 		{
-			if (attribute->getValue(value))
-			{
-				Reflection::PropertyIterator iter = findProperty(*value);
+			Reflection::PropertyIterator iter = findProperty(*value);
 
-				if (iter != properties_end())
-				{
-					(*iter).read(propertyElement, binder);
-				}
+			if (iter != properties_end())
+			{
+				(*iter).read(propertyElement, binder);
 			}
 		}
 	}

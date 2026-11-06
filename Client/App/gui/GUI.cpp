@@ -539,6 +539,15 @@ namespace RBX
 		offset = layout.offset;
 	}
 
+	G3D::Vector2 RelativePanel::getPosition() const
+	{
+		Rect canvas(GuiRoot::getCanvasSize());
+		Rect me(getSize());
+
+		canvas = canvas.inset(offset);
+		return canvas.positionChild(me, xLocation, yLocation).low;
+	}
+
 	G3D::Vector2 PercentPanel::getPosition() const
 	{
 		Rect canvasRect(GuiRoot::getCanvasSize());
@@ -560,6 +569,22 @@ namespace RBX
 	{
 		static G3D::Vector2 percentSize(100.0f, 75.0f);
 		return G3D::iRound(floorf(fontSize * toPixelSize(percentSize).x * 0.001f));
+	}
+
+	G3D::Vector2 GuiRoot::toPixelSize(const G3D::Vector2& percent)
+	{
+		G3D::Vector2 result;
+
+		if (canvasSize.x * 0.75f < canvasSize.y)
+		{
+			result = 0.01f * percent * G3D::Vector2(canvasSize.x, canvasSize.x * 0.75f);
+		}
+		else
+		{
+			result = 0.01f * percent * G3D::Vector2(canvasSize.y * 1.33f, canvasSize.y);
+		}
+
+		return result;
 	}
 
 	void GuiRoot::render2d(Adorn* adorn)

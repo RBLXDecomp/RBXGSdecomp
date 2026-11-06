@@ -106,73 +106,70 @@ namespace RBX
 			const Name* name = NULL;
 			if (!iter->isXsiNil())
 			{
-				if (const XmlAttribute* attribute = iter->findAttribute(name_name))
+				if (iter->findAttributeValue(name_name, name))
 				{
-					if (attribute->getValue(name))
+					if (name == desc_LegacyType)
 					{
-						if (name == desc_LegacyType)
+						std::string text;
+						if (iter->getValue(text))
 						{
-							std::string text;
-							if (iter->getValue(text))
+							SurfaceType value;
+							if (Reflection::EnumDesc<SurfaceType>::singleton().convertToValue(text, value))
 							{
-								SurfaceType value;
-								if (Reflection::EnumDesc<SurfaceType>::singleton().convertToValue(text, value))
+								setSurfaceType(value);
+							}
+							else
+							{
+								setSurfaceType(NO_SURFACE);
+							}
+						}
+					}
+					else if (name == desc_LegacySurfaceInput)
+					{
+						std::string text;
+						if (iter->getValue(text))
+						{
+							Controller::InputType value;
+							if (Reflection::EnumDesc<Controller::InputType>::singleton().convertToValue(text, value))
+							{
+								setSurfaceInput(value);
+							}
+						}
+					}
+					else if (name == desc_LegacyParamA)
+					{
+						float value;
+						if (iter->getValue(value))
+						{
+							setParamA(value);
+						}
+					}
+					else if (name == desc_LegacyParamB)
+					{
+						float value;
+						if (iter->getValue(value))
+						{
+							setParamB(value);
+						}
+					}
+					else if (name == desc_LegacyConstraint)
+					{
+						std::string text;
+						if (iter->getValue(text))
+						{
+							SurfaceType value;
+							if (Reflection::EnumDesc<SurfaceType>::singleton().convertToValue(text, value))
+							{
+								if (value != NO_SURFACE)
 								{
 									setSurfaceType(value);
 								}
-								else
-								{
-									setSurfaceType(NO_SURFACE);
-								}
 							}
 						}
-						else if (name == desc_LegacySurfaceInput)
-						{
-							std::string text;
-							if (iter->getValue(text))
-							{
-								Controller::InputType value;
-								if (Reflection::EnumDesc<Controller::InputType>::singleton().convertToValue(text, value))
-								{
-									setSurfaceInput(value);
-								}
-							}
-						}
-						else if (name == desc_LegacyParamA)
-						{
-							float value;
-							if (iter->getValue(value))
-							{
-								setParamA(value);
-							}
-						}
-						else if (name == desc_LegacyParamB)
-						{
-							float value;
-							if (iter->getValue(value))
-							{
-								setParamB(value);
-							}
-						}
-						else if (name == desc_LegacyConstraint)
-						{
-							std::string text;
-							if (iter->getValue(text))
-							{
-								SurfaceType value;
-								if (Reflection::EnumDesc<SurfaceType>::singleton().convertToValue(text, value))
-								{
-									if (value != NO_SURFACE)
-									{
-										setSurfaceType(value);
-									}
-								}
-							}
-						}
-						else
-						{
-							RBXASSERT(false);
-						}
+					}
+					else
+					{
+						RBXASSERT(false);
 					}
 				}
 			}

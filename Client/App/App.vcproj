@@ -1107,7 +1107,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\include\gui\Gui.h"
+					RelativePath=".\include\gui\GUI.h"
 					>
 				</File>
 				<File
@@ -2129,6 +2129,10 @@
 			>
 			<File
 				RelativePath=".\tool\Dragger.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tool\DragTool.cpp"
 				>
 			</File>
 			<File

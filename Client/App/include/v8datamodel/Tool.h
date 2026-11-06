@@ -56,7 +56,7 @@ namespace RBX
 		boost::shared_ptr<Mouse> getMouse();
 		ToolState computeDesiredState(Instance* testParent);
 		ToolState computeDesiredState();
-		void setDesiredState(ToolState, const ServiceProvider*);
+		void setDesiredState(ToolState desiredState, const ServiceProvider* serviceProvider);
 		void setBackendToolStateNoReplicate(int value);
 		void rebuildBackendState();
 		void connectTouchEvent();
@@ -76,7 +76,7 @@ namespace RBX
 		void onUnequipped();
 		void onChildAdded();
 		void onChildRemoved();
-		virtual void onAncestorChanged(const AncestorChanged&);
+		virtual void onAncestorChanged(const AncestorChanged& event);
 
 		virtual bool askSetParent(const Instance* instance) const
 		{
@@ -143,8 +143,8 @@ namespace RBX
 		const G3D::Vector3 getGripRight() const;
 		void setGripPos(const G3D::Vector3& v);
 		void setGripForward(const G3D::Vector3& v);
-		void setGripUp(const G3D::Vector3&);
-		void setGripRight(const G3D::Vector3&);
+		void setGripUp(const G3D::Vector3& v);
+		void setGripRight(const G3D::Vector3& v);
 
 	private:
 		static void moveAllToolsToBackpack(Network::Player* player);

@@ -5,6 +5,7 @@
 #include "v8datamodel/Camera.h"
 #include "v8datamodel/Hopper.h"
 #include "v8datamodel/Selection.h"
+#include "v8datamodel/UserController.h"
 #include "script/ScriptContext.h"
 #include "humanoid/Humanoid.h"
 #include "v8world/CollisionStage.h"
@@ -517,6 +518,141 @@ namespace RBX
 		{
 			adorn->setObjectToWorldMatrix(G3D::CoordinateFrame());
 			adorn->box(G3D::AABox(G3D::Vector3(28, 4, 12), G3D::Vector3(32, 8, 16)), G3D::Color4(1.0, 0.2, 0.2, 0.5), G3D::Color4::clear());
+		}
+	}
+
+	IScriptOwner* Workspace::scriptShouldRun(Script* script)
+	{
+		RBXASSERT(this->isAncestorOf(script));
+
+		bool c;
+
+		if (!dynamic_cast<LocalScript*>(script))
+		{
+			c = Network::Players::backendProcessing(this, true);
+		}
+		else
+		{
+			ModelInstance* character = Network::Players::findLocalCharacter(this);
+			c = (character && script->isDescendentOf(character));
+		}
+
+		return c ? this : NULL;
+	}
+
+	GuiResponse Workspace::process(const GuiEvent& event)
+	{
+		RBXASSERT(currentCommand.get());
+
+		switch (event.eventType)
+		{
+		case UIEvent::KEY_DOWN:
+			currentCommand->onPeekKeyDown(event);
+			if (!currentCommand->captured())
+				return GuiResponse::notUsed();
+
+			setMouseCommand(currentCommand->onKeyDown(event));
+			break;
+
+		case UIEvent::MOUSE_RIGHT_BUTTON_DOWN:
+			inMouselookMode = true;
+			event.userInput->setWrapMode(UserInputBase::WRAP_CENTER);
+			break;
+
+		case UIEvent::MOUSE_RIGHT_BUTTON_UP:
+			inMouselookMode = false;
+			event.userInput->setWrapMode(UserInputBase::WRAP_AUTO);
+			break;
+
+		case UIEvent::MOUSE_LEFT_BUTTON_DOWN:
+			if (!currentCommand->captured())
+				setMouseCommand(currentCommand->onMouseDown(event));
+			break;
+
+		case UIEvent::MOUSE_MOVE:
+			if (currentCommand->captured())
+				currentCommand->onMouseMove(event);
+			else
+				currentCommand->onMouseHover(event);
+
+			break;
+
+		case UIEvent::MOUSE_DELTA:
+			if (currentCommand->captured())
+				currentCommand->onMouseDelta(event);
+			break;
+
+		case UIEvent::MOUSE_LEFT_BUTTON_UP:
+			setMouseCommand(currentCommand->onMouseUp(event));
+			break;
+
+		default:
+			return GuiResponse::notUsed();
+		}
+
+		if (event.isMouseEvent())
+		{
+			idleMouseEvent = event;
+			idleMouseEvent.eventType = UIEvent::MOUSE_IDLE;
+		}
+
+		RBXASSERT(currentCommand.get());
+
+		return GuiResponse::used(currentCommand->captured() ? this : NULL);
+	}
+
+	// 98% match
+	void Workspace::onEvent(const RunService* source, Heartbeat event)
+	{
+		onMovingHeartbeat();
+		
+		RBXASSERT(currentCommand.get());
+		if (idleMouseEvent.eventType == UIEvent::MOUSE_IDLE)
+			currentCommand->onMouseIdle(idleMouseEvent);
+
+		if (Network::Players::findLocalCharacter(this))
+			return;
+
+		ControllerService* controllerService = ServiceProvider::find<ControllerService>(this);
+		if (!controllerService)
+			return;
+
+		UserInputBase* device = controllerService->getHardwareDevice();
+		if (!device)
+			return;
+
+		RBXASSERT(getCamera() != NULL);
+
+		bool F = device->keyDown(SDLK_UP) || device->keyDown(SDLK_w);
+		bool B = device->keyDown(SDLK_DOWN) || device->keyDown(SDLK_s);
+		bool L = device->keyDown(SDLK_LEFT) || device->keyDown(SDLK_a);
+		bool R = device->keyDown(SDLK_RIGHT) || device->keyDown(SDLK_d);
+
+		if (F || B || R || L)
+		{
+			G3D::CoordinateFrame current = getCamera()->getCameraCoordinateFrame();
+			getCamera();
+			G3D::Vector3 look = current.getLookVector();
+			G3D::Vector3 right = current.getRightVector();
+
+			G3D::Vector3 move(0.0f, 0.0f, 0.0f);
+
+			if (F)
+				move += look * 2.0f;
+
+			if (B)
+				move -= look * 2.0f;
+
+			if (R)
+				move += right * 2.0f;
+
+			if (L)
+				move -= right * 2.0f;
+
+			current.translation += move;
+			getCamera()->setCameraType(Camera::FIXED_CAMERA);
+			getCamera()->setCameraCoordinateFrameNoLerp(current);
+			getCamera()->setCameraFocus(G3D::CoordinateFrame(look * 20.0f + current.translation));
 		}
 	}
 

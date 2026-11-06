@@ -4,9 +4,11 @@
 #include "Server.h"
 #include "Players.h"
 #include "Streaming.h"
+#include "IdManager.h"
 #include "PacketIds.h"
 #include "v8datamodel/GameSettings.h"
 #include "v8datamodel/Teams.h"
+#include "util/Http.h"
 #include "util/standardout.h"
 
 template<class Class>
@@ -21,7 +23,10 @@ protected:
 	{
 	}
 public:
-	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet);
+	virtual PluginReceiveResult OnReceive(RakPeerInterface* peer, Packet* packet)
+	{
+		return c->OnReceive(peer, packet) ? RR_CONTINUE_PROCESSING : RR_STOP_PROCESSING_AND_DEALLOCATE;
+	}
 };
 
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, void(boost::shared_ptr<RBX::Instance>, std::string), 2> funcReportAbuse(&RBX::Network::Players::reportAbuse, "ReportAbuse", "player", "message", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
@@ -42,6 +47,13 @@ static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, boost::shared_ptr<R
 static RBX::Reflection::BoundFuncDesc<RBX::Network::Players, void(std::string), 1> funcChat(&RBX::Network::Players::chat, "Chat", "message", RBX::Reflection::FunctionDescriptor::NeedTrustedCaller);
 
 RBX::Reflection::RefPropDescriptor<RBX::Network::Players, RBX::Network::Player> RBX::Network::Players::propLocalPlayer("LocalPlayer", "Data", &RBX::Network::Players::getLocalPlayer, NULL, RBX::Reflection::PropertyDescriptor::STANDARD);
+
+static void writeMessage(const RBX::Network::AbuseReport::Message& msg, XmlElement* messages)
+{
+	XmlElement* message = messages->addChild(RBX::Name::declare("message", -1));
+	message->setValue(msg.text);
+	message->addAttribute(RBX::Name::declare("userID", -1), msg.userID);
+}
 
 namespace RBX
 {
@@ -311,7 +323,6 @@ namespace RBX
 			}
 		}
 
-		// 98% match
 		boost::shared_ptr<Instance> Players::createLocalPlayer(int userId)
 		{
 			if (localPlayer)
@@ -326,6 +337,76 @@ namespace RBX
 			Notifier<Players, SuperSafeChanged>::raise(SuperSafeChanged(s));
 
 			return localPlayer;
+		}
+
+		// 98% match
+		bool Players::OnReceive(RakPeerInterface* peer, Packet* packet)
+		{
+			switch (packet->data[0])
+			{
+			case ID_CHAT_ALL:
+				try
+				{
+					Instance* instance = NULL;
+					RakNet::BitStream inBitstream(packet->data, packet->length, false);
+					inBitstream.IgnoreBits(8);
+
+					Guid::Data id;
+
+					std::string foo;
+					inBitstream >> foo;
+					id.scope = &Name::lookup(foo);
+
+					inBitstream >> id.index;
+
+					IdManager* idManager = ServiceProvider::find<IdManager>(this);
+					if (idManager)
+						instance = idManager->getInstance(id);
+
+					std::string message;
+					inBitstream >> message;
+
+					if (!instance)
+					{
+						StandardOut::singleton()->print(MESSAGE_WARNING, "Chat message from unknown Player %s %s", packet->systemAddress.ToString(), message.c_str());
+					}
+					else if (instance->getParent() == this)
+					{
+						ChatMessage event = {message, shared_from_polymorphic_downcast<Player>(instance), boost::shared_ptr<Player>()};
+						addChatMessage(event);
+						peer->Send((const char*)packet->data, packet->length, MEDIUM_PRIORITY, RELIABLE_ORDERED, 2, packet->systemAddress, true);
+					}
+				}
+				catch (std::exception& e)
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Players::OnReceive packet %d: %s", packet->data[0], e.what());
+				}
+				return false;
+
+			case ID_REPORT_ABUSE:
+				try
+				{
+					if (abuseReporter)
+					{
+						RakNet::BitStream inBitstream(packet->data, packet->length, false);
+						inBitstream.IgnoreBits(8);
+
+						AbuseReport r;
+						inBitstream >> r.submitterID;
+						inBitstream >> r.allegedAbuserID;
+						inBitstream >> r.comment;
+
+						abuseReporter->add(r, chatHistory);
+					}
+				}
+				catch (std::exception& e)
+				{
+					StandardOut::singleton()->print(MESSAGE_ERROR, "Players::OnReceive packet %d: %s", packet->data[0], e.what());
+				}
+				return false;
+			}
+
+			return true;
 		}
 
 		void AbuseReport::addMessage(const ChatMessage& cm)
@@ -351,6 +432,53 @@ namespace RBX
 			}
 
 			requestProcessor->wake();
+		}
+
+		worker_thread::work_result AbuseReporter::processRequests(boost::shared_ptr<data> _data, std::string abuseUrl)
+		{
+			try
+			{
+				AbuseReport abuseReport;
+
+				{
+					boost::mutex::scoped_lock lock(_data->requestSync);
+					if (_data->queue.empty())
+						return worker_thread::done;
+
+					abuseReport = _data->queue.front();
+				}
+
+				std::stringstream body;
+
+				{
+					TextXmlWriter writer(body);
+
+					XmlElement root(Name::declare("report", -1));
+					root.addAttribute(Name::declare("userID", -1), abuseReport.submitterID);
+					root.addChild(new XmlElement(Name::declare("comment", -1), abuseReport.comment));
+					XmlElement* messages = root.addChild(new XmlElement(Name::declare("messages", -1)));
+
+					std::for_each(abuseReport.messages.begin(), abuseReport.messages.end(), boost::bind(&writeMessage, _1, messages));
+					writer.serialize(&root);
+					body.flush();
+				}
+
+				std::string response;
+				Http(abuseUrl).post(body, false, response);
+
+				StandardOut::singleton()->print(MESSAGE_INFO, "Posted abuse report to %s", abuseUrl.c_str());
+			}
+			catch (std::exception& e)
+			{
+				StandardOut::singleton()->print(MESSAGE_WARNING, "Unable to post abuse report to %s. %s", abuseUrl.c_str(), e.what());
+			}
+
+			{
+				boost::mutex::scoped_lock lock(_data->requestSync);
+				_data->queue.pop();
+			}
+
+			return worker_thread::more;
 		}
 	}
 }

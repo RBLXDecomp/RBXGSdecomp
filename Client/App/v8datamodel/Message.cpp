@@ -41,11 +41,31 @@ namespace RBX
 	{
 		G3D::Rect2D rect = adorn->getViewport();
 		Rect translucentArea = rect;
-		G3D::Vector2 textPos = rect.center();
+		G3D::Vector2 textPos = translucentArea.center();
+
+		adorn->rect2d(translucentArea.toRect2D(), G3D::Color4(0.5f, 0.5f, 0.5f, 0.5f));
+		adorn->drawFont2D(text, textPos, 14.0, G3D::Color3::white(), G3D::Color3::black(), Adorn::XALIGN_CENTER, Adorn::YALIGN_CENTER, Adorn::PROPORTIONAL_SPACING);
+	}
+
+	void Message::renderPersonalMsg(Adorn* adorn)
+	{
+		G3D::Rect2D rect = adorn->getViewport();
+		Rect translucentArea(rect.x0() + 30.0f, rect.y0() + 30.0f, rect.x1() * 0.25f + 30.0f, rect.y1() * 0.25f + 30.0f);
+		G3D::Vector2 textPos = translucentArea.center();
 
 		adorn->rect2d(translucentArea.toRect2D(), G3D::Color4(0.5f, 0.5f, 0.5f, 0.5f));
 		adorn->drawFont2D(text, textPos, 14.0, G3D::Color3::white(), G3D::Color3::black(), Adorn::XALIGN_CENTER, Adorn::YALIGN_CENTER, Adorn::PROPORTIONAL_SPACING);
 	}
 
 	char* sHint = "Hint";
+
+	void Hint::render2d(Adorn* adorn)
+	{
+		G3D::Rect2D rect = adorn->getViewport();
+		Rect blackArea(rect.x0(), rect.y1() - 20.0f, rect.x1(), rect.y1());
+		G3D::Vector2 textPos = blackArea.center();
+
+		adorn->rect2d(blackArea.toRect2D(), G3D::Color3::black());
+		adorn->drawFont2D(text, textPos, 14.0, G3D::Color3::white(), G3D::Color4::clear(), Adorn::XALIGN_CENTER, Adorn::YALIGN_CENTER, Adorn::PROPORTIONAL_SPACING);
+	}
 }

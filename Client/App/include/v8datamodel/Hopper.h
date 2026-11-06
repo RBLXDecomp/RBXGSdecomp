@@ -47,7 +47,7 @@ namespace RBX
 		virtual bool askAddChild(const Instance* instance) const;
 	protected:
 		virtual G3D::Vector2 getSize() const;
-		virtual void render2d(Adorn*);
+		virtual void render2d(Adorn* adorn);
 		/*
 			TODO:
 

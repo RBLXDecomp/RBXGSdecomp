@@ -130,7 +130,7 @@ namespace RBX
 		boost::shared_ptr<const std::string> requestContentString(ContentId id);
 		bool requestContentFile(ContentId id, std::string& filename);
 		boost::shared_ptr<const std::string> getContentString(ContentId);
-		std::auto_ptr<std::istream> getContent(ContentId);
+		std::auto_ptr<std::istream> getContent(ContentId ticket);
 		std::string getFile(ContentId ticket);
 		std::string getAssetFile(const std::string& filePath);
 		void setAssetFolder(const char* sPath);

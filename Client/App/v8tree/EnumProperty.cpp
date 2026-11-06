@@ -617,16 +617,16 @@ namespace RBX
 		template<>
 		void TypedPropertyDescriptor<G3D::Vector3>::writeValue(const DescribedBase* instance, XmlElement* element) const
 		{
-			const Name* xName = &tag_X;
-			XmlElement* xElement = new XmlElement(*xName);
+			const Name& xName = tag_X;
+			XmlElement* xElement = new XmlElement(xName);
 			element->pushBackChild(xElement);
 
-			const Name* yName = &tag_Y;
-			XmlElement* yElement = new XmlElement(*yName);
+			const Name& yName = tag_Y;
+			XmlElement* yElement = new XmlElement(yName);
 			element->pushBackChild(yElement);
 
-			const Name* zName = &tag_Z;
-			XmlElement* zElement = new XmlElement(*zName);
+			const Name& zName = tag_Z;
+			XmlElement* zElement = new XmlElement(zName);
 			element->pushBackChild(zElement);
 
 			G3D::Vector3 value = getValue(instance);

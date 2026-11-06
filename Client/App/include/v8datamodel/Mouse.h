@@ -39,7 +39,7 @@ namespace RBX
 		{
 		}
 
-		void update(const UIEvent&);
+		void update(const UIEvent& uiEvent);
 		G3D::CoordinateFrame getHit() const;
 		G3D::CoordinateFrame getOrigin() const;
 		PartInstance* getTarget() const;

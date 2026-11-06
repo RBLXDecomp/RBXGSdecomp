@@ -24,7 +24,7 @@ namespace RBX
 		static Reflection::BoundProp<bool, 1> prop_AllowTeamChangeOnTouch;
 
 	private:
-		void onEvent_spawnerTouched(boost::shared_ptr<Instance>);
+		void onEvent_spawnerTouched(boost::shared_ptr<Instance> other);
 	public:
 		SpawnLocation();
 	public:

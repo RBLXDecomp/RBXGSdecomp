@@ -25,11 +25,13 @@ namespace RBX
 
         public:
             Item(const char* name)
-				: Base(name)
+				: Base(name),
+				  val(0.0)
 			{
 			}
 
             Item()
+				: val(0.0)
 			{
 			}
 
