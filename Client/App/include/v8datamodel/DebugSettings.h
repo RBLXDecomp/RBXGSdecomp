@@ -26,8 +26,8 @@ namespace RBX
         ErrorReporting errorReporting;
     
     public:
-        static Reflection::BoundProp<bool, true> prop_stackTracingEnabled;
-        static Reflection::BoundProp<bool, true> prop_ioEnabled;
+        static Reflection::BoundProp<bool, 1> prop_stackTracingEnabled;
+        static Reflection::BoundProp<bool, 1> prop_ioEnabled;
     
     public:
         DebugSettings();

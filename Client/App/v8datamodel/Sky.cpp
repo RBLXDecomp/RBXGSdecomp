@@ -22,6 +22,15 @@ namespace RBX
 {
 	char* sSky = "Sky";
 
+	Reflection::BoundProp<int, 1> Sky::prop_StarCount("StarCount", "Appearance", &Sky::numStars, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<TextureId, 1> Sky::prop_SkyUp("SkyboxUp", "Appearance", &Sky::skyUp, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<TextureId, 1> Sky::prop_SkyLf("SkyboxLf", "Appearance", &Sky::skyLf, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<TextureId, 1> Sky::prop_SkyRt("SkyboxRt", "Appearance", &Sky::skyRt, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<TextureId, 1> Sky::prop_SkyBk("SkyboxBk", "Appearance", &Sky::skyBk, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<TextureId, 1> Sky::prop_SkyFt("SkyboxFt", "Appearance", &Sky::skyFt, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<TextureId, 1> Sky::prop_SkyDn("SkyboxDn", "Appearance", &Sky::skyDn, Reflection::PropertyDescriptor::STANDARD);
+	Reflection::BoundProp<bool, 1> Sky::prop_CelestialBodiesShown("CelestialBodiesShown", "Appearance", &Sky::drawCelestialBodies, Reflection::PropertyDescriptor::STANDARD);
+
 	Sky::Sky()
 		: drawCelestialBodies(true),
 		  numStars(3000)

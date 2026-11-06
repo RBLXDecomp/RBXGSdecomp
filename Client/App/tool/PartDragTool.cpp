@@ -43,6 +43,29 @@ namespace RBX
 		}
 	}
 
+	void PartDragTool::onMouseMove(const UIEvent& uiEvent)
+	{
+		RBXASSERT(captured());
+
+		if (!dragging && megaDragger->mousePartAlive())
+		{
+			if ((G3D::Vector2(uiEvent.mousePosition) - downPoint).length() > 4.0f)
+			{
+				dragging = true;
+
+				megaDragger->startDragging();
+				runDragger->init(workspace, megaDragger->getMousePart(), hitWorld);
+			}
+		}
+
+		if (dragging && megaDragger->mousePartAlive())
+		{
+			PartInstance* unused = megaDragger->getMousePart().lock().get();
+		}
+
+		onMouseIdle(uiEvent);
+	}
+
 	void PartDragTool::onMouseDelta(const UIEvent& uiEvent)
 	{
 		RBXASSERT(captured());

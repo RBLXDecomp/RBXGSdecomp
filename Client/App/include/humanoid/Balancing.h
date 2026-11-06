@@ -14,11 +14,11 @@ namespace RBX
 		G3D::Vector3 floorTouchInWorld;
 
 	private:
-		PartInstance* findFloor(bool);
+		PartInstance* findFloor(bool existingFloor);
 		PartInstance* tryFloor(const G3D::Ray& ray, float maxDistance);
 		void balance(const float, const G3D::Vector3&);
 	protected:
-		virtual void onComputeForce(const float);
+		virtual void onComputeForce(const float dt);
 		virtual Humanoid::State* onStep(const float stepDt, Controller& controller);
 		virtual HitTestFilter::Result filterResult(const Primitive* testMe) const;
 		G3D::Vector3 getYAxis() const;

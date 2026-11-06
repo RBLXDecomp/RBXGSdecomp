@@ -75,4 +75,97 @@ namespace RBX
 
 		return result;
 	}
+
+	// 99.91% match
+	void Balancing::onComputeForce(const float dt)
+	{
+		Body* torsoBody = humanoid->getTorsoBody();
+		if (!torsoBody)
+			return;
+
+		Body* rootBody = humanoid->getRootBody();
+		if (!rootBody)
+			return;
+
+		G3D::Vector3 yAxisWorld = torsoBody->getCoordinateFrame().upVector();
+
+		G3D::Vector3 tiltWorld = G3D::Vector3::unitY().cross(yAxisWorld);
+		G3D::Vector3 angVelWorld = torsoBody->getVelocity().rotational;
+		G3D::Vector3 oldTorqueWorld = rootBody->getBranchTorque();
+
+		const G3D::CoordinateFrame& cfRoot = rootBody->getCoordinateFrame();
+
+		G3D::Vector3 tiltRoot = cfRoot.vectorToObjectSpace(tiltWorld);
+		G3D::Vector3 angVelRoot = cfRoot.vectorToObjectSpace(angVelWorld);
+		G3D::Vector3 oldTorqueRoot = cfRoot.vectorToObjectSpace(oldTorqueWorld);
+
+		RBXASSERT(!Math::isNanInfDenormVector3(angVelRoot));
+
+		G3D::Vector3 addedTorque = -kP * rootBody->getBranchIBody() * tiltRoot;
+		G3D::Vector3 torqueRoot = oldTorqueRoot + addedTorque;
+
+		G3D::Vector3 branchIBody = Math::toDiagonal(rootBody->getBranchIBody()); // could be branchIBodyV3, though it aint inlining here
+
+		for (int i = 0; i < 3; i += 2)
+		{
+			if (fabs(addedTorque[i] - oldTorqueRoot[i]) < branchIBody[i] * 4000.0f)
+			{
+				torqueRoot[i] = addedTorque[i];
+			}
+		}
+
+		G3D::Vector3 desiredTorque = cfRoot.vectorToWorldSpace(torqueRoot - branchIBody * kD * angVelRoot) - oldTorqueWorld;
+		rootBody->accumulateTorque(desiredTorque);
+	}
+
+	// 99.79% match
+	PartInstance* Balancing::findFloor(bool existingFloor)
+	{
+		Body* torsoBody = humanoid->getTorsoBody();
+		if (torsoBody)
+		{
+			const G3D::CoordinateFrame& cframe = humanoid->getTorsoPrimitive()->getCoordinateFrame();
+			G3D::Vector3 torsoSize = humanoid->getTorsoPrimitive()->getGridSize() * 0.5f;
+
+			float maxDistance = 1.0f;
+			const float hysteresis = existingFloor ? 1.5f : 1.1f;
+
+			if (humanoid->getLeftLegPrimitive())
+			{
+				maxDistance = humanoid->getLeftLegPrimitive()->getGridSize().y * hysteresis + 1.0f;
+			}
+			else if (humanoid->getRightLegPrimitive())
+			{
+				maxDistance = humanoid->getRightLegPrimitive()->getGridSize().y * hysteresis + 1.0f;
+			}
+
+			G3D::Vector3 offset(0.0f, -torsoSize.y, 0.0f);
+			G3D::Vector3 pointOnTorso = cframe.pointToWorldSpace(offset);
+			G3D::Ray tryRay = G3D::Ray::fromOriginAndDirection(pointOnTorso, -G3D::Vector3::unitY());
+
+			PartInstance* part = tryFloor(tryRay, maxDistance);
+			if (part)
+				return part;
+
+			offset = G3D::Vector3(0.0f, -torsoSize.y, 0.0f);
+
+			for (int x = -1; x <= 1; x += 2)
+			{
+				offset.x = torsoSize.x * x;
+
+				for (int z = -1; z <= 1; z += 2)
+				{
+					offset.z = torsoSize.z * z;
+					pointOnTorso = cframe.pointToWorldSpace(offset);
+					tryRay = G3D::Ray::fromOriginAndDirection(pointOnTorso, -G3D::Vector3::unitY());
+
+					PartInstance* part = tryFloor(tryRay, maxDistance);
+					if (part)
+						return part;
+				}
+			}
+		}
+
+		return NULL;
+	}
 }
