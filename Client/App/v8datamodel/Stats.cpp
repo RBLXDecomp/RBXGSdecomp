@@ -11,7 +11,7 @@ namespace RBX
 		char* sStatsItem = "Item";
 		char* sStats = "Stats";
 
-		void Item::formatMem(unsigned bytes)
+		void Item::formatMem(size_t bytes)
 		{
 			setValue(bytes, Log::formatMem(bytes));
 		}
@@ -46,7 +46,7 @@ namespace RBX
 		}
 
 		template<>
-		void Item::formatValue<unsigned>(const unsigned& value)
+		void Item::formatValue<size_t>(const size_t& value)
 		{
 			formatValue((double)value, "%d", value);
 		}
@@ -67,7 +67,7 @@ namespace RBX
 			return item.get();
 		}
 
-		Item* Item::createBoundMemChildItem(const char* name, const unsigned& v)
+		Item* Item::createBoundMemChildItem(const char* name, const size_t& v)
 		{
 			boost::shared_ptr<Item> item = Creatable::create<TypedMemItem>(&v);
 			item->setName(name);

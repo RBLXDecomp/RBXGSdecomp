@@ -11,6 +11,8 @@ namespace FMOD
 	class System;
 }
 
+class SoundServiceStatsItem;
+
 namespace RBX
 {
 	enum SoundType
@@ -94,7 +96,7 @@ namespace RBX
 			const bool is3D;
 
 		public:
-			Sound(FMOD::System*, SoundId, bool);
+			Sound(FMOD::System* system, SoundId id, bool is3D);
 			~Sound();
 			FMOD::Sound* get();
 			void detach();
@@ -123,29 +125,32 @@ namespace RBX
 		public:
 			SoundChannel();
 			virtual ~SoundChannel();
-			void setSoundId(SoundId);
+			void setSoundId(SoundId value);
 			SoundId getSoundId() const;
 			float getVolume() const;
-			void setVolume(float);
+			void setVolume(float value);
 			bool getLooped() const;
-			void setLooped(bool);
+			void setLooped(bool value);
 			int getPlayCount() const;
-			void setPlayCount(int);
+			void setPlayCount(int value);
 			void play();
 			void pause();
 			void stop();
 			bool isPlaying() const;
 			bool isPaused() const;
 		protected:
-			virtual bool askSetParent(const Instance*) const;
-			virtual void onAncestorChanged(const AncestorChanged&);
-			virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
-			virtual void onEvent(const RunService*, Heartbeat);
+			virtual bool askSetParent(const Instance* instance) const
+			{
+				return true;
+			}
+			virtual void onAncestorChanged(const AncestorChanged& event);
+			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
+			virtual void onEvent(const RunService* source, Heartbeat event);
 		private:
 			void updateListenState();
 			void updateLooped();
-			void update3D(FMOD::Channel*);
-			void playSound(Instance*);
+			void update3D(FMOD::Channel* channel);
+			void playSound(Instance* context);
 			void playSound();
 			void releaseChannel();
 		public:
@@ -158,53 +163,60 @@ namespace RBX
 							 public Service,
 							 public Listener<RunService, Heartbeat>
 		{
+			friend class SoundChannel;
+			friend class SoundServiceStatsItem;
+
+		private:
+			typedef std::map<SoundType, boost::shared_ptr<SoundChannel>> StockSounds;
+			typedef std::map<SoundId, boost::shared_ptr<Sound>> LoadedSounds;
+
 		private:
 			FMOD::System* system;
-			unsigned fmod_version;
-			std::map<SoundType, boost::shared_ptr<SoundChannel>> stockSounds;
+			unsigned int fmod_version;
+			StockSounds stockSounds;
 			float dopplerscale;
 			float distancefactor;
 			float rolloffscale;
 			boost::shared_ptr<Instance> statsItem;
 			ReverbType ambientReverb;
 			double nextGarbageCollectTime;
-			std::map<SoundId, boost::shared_ptr<Sound>> loadedSounds;
-			std::map<SoundId, boost::shared_ptr<Sound>> loaded3DSounds;
+			LoadedSounds loadedSounds;
+			LoadedSounds loaded3DSounds;
 			bool mySoundDisabled;
 		public:
-			bool soundDisabled;
-			Reflection::BoundProp<float, 1> prop_dopplerscale;
-			Reflection::BoundProp<float, 1> prop_distancefactor;
-			Reflection::BoundProp<float, 1> prop_rolloffscale;
-			Reflection::EnumPropDescriptor<SoundService, ReverbType> prop_AmbientReverb;
+			static bool soundDisabled;
+			static Reflection::BoundProp<float, 1> prop_dopplerscale;
+			static Reflection::BoundProp<float, 1> prop_distancefactor;
+			static Reflection::BoundProp<float, 1> prop_rolloffscale;
+			static Reflection::EnumPropDescriptor<SoundService, ReverbType> prop_AmbientReverb;
 
 		public:
-			boost::shared_ptr<Sound> loadSound(SoundId, bool);
+			boost::shared_ptr<Sound> loadSound(SoundId id, bool is3D);
 			bool enabled() const;
 			void disable();
 			SoundService();
 			virtual ~SoundService();
-			void playSound(SoundType);
-			unsigned getfmod_version() const;
+			void playSound(SoundType soundType);
+			unsigned int getfmod_version() const;
 			ReverbType getAmbientReverb() const;
-			void setAmbientReverb(const ReverbType&);
+			void setAmbientReverb(const ReverbType& value);
 		private:
 			void openFmod();
 			void closeFmod();
 			void garbageCollectSounds();
 		protected:
-			virtual void onEvent(const RunService*, Heartbeat);
-			virtual void onServiceProvider(const ServiceProvider*, const ServiceProvider*);
+			virtual void onEvent(const RunService* source, Heartbeat event);
+			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 		private:
 			void loadStockSounds();
-			void loadStockSounds(SoundType, std::string);
+			void loadStockSound(SoundType soundType, std::string file);
 			void update3DSettings();
-			void on3DSettingChanged(const Reflection::PropertyDescriptor&);
+			void on3DSettingChanged(const Reflection::PropertyDescriptor& property);
 			void updateAmbientReverb();
 
 		private:
-			static void getSoundStats(const std::map<SoundId, boost::shared_ptr<Sound>>&, size_t, size_t);
-			static void gcSounds(std::map<SoundId, boost::shared_ptr<Sound>>&);
+			static void getSoundStats(const LoadedSounds& sounds, size_t& numSounds, size_t& numUnusedSounds);
+			static void gcSounds(LoadedSounds& sounds);
 		};
 	}
 
