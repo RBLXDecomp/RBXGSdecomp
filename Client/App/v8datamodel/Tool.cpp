@@ -27,6 +27,8 @@ namespace RBX
 	static Reflection::SignalDesc<Tool, void(void)> event_Activated("Activated");
 	static Reflection::SignalDesc<Tool, void(void)> event_Deactivated("Deactivated");
 
+	Reflection::BoundProp<bool, 1> Tool::prop_Enabled("Enabled", "State", &Tool::enabled, Reflection::PropertyDescriptor::STANDARD);
+
 	Tool::Tool()
 		: backendToolState(NOTHING),
 		  frontendActivationState(0),

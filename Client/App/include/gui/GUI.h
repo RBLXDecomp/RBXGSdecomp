@@ -268,7 +268,10 @@ namespace RBX
 	protected:
 		void init(const Layout& layout);
 	public:
-		RelativePanel(const Layout&);
+		RelativePanel(const Layout& layout)
+		{
+			init(layout);
+		}
 		RelativePanel()
 		{
 			init(Layout());

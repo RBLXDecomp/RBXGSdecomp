@@ -492,6 +492,35 @@ namespace RBX
 		return size;
 	}
 
+	G3D::Vector2 TopMenuBar::getChildPosition(const GuiItem* child) const
+	{
+		G3D::Vector2 pos = getPosition();
+		G3D::Vector2 mySize = getSize();
+
+		for (size_t i = 0; i < numChildren(); i++)
+		{
+			if (const GuiItem* guiItem = dynamic_cast<const GuiItem*>(getChild(i)))
+			{
+				G3D::Vector2 myChildSize = guiItem->getSize();
+
+				if (guiItem == child)
+				{
+					int index = (layoutStyle + 1) % 2;
+					pos[index] += (mySize[index] - myChildSize[index]) * 0.5f;
+					return pos;
+				}
+
+				int style = layoutStyle;
+				if (style >= Layout::HORIZONTAL && style <= Layout::VERTICAL)
+				{
+					pos[layoutStyle] += guiItem->getSize()[layoutStyle];
+				}
+			}
+		}
+
+		return pos;
+	}
+
 	void TopMenuBar::render2d(Adorn* adorn)
 	{
 		if (isVisible())

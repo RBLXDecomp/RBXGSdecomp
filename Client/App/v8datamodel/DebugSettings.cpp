@@ -38,6 +38,9 @@ static RBX::Reflection::PropDescriptor<RBX::DebugSettings, std::string> prop_res
 
 RBX::Reflection::BoundProp<bool, 1> prop_SoundWarnings("SoundWarnings", "Errors", &RBX::DebugSettings::soundWarnings, RBX::Reflection::PropertyDescriptor::STANDARD);
 
+RBX::Reflection::BoundProp<bool, 1> RBX::DebugSettings::prop_stackTracingEnabled("stackTracingEnabled", "Scripts", &RBX::DebugSettings::stackTracingEnabled, RBX::Reflection::PropertyDescriptor::STANDARD);
+RBX::Reflection::BoundProp<bool, 1> RBX::DebugSettings::prop_ioEnabled("ioEnabled", "Scripts", &RBX::DebugSettings::ioEnabled, RBX::Reflection::PropertyDescriptor::STREAMING);
+
 namespace RBX
 {
 	const char* const sDebugSettings = "DebugSettings";

@@ -8,6 +8,8 @@ namespace RBX
 	static Reflection::PropDescriptor<Team, BrickColor> prop_Color("TeamColor", "Data", &Team::getTeamColor, &Team::setTeamColor, Reflection::PropertyDescriptor::STANDARD);
 	static Reflection::PropDescriptor<Team, bool> prop_AutoAssignable("AutoAssignable", "Data", &Team::getAutoAssignable, &Team::setAutoAssignable, Reflection::PropertyDescriptor::STANDARD);
 
+	Reflection::BoundProp<bool, 1> Team::prop_AutoColorCharacters("AutoColorCharacters", "Data", &Team::autoColorCharacters, Reflection::PropertyDescriptor::STANDARD);
+
 	Team::Team()
 		: score(0),
 		  autoAssignable(true),
