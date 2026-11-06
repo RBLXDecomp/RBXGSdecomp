@@ -80,23 +80,6 @@ static void releaseSound(const std::pair<RBX::Soundscape::SoundId, boost::shared
 
 namespace RBX
 {
-	template<>
-	class StringConverter<Soundscape::SoundId>
-	{
-	public:
-		static std::string convertToString(const Soundscape::SoundId& value)
-		{
-			return value.toString();
-		}
-
-		// TODO: does not match
-		static bool convertToValue(const std::string& text, Soundscape::SoundId& value)
-		{
-			value = Soundscape::SoundId(text);
-			return true;
-		}
-	};
-
 	namespace Soundscape
 	{
 		Reflection::BoundProp<float, 1> SoundService::prop_dopplerscale("DopplerScale", "Data", &SoundService::dopplerscale, &SoundService::on3DSettingChanged, Reflection::PropertyDescriptor::LEGACY);
@@ -947,6 +930,101 @@ namespace RBX
 		Soundscape::SoundChannel::classDescriptor();
 		StockSound::classDescriptor();
 		Soundscape::SoundService::classDescriptor();
+	}
+
+	template<>
+	static std::string StringConverter<Soundscape::SoundId>::convertToString(const Soundscape::SoundId& value)
+	{
+		return value.toString();
+	}
+
+	template<>
+	static bool StringConverter<Soundscape::SoundId>::convertToValue(const std::string& text, Soundscape::SoundId& value)
+	{
+		value = Soundscape::SoundId(text);
+		return true;
+	}
+
+	namespace Reflection
+	{
+		EnumDesc<Soundscape::ReverbType>::EnumDesc()
+			: EnumDescriptor("ReverbType", typeid(Soundscape::ReverbType))
+		{
+			addPair(Soundscape::NoReverb, "NoReverb");
+			addPair(Soundscape::GenericReverb, "GenericReverb");
+			addPair(Soundscape::PaddedCell, "PaddedCell");
+			addPair(Soundscape::Room, "Room");
+			addPair(Soundscape::Bathroom, "Bathroom");
+			addPair(Soundscape::LivingRoom, "LivingRoom");
+			addPair(Soundscape::StoneRoom, "StoneRoom");
+			addPair(Soundscape::Auditorium, "Auditorium");
+			addPair(Soundscape::ConcertHall, "ConcertHall");
+			addPair(Soundscape::Cave, "Cave");
+			addPair(Soundscape::Arena, "Arena");
+			addPair(Soundscape::Hangar, "Hangar");
+			addPair(Soundscape::CarpettedHallway, "CarpettedHallway");
+			addPair(Soundscape::Hallway, "Hallway");
+			addPair(Soundscape::StoneCorridor, "StoneCorridor");
+			addPair(Soundscape::Alley, "Alley");
+			addPair(Soundscape::Forest, "Forest");
+			addPair(Soundscape::City, "City");
+			addPair(Soundscape::Mountains, "Mountains");
+			addPair(Soundscape::Quarry, "Quarry");
+			addPair(Soundscape::Plain, "Plain");
+			addPair(Soundscape::ParkingLot, "ParkingLot");
+			addPair(Soundscape::SewerPipe, "SewerPipe");
+			addPair(Soundscape::UnderWater, "UnderWater");
+		}
+
+		template<>
+		const Type& Type::singleton<Soundscape::SoundId>()
+		{
+			return Type::singleton<ContentId>();
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<Soundscape::SoundId>::hasStringValue() const
+		{
+			return true;
+		}
+
+		template<>
+		std::string TypedPropertyDescriptor<Soundscape::SoundId>::getStringValue(const DescribedBase* instance) const
+		{
+			return StringConverter<Soundscape::SoundId>::convertToString(getValue(instance));
+		}
+
+		template<>
+		bool TypedPropertyDescriptor<Soundscape::SoundId>::setStringValue(DescribedBase* instance, const std::string& text) const
+		{
+			Soundscape::SoundId value;
+			if (StringConverter<Soundscape::SoundId>::convertToValue(text, value))
+			{
+				setValue(instance, value);
+				return true;
+			}
+
+			return false;
+		}
+
+		template<>
+		void TypedPropertyDescriptor<Soundscape::SoundId>::readValue(DescribedBase* instance, const XmlElement* element, IReferenceBinder& binder) const
+		{
+			if (!element->isXsiNil())
+			{
+				ContentId value;
+				if (element->getValue(value))
+				{
+					setValue(instance, value);
+				}
+			}
+		}
+
+		template<>
+		void TypedPropertyDescriptor<Soundscape::SoundId>::writeValue(const DescribedBase* instance, XmlElement* element) const
+		{
+			element->setValue(Soundscape::SoundId(getValue(instance)));
+		}
 	}
 }
 

@@ -495,6 +495,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\SoundWorld.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\standardout.h"
 					>
 				</File>
@@ -1401,6 +1405,10 @@
 			</File>
 			<File
 				RelativePath=".\util\Sound.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\SoundWorld.cpp"
 				>
 			</File>
 			<File
