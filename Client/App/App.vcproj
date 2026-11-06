@@ -281,7 +281,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="G3D.lib GLG3D.lib SDL.lib SDLmain.lib zlib.lib wininet.lib"
+				AdditionalDependencies="G3D.lib GLG3D.lib SDL.lib SDLmain.lib zlib.lib wininet.lib ws2_32.lib fmodex_vc.lib setupapi.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -310,6 +310,22 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{B28C1238-6941-4DCB-8494-EF5D80977422}"
+			RelativePathToProject=".\Client\Rendering\AppDraw\AppDraw.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{A75B0993-B58E-42C2-AA1E-A7F91B39C96B}"
+			RelativePathToProject=".\Client\Rendering\g3d\GLG3D.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{E928D86E-80C7-476A-80C8-B3611300207A}"
+			RelativePathToProject=".\Client\Rendering\g3d\graphics3D.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{DFFF620C-831C-4E16-B5C4-3942A22D453B}"
+			RelativePathToProject=".\Client\Network\Network.vcproj"
+		/>
 	</References>
 	<Files>
 		<Filter
