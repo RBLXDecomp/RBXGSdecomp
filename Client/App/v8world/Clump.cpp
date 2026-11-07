@@ -39,35 +39,20 @@ namespace RBX
 
 	SpanLink SpanLink::bestSpanLink(const SpanLink& s0, const SpanLink& s1)
 	{
-		Primitive* p0 = s0.parent;
-		Primitive* p1 = s1.parent;
-
-		if (p0)
+		if (s0.parent && s1.parent)
 		{
-			if (p1)
+			if (s0.parent->getClumpDepth() != s1.parent->getClumpDepth())
 			{
-				int p0cd = p0->getClumpDepth();
-				int p1cd = p1->getClumpDepth();
-				if (p0cd != p1cd)
-				{
-					return p0cd > p1cd ? s0 : s1;
-				}
-				else
-				{
-					float p0ps = p0->getPlanarSize();
-					float p1ps = p1->getPlanarSize();
-
-					return (p0ps > p1ps) ? s0 : s1;
-				}
+				return (s0.parent->getClumpDepth() > s1.parent->getClumpDepth()) ? s0 : s1;
 			}
 			else
 			{
-				return s0;
+				return (s0.parent->getPlanarSize() > s1.parent->getPlanarSize()) ? s0 : s1;
 			}
 		}
 		else
 		{
-			return s1;
+			return (s0.parent) ? s0 : s1;
 		}
 	}
 
