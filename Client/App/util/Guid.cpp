@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE
+#define NOMINMAX
 
 #include "util/Guid.h"
 #include "util/Debug.h"
@@ -66,8 +67,7 @@ namespace RBX
 		if (scopeLength > 0)
 		{
 			std::string scopeName = this->scope->name;
-			int size = std::min<int>(3, (int)scopeName.size());
-			scopeName = scopeName.substr(size);
+			scopeName = scopeName.substr(std::min((size_t)3, scopeName.size()), std::min(scopeLength, 32));
 			sprintf(result, "%s_%d", scopeName.c_str(), this->index);
 		}
 		else
@@ -80,28 +80,17 @@ namespace RBX
 
 	bool Guid::Data::operator <(const Data& other) const
 	{
-		if (this->scope != other.scope)
+		switch (this->scope->compare(*other.scope))
 		{
-			int comparison = other.scope->name.compare(this->scope->name);
-
-			switch (comparison)
-			{
-			case -1:
-				return true;
-			case 0:
-				return this->index < other.index;
-			default:
-				if (comparison != 1)
-				{
-					RBXASSERT(0);
-				}
-
-				return false;
-			}
-		}
-		else
-		{
+		case -1:
+			return true;
+		case 0:
 			return this->index < other.index;
+		case 1:
+			return false;
+		default:
+			RBXASSERT(0);
+			return false;
 		}
 	}
 }

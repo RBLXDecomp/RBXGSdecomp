@@ -173,44 +173,30 @@ namespace RBX
 				size_t posStart = 0;
 				size_t posEnd = descriptors.size();
 
-				if (posEnd)
+				if (posEnd != 0)
 				{
 					size_t i;
-					bool found = false;
 
 					do
 					{
 						i = (posStart+posEnd)/2;
 
-						const Name& descName = descriptors[i]->name;
-
-						if (name == descName)
-						{
-							found = true;
-							break;
-						}
-						
-						int compare = name.compare(descName);
+						int compare = name.compare(descriptors[i]->name);
 
 						if (compare < 0)
 						{
 							posEnd = i;	
 						}
+						else if (compare > 0)
+						{
+							posStart = i+1;
+						}
 						else
 						{
-							if (compare <= 0)
-							{
-								found = true;
-								break;
-							}
-
-							posStart = i+1;
+							return descriptors.begin()+i;
 						}
 					}
 					while (posStart < posEnd);
-
-					if (found)
-						return descriptors.begin()+i;
 				}
 
 				return descriptors.end();

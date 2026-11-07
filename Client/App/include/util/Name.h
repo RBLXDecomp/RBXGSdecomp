@@ -7,11 +7,14 @@
 
 namespace RBX
 {
-	class Name : boost::noncopyable
+	class Name : public boost::noncopyable
 	{
 	private:
-		// TODO: NamMap is a new class, not a typedef
-		typedef std::map<std::string, Name*> NamMap;
+		class NamMap : public std::map<std::string, Name*>
+		{
+		public:
+			~NamMap();
+		};
 
 	private:
 		int dictionaryIndex;
@@ -21,11 +24,23 @@ namespace RBX
 	public:
 		int getDictionaryIndex() const { return dictionaryIndex; }
 
-		bool empty() const { return &getNullName() == this; }
-		const std::string& toString() const { return name; } // guess
-		const char* c_str() const { return name.c_str(); } // guess
+		bool empty() const 
+		{ 
+			return &getNullName() == this; 
+		}
+		const std::string& toString() const 
+		{ 
+			return name; 
+		}
+		const char* c_str() const 
+		{ 
+			return name.c_str(); 
+		}
 		int compare(const Name& other) const
 		{
+			if (this == &other)
+				return 0;
+
 			return toString().compare(other.toString());
 		}
 
@@ -50,7 +65,10 @@ namespace RBX
 			return this == &other;
 		}
 		bool operator !=(const char* name) const;
-		bool operator !=(const std::string& name) const;
+		bool operator !=(const std::string& name) const
+		{
+			return this->name.compare(name) != 0;
+		}
 		bool operator !=(const Name& other) const
 		{
 			return this != &other;
