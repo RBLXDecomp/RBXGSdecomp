@@ -56,6 +56,12 @@ int Color3Bridge::on_index(const G3D::Color3& object, const char* name, lua_Stat
     throw std::runtime_error(G3D::format("%s is not a valid member", name));
 }
 
+template<>
+void Color3Bridge::on_newindex(G3D::Color3& object, const char* name, lua_State* L)
+{
+    throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
+}
+
 const luaL_Reg Vector3Bridge::classLibrary[] = 
 {
     {"new", Vector3Bridge::newVector3},
@@ -207,6 +213,12 @@ int Vector3Bridge::on_index(const G3D::Vector3& object, const char* name, lua_St
     }
     
     throw std::runtime_error(G3D::format("%s is not a valid member", name));
+}
+
+template<>
+void Vector3Bridge::on_newindex(G3D::Vector3& object, const char* name, lua_State* L)
+{
+    throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
 }
 
 static int pushRed(lua_State* L)
@@ -373,6 +385,12 @@ int BrickColorBridge::on_index(const BrickColor& object, const char* name, lua_S
     }
 
     throw std::runtime_error(G3D::format("%s is not a valid member", name));
+}
+
+template<>
+void BrickColorBridge::on_newindex(BrickColor& object, const char* name, lua_State* L)
+{
+    throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
 }
 
 const luaL_Reg CoordinateFrameBridge::classLibrary[] =
@@ -755,4 +773,10 @@ int CoordinateFrameBridge::on_index(const G3D::CoordinateFrame& object, const ch
     }
 
     throw std::runtime_error(G3D::format("%s is not a valid member", name));
+}
+
+template<>
+void CoordinateFrameBridge::on_newindex(G3D::CoordinateFrame& object, const char* name, lua_State* L)
+{
+    throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
 }

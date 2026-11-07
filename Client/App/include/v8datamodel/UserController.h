@@ -70,7 +70,7 @@ namespace RBX
 		{
 		}
 
-		virtual float getValue(Controller::InputType) const;
+		virtual float getValue(Controller::InputType inputType) const;
 
 		virtual Controller::ControllerType getControllerType() const
 		{
@@ -86,7 +86,7 @@ namespace RBX
 		{
 		}
 
-		virtual float getValue(Controller::InputType) const;
+		virtual float getValue(Controller::InputType inputType) const;
 
 		virtual Controller::ControllerType getControllerType() const
 		{

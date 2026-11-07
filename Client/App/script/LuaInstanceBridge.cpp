@@ -53,7 +53,7 @@ int ObjectBridge::newInstance(lua_State* thread)
     return 1;
 }
 
-// TODO: 98.80% (functional match)
+// TODO: 99.73% (functional match)
 static void pushLuaValue(ConstProperty p, lua_State* L)
 {
     // (0024BC)  S_BPREL32: [FFFFFF40], Type:             0x3639, objects
@@ -263,7 +263,7 @@ int ObjectBridge::on_index(const boost::shared_ptr<DescribedBase>& object, const
     throw std::runtime_error(G3D::format("%s is not a valid member of %s", name, instance->getClassName().c_str()));
 }
 
-// TODO: 94.38% (functional match)
+// TODO: 95.59% (functional match)
 static void assignLuaValue(Property p, lua_State* L, int index)
 {
     // (002DA8)  S_BPREL32: [FFFFFF60], Type:             0x238B, value
@@ -369,8 +369,7 @@ static void assignLuaValue(Property p, lua_State* L, int index)
     throw std::runtime_error(G3D::format("Unable to set property %s, type %s", descriptor.name.c_str(), descriptor.type.name.c_str()));
 }
 
-// TODO: 91.56%
-// a lot of stack space gets wasted for some reason
+// TODO: 97.00%
 template <>
 void ObjectBridge::on_newindex(boost::shared_ptr<DescribedBase>& object, const char* name, lua_State* L)
 {
@@ -380,13 +379,12 @@ void ObjectBridge::on_newindex(boost::shared_ptr<DescribedBase>& object, const c
     if (!object)
         throw std::runtime_error("The object has been deleted");
 
-    DescribedBase* objectPtr = object.get();
     PropertyIterator iter = object->findProperty(Name::lookup(name));
     if (iter != object->properties_end())
     {
         if ((*iter).getDescriptor() == Instance::propParent)
         {
-            Instance* instance = dynamic_cast<Instance*>(objectPtr);
+            Instance* instance = dynamic_cast<Instance*>(object.get());
 
             if (!instance)
                 throw std::runtime_error(G3D::format("%s is not a valid member of %s", name, object->classDescriptor().name.c_str()));
@@ -405,11 +403,11 @@ void ObjectBridge::on_newindex(boost::shared_ptr<DescribedBase>& object, const c
         {
             assignLuaValue(*iter, L, 3);    
         }
-
-        return;
     }
-
-    throw std::runtime_error(G3D::format("%s is not a valid member of %s", name, object->classDescriptor().name.c_str()));
+	else
+	{
+		throw std::runtime_error(G3D::format("%s is not a valid member of %s", name, object->classDescriptor().name.c_str()));
+	}
 }
 
 int ObjectBridge::callMemberFunction(lua_State* L)
