@@ -406,3 +406,6 @@ FodyWeavers.xsd
 
 # objdiff stuff
 objdiff.json
+
+orig/*
+!orig/.gitkeep
