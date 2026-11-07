@@ -112,10 +112,7 @@ namespace RBX
                 on_newindex(object, name, L);
                 return 0;
             }
-            static void on_newindex(T& object, const char* name, lua_State* L)
-            {
-                throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
-            }
+            static void on_newindex(T& object, const char* name, lua_State* L);
             static int on_tostring(lua_State* L)
             {
                 T& object = getObject(L, 1);

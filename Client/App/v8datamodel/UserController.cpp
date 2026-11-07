@@ -46,6 +46,156 @@ namespace RBX
 		}
 	}
 
+	float KeyboardPrimaryController::getValue(Controller::InputType inputType) const
+	{
+		if (!getHardwareDevice())
+			return 0.0f;
+
+		switch (inputType)
+		{
+		case Controller::UP_DOWN_INPUT:
+			return getHardwareDevice()->keyDown(SDLK_SPACE) ? 1.0f : 0.0f;
+
+		case Controller::BUTTON_1_INPUT:
+			return getHardwareDevice()->keyDown(SDLK_1) ? 1.0f : 0.0f;
+
+		case Controller::BUTTON_2_INPUT:
+			return getHardwareDevice()->keyDown(SDLK_2) ? 1.0f : 0.0f;
+
+		case Controller::BUTTON_3_INPUT:
+			return getHardwareDevice()->keyDown(SDLK_3) ? 1.0f : 0.0f;
+
+		case Controller::BUTTON_4_INPUT:
+			return getHardwareDevice()->keyDown(SDLK_4) ? 1.0f : 0.0f;
+
+		case Controller::BUTTON_3_4_INPUT:
+			if (getHardwareDevice()->keyDown(SDLK_3))
+				return 1.0f;
+
+			if (getHardwareDevice()->keyDown(SDLK_4))
+				return -1.0f;
+
+			return 0.0f;
+		}
+
+		if (getHardwareDevice()->altKeyDown())
+			return 0.0f;
+
+		if (getHardwareDevice()->ctrlKeyDown())
+			return 0.0f;
+
+		bool F = getHardwareDevice()->keyDown(SDLK_u);
+		bool B = getHardwareDevice()->keyDown(SDLK_j);
+		bool L = getHardwareDevice()->keyDown(SDLK_h);
+		bool R = getHardwareDevice()->keyDown(SDLK_k);
+
+		switch (inputType)
+		{
+		case Controller::RIGHT_LEFT_INPUT:
+			if (L)
+				return 1.0f;
+
+			if (R)
+				return -1.0f;
+
+			return 0.0f;
+
+		case Controller::BACK_FORWARD_INPUT:
+			if (F)
+				return 1.0f;
+
+			if (B)
+				return -1.0f;
+
+			return 0.0f;
+
+		case Controller::LEFT_TRACK_INPUT:
+			if ((F && !L) || (R && !B) || (F && R))
+				return 1.0f;
+
+			if ((B && !R) || (L && !F) || (B && L))
+				return -1.0f;
+			
+			return 0.0f;
+
+		case Controller::RIGHT_TRACK_INPUT:
+			if ((F && !R) || (L && !B) || (F && L))
+				return 1.0f;
+
+			if ((B && !L) || (R && !F) || (B && R))
+				return -1.0f;
+			
+			return 0.0f;
+		}
+
+		return 0.0f;
+	}
+
+	float KeyboardSecondaryController::getValue(Controller::InputType inputType) const
+	{
+		if (!getHardwareDevice())
+			return 0.0f;
+
+		if (inputType != Controller::UP_DOWN_INPUT)
+		{
+			if (getHardwareDevice()->altKeyDown())
+				return 0.0f;
+
+			if (getHardwareDevice()->ctrlKeyDown())
+				return 0.0f;
+
+			bool F = getHardwareDevice()->keyDown(SDLK_w);
+			bool B = getHardwareDevice()->keyDown(SDLK_s);
+			bool L = getHardwareDevice()->keyDown(SDLK_a);
+			bool R = getHardwareDevice()->keyDown(SDLK_d);
+
+			switch (inputType)
+			{
+			case Controller::RIGHT_LEFT_INPUT:
+				if (L)
+					return 1.0f;
+
+				if (R)
+					return -1.0f;
+
+				return 0.0f;
+
+			case Controller::BACK_FORWARD_INPUT:
+				if (F)
+					return 1.0f;
+
+				if (B)
+					return -1.0f;
+
+				return 0.0f;
+
+			case Controller::LEFT_TRACK_INPUT:
+				if ((F && !L) || (R && !B) || (F && R))
+					return 1.0f;
+
+				if ((B && !R) || (L && !F) || (B && L))
+					return -1.0f;
+				
+				return 0.0f;
+
+			case Controller::RIGHT_TRACK_INPUT:
+				if ((F && !R) || (L && !B) || (F && L))
+					return 1.0f;
+
+				if ((B && !L) || (R && !F) || (B && R))
+					return -1.0f;
+				
+				return 0.0f;
+			}
+
+			return 0.0f;
+		}
+		else
+		{
+			return getHardwareDevice()->keyDown(SDLK_RSHIFT) ? 1.0f : 0.0f;
+		}
+	}
+
 	AIController::AIController(const PVInstance* controlledInstance)
 		: SteppingController(controlledInstance),
 		  retargetTime(0.0f)

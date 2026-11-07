@@ -221,6 +221,12 @@ int SignalConnectionBridge::on_index(const boost::signals::connection& object, c
     throw std::runtime_error(G3D::format("%s is not a valid member", name));
 }
 
+template<>
+void SignalConnectionBridge::on_newindex(boost::signals::connection& object, const char* name, lua_State* L)
+{
+	throw std::runtime_error(G3D::format("%s cannot be assigned to", name));
+}
+
 int SignalConnectionBridge::disconnect(lua_State* L)
 {
     boost::signals::connection& cnction = getObject(L, 1);
