@@ -41,13 +41,16 @@ namespace RBX
 	{
 		if (s0.parent && s1.parent)
 		{
-			if (s0.parent->getClumpDepth() != s1.parent->getClumpDepth())
+			Primitive* p0 = s0.parent;
+			Primitive* p1 = s1.parent;
+
+			if (p0->getClumpDepth() != p1->getClumpDepth())
 			{
-				return (s0.parent->getClumpDepth() > s1.parent->getClumpDepth()) ? s0 : s1;
+				return (p0->getClumpDepth() > p1->getClumpDepth()) ? s0 : s1;
 			}
 			else
 			{
-				return (s0.parent->getPlanarSize() > s1.parent->getPlanarSize()) ? s0 : s1;
+				return (p0->getPlanarSize() > p1->getPlanarSize()) ? s0 : s1;
 			}
 		}
 		else
