@@ -41,12 +41,12 @@ namespace RBX
 	{
 		if (s0.parent && s1.parent)
 		{
-			Primitive* p0 = s0.parent;
 			Primitive* p1 = s1.parent;
+			Primitive* p0 = s0.parent;
 
 			if (p0->getClumpDepth() != p1->getClumpDepth())
 			{
-				return (p1->getClumpDepth() < p0->getClumpDepth()) ? s0 : s1;
+				return (p0->getClumpDepth() < p1->getClumpDepth()) ? s0 : s1;
 			}
 			else
 			{
