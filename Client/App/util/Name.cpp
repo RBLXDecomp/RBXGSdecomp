@@ -25,6 +25,14 @@ namespace RBX
 		return moo2();
 	}
 
+	Name::NamMap::~NamMap()
+	{
+		for (std::map<std::string, Name*>::iterator iter = this->begin(); iter != this->end(); iter++)
+		{
+			delete iter->second;
+		}
+	}
+
 	std::map<int, Name*>& Name::dictionary()
 	{
 		static std::map<int, Name*> d;

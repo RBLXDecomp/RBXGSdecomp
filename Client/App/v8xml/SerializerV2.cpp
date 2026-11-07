@@ -17,8 +17,8 @@ bool ArchiveBinder::resolveIDREF(IDREFBinding binding)
 	bool success = binding.valueIDREF->getValue(s);
 
 	RBXASSERT(success);
-	RBXASSERT(value_IDREF_nil.name.compare(s));
-	RBXASSERT(value_IDREF_null.name.compare(s));
+	RBXASSERT(value_IDREF_nil != s);
+	RBXASSERT(value_IDREF_null != s);
 	RBXASSERT(s != "");
 
 	std::map<std::string, RBX::InstanceHandle>::iterator found = idMap.find(s);
