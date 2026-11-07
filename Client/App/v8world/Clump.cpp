@@ -46,7 +46,7 @@ namespace RBX
 
 			if (p0->getClumpDepth() != p1->getClumpDepth())
 			{
-				return (p0->getClumpDepth() > p1->getClumpDepth()) ? s0 : s1;
+				return (p1->getClumpDepth() < p0->getClumpDepth()) ? s0 : s1;
 			}
 			else
 			{
