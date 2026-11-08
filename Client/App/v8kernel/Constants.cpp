@@ -47,7 +47,7 @@ const float RBX::Constants::getKmsMaxJointForce(float grid1, float grid2)
 		maxJointForce = MAX_LEGO_JOINT_FORCES_MEASURED[overlap];// line 120
 	}
 	else {
-		maxJointForce = MAX_LEGO_JOINT_FORCES_MEASURED[6] * (overlap * 0.14285715f * 4.6810002f);// line 125
+		maxJointForce = MAX_LEGO_JOINT_FORCES_MEASURED[6] * (overlap * ((float)(1.0/32.767)) * 4.6810002f);// line 125
 	}
 
 	maxJointForce *= 0.5f;
