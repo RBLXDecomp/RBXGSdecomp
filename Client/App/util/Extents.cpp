@@ -134,18 +134,15 @@ namespace RBX
 
 	bool Extents::containedByFrustum(const G3D::GCamera::Frustum& frustum) const
 	{
-		if (frustum.faceArray.size() > 0)
+		for (int i = 0; i < frustum.faceArray.size(); i++)
 		{
-			for (int i = 0; i < frustum.faceArray.size(); i++)
+			const G3D::Plane* plane = &frustum.faceArray[i].plane;
+			for (int j = 0; j < 8; j++)
 			{
-				const G3D::Plane* plane = &frustum.faceArray[i].plane;
-				for (int j = 0; j < 8; j++)
+				G3D::Vector3 corner = getCorner(j);
+				if (!plane->halfSpaceContains(corner))
 				{
-					G3D::Vector3 corner = getCorner(j);
-					if (!plane->halfSpaceContains(corner))
-					{
-						return false;
-					}
+					return false;
 				}
 			}
 		}
@@ -238,8 +235,7 @@ namespace RBX
 		for (int i = 0; i < 8; i++)
 		{
 			G3D::Vector3 corner = getCorner(i);
-			G3D::Vector3 v1 = myFrame.pointToWorldSpace(corner) - expressInFrame.translation;
-			G3D::Vector3 inOther = v1 * expressInFrame.rotation;
+			G3D::Vector3 inOther = expressInFrame.pointToObjectSpace(myFrame.pointToWorldSpace(corner));
 
 			minC = minC.min(inOther);
 			maxC = maxC.max(inOther);
