@@ -136,7 +136,8 @@ namespace RBX
 	{
 		for (int i = 0; i < frustum.faceArray.size(); i++)
 		{
-			const G3D::Plane* plane = &frustum.faceArray[i].plane;
+			const G3D::GCamera::Frustum::Face* face = &frustum.faceArray[i];
+			const G3D::Plane* plane = &face->plane;
 			for (int j = 0; j < 8; j++)
 			{
 				G3D::Vector3 corner = getCorner(j);
