@@ -43,7 +43,7 @@ namespace RBX
 		}
 
 		// NOTE: this is a guess
-		void get(float _lastGoal, float& _currentGoal, float& _lastGoal)
+		void get(float goal, float& _currentGoal, float& _lastGoal)
 		{
 			if (this->latchToZero)
 			{
