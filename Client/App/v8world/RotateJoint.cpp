@@ -252,11 +252,6 @@ namespace RBX
 		}
 	}
 
-	inline float calculateIncrementRotatePJoint(float value, float currentGoal, int steps)
-	{
-		return (value - currentGoal) / steps;
-	}
-
 	void RotatePJoint::stepUi(int uiStepId)
 	{
 		float value = getChannelValue(uiStepId);
