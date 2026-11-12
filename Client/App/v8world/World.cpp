@@ -418,9 +418,12 @@ namespace RBX
 		assertNotInStep();
 		RBXASSERT(!inJointNotification);
 
-		if (j->getPrimitive(0) && j->getPrimitive(1))
+		Primitive* prim0 = j->getPrimitive(0);
+		Primitive* prim1 = j->getPrimitive(1);
+
+		if (prim0 && prim1)
 		{
-			Joint* d = Primitive::getJoint(j->getPrimitive(0), j->getPrimitive(1));
+			Joint* d = Primitive::getJoint(prim0, prim1);
 			if (d)
 			{
 				inJointNotification = true;
