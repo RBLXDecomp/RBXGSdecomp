@@ -241,8 +241,7 @@ namespace RBX
 		RotateConnector* connector = rotateConnector;
 		if (connector)
 		{
-			float newValue = value / (float)Constants::kernelStepsPerUiStep();
-			connector->getKernelInput()->setDelta(newValue);
+			connector->getKernelInput()->setDelta(value / (float)Constants::kernelStepsPerUiStep());
 		}
 
 		if (value != 0.0f)
@@ -253,11 +252,6 @@ namespace RBX
 		}
 	}
 
-	inline float calculateIncrementRotatePJoint(float value, float currentGoal, int steps)
-	{
-		return (value - currentGoal) / steps;
-	}
-
 	void RotatePJoint::stepUi(int uiStepId)
 	{
 		float value = getChannelValue(uiStepId);
@@ -265,7 +259,7 @@ namespace RBX
 		RotateConnector* connector = rotateConnector;
 		if (connector)
 		{
-			connector->getKernelInput()->setGoalCalc(value, calculateIncrementRotatePJoint);
+			connector->getKernelInput()->setGoal(value);
 		}
 
 		if (value != 0.0f)
