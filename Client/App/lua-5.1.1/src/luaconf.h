@@ -774,7 +774,7 @@ public:
 */
 LUAI_FUNC inline void luai_userstateopen (lua_State *L) { RobloxExtraSpace::construct(L, NULL); }
 LUAI_FUNC inline void luai_userstateclose (lua_State *L) { RobloxExtraSpace::destroy(L); }
-LUAI_FUNC inline void luai_userstatethread (lua_State *L, lua_State *L1) { RobloxExtraSpace::construct(L1, RobloxExtraSpace::get(L)); } // TODO: codegen slightly wrong
+LUAI_FUNC inline void luai_userstatethread (lua_State *L, lua_State *L1) { RobloxExtraSpace::construct(L1, RobloxExtraSpace::get(L)); }
 LUAI_FUNC inline void luai_userstatefree (lua_State *L) { RobloxExtraSpace::destroy(L); }
 LUAI_FUNC inline void luai_userstateresume (lua_State *L, int n) { RobloxExtraSpace::get(L)->yieldCaptured = false; }
 LUAI_FUNC inline void luai_userstateyield (lua_State *L, int n) {}
