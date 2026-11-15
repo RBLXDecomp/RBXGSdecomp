@@ -755,10 +755,7 @@ public:
 	static RobloxExtraSpace* get(lua_State* L)
 	{
 		// insert of fromstate(L) from lstate.c
-		if (L)
-        	return reinterpret_cast<RobloxExtraSpace*>(reinterpret_cast<unsigned char*>(L) - LUAI_EXTRASPACE);
-		else
-		 	return NULL;
+		return (L) ? reinterpret_cast<RobloxExtraSpace*>(reinterpret_cast<unsigned char*>(L) - LUAI_EXTRASPACE) : NULL;
 	}
 	static void construct(lua_State* L, RobloxExtraSpace* parent)
 	{
