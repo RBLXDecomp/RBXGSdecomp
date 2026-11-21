@@ -341,7 +341,7 @@
 ** CHANGE it to undefined as soon as your programs use 'math.fmod' or
 ** the new '%' operator instead of 'math.mod'.
 */
-#define LUA_COMPAT_MOD
+//#define LUA_COMPAT_MOD
 
 /*
 @@ LUA_COMPAT_LSTR controls compatibility with old long string nesting
@@ -356,7 +356,7 @@
 ** CHANGE it to undefined as soon as you rename 'string.gfind' to
 ** 'string.gmatch'.
 */
-#define LUA_COMPAT_GFIND
+//#define LUA_COMPAT_GFIND
 
 /*
 @@ LUA_COMPAT_OPENLIB controls compatibility with old 'luaL_openlib'
@@ -755,10 +755,7 @@ public:
 	static RobloxExtraSpace* get(lua_State* L)
 	{
 		// insert of fromstate(L) from lstate.c
-		if (L)
-        	return reinterpret_cast<RobloxExtraSpace*>(reinterpret_cast<unsigned char*>(L) - LUAI_EXTRASPACE);
-		else
-		 	return NULL;
+		return (L) ? reinterpret_cast<RobloxExtraSpace*>(reinterpret_cast<unsigned char*>(L) - LUAI_EXTRASPACE) : NULL;
 	}
 	static void construct(lua_State* L, RobloxExtraSpace* parent)
 	{
@@ -775,12 +772,12 @@ public:
 ** CHANGE them if you defined LUAI_EXTRASPACE and need to do something
 ** extra when a thread is created/deleted/resumed/yielded.
 */
-#define luai_userstateopen(L)		RobloxExtraSpace::construct(L, NULL)
-#define luai_userstateclose(L)		RobloxExtraSpace::destroy(L)
-#define luai_userstatethread(L,L1)	RobloxExtraSpace::construct(L1, RobloxExtraSpace::get(L)) // TODO: codegen slightly wrong
-#define luai_userstatefree(L)		RobloxExtraSpace::destroy(L)
-#define luai_userstateresume(L,n)	{ RobloxExtraSpace::get(L)->yieldCaptured = false; }
-#define luai_userstateyield(L,n)	((void)L)
+LUAI_FUNC inline void luai_userstateopen (lua_State *L) { RobloxExtraSpace::construct(L, NULL); }
+LUAI_FUNC inline void luai_userstateclose (lua_State *L) { RobloxExtraSpace::destroy(L); }
+LUAI_FUNC inline void luai_userstatethread (lua_State *L, lua_State *L1) { RobloxExtraSpace::construct(L1, RobloxExtraSpace::get(L)); }
+LUAI_FUNC inline void luai_userstatefree (lua_State *L) { RobloxExtraSpace::destroy(L); }
+LUAI_FUNC inline void luai_userstateresume (lua_State *L, int n) { RobloxExtraSpace::get(L)->yieldCaptured = false; }
+LUAI_FUNC inline void luai_userstateyield (lua_State *L, int n) {}
 
 
 /*
