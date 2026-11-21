@@ -29,7 +29,7 @@ namespace RBX
 			}
 			else
 			{
-				desiredYRotationalVelocity = controller.getValue(Controller::RIGHT_LEFT_INPUT) * 6.0f;
+				desiredYRotationalVelocity = controller.getValue(Controller::RIGHT_LEFT_INPUT) * turnSpeed;
 				return this;
 			}
 		}
