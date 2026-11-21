@@ -117,18 +117,14 @@ namespace RBX
 		float rotVel;
 		this->computeParams(normal, rotation, rotVel);
 
-		this->kernelInput.setGoal(rotation);
-
-		float lastGoal = 0;
 		float currentGoal;
-		float increment;
-		this->kernelInput.get(lastGoal, currentGoal, increment);
+		float lastGoal;
+		this->kernelInput.get(rotation, currentGoal, lastGoal);
 
-		//float v1 = (currentGoal - rotation) * this->k;
-		G3D::Vector3 v2 = normal * ((currentGoal - rotation) * this->k);
+		G3D::Vector3 torque = normal * ((lastGoal - rotation) * this->k);
 
-		this->ref0->getBody()->accumulateTorque(-v2);
-		this->ref1->getBody()->accumulateTorque(v2);
+		this->ref0->getBody()->accumulateTorque(-torque);
+		this->ref1->getBody()->accumulateTorque(torque);
 	}
 
 	void RotateConnector::computeParams(G3D::Vector3& normal, float& rotation, float& rotVel)
