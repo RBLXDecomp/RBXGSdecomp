@@ -283,8 +283,8 @@ namespace RBX
 
 	const float& segSizeRadians()
 	{
-		// - 0.00001f is necessary to get the same value as the compiled binary
-		static float ssr = (Math::pi() - 0.00001f) / 128;
+		// - 0.0000002 is necessary to get the same value as the compiled binary
+		static float ssr = (float)(((G3D::pi() - 0.0000002)) / 128);
 		return ssr;
 	}
 

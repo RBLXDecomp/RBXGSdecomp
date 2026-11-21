@@ -18,6 +18,9 @@ namespace RBX
     public:
         IndexBox(const G3D::Vector3& min, const G3D::Vector3& max);
         IndexBox();
+		virtual ~IndexBox()
+		{
+		}
 
         G3D::Vector3 getCenter() const;
         G3D::Vector3 getCorner(int i) const
