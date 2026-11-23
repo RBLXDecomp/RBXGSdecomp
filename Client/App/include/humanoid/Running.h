@@ -31,7 +31,7 @@ namespace RBX
 		void hoverOnFloor(Body*);
 		void move(Body*);
 		bool isFacingStairs();
-		void updateGoals(Controller&);
+		void updateGoals(Controller& controller);
 		virtual void onComputeForce(const float);
 		virtual Humanoid::State* onStep(const float stepDt, Controller& controller);
 

@@ -1,8 +1,9 @@
 #include "humanoid/Running.h"
-#include "v8world/Primitive.h"
 #include "humanoid/FallingDown.h"
 #include "humanoid/Jumping.h"
 #include "humanoid/Seated.h"
+#include "v8world/ContactManager.h"
+#include "v8world/Primitive.h"
 #include "v8datamodel/PartInstance.h"
 
 namespace RBX
@@ -83,16 +84,16 @@ namespace RBX
 
 			if (humanoid->getTorsoPrimitive())
 			{
-				desiredAltitude += humanoid->getTorsoPrimitive()->getGeometry()->getGridSize().y * 0.5f;
+				desiredAltitude += humanoid->getTorsoPrimitive()->getGridSize().y * 0.5f;
 			}
 
 			if (humanoid->getLeftLegPrimitive())
 			{
-				desiredAltitude += humanoid->getLeftLegPrimitive()->getGeometry()->getGridSize().y;
+				desiredAltitude += humanoid->getLeftLegPrimitive()->getGridSize().y;
 			}
 			else if (humanoid->getRightLegPrimitive())
 			{
-				desiredAltitude += humanoid->getRightLegPrimitive()->getGeometry()->getGridSize().y;
+				desiredAltitude += humanoid->getRightLegPrimitive()->getGridSize().y;
 			}
 
 			Velocity vel = (!floorPart) ? Velocity::zero() : floorPart->getPrimitive()->getBody()->getPV().velocityAtPoint(floorTouchInWorld);
@@ -109,5 +110,40 @@ namespace RBX
 		{
 			return check;
 		}
+	}
+
+	void Running::updateGoals(Controller& controller)
+	{
+		float oldMag = desiredVelocity.magnitude();
+
+		desiredVelocity = humanoid->updateWalkDirection() * 16.0f;
+		bool climbing = false;
+		desiredYRotationalVelocity = 0.0f;
+
+		if (!desiredVelocity.isZero())
+		{
+			desiredYRotationalVelocity = Math::radWrap(Math::getHeading(desiredVelocity) - humanoid->getTorsoHeading()) * autoTurnSpeed;
+			
+			if (isFacingStairs())
+			{
+				climbing = true;
+				float mag = desiredVelocity.squaredMagnitude();
+				desiredVelocity.x = desiredVelocity.x * 0.7f;
+				desiredVelocity.y = sqrtf(mag) * 0.7f;
+				desiredVelocity.z = desiredVelocity.z * 0.7f;
+			}
+		}
+
+		float newMag = desiredVelocity.magnitude();
+
+		if (newMag != oldMag)
+		{
+			if (climbing)
+				Humanoid::event_Climbing.fire(humanoid, newMag);
+			else
+				Humanoid::event_Running.fire(humanoid, newMag);
+		}
+		
+		intendedYRotation = desiredYRotationalVelocity;
 	}
 }
