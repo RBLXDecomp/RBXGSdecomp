@@ -275,7 +275,7 @@ namespace RBX
 		protected:
 			virtual void onServiceProvider(const ServiceProvider* oldProvider, const ServiceProvider* newProvider);
 			void onDescendentAdded(boost::shared_ptr<Instance>);
-			void onDescendentRemoving(boost::shared_ptr<Instance>);
+			void onDescendentRemoving(boost::shared_ptr<Instance> descendent);
 			void onPropertyChanged(boost::shared_ptr<Instance> instance, const Reflection::PropertyDescriptor* descriptor);
 			const Instance* getDefault(const Name& className);
 			void deleteDisconnectInstances();
@@ -290,8 +290,8 @@ namespace RBX
 			void disconnectAllPropertyChangedConnections();
 			void connectToReplicationContainers();
 			void removeFromPendingProperties(const Instance*);
-			bool removeFromPendingNewInstances(const Instance*);
-			bool removeFromPendingDeleteInstances(const Instance*);
+			bool removeFromPendingNewInstances(const Instance* instance);
+			bool removeFromPendingDeleteInstances(const Instance* instance);
 			bool isChildOfPendingDeleteInstance(const Instance* instance) const;
 			bool isInReplicationScope(const Instance* instance) const;
 			bool sendItems();
@@ -305,7 +305,7 @@ namespace RBX
 			void skipValue(RakNet::BitStream&);
 			void receiveData(Packet* packet);
 			void readInstanceNew(RakNet::BitStream&);
-			void readInstanceDelete(RakNet::BitStream&);
+			void readInstanceDelete(RakNet::BitStream& inBitstream);
 			void readChangedProperty(RakNet::BitStream&);
 			void readMarker(RakNet::BitStream& inBitstream);
 			bool getCameFromRemotePlayer(const Instance*) const;
