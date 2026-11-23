@@ -14,6 +14,7 @@
 #include "v8world/SimJobStage.h"
 #include "util/Log.h"
 #include "util/standardout.h"
+#include "util/ScopedAssign.h"
 #include <g3d/system.h>
 #include "IdManager.h"
 
@@ -371,6 +372,61 @@ namespace RBX
 			}
 		}
 
+		// both this and the delete variant are inlined, so they are technically guesses
+		// 2013 symbols suggest that this is most likely how they were written
+		bool Replicator::removeFromPendingNewInstances(const Instance* instance)
+		{
+			size_t erased = pendingNewInstances.erase(instance);
+			return erased != 0;
+		}
+
+		bool Replicator::removeFromPendingDeleteInstances(const Instance* instance)
+		{
+			size_t erased = pendingDeleteInstances.erase(instance);
+			return erased != 0;
+		}
+
+		void Replicator::readInstanceDelete(RakNet::BitStream& inBitstream)
+		{
+			Guid::Data id;
+			Instance* instance;
+
+			if (deserializeInstanceRef(inBitstream, instance, id))
+			{
+				boost::shared_ptr<Instance> hold = shared_from(instance);
+				RBXASSERT(instance);
+
+				if (NetworkSettings::singleton().printInstances)
+				{
+					StandardOut::singleton()->print(
+						MESSAGE_INFO,
+						"Replication: %s >> ~%s:%d",
+						remotePlayerId.ToString(),
+						instance->getClassName().c_str(),
+						instance->getGuid().readableString(4).c_str()
+					);
+				}
+
+				disconnectPropertyChanged(shared_from(instance));
+				removeFromPendingNewInstances(instance);
+
+				RBXASSERT(!removingInstance);
+				
+				ScopedAssign<Instance*> assign(removingInstance, instance);
+				instance->setParent(NULL);
+				removeFromPendingDeleteInstances(instance);
+			}
+			else
+			{
+				if (NetworkSettings::singleton().printInstances)
+				{
+					StandardOut::singleton()->print(MESSAGE_INFO, "Replication %s >> ~???", remotePlayerId.ToString());
+				}
+			}
+
+			resolvePendingBindings(NULL, id);
+		}
+
 		void Replicator::readMarker(RakNet::BitStream& inBitstream)
 		{
 			long markerId;
@@ -620,13 +676,11 @@ namespace RBX
 			}
 		}
 
-		//95.65% match
-		//functionally accurate, *slightly* different instruction ordering
 		bool Replicator::isChildOfPendingDeleteInstance(const Instance* instance) const
 		{
-			for (const Instance* current = instance->getParent(); current != NULL; current = current->getParent())
+			while (instance = instance->getParent())
 			{
-				if (pendingDeleteInstances.find(current) != pendingDeleteInstances.end())
+				if (pendingDeleteInstances.find(instance) != pendingDeleteInstances.end())
 					return true;
 			}
 
@@ -745,6 +799,33 @@ namespace RBX
 					replicationContainerConnections.push_back(Instance::event_descendentAdded.connect(*it, boost::bind(&Replicator::onDescendentAdded, this, _1)));
 					replicationContainerConnections.push_back(Instance::event_descendentRemoving.connect(*it, boost::bind(&Replicator::onDescendentRemoving, this, _1)));
 					(*it)->visitDescendents(boost::bind(&Replicator::onDescendentAdded, this, _1));
+				}
+			}
+		}
+
+		void Replicator::onDescendentRemoving(boost::shared_ptr<Instance> descendent)
+		{
+			Profiling::Mark mark(*profileReplication, false);
+			Profiling::Mark mark2(*profileDataListening, false);
+
+			disconnectPropertyChanged(descendent);
+			deleteOnDisconnectInstances.erase(descendent);
+
+			bool success = removeFromPendingNewInstances(descendent.get());
+
+			if (!success)
+			{
+				bool removing = false;
+
+				if (removingInstance)
+				{
+					if (descendent.get() == removingInstance || descendent->isDescendentOf(removingInstance))
+						removing = true;
+				}
+
+				if (!removing && !isChildOfPendingDeleteInstance(descendent.get()))
+				{
+					pendingItems.push_back(boost::shared_ptr<Item>(new DeleteInstanceItem(*this, descendent)));
 				}
 			}
 		}
@@ -984,7 +1065,7 @@ namespace RBX
 		{
 			size_t erased = replicator.pendingDeleteInstances.erase(instance.get());
 
-			if (erased)
+			if (erased != 0)
 			{
 				if (!instance.get())
 				{

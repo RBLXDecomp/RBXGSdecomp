@@ -491,6 +491,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\util\ScopedAssign.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\util\Sound.h"
 					>
 				</File>
