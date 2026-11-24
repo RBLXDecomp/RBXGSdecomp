@@ -650,8 +650,9 @@ namespace RBX
 					if (NetworkSettings::singleton().printPacketBuffer)
 					{
 						size_t sendBuffer = statistics->messageSendBuffer[MEDIUM_PRIORITY] + statistics->messageSendBuffer[HIGH_PRIORITY] * 2;
+						size_t maxBuffer = NetworkSettings::singleton().maxDataModelSendBuffer;
 
-						if (sendBuffer > NetworkSettings::singleton().maxDataModelSendBuffer)
+						if (sendBuffer > maxBuffer)
 						{
 							StandardOut::singleton()->print(MESSAGE_WARNING, "SendBuffer = %d", sendBuffer);
 						}
