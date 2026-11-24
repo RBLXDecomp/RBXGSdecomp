@@ -80,7 +80,6 @@ namespace RBX
 				: descriptor(other.descriptor),
 				  instance(other.instance)
 			{
-				RBXASSERT(descriptor->isMemberOf(instance));
 			}
 			ConstProperty(const PropertyDescriptor& descriptor, const DescribedBase* instance)
 				: descriptor(&descriptor),
@@ -98,7 +97,10 @@ namespace RBX
 				return *descriptor; // might be wrong?
 			}
 			ConstProperty& operator=(const ConstProperty&);
-			const Name& getName() const;
+			const Name& getName() const
+			{
+				return descriptor->name;
+			}
 			bool hasStringValue() const;
 			std::string getStringValue() const
 			{
@@ -196,7 +198,7 @@ namespace RBX
 			}
 			virtual bool equalValues(const DescribedBase* a, const DescribedBase* b) const
 			{
-				return getValue(b) == getValue(a);
+				return getValue(a) == getValue(b);
 			}
 
 			/*

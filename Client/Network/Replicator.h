@@ -296,7 +296,7 @@ namespace RBX
 			bool isInReplicationScope(const Instance* instance) const;
 			bool sendItems();
 			bool sendPhysicsPacket();
-			void sendPhysicsData(RakNet::BitStream&, const Mechanism&);
+			void sendPhysicsData(RakNet::BitStream& bitStream, const Mechanism& mechanism);
 			void sendPhysicsData(RakNet::BitStream&, const Assembly&);
 			void createStatsItems(Stats::StatsService* stats);
 			virtual bool remoteDeleteOnDisconnect(const Instance* instance) const;

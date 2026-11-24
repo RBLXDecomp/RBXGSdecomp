@@ -462,6 +462,16 @@ namespace RBX
 			return marker;
 		}
 
+		void Replicator::sendPhysicsData(RakNet::BitStream& bitStream, const Mechanism& mechanism)
+		{
+			std::set<Assembly*>::const_iterator it;
+
+			for (it = mechanism.getAssemblies().begin(); it != mechanism.getAssemblies().end(); it++)
+			{
+				sendPhysicsData(bitStream, **it);
+			}
+		}
+
 		bool Replicator::sendPhysicsPacket()
 		{
 			if (!sendPhysicsEnabled)

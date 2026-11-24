@@ -128,13 +128,12 @@ namespace RBX
 		const Name& getName();
 	private:
 		PropertyChanged(const Reflection::Property& property)
-			: property(Reflection::Property(property.getDescriptor(), property.getInstance())) //property(property)
+			: property(property.getDescriptor(), property.getInstance())
 		{
-			//RBXASSERT(property.getDescriptor().isMemberOf(property.getInstance()));
 		}
 	public:
 		PropertyChanged(const PropertyChanged& other)
-			: property(other.property)
+			: property(other.property.getDescriptor(), other.property.getInstance())
 		{
 		}
 	};
@@ -369,7 +368,6 @@ namespace RBX
 		void raisePropertyChanged(const Reflection::PropertyDescriptor& descriptor)
 		{
 			PropertyChanged event(Reflection::Property(descriptor, this));
-			RBXASSERT(event.getDescriptor().isMemberOf(event.getProperty().getInstance()));
 
 			Notifier<Instance, PropertyChanged>::raise(event);
 
@@ -390,7 +388,11 @@ namespace RBX
 			if (children)
 			{
 				boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> c = children.read();
-				for (std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin(); iter != c->end(); iter++)
+
+				std::vector<boost::shared_ptr<Instance>>::const_iterator end = c->end();
+				std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin();
+
+				for (; iter != end; iter++)
 				{
 					func((*iter).get());
 				}
