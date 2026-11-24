@@ -36,7 +36,7 @@ namespace RBX
 			profilingUiStep->parent = profilingWorldStep.get();
 			getCollisionStage()->profilingCollision->parent = profilingWorldStep.get();
 			getSleepStage()->profilingSleep->parent = profilingWorldStep.get();
-			jointStage->getKernel()->profilingKernel->parent = profilingWorldStep.get(); 
+			getKernel().profilingKernel->parent = profilingWorldStep.get(); 
 		}
 	#pragma warning (pop)
 
@@ -347,8 +347,8 @@ namespace RBX
 			const Assembly* current = *cIt;
 			if (current->getMainPrimitive()->getCoordinateFrame().translation.y < -500.0f)
 			{
-				Assembly::PrimIterator it = Assembly::PrimIterator::begin(current);
 				Assembly::PrimIterator pEnd = Assembly::PrimIterator::end(current);
+				Assembly::PrimIterator it = Assembly::PrimIterator::begin(current);
 				for (; it != pEnd; ++it)
 				{
 					Primitive* currentPrim = *it;

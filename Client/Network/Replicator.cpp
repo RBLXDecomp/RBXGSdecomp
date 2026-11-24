@@ -462,6 +462,16 @@ namespace RBX
 			return marker;
 		}
 
+		void Replicator::sendPhysicsData(RakNet::BitStream& bitStream, const Mechanism& mechanism)
+		{
+			std::set<Assembly*>::const_iterator it;
+
+			for (it = mechanism.getAssemblies().begin(); it != mechanism.getAssemblies().end(); it++)
+			{
+				sendPhysicsData(bitStream, **it);
+			}
+		}
+
 		bool Replicator::sendPhysicsPacket()
 		{
 			if (!sendPhysicsEnabled)
@@ -640,9 +650,8 @@ namespace RBX
 					if (NetworkSettings::singleton().printPacketBuffer)
 					{
 						size_t sendBuffer = statistics->messageSendBuffer[MEDIUM_PRIORITY] + statistics->messageSendBuffer[HIGH_PRIORITY] * 2;
-						size_t maxBuffer = NetworkSettings::singleton().maxDataModelSendBuffer;
 
-						if (sendBuffer > maxBuffer)
+						if (sendBuffer > NetworkSettings::singleton().maxDataModelSendBuffer)
 						{
 							StandardOut::singleton()->print(MESSAGE_WARNING, "SendBuffer = %d", sendBuffer);
 						}

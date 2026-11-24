@@ -99,7 +99,7 @@ namespace RBX
 			public:
 				typename TheDescriptor::ConstMember operator*() const
 				{
-					return TheDescriptor::ConstMember(getDescriptor(), instance);
+					return TheDescriptor::ConstMember(**iter, instance);
 				}
 				bool operator==(const ConstIterator& other) const
 				{

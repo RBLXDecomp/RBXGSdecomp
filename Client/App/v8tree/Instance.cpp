@@ -75,7 +75,7 @@ namespace RBX
 	void Instance::onDescendentAdded(Instance* instance)
 	{
 		if (Notifier<Instance, DescendentAdded>::hasListeners())
-			Notifier<Instance, DescendentAdded>::raise(DescendentAdded(instance, instance->parent));
+			Notifier<Instance, DescendentAdded>::raise(DescendentAdded(instance, instance->getParent()));
 
 		event_descendentAdded.fire(this, shared_from(instance));
 	}
@@ -85,7 +85,7 @@ namespace RBX
 		event_descendentRemoving.fire(this, instance);
 
 		if (Notifier<Instance, DescendentRemoving>::hasListeners())
-			Notifier<Instance, DescendentRemoving>::raise(DescendentRemoving(instance, shared_from(instance->parent)));
+			Notifier<Instance, DescendentRemoving>::raise(DescendentRemoving(instance, shared_from(instance->getParent())));
 	}
 
 	class RaiseDescendentAdded2
@@ -118,7 +118,11 @@ namespace RBX
 		if (children)
 		{
 			boost::shared_ptr<const std::vector<boost::shared_ptr<Instance>>> c = children.read();
-			for (std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin(); iter != c->end(); iter++)
+			
+			std::vector<boost::shared_ptr<Instance>>::const_iterator end = c->end();
+			std::vector<boost::shared_ptr<Instance>>::const_iterator iter = c->begin();
+
+			for (; iter != end; iter++)
 			{
 				Notifier<Instance, ChildAdded>::raise(ChildAdded((*iter).get()), listener);
 			}

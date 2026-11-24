@@ -114,10 +114,9 @@ namespace RBX
 
 			raiseRange = &range;
 
-			for (; range.index < range.upper; range.index++)
+			while (range.index < range.upper)
 			{
-				Listener<Class, Event>* listener = listeners[range.index];
-				raise(event, listener);
+				raise(event, listeners[range.index++]);
 			}
 
 			raiseRange = range.previous;

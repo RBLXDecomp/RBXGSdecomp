@@ -53,13 +53,8 @@ int ObjectBridge::newInstance(lua_State* thread)
     return 1;
 }
 
-// TODO: 99.73% (functional match)
 static void pushLuaValue(ConstProperty p, lua_State* L)
 {
-    // (0024BC)  S_BPREL32: [FFFFFF40], Type:             0x3639, objects
-    // (0024D0)  S_BPREL32: [FFFFFF50], Type:             0x36A2, end
-    // (0024E0)  S_BPREL32: [FFFFFF48], Type:             0x36A2, iter
-
     PropertyDescriptor& descriptor = const_cast<PropertyDescriptor&>(p.getDescriptor());
 
     if (descriptor.type == Type::singleton<int>())
@@ -182,7 +177,7 @@ static void pushLuaValue(ConstProperty p, lua_State* L)
 
     throw std::runtime_error(G3D::format(
         "Unable to get property %s, type %s",
-        descriptor.name.c_str(),
+        p.getName().c_str(),
         descriptor.type.name.c_str()));
 }
 
@@ -263,11 +258,8 @@ int ObjectBridge::on_index(const boost::shared_ptr<DescribedBase>& object, const
     throw std::runtime_error(G3D::format("%s is not a valid member of %s", name, instance->getClassName().c_str()));
 }
 
-// TODO: 95.59% (functional match)
 static void assignLuaValue(Property p, lua_State* L, int index)
 {
-    // (002DA8)  S_BPREL32: [FFFFFF60], Type:             0x238B, value
-
     PropertyDescriptor& descriptor = const_cast<PropertyDescriptor&>(p.getDescriptor());
 
     if (descriptor.type == Type::singleton<int>())
@@ -353,8 +345,7 @@ static void assignLuaValue(Property p, lua_State* L, int index)
     EnumPropertyDescriptor* enumDesc = dynamic_cast<EnumPropertyDescriptor*>(&descriptor);
     if (enumDesc)
     {
-        int value = lua_tointeger(L, index);
-        enumDesc->setEnumValue(p.getInstance(), value);
+        enumDesc->setEnumValue(p.getInstance(), lua_tointeger(L, index));
         return;
     }
 
@@ -366,20 +357,18 @@ static void assignLuaValue(Property p, lua_State* L, int index)
         return;
     }
 
-    throw std::runtime_error(G3D::format("Unable to set property %s, type %s", descriptor.name.c_str(), descriptor.type.name.c_str()));
+    throw std::runtime_error(G3D::format("Unable to set property %s, type %s", p.getName().c_str(), descriptor.type.name.c_str()));
 }
 
-// TODO: 97.00%
 template <>
 void ObjectBridge::on_newindex(boost::shared_ptr<DescribedBase>& object, const char* name, lua_State* L)
 {
-    // (0033F8)  S_BPREL32: [FFFFFF68], Type:             0x3058, iter
-    // (00340C)  S_BPREL32: [FFFFFF58], Type:             0x238B, parent (boost::shared_ptr<RBX::Instance>)
-
     if (!object)
         throw std::runtime_error("The object has been deleted");
 
-    PropertyIterator iter = object->findProperty(Name::lookup(name));
+	const Name& name2 = Name::lookup(name);
+
+    PropertyIterator iter = object->findProperty(name2);
     if (iter != object->properties_end())
     {
         if ((*iter).getDescriptor() == Instance::propParent)
